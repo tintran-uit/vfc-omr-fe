@@ -44,6 +44,8 @@ function validate(values: any, { setErrors }: any) {
     <h3 class="text-h3 text-center mb-0">Login</h3>
   </div>
   <Form @submit="validate" class="mt-7 loginForm" v-slot="{ errors, isSubmitting }">
+
+
     <div class="mb-6">
       <v-label>Email Address</v-label>
       <v-text-field

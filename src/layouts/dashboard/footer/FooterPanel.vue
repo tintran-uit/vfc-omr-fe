@@ -13,18 +13,18 @@ onMounted(async () => {
 
 const footerLink = computed(() =>
   [
-    {
-      title: 'About us',
-      link: 'https://codedthemes.com/about-us/'
-    },
-    {
-      title: 'Privacy',
-      link: 'privacy-policy'
-    },
-    {
-      title: 'Terms',
-      link: 'privacy-policy'
-    }
+    // {
+    //   title: 'About us',
+    //   link: 'https://codedthemes.com/about-us/'
+    // },
+    // {
+    //   title: 'Privacy',
+    //   link: 'privacy-policy'
+    // },
+    // {
+    //   title: 'Terms',
+    //   link: 'privacy-policy'
+    // }
   ].map((item) => ({
     ...item,
     link: item.link.startsWith('http') ? item.link : `${relativeURL.value}${item.link}`
@@ -35,7 +35,7 @@ const footerLink = computed(() =>
   <v-footer class="px-0 footer">
     <v-row justify="center" no-gutters>
       <v-col cols="6">
-        <p class="text-caption mb-0">© All rights reserved</p>
+<!--        <p class="text-caption mb-0">© All rights reserved</p>-->
       </v-col>
       <v-col class="text-end" cols="6">
         <a v-for="(item, i) in footerLink" :key="i" class="mx-2 text-caption text-darkText" :href="item.link" target="_blank">
