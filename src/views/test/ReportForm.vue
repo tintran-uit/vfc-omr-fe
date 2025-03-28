@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import UiParentCard from "@/components/shared/UiParentCard.vue";
 import { ref, watch, computed } from 'vue';
+import DynamicForm from "@/components/forms/DynamicForm.vue";
+
+const modelWeeks = ref();
+const tab = ref();
 
 const years = ref([2024, 2023, 2022, 2021, 2020]);
 const months = ref([
@@ -58,25 +62,62 @@ const months = ref([
 //
 // });
 
+const step = ref();
+step.value = 1;
+
+function nextTab(currentTab)
+{
+  console.log(modelWeeks.value[currentTab + 1]);/*
+  if(modelWeeks.value.length - 1 > currentTab) {
+    step.value = modelWeeks.value[currentTab + 1];
+
+    console.log('step.value: ', step.value);
+  }*/
+}
+
 import reportSchemaForm from "@/schema-forms/ReportSchemaForm";
 </script>
 
 <template>
-  <v-row class="page-breadcrumb mb-0 mt-n2">
-    <v-col cols="12" md="12">
-      <v-card elevation="0" variant="text">
-        <v-row no-gutters class="align-center">
-          <v-col sm="12">
-            <h3 class="text-h3 mt-1 mb-0">Weekly Report</h3>
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-col>
-  </v-row>
-  <div class="overflow-auto">
+  <v-card color="basil" v-if="step==2">
+    <v-tabs
+      v-model="tab"
+      bg-color="transparent"
+      grow
+    >
+      <v-tab
+        v-for="item in modelWeeks"
+        :key="item"
+        :text="item"
+        :value="item"
+      ></v-tab>
+    </v-tabs>
+
+    <v-tabs-window v-model="tab">
+      <v-tabs-window-item
+        v-for="(item, index) in modelWeeks"
+        :key="item"
+        :value="item"
+      >
+        <v-card
+          color="basil"
+          flat
+        >
+          <DynamicForm :schema="reportSchemaForm" />
+          
+          <div class="px-5 py-5">
+          <v-btn color="primary" block class="mt-4" variant="flat" @click="nextTab(index)">Save</v-btn>
+          </div>
+        </v-card>
+      </v-tabs-window-item>
+    </v-tabs-window>
+  </v-card>
+
+  
+  <div class="overflow-auto" v-if="step==1">
     <v-row class="taskBoardBox ma-0">
-      <UiParentCard title="On Type">
-        <Form>
+      <UiParentCard title="Enter Weekly Report">
+        <Form @submit="step = 2">
           <v-label class="mb-1">Year</v-label>
           <v-combobox
               :items="years"
@@ -106,8 +147,9 @@ import reportSchemaForm from "@/schema-forms/ReportSchemaForm";
               multiple
               chips
               clearable
+              v-model="modelWeeks"
           ></v-combobox>
-          <v-btn color="primary" variant="flat" type="submit">Submit</v-btn>
+          <v-btn color="primary" variant="flat" @click="step=2">Next</v-btn>
         </Form>
       </UiParentCard>
     </v-row>

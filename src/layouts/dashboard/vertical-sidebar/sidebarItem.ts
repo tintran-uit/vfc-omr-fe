@@ -72,12 +72,6 @@ const sidebarItem: menu[] = [
   },
   {
     id: 'relating',
-    title: 'Test Layout',
-    icon: MessageOutlined,
-    to: '/test/layout-grid'
-  },
-  {
-    id: 'relating',
     title: 'Enter Report',
     icon: MessageOutlined,
     to: '/test/report-form'

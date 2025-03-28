@@ -4,35 +4,38 @@ import {Form} from "vee-validate";
 import VeeValidation from "@/components/forms/validation/VeeValidation.vue";
 import UiParentCard from "@/components/shared/UiParentCard.vue";
 
+const schema = defineProps(['schema'])
 
 </script>
 
 <template>
-  <v-row>
-    <v-col cols="12" md="6">
-      <UiParentCard title="On Type">
+    {{schema.fields}}
+      <UiParentCard>
         <Form>
-          <template v-for="field in fields">
-            <h5 v-if="field.groupTitle">{{field.groupTitle}}</h5>
+          <v-row>
+            <template v-for="field in schema.schema.fields">
+                <v-col v-if="field.groupTitle" cols="12">
+                  <h3 >{{field.groupTitle}}</h3>
+                </v-col>
 
-            <div v-if="field.type === 'hihi'">
+                <v-col cols="6">
+                  <v-label class="text-wrap">{{field.label}}</v-label>
 
-            </div>
-            <v-label class="mb-1">First name</v-label>
-            <v-text-field
-                v-else
-                v-model="firstname"
-                :rules="field.rules"
-                single-line
-                variant="outlined"
-                :color="firstname.length > 2 ? 'success' : 'primary'"
-                class="mb-3"
-            ></v-text-field>
-          </template>
+                    <v-text-field
+                      type="number"
+                      :rules="required"
+                      hide-details="auto"
+                      required
+                      variant="outlined"
+                      class="mt-2"
+                      color="primary"
+                      placeholder=""
+                    ></v-text-field>
+                </v-col>
+              </template>
+              </v-row>
         </Form>
       </UiParentCard>
-    </v-col>
-  </v-row>
 </template>
 
 <style scoped lang="scss">

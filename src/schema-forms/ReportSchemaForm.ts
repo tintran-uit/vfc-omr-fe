@@ -60,7 +60,7 @@ const schemaForm = {
             type: 'text'
         },
         {
-            label: 'Number in an<br />Encounter / Next Step Weekend',
+            label: 'Number in an Encounter / Next Step Weekend',
             rules: 'number',
             type: 'text'
         },
@@ -71,7 +71,7 @@ const schemaForm = {
             type: 'text'
         },
         {
-            label: 'Total Attendance <br />in all GT/LIW Classes',
+            label: 'Total Attendance in all GT/LIW Classes',
             rules: 'number',
             type: 'text'
         },
