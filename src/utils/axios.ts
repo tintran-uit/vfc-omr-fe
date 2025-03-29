@@ -12,4 +12,4 @@ axiosServices.interceptors.response.use(
   (error) => Promise.reject((error.response && error.response.data) || 'Wrong Services')
 );
 
-export default axiosServices;
+    export default axiosServices;

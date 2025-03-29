@@ -5,11 +5,11 @@ const PublicRoutes = {
     requiresAuth: false
   },
   children: [
-    {
-      name: 'Landing',
-      path: '/',
-      component: () => import('@/views/pages/landingpage/LandingPage.vue')
-    },
+    // {
+    //   name: 'Landing',
+    //   path: '/',
+    //   component: () => import('@/views/pages/landingpage/LandingPage.vue')
+    // },
     {
       name: 'Authentication',
       path: '/login',
