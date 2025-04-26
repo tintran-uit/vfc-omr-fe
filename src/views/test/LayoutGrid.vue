@@ -1,9 +1,20 @@
 <script setup lang="ts">
+console.log('API URL:', import.meta.env.VITE_API_URL);
+import userApi from '@/apis/userApi';
+
+const getUser = async () => {
+  const data = await userApi.getUser(2);
+
+  console.log(data);
+}
+
+
 
 </script>
 
 <template>
   <v-container>
+    <v-btn @click="getUser">Get user</v-btn>
     <v-row
         align="start"
         style="height: 150px;"
