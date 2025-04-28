@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Logo from '@/layouts/dashboard/logo/LogoMain.vue';
 import AuthCheckMail from '../authForms/AuthCheckMail.vue';
-import AuthFooter from './AuthFooter.vue';
 </script>
 
 <template>
@@ -52,7 +51,7 @@ import AuthFooter from './AuthFooter.vue';
     <!---Check mail Part-->
     <v-col cols="12">
       <v-container class="pt-0 pb-6">
-        <AuthFooter />
+<!--        <AuthFooter />-->
       </v-container>
     </v-col>
   </v-row>

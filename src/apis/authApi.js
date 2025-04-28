@@ -1,8 +1,14 @@
-import apiClient from './index';
+import * as apiClient from './apiClient.js';
 
 const AuthApi = {
-    auth() {
-
+    auth(username, password) {
+        return apiClient.post(
+            `/login`,
+            {
+                username,
+                password
+            }
+        );
     }
 };
 

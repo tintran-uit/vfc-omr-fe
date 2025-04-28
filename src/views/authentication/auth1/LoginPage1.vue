@@ -1,33 +1,5 @@
 <script setup>
 import AuthLogin from '../authForms/AuthLogin.vue';
-import AuthFooter from './AuthFooter.vue';
-
-import { createApp } from 'vue';
-import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
-
-const component = {
-  setup() {
-    const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
-
-    const recaptcha = async () => {
-      // (optional) Wait until recaptcha has been loaded.
-      await recaptchaLoaded();
-
-      // Execute reCAPTCHA with action "login".
-      // Removed the assignment of token since it's not being used
-      await executeRecaptcha('login');
-
-      // Do stuff with the received token.
-    };
-
-    return {
-      recaptcha
-    };
-  },
-  template: '<button @click="recaptcha">Execute recaptcha</button>'
-};
-
-createApp(component).use(VueReCaptcha, { siteKey: '6LeCprcaAAAAAOD0aEK7WpfHc__CyRmk3rD-otNt' });
 </script>
 
 <template>
