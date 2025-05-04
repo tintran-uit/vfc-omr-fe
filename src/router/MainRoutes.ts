@@ -21,6 +21,11 @@ const MainRoutes = {
       path: '/test/dynamic-form',
       component: () => import('@/views/test/DynamicForm.vue')
     },
+    {
+      name: 'Test Layout Grid',
+      path: '/test/layout-grid',
+      component: () => import('@/views/test/LayoutGrid.vue')
+    },
     // {
     //   name: 'Analytics',
     //   path: '/dashboard/analytics',
