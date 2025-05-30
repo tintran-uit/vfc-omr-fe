@@ -11,6 +11,39 @@ import SalesReport from '../../widgets/chart/components/SalesReport.vue';
 </script>
 
 <template>
+  <v-card class="pa-0" flat>
+    <!-- Cover Image -->
+    <v-img
+        src="https://placehold.co/1200x300.jpg?text=Cover%20(1200x300)"
+        height="300"
+        cover
+    ></v-img>
+
+    <!-- Avatar + Info -->
+    <v-container class="position-relative" style="margin-top: -80px;">
+      <v-row align="center">
+        <!-- Avatar -->
+        <v-col cols="12" sm="3" class="d-flex justify-center">
+          <v-avatar size="160" class="elevation-4">
+            <v-img src="https://placehold.co/128x128.png?text=Avatar%20(128x128)" />
+          </v-avatar>
+        </v-col>
+
+        <!-- User Info -->
+        <v-col cols="12" sm="6">
+          <h2 class="text-h5 font-weight-bold mb-1">Tên người dùng</h2>
+          <p class="text-subtitle-2 text-grey">Mô tả ngắn hoặc thông tin khác</p>
+        </v-col>
+
+        <!-- Edit Button -->
+        <v-col cols="12" sm="3" class="d-flex justify-end">
+          <v-btn variant="outlined" color="primary" prepend-icon="mdi-pencil">
+            Chỉnh sửa
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
   <!-- -------------------------------------------------------------------- -->
   <!-- Total widgets -->
   <!-- -------------------------------------------------------------------- -->
