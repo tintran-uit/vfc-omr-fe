@@ -8,7 +8,7 @@ import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import VueApexCharts from 'vue3-apexcharts';
 import VueTablerIcons from 'vue-tabler-icons';
 import Vue3Marquee from 'vue3-marquee';
-import Antd from 'ant-design-vue';
+import * as Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 
 // google-fonts

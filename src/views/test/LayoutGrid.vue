@@ -1,30 +1,57 @@
 <script setup lang="ts">
-console.log('API URL:', import.meta.env.VITE_API_URL);
-import userApi from '@/apis/userApi';
+  import DynamicForm from "@/components/forms/DynamicForm.vue";
+import { ref } from "vue";
 
-const getUser = async () => {
-  const data = await userApi.getUser(2);
+  const item = ref({
+    user: {
+      address: {
+        route: '37',
+        street: 'Ky Con',
+        district: '1'
+      },
+      avatar: {
+        path: '8234.jpg',
+        size: '50x50'
+      }
+    }
+  });
 
-  console.log(data);
-}
-
-
+  const schema = ref({
+    fields: [
+        {
+            label: 'Route number',
+            name: 'user.address.route',
+            rules: 'required',
+            type: 'text',
+            groupTitle: 'Address'
+        },
+        {
+            label: 'Address',
+            name: 'user.address.street',
+            rules: 'required',
+            type: 'text',
+        },
+      ]
+  });
 
 </script>
 
 <template>
   <v-container>
-    <v-btn @click="getUser">Get user</v-btn>
     <v-row
         align="start"
         style="height: 150px;"
         no-gutters
     >
-      <v-col cols="6" sm="3" lg="3" v-for="n in 6"
-             :key="n">
-        <v-text-field label="firstName" />
-      </v-col>
+      <!-- <v-col cols="6" sm="3" lg="3" v-for="n in 6" -->
+             <!-- :key="n"> -->
+        <!-- <v-text-field label="firstName" /> -->
+      <!-- </v-col> -->
 
+      <DynamicForm
+        :data="item"
+        :schema="schema"
+        />
     </v-row>
   </v-container>
 </template>

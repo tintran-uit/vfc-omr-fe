@@ -12,5 +12,6 @@ import './users/followers';
 import './users/friends';
 import './users/gallery';
 import './kanban';
+import './weekly-report/weeklyReport';
 
 mock.onAny().passThrough();

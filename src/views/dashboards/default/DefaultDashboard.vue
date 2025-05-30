@@ -8,6 +8,8 @@ import UniqueVisitor from '../../widgets/chart/components/UniqueVisitor.vue';
 import IncomeOverview from '../../widgets/chart/components/IncomeOverview.vue';
 import AnalyticsReport from './components/AnalyticsReport.vue';
 import SalesReport from '../../widgets/chart/components/SalesReport.vue';
+import Attendance from '../../widgets/chart/components/Attendance.vue';
+import Pie from '../../widgets/chart/components/Pie.vue';
 </script>
 
 <template>
@@ -54,29 +56,29 @@ import SalesReport from '../../widgets/chart/components/SalesReport.vue';
     <!-- Unique visitor -->
     <!-- -------------------------------------------------------------------- -->
     <v-col cols="12" md="8">
-      <UniqueVisitor />
+      <Attendance />
     </v-col>
 
     <!-- -------------------------------------------------------------------- -->
     <!-- Income overview -->
     <!-- -------------------------------------------------------------------- -->
     <v-col cols="12" md="4">
-      <IncomeOverview />
+      <Pie />
     </v-col>
   </v-row>
   <v-row class="mb-0">
     <!-- -------------------------------------------------------------------- -->
     <!-- Recent order -->
     <!-- -------------------------------------------------------------------- -->
-    <v-col cols="12" md="8">
+    <!-- <v-col cols="12" md="8">
       <RecentOrder />
-    </v-col>
+    </v-col> -->
 
     <!-- -------------------------------------------------------------------- -->
     <!-- Analytics Report -->
     <!-- -------------------------------------------------------------------- -->
     <v-col cols="12" md="4">
-      <AnalyticsReport />
+      <!-- <AnalyticsReport /> -->
     </v-col>
   </v-row>
   <v-row>
@@ -84,7 +86,7 @@ import SalesReport from '../../widgets/chart/components/SalesReport.vue';
     <!-- Sales Report -->
     <!-- -------------------------------------------------------------------- -->
     <v-col cols="12" md="7">
-      <SalesReport />
+      <!-- <SalesReport /> -->
     </v-col>
 
     <v-col cols="12" md="5">
@@ -93,14 +95,14 @@ import SalesReport from '../../widgets/chart/components/SalesReport.vue';
         <!-- Transaction History -->
         <!-- -------------------------------------------------------------------- -->
         <v-col cols="12">
-          <TransactionHistory />
+          <!-- <TransactionHistory /> -->
         </v-col>
 
         <!-- -------------------------------------------------------------------- -->
         <!-- Help support -->
         <!-- -------------------------------------------------------------------- -->
         <v-col cols="12">
-          <HelpSupport />
+          <!-- <HelpSupport /> -->
         </v-col>
       </v-row>
     </v-col>
