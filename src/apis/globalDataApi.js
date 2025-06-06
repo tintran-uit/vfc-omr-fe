@@ -1,9 +1,9 @@
-import apiClient from './apiClient.js';
+import * as apiClient from './apiClient.js';
 
-const GlobalDataApi = {
+const globalDataApi = {
     getGlobalData() {
         return apiClient.get(`/churches/form-data`);
     }
 };
 
-export default GlobalDataApi;
+export default globalDataApi;

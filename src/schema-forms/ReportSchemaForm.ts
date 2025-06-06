@@ -26,65 +26,65 @@ const schemaForm = {
             type: 'text'
         },
         {
-            name: 'cell_groups.number_of_cell_groups',
+            name: 'weekly_church_events.cell_group_count',
             groupTitle: '2. Cell Groups',
             label: 'Number of Cell Groups',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'cell_groups.weekly_attendance',
+            name: 'weekly_church_events.cell_group_weekly_attendance',
             label: 'Total Attendance in All',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'prayer_meetings.number_of_meetings',
+            name: 'weekly_church_events.prayer_meeting_count',
             groupTitle: '3. Prayer Meetings',
             label: 'Number of Prayer',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'prayer_meetings.weekly_attendance',
+            name: 'weekly_church_events.prayer_meeting_weekly_attendance',
             label: 'Total Attendance in All',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'new_decisions.weekly_decisions_made',
+            name: 'weekly_spiritual_growth.water_baptisms',
             groupTitle: '4. Decisions, Discipling & Water Baptisms',
             label: 'Number of New Decisions',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'active_disciples.being_actively_discipled',
+            name: 'weekly_spiritual_growth.active_disciples',
             label: 'Number being Actively Discipled',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'water_baptisms.weekly_water_baptism',
+            name: 'weekly_spiritual_growth.weekly_water_baptism',
             label: 'AduNumber Water Baptisedlts',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'number_encounter',
+            name: 'weekly_spiritual_growth',
             label: 'Number in an Encounter / Next Step Weekend',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'liw_classes.number_of_classes',
+            name: 'weekly_church_events.liw_class_count',
             groupTitle: '5. Teaching & Training',
             label: 'Number of GT/LIW',
             rules: 'number',
             type: 'text'
         },
         {
-            name: 'liw_classes.total_number_of_students',
+            name: 'weekly_church_events.liw_class_total_students',
             label: 'Total Attendance in all GT/LIW Classes',
             rules: 'number',
             type: 'text'

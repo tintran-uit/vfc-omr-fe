@@ -12,6 +12,11 @@ const MainRoutes = {
       component: () => import('@/views/dashboards/default/DefaultDashboard.vue')
     },
     {
+      name: 'Test',
+      path: 'test/test',
+      component: () => import('@/views/test/Test.vue')
+    },
+    {
       name: 'Report Form',
       path: 'test/report-form',
       component: () => import('@/views/test/ReportForm.vue')
@@ -20,6 +25,11 @@ const MainRoutes = {
       name: 'Dynamic Form',
       path: 'test/dynamic-form',
       component: () => import('@/views/test/DynamicForm.vue')
+    },
+    {
+      name: 'Add new church',
+      path: 'churches/add-new',
+      component: () => import('@/views/churches/ChurchForm.vue')
     },
   ]
 };

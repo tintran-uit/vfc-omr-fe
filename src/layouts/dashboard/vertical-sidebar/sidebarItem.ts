@@ -105,10 +105,12 @@ const sidebarItem: menu[] = [
       {
         id: 'church-list',
         title: 'List',
+        to: '/churches/list'
       },
       {
         id: 'church-add-new',
         title: 'Add new church',
+        to: '/churches/add-new'
       }
     ]
   },

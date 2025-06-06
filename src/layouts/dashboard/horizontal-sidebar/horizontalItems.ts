@@ -62,7 +62,7 @@ const horizontalItems: menu[] = [
           {
             title: 'Default',
             icon: DashboardOutlined,
-            to: '/dashboard/default'
+            to: '/dashboard'
           },
           {
             title: 'Analytics',

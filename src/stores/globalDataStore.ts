@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import * as apiClient from '@/apis/apiClient'
-import GlobalDataApi from '@/apis/globalDataApi'
+import globalDataApi from '@/apis/globalDataApi'
 
-export const globalData = defineStore('globalData', {
+export const globalDataStore = defineStore('globalDataStore', {
     state: () => ({
-        countries: [] as Array<{ id: string; name: string }>,
+        _countries: [] as Array<{ id: string; name: string }>,
         currencies: [] as Array<{ id: string; name: string }>,
         regions: [] as Array<{ id: string; name: string }>,
         networks: [] as Array<{ id: string; name: string }>,
@@ -15,6 +15,8 @@ export const globalData = defineStore('globalData', {
         loaded: false,
         loadingPromise: null as Promise<void> | null, // <- promise lock
     }),
+    getters: {
+    },
     actions: {
         async fetchGlobalData() {
             // Nếu đã có dữ liệu → không load lại
@@ -27,7 +29,7 @@ export const globalData = defineStore('globalData', {
             }
 
             // Nếu chưa load và chưa có promise → tạo mới
-            this.loadingPromise = GlobalDataApi.getGlobalData()
+            this.loadingPromise = globalDataApi.getGlobalData()
                 .then((res) => {
                     this.countries = res.data
                     this.loaded = true
