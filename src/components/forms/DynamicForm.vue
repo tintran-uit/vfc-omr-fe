@@ -3,7 +3,6 @@ import {ref, defineEmits, reactive} from "vue";
 import {Form} from "vee-validate";
 import VeeValidation from "@/components/forms/validation/VeeValidation.vue";
 import UiParentCard from "@/components/shared/UiParentCard.vue";
-import {useDeepModel} from '@/utils/objectUtil.js';
 import TextInput from "../input/TextInput.vue";
 import { useI18n } from 'vue-i18n'
 import {createFormRules} from '@/helpers/formRulesFactory'

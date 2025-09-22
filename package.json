@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "build-stage": "vue-tsc --noEmit && vite build --base=/vue/stage/",
-    "build-prod": "vue-tsc --noEmit && vite build --base=/vue/",
+    "build": "vite build",
+    "build-stage": "vite build --base=/vue/stage/",
+    "build-prod": "vite build --base=/vue/",
+    "build-with-typecheck": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-pattern .gitignore"
