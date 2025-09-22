@@ -9,7 +9,9 @@ const messages = {
   en: en,
   fr: fr,
   ro: ro,
-  zh: zh
+  zh: zh,
+  ms: ms,
+  ja: js
 };
 
 export default messages;

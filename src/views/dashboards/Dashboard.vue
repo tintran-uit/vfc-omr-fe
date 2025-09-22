@@ -189,8 +189,8 @@ const handleChangeProfile = (churchId) => {
             <v-card-text class="h-100">
               <div class="d-flex align-items-center justify-space-between">
                 <v-row class="mb-0">
-                  <v-col cols="3">
-                    <v-icon color="primary" class="mr-2" :icon="metric.icon"></v-icon>
+                  <v-col cols="3" class="d-flex align-center justify-center">
+                    <v-icon color="primary" class="mr-2 align-middle" :icon="metric.icon" size="36"></v-icon>
                   </v-col>
 
                   <v-col cols="7">

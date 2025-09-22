@@ -105,23 +105,7 @@ function validate(values: any, { setErrors }: any) {
 
     <!-- Language switcher -->
     <div class="d-flex justify-end mb-4 mt-4">
-      <v-menu :close-on-content-click="true" location="bottom" offset="6, 80">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            icon
-            class="ms-sm-2 ms-1"
-            color="greyText"
-            rounded="sm"
-            size="small"
-            v-bind="props"
-          >
-            <TranslationOutlined :style="{ fontSize: '16px' }" />
-          </v-btn>
-        </template>
-        <v-sheet rounded="md" width="200">
-          <LanguageDD />
-        </v-sheet>
-      </v-menu>
+      <LanguageDD />
     </div>
     <!-- #Language switcher -->
 

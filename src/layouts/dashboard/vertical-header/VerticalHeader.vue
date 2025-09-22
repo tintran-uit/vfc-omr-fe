@@ -26,7 +26,6 @@ const authStore = useAuthStore();
 const avatarUrl = computed(() => {
   return authStore.user?.photo_url || defaultAvatar
 })
-console.log('authStore fullname', authStore.fullName)
 </script>
 
 <template>
@@ -116,16 +115,17 @@ console.log('authStore fullname', authStore.fullName)
     <!-- ---------------------------------------------- -->
     <!-- translate -->
     <!-- ---------------------------------------------- -->
-    <v-menu :close-on-content-click="false" location="bottom" offset="6, 80">
+    <!-- <v-menu location="bottom" offset="6, 80">
       <template v-slot:activator="{ props }">
         <v-btn icon class="ms-sm-2 ms-1" color="darkText" rounded="sm" size="small" v-bind="props">
           <TranslationOutlined :style="{ fontSize: '16px' }" />
         </v-btn>
       </template>
       <v-sheet rounded="md" width="200">
-        <LanguageDD />
+        
       </v-sheet>
-    </v-menu>
+    </v-menu> -->
+    <LanguageDD />
 
     <!-- ---------------------------------------------- -->
     <!-- Notification -->

@@ -57,15 +57,7 @@ import { vMaska } from 'maska/vue';
 import print from 'vue3-print-nb';
 
 //i18
-import { createI18n } from 'vue-i18n';
-import messages from '@/utils/locales/messages';
-
-const i18n = createI18n({
-  locale: 'en',
-  messages: messages,
-  silentTranslationWarn: true,
-  silentFallbackWarn: true
-});
+import {i18n} from '@/i18n';
 
 // @ts-expect-error: vue3-easy-data-table doesn't have default export
 import DataTable from 'vue3-easy-data-table';
@@ -100,3 +92,8 @@ app.use(i18n);
 app.directive('maska', vMaska);
 app.use(VueApexCharts);
 app.use(vuetify).mount('#app');
+
+// load language từ localStorage
+import { useLanguageStore } from '@/stores/languageStore'
+const languageStore = useLanguageStore()
+languageStore.loadLanguage()  // <-- đây là bước quan trọng
