@@ -32,6 +32,22 @@ import '@fontsource/public-sans/500.css';
 import '@fontsource/public-sans/600.css';
 import '@fontsource/public-sans/700.css';
 
+// Global component
+// import YesNoInput from './components/input/YesNoInput.vue';
+import TextInput from './components/input/TextInput.vue';
+import SelectInput from './components/input/SelectInput.vue';
+import PasswordInput from './components/input/PasswordInput.vue';
+import PhotoUploadInput from './components/input/PhotoUploadInput.vue';
+import ChurchSelectInput from './components/input/ChurchSelectInput.vue';
+import YearMonthDayInput from './components/input/YearMonthDayInput.vue';
+import MultiTextInput from './components/input/MultiTextInput.vue';
+import YesNoInput from './components/input/YesNoInput.vue';
+import TextareaInput from './components/input/TextareaInput.vue';
+import CurrencySelectInput from './components/input/CurrencySelectInput.vue'
+import ServiceVenueSelectInput from './components/input/ServiceVenueSelectInput.vue'
+import GeographicalRegionSelectInput from './components/input/GeographicalRegionSelectInput.vue';
+import CityInput from './components/input/CityInput.vue';
+
 //Mock Api data
 import './_mockApis';
 import { fakeBackend } from '@/utils/helpers/fake-backend';
@@ -54,7 +70,23 @@ const i18n = createI18n({
 // @ts-expect-error: vue3-easy-data-table doesn't have default export
 import DataTable from 'vue3-easy-data-table';
 
+
 const app = createApp(App);
+app.component('TextInput', TextInput)
+app.component('SelectInput', SelectInput)
+app.component('PasswordInput', PasswordInput)
+app.component('ChurchSelectInput', ChurchSelectInput)
+app.component('PhotoUploadInput', PhotoUploadInput)
+app.component('YearMonthDayInput', YearMonthDayInput)
+app.component('MultiTextInput', MultiTextInput)
+app.component('YesNoInput', YesNoInput)
+app.component('TextareaInput', TextareaInput)
+app.component('CurrencySelectInput', CurrencySelectInput)
+app.component('ServiceVenueSelectInput', ServiceVenueSelectInput)
+app.component('GeographicalRegionSelectInput', GeographicalRegionSelectInput)
+app.component('CityInput', CityInput)
+
+
 fakeBackend();
 app.use(router);
 app.component('EasyDataTable', DataTable);

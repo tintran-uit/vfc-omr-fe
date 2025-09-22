@@ -52,32 +52,32 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-  { header: 'Dashboard' },
+  // { header: 'Dashboard' },
   {
-    title: 'My Dashboard',
+    title: 'mainMenu.myDashboard',
     icon: DashboardOutlined,
-    to: '/dashboard/default',
-    children: [
-      {
-        id: 'default',
-        title: 'Default',
-        to: '/dashboard/default'
-      },
-      {
-        id: 'analytics',
-        title: 'Analytics',
-        to: '/dashboard/analytics'
-      }
-    ]
+    to: '/dashboard',
+    // children: [
+    //   {
+    //     id: 'default',
+    //     title: 'Default',
+    //     to: '/dashboard/default'
+    //   },
+    //   {
+    //     id: 'analytics',
+    //     title: 'Analytics',
+    //     to: '/dashboard/analytics'
+    //   }
+    // ]
   },
+  // {
+  //   id: 'relating',
+  //   title: 'Enter Report',
+  //   icon: MessageOutlined,
+  //   to: '/test/report-form'
+  // },
   {
-    id: 'relating',
-    title: 'Enter Report',
-    icon: MessageOutlined,
-    to: '/test/report-form'
-  },
-  {
-    title: 'Users',
+    title: 'mainMenu.users',
     icon: UserOutlined,
     to: 'components/buttons',
     getURL: true,
@@ -85,17 +85,19 @@ const sidebarItem: menu[] = [
     chipVariant: 'tonal',
     children: [
       {
-        id: 'user-list',
-        title: 'List',
+        id: 'users-list',
+        title: 'mainMenu.userList',
+        to: '/users'
       },
       {
-        id: 'user-add-new',
-        title: 'Add new user',
+        id: 'users-create',
+        title: 'mainMenu.userCreate',
+        to: '/users/create'
       }
     ]
   },
   {
-    title: 'Churches',
+    title: 'mainMenu.churches',
     icon: GoldOutlined,
     to: 'components/buttons',
     getURL: true,
@@ -104,18 +106,18 @@ const sidebarItem: menu[] = [
     children: [
       {
         id: 'church-list',
-        title: 'List',
-        to: '/churches/list'
+        title: 'mainMenu.churchList',
+        to: '/churches'
       },
       {
-        id: 'church-add-new',
-        title: 'Add new church',
-        to: '/churches/add-new'
+        id: 'church-create',
+        title: 'mainMenu.churchCreate',
+        to: '/churches/create'
       }
     ]
   },
   {
-    title: 'Watch List',
+    title: 'mainMenu.watchList',
     icon: FileTextOutlined,
     to: '#',
     getURL: true,
@@ -124,16 +126,16 @@ const sidebarItem: menu[] = [
     children: [
       {
         id: 'default',
-        title: 'Default',
+        title: 'mainMenu.default',
       },
       {
         id: 'analytics',
-        title: 'Analytics',
+        title: 'mainMenu.analytics',
       }
     ]
   },
   {
-    title: 'Generate Reports',
+    title: 'mainMenu.generateReports',
     icon: LineChartOutlined,
     to: '#',
     getURL: true,
@@ -142,33 +144,31 @@ const sidebarItem: menu[] = [
     children: [
       {
         id: 'report-church',
-        title: 'Church Reports',
+        title: 'mainMenu.churchReport',
       },
       {
         id: 'report-church-status',
-        title: 'Churches Reporting Status',
+        title: 'mainMenu.churchReportingStatus',
       },
       {
         id: 'report-my-directory',
-        title: 'My Directory',
+        title: 'mainMenu.myDirectory',
       },
       {
         id: 'report-visit',
-        title: 'Visit Reports',
+        title: 'mainMenu.visitReports',
       }
     ]
   },
   {
     id: 'relating',
-    title: 'Relating',
+    title: 'mainMenu.relating',
     icon: MessageOutlined,
-    to: '/app/chats'
   },
   {
     id: 'faq',
-    title: 'FAQ',
+    title: 'mainMenu.faq',
     icon: QuestionOutlined,
-    to: '#'
   },
 ];
 

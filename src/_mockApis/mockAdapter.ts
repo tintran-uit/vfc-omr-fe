@@ -1,5 +1,6 @@
-import AxiosMockAdapter from 'axios-mock-adapter';
-import axios from '@/utils/axios';
+import AxiosMockAdapter from 'axios-mock-adapter'
+import apiClient from '@/services/apiClient'
 
-const mock = new AxiosMockAdapter(axios, { delayResponse: 0 });
+const mock = new AxiosMockAdapter(apiClient.instance, { delayResponse: 0 });
+
 export default mock;

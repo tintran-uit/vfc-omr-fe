@@ -1,29 +1,27 @@
 <script setup lang="ts">
-import {useDeepModel} from '@/utils/objectUtil.js';
+import {watch} from 'vue';
 
-const props = defineProps({
-  form: Object,
-  field: Object,
-});
+const modelValue = defineModel();
 
-const model = useDeepModel(props.form, props.field.name);
+const {name, label, type, placeholder, rules } = defineProps({
+  name: {type: String, default: ''},
+  label: {type: String, default: ''},
+  type: { type: String, default: 'text' },
+  placeholder: { type: String, default: '' },
+  rules: { type: [String, Object, Function], default: '' },
+})
 </script>
 
 <template>
-    <v-label class="text-wrap">{{field.label}}</v-label>
-
-    <v-text-field
-    type="text"
-    v-model="model"
-    hide-details="auto"
-    
+  <v-text-field
+    v-model="modelValue"
+    :rules="rules"
+    :placeholder="placeholder"
+    single-line
     variant="outlined"
-    class="mt-2"
-    color="primary"
-    placeholder=""
-    ></v-text-field>
+  ></v-text-field>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 
 </style>

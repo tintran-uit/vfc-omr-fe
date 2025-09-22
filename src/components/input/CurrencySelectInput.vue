@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import {useDeepModel} from '@/utils/objectUtil.js';
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { globalDataStore } from '@/stores/globalDataStore';
-import SelectInput from "@/components/input/SelectInput.vue";
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n'
+import {useCurrencyStore} from '@/stores/currencyStore.ts'
+import SelectInput from './SelectInput.vue';
+
+const modelValue = defineModel<any>();
+
 const { t } = useI18n()
-
-const modelValue = defineModel();
-
-const items = ;
+const currencyStore = useCurrencyStore()
 </script>
 
 <template>
-    <!-- <v-label class="text-wrap">{{field.label}}</v-label> -->
-    
     <SelectInput
-      :items="globalDataStore().currencies"
+      :items="currencyStore.asyncOptions"
       v-model="modelValue"
-    />
+      v-bind="$attrs"
+      item-value="id"
+      item-title="name"
+      :loading="currencyStore.loading"
+      />
 </template>
 
 <style scoped lang="scss">

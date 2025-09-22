@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MainRoutes from './MainRoutes';
 import PublicRoutes from './PublicRoutes';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/authStore';
 import ComponentRoutes from './ComponentRoutes';
 import { useUIStore } from '@/stores/ui';
 
@@ -18,52 +18,56 @@ export const router = createRouter({
   ]
 });
 
-interface User {
-  // Define the properties and their types for the user data here
-  // For example:
-  id: number;
-  name: string;
-}
+// router.beforeEach(async (to, from, next) => {
+//   // redirect to login page if not logged in and trying to access a restricted page
+//   const publicPages = ['/'];
+//   const authStore = useAuthStore();
 
-// Assuming you have a type/interface for your authentication store
-interface AuthStore {
-  user: User | null;
-  returnUrl: string | null;
-  login(username: string, password: string): Promise<void>;
-  logout(): void;
-}
+//   const isPublicPage = publicPages.includes(to.path);
+//   const authRequired = !isPublicPage && to.matched.some((record) => record.meta.requiresAuth);
 
-router.beforeEach(async (to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ['/'];
-  const auth: AuthStore = useAuthStore();
+//   // User not logged in and trying to access a restricted page
+//   if (authRequired && !authStore.user) {
+//     authStore.returnUrl = to.fullPath; // Save the intended page
+//     next({ name: 'login' })
+//   } else if (authStore.user && to.path === '/login') {
+//     // User logged in and trying to access the login page
+//     next({
+//       query: {
+//         ...to.query,
+//         redirect: authStore.returnUrl !== '/' ? to.fullPath : undefined
+//       }
+//     });
+//   } else {
+//     // All other scenarios, either public page or authorized access
+//     next();
+//   }
+// });
 
-  const isPublicPage = publicPages.includes(to.path);
-  const authRequired = !isPublicPage && to.matched.some((record) => record.meta.requiresAuth);
-
-  // User not logged in and trying to access a restricted page
-  if (authRequired && !auth.user) {
-    auth.returnUrl = to.fullPath; // Save the intended page
-    next('/login');
-  } else if (auth.user && to.path === '/login') {
-    // User logged in and trying to access the login page
-    next({
-      query: {
-        ...to.query,
-        redirect: auth.returnUrl !== '/' ? to.fullPath : undefined
-      }
-    });
-  } else {
-    // All other scenarios, either public page or authorized access
-    next();
-  }
-});
-
-router.beforeEach(() => {
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
   const uiStore = useUIStore();
   uiStore.isLoading = true;
-  // uiStore.startAPICall();
+
+  const authRequired = to.matched.some(record => record.meta.requiresAuth);
+
+  if (authRequired && !authStore.user) {
+    authStore.returnUrl = to.fullPath;
+    return next('/auth/login');
+  }
+
+  if (authStore.user && to.name === 'Login') {
+    return next('/dashboard');
+  }
+
+  next();
 });
+
+// router.beforeEach(() => {
+//   const uiStore = useUIStore();
+//   uiStore.isLoading = true;
+//   // uiStore.startAPICall();
+// });
 
 router.afterEach(() => {
   const uiStore = useUIStore();

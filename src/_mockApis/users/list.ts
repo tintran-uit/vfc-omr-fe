@@ -1,170 +1,143 @@
 // project imports
 import mock from '../mockAdapter';
 
-// asset
-import Avatar1 from '@/assets/images/users/avatar-1.png';
-import Avatar2 from '@/assets/images/users/avatar-2.png';
-import Avatar3 from '@/assets/images/users/avatar-3.png';
-import Avatar4 from '@/assets/images/users/avatar-4.png';
-import Avatar5 from '@/assets/images/users/avatar-5.png';
-import Avatar6 from '@/assets/images/users/avatar-6.png';
-import Avatar7 from '@/assets/images/users/avatar-7.png';
-
 // user list
-const users_s1 = [
-  {
-    id: '01',
-    avatar: Avatar1,
-    name: 'Curtis',
-    verify: 1,
-    email: 'wiegand@hotmail.com',
-    location: 'Saucerize',
-    friends: 834,
-    followers: 3645,
-    status: 'Active'
+const userList = {
+  "success": true,
+  "data": {
+      "items": [
+          {
+              "id": 4,
+              "first_name": "Santo",
+              "last_name": "Lim Hendra",
+              "username": "Santo_Lim",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "Santo Lim Hendra",
+              "church_id": 12,
+              "role_id": 3,
+              "created": null,
+              "modified": "2020-03-19T16:31:05Z"
+          },
+          {
+              "id": 5,
+              "first_name": "AL",
+              "last_name": "",
+              "username": "chkc",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "AL ",
+              "church_id": 92,
+              "role_id": 3,
+              "created": null,
+              "modified": "2015-11-30T08:30:55Z"
+          },
+          {
+              "id": 7,
+              "first_name": "Artem",
+              "last_name": "Mnatsakanyan",
+              "username": "Artem_Mnatsakanyan",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "Artem Mnatsakanyan",
+              "church_id": 23,
+              "role_id": 3,
+              "created": null,
+              "modified": "2024-03-26T06:30:02Z"
+          },
+          {
+              "id": 10,
+              "first_name": "bram-1",
+              "last_name": "",
+              "username": "bram-1",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "bram-1 ",
+              "church_id": 222,
+              "role_id": 3,
+              "created": null,
+              "modified": "2017-04-11T15:24:53Z"
+          },
+          {
+              "id": 11,
+              "first_name": "anw-1",
+              "last_name": "",
+              "username": "anw-1",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "anw-1 ",
+              "church_id": 223,
+              "role_id": 3,
+              "created": null,
+              "modified": "2023-06-19T13:39:45Z"
+          },
+          {
+              "id": 12,
+              "first_name": "anw-2",
+              "last_name": "",
+              "username": "anw-2",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "anw-2 ",
+              "church_id": 224,
+              "role_id": 3,
+              "created": null,
+              "modified": "2017-04-11T14:33:29Z"
+          },
+          {
+              "id": 13,
+              "first_name": "Saddar-1",
+              "last_name": "",
+              "username": "Saddar-1",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "Saddar-1 ",
+              "church_id": 225,
+              "role_id": 3,
+              "created": null,
+              "modified": "2017-04-11T14:33:00Z"
+          },
+          {
+              "id": 14,
+              "first_name": "pns-shifa",
+              "last_name": "",
+              "username": "pns-shifa",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "pns-shifa ",
+              "church_id": 226,
+              "role_id": 3,
+              "created": null,
+              "modified": "2017-04-11T14:33:53Z"
+          },
+          {
+              "id": 15,
+              "first_name": "q-abad",
+              "last_name": "",
+              "username": "q-abad",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "q-abad ",
+              "church_id": 227,
+              "role_id": 3,
+              "created": null,
+              "modified": "2017-04-11T14:34:36Z"
+          },
+          {
+              "id": 16,
+              "first_name": "n-abad",
+              "last_name": "",
+              "username": "n-abad",
+              "createdAt": "0001-01-01T00:00:00Z",
+              "name": "n-abad ",
+              "church_id": 228,
+              "role_id": 3,
+              "created": null,
+              "modified": "2017-04-11T15:41:13Z"
+          }
+      ],
+      "total": 4012,
+      "page": 1,
+      "limit": 10,
+      "total_pages": 402,
+      "has_next": true,
+      "has_previous": false
   },
-  {
-    id: '02',
-    avatar: Avatar2,
-    name: 'Xavier',
-    verify: 1,
-    email: 'tyrell86@company.com',
-    location: 'South Bradfordstad',
-    friends: 634,
-    followers: 2345,
-    status: 'Pending'
-  },
-  {
-    id: '03',
-    avatar: Avatar3,
-    name: 'Lola',
-    verify: 1,
-    email: 'aufderhar56@yahoo.com',
-    location: 'North Tannermouth',
-    friends: 164,
-    followers: 9345,
-    status: 'Rejected'
-  },
-  {
-    id: '04',
-    avatar: Avatar4,
-    name: 'Milton',
-    verify: 1,
-    email: 'dikinson49@hotmail.com',
-    location: 'North Anika',
-    friends: 684,
-    followers: 3654,
-    status: 'Pending'
-  },
-  {
-    id: '05',
-    avatar: Avatar5,
-    name: 'Lysanne',
-    verify: 0,
-    email: 'zack.turner49@company.com',
-    location: 'Betteland',
-    friends: 842,
-    followers: 5863,
-    status: 'Active'
-  },
-  {
-    id: '06',
-    avatar: Avatar6,
-    name: 'Bonita',
-    verify: 1,
-    email: 'keebler57@company.com',
-    location: 'Alexburgh',
-    friends: 543,
-    followers: 8965,
-    status: 'Rejected'
-  },
-  {
-    id: '07',
-    avatar: Avatar7,
-    name: 'Retta',
-    verify: 1,
-    email: 'mathew92@yahoo.com',
-    location: 'East Bryceland',
-    friends: 871,
-    followers: 9321,
-    status: 'Active'
-  },
-  {
-    id: '08',
-    avatar: Avatar1,
-    name: 'Zoie',
-    verify: 1,
-    email: 'hulda1@hotmail.com',
-    location: 'Beattytown',
-    friends: 354,
-    followers: 1686,
-    status: 'Pending'
-  },
-  {
-    id: '09',
-    avatar: Avatar1,
-    name: 'Easton',
-    verify: 1,
-    email: 'hilpert66@hotmail.com',
-    location: 'North Pedromouth',
-    friends: 546,
-    followers: 9562,
-    status: 'Active'
-  },
-  {
-    id: '10',
-    avatar: Avatar1,
-    name: 'Brianne',
-    verify: 1,
-    email: 'noe45@hotmail.com',
-    location: 'New Alexanderborough',
-    friends: 1482,
-    followers: 10865,
-    status: 'Active'
-  }
-];
-
-const users_s2 = [
-  {
-    image: Avatar1,
-    name: 'Elnora',
-    designation: 'Lead Marketing Facilitator',
-    badgeStatus: 'active',
-    subContent: 'We need to generate the virtual CSS hard drive!',
-    email: 'Reid_OConnell4@yahoo.com',
-    phone: '506-654-1653',
-    location: 'Saucerize',
-    progressValue: '78%'
-  },
-  {
-    image: Avatar2,
-    name: 'Hirohito',
-    designation: 'Investor Creative Liaison',
-    badgeStatus: 'active',
-    subContent: 'If we synthesize the protocol, we can get to the RSS circuit through.',
-    email: 'Conner22@hotmail.com',
-    phone: '673-157-1670',
-    location: 'Port Narcos',
-    progressValue: '78%'
-  },
-  {
-    image: Avatar3,
-    name: 'Kathie',
-    designation: 'Human Accountability Strategist',
-    badgeStatus: 'inactive',
-    subContent: 'We need to generate the virtual CSS hard drive!',
-    email: 'Dangelo40@company.com',
-    phone: '506-654-1653',
-    location: 'Saucerize',
-    progressValue: '78%'
-  }
-];
+  "message": "Pastors retrieved successfully"
+}
 
 // ==============================|| MOCK SERVICES ||============================== //
-
-mock.onGet('/api/avatar-list/s2/list').reply(() => {
-  return [200, users_s2];
-});
-mock.onGet('/api/avatar-list/s1/list').reply(() => {
-  return [200, users_s1];
+mock.onGet('/api/v1/users').reply(() => {
+  return [200, userList];
 });

@@ -5,13 +5,10 @@ import './chat';
 import './ecommerce';
 import './contact';
 import './mail';
-import './users/cards';
-import './users/list';
-import './users/posts';
-import './users/followers';
-import './users/friends';
-import './users/gallery';
 import './kanban';
 import './weekly-report/weeklyReport';
+import './images/images';
+import './users/list'
+
 
 mock.onAny().passThrough();

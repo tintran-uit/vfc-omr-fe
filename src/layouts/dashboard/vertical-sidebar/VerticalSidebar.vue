@@ -6,7 +6,6 @@ import sidebarItems from './sidebarItem';
 import NavGroup from './NavGroup/NavGroup.vue';
 import NavItem from './NavItem/NavItem.vue';
 import NavCollapse from './NavCollapse/NavCollapse.vue';
-import Logo from '../logo/LogoMain.vue';
 
 const customizer = useCustomizerStore();
 const sidebarMenu = shallowRef(sidebarItems);
@@ -27,7 +26,11 @@ const sidebarMenu = shallowRef(sidebarItems);
     <!---Logo part -->
 
     <div class="pa-5">
-      <Logo />
+      <div class="logo">
+          <RouterLink :to="{name: 'Dashboard'}" aria-label="logo">
+            <img src="@/assets/images/logo/logo.png" alt="Logo" height="50" />
+          </RouterLink>
+        </div>
     </div>
     <!-- ---------------------------------------------- -->
     <!---Navigation -->

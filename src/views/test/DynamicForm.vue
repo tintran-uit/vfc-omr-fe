@@ -5,7 +5,7 @@ import { ref, watch, computed } from 'vue';
 
 
 
-import schemaForm from "@/schema-forms/ReportSchemaForm.ts";
+import schemaForm from "@/form-schemas/reportFormSchema";
 
 function initTab() {
   tab.value = modelWeeks[0];

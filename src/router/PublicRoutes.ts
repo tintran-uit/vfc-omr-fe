@@ -1,5 +1,5 @@
 const PublicRoutes = {
-  path: '/pub',
+  path: '/auth',
   component: () => import('@/layouts/blank/BlankLayout.vue'),
   meta: {
     requiresAuth: false
@@ -10,21 +10,21 @@ const PublicRoutes = {
       path: 'login',
       component: () => import('@/views/authentication/LoginPage.vue')
     },
-    {
-      name: 'Forgot Password',
-      path: 'forgot-pwd',
-      component: () => import('@/views/authentication/auth1/ForgotPwd1.vue')
-    },
-    {
-      name: 'Check Mail',
-      path: 'check-mail',
-      component: () => import('@/views/authentication/auth1/CheckMail1.vue')
-    },
-    {
-      name: 'Reset Password',
-      path: 'reset-pwd',
-      component: () => import('@/views/authentication/auth1/ResetPwd1.vue')
-    },
+    // {
+    //   name: 'Forgot Password',
+    //   path: '/forgot-pwd',
+    //   component: () => import('@/views/authentication/auth1/ForgotPwd1.vue')
+    // },
+    // {
+    //   name: 'Check Mail',
+    //   path: '/check-mail',
+    //   component: () => import('@/views/authentication/auth1/CheckMail1.vue')
+    // },
+    // {
+    //   name: 'Reset Password',
+    //   path: '/reset-pwd',
+    //   component: () => import('@/views/authentication/auth1/ResetPwd1.vue')
+    // },
     // {
     //   name: 'Under Construction',
     //   path: '/construction',

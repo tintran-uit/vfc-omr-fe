@@ -42,7 +42,7 @@ const sidebarMenu = computed(() => {
         <v-list aria-busy="true" aria-label="menu list">
           <!---Menu Loop -->
           <template v-for="(item, i) in sidebarMenu" :key="i">
-            <NavTitle :item="item" v-if="item && item.header" :key="item.title" />
+            <NavTitle :item="item" v-if="item && item.header" :key="$t(item.title)" />
             <NavItem :item="item" v-else />
           </template>
         </v-list>

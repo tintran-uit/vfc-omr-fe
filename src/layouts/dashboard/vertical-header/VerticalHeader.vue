@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
 // icons
 import { MenuFoldOutlined, WindowsOutlined, TranslationOutlined, SettingOutlined, SearchOutlined } from '@ant-design/icons-vue';
@@ -12,6 +12,8 @@ import MegaMenuDD from './MegaMenuDD.vue';
 import Searchbar from './SearchBarPanel.vue';
 import MessageDD from './MessageDD.vue';
 import FullScreen from './FullScreen.vue';
+import defaultAvatar from '@/assets/images/users/avatar-1.png'
+import { useAuthStore } from '@/stores/authStore';
 
 const customizer = useCustomizerStore();
 const priority = ref(customizer.setHorizontalLayout ? 0 : 0);
@@ -19,6 +21,12 @@ watch(priority, (newPriority) => {
   // yes, console.log() is a side effect
   priority.value = newPriority;
 });
+
+const authStore = useAuthStore();
+const avatarUrl = computed(() => {
+  return authStore.user?.photo_url || defaultAvatar
+})
+console.log('authStore fullname', authStore.fullName)
 </script>
 
 <template>
@@ -74,7 +82,7 @@ watch(priority, (newPriority) => {
     <!-- Search part -->
     <!-- ---------------------------------------------- -->
     <v-sheet class="d-none d-lg-block" width="250">
-      <Searchbar />
+      
     </v-sheet>
 
     <!---/Search part -->
@@ -87,7 +95,7 @@ watch(priority, (newPriority) => {
     <!-- ---------------------------------------------- -->
     <!-- Messages -->
     <!-- ---------------------------------------------- -->
-    <v-menu :close-on-content-click="false" offset="10, 320">
+    <!-- <v-menu :close-on-content-click="false" offset="10, 320">
       <template v-slot:activator="{ props }">
         <v-btn
           icon
@@ -104,7 +112,7 @@ watch(priority, (newPriority) => {
       <v-sheet width="1024" height="325" rounded="md" class="d-lg-block d-none">
         <MegaMenuDD />
       </v-sheet>
-    </v-menu>
+    </v-menu> -->
     <!-- ---------------------------------------------- -->
     <!-- translate -->
     <!-- ---------------------------------------------- -->
@@ -122,12 +130,12 @@ watch(priority, (newPriority) => {
     <!-- ---------------------------------------------- -->
     <!-- Notification -->
     <!-- ---------------------------------------------- -->
-    <NotificationDD />
+    <!-- <NotificationDD /> -->
 
     <!-- ---------------------------------------------- -->
     <!-- Message -->
     <!-- ---------------------------------------------- -->
-    <MessageDD />
+    <!-- <MessageDD /> -->
 
     <!-- ---------------------------------------------- -->
     <!-- Fullscreen -->
@@ -137,7 +145,7 @@ watch(priority, (newPriority) => {
     <!-- ---------------------------------------------- -->
     <!-- Customizer -->
     <!-- ---------------------------------------------- -->
-    <v-btn
+    <!-- <v-btn
       class="customizer-btn ms-sm-2 ms-1"
       icon
       color="darkText"
@@ -147,7 +155,7 @@ watch(priority, (newPriority) => {
       @click.stop="customizer.SET_CUSTOMIZER_DRAWER(!customizer.Customizer_drawer)"
     >
       <SettingOutlined class="icon" :style="{ fontSize: '16px' }" />
-    </v-btn>
+    </v-btn> -->
 
     <!-- ---------------------------------------------- -->
     <!-- User Profile -->
@@ -157,9 +165,9 @@ watch(priority, (newPriority) => {
         <v-btn class="profileBtn" variant="text" rounded="sm" v-bind="props">
           <div class="d-flex align-center">
             <v-avatar class="me-sm-2 me-0 py-2">
-              <img src="@/assets/images/users/avatar-1.png" alt="Julia" />
+              <img :src="avatarUrl" :alt="authStore.fullName" />
             </v-avatar>
-            <h6 class="text-subtitle-1 mb-0 d-sm-block d-none">JWT User</h6>
+            <h6 class="text-subtitle-1 mb-0 d-sm-block d-none">{{ authStore.fullName }}</h6>
           </div>
         </v-btn>
       </template>

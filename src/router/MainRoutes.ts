@@ -3,13 +3,13 @@ const MainRoutes = {
   meta: {
     requiresAuth: true
   },
-  redirect: '/dashboard',
+  // redirect: '/dashboard',
   component: () => import('@/layouts/dashboard/DashboardLayout.vue'),
   children: [
     {
       name: 'Dashboard',
-      path: 'dashboard',
-      component: () => import('@/views/dashboards/default/DefaultDashboard.vue')
+      path: '',
+      component: () => import('@/views/dashboards/Dashboard.vue')
     },
     {
       name: 'Test',
@@ -27,9 +27,39 @@ const MainRoutes = {
       component: () => import('@/views/test/DynamicForm.vue')
     },
     {
-      name: 'Add new church',
-      path: 'churches/add-new',
-      component: () => import('@/views/churches/ChurchForm.vue')
+      name: 'ChurchCreate',
+      path: '/churches/create',
+      component: () => import('@/views/churches/CreateChurch.vue')
+    },
+    {
+      name: 'ChurchUpdate',
+      path: '/churches/:id/update',
+      component: () => import('@/views/churches/UpdateChurch.vue')
+    },
+    {
+      name: 'ChurchClone',
+      path: '/churches/:id/clone',
+      component: () => import('@/views/churches/CloneChurch.vue')
+    },
+    {
+      name: 'ChurchList',
+      path: '/churches',
+      component: () => import('@/views/churches/ListChurch.vue')
+    },
+    {
+      name: 'UserCreate',
+      path: 'users/create',
+      component: () => import('@/views/users/CreateUser.vue')
+    },
+    {
+      name: 'UserUpdate',
+      path: 'users/:id/update',
+      component: () => import('@/views/users/UpdateUser.vue')
+    },
+    {
+      name: 'UserList',
+      path: 'users',
+      component: () => import('@/views/users/ListUser.vue')
     },
   ]
 };

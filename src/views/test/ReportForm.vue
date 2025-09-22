@@ -3,7 +3,7 @@ import UiParentCard from "@/components/shared/UiParentCard.vue";
 import { ref, watch, computed } from 'vue';
 import DynamicForm from "@/components/forms/DynamicForm.vue";
 import reportService from '@/services/reportService';
-import reportSchemaForm from "@/schema-forms/ReportSchemaForm";
+import reportSchemaForm from "@/form-schemas/reportFormSchema";
 
 const modelYear = ref(2024);
 const modelMonth = ref();

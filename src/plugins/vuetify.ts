@@ -28,7 +28,7 @@ const light: ThemeDefinition = {
     'shadow-opacity': 0.08
   },
   colors: {
-    primary: PrimaryColor,
+    primary: '#2478CE',
     secondary: '#8c8c8c',
     info: '#13c2c2',
     success: '#52c41a',

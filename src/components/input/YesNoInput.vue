@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {useDeepModel} from '@/utils/objectUtil.js';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SelectInput from '@/components/input/SelectInput.vue';
@@ -25,8 +24,6 @@ const items = ref([
 </script>
 
 <template>
-    <!-- <v-label class="text-wrap">{{field.label}}</v-label> -->
-    
     <SelectInput
       :items="items"
       v-model="modelValue"

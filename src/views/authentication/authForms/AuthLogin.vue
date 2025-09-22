@@ -2,19 +2,21 @@
 import { ref } from 'vue';
 // icons
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons-vue';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/authStore';
 import { Form } from 'vee-validate';
+import TranslationOutlined from '@ant-design/icons-vue/TranslationOutlined'
+import LanguageDD from '@/layouts/dashboard/vertical-header/LanguageDD.vue'
 
 const checkbox = ref(false);
 const valid = ref(false);
 const show1 = ref(false);
-const password = ref('securepassword');
-const username = ref('tintran@example.com');
+const password = ref('password123');
+const username = ref('hai03');
 // Password validation rules
 const passwordRules = ref([
   (v: string) => !!v || 'Password is required',
   (v: string) => v === v.trim() || 'Password cannot start or end with spaces',
-  (v: string) => v.length <= 10 || 'Password must be less than 10 characters'
+  // (v: string) => v.length <= 10 || 'Password must be less than 10 characters'
 ]);
 // Email validation rules
 const emailRules = ref([
@@ -40,18 +42,15 @@ function validate(values: any, { setErrors }: any) {
 </script>
 
 <template>
-  <div class="d-flex justify-space-between align-center">
+  <!-- <div class="d-flex justify-space-between align-center">
     <h3 class="text-h3 text-center mb-0">Login</h3>
-  </div>
+  </div> -->
   <Form @submit="validate" class="mt-7 loginForm" v-slot="{ errors, isSubmitting }">
-
-
     <div class="mb-6">
-      <v-label>Email Address</v-label>
+      <v-label>{{ $t('login.emailPlaceholder') }}</v-label>
       <v-text-field
         aria-label="email address"
         v-model="username"
-        :rules="emailRules"
         class="mt-2"
         required
         hide-details="auto"
@@ -61,7 +60,7 @@ function validate(values: any, { setErrors }: any) {
       ></v-text-field>
     </div>
     <div>
-      <v-label>Password</v-label>
+      <v-label>{{$t('login.passwordPlaceholder')}}</v-label>
       <v-text-field
         aria-label="password"
         v-model="password"
@@ -83,7 +82,7 @@ function validate(values: any, { setErrors }: any) {
       </v-text-field>
     </div>
 
-    <div class="d-flex align-center mt-4 mb-7 mb-sm-0">
+    <!-- <div class="d-flex align-center mt-4 mb-7 mb-sm-0">
       <v-checkbox
         v-model="checkbox"
         :rules="[(v: any) => !!v || 'You must agree to continue!']"
@@ -93,12 +92,41 @@ function validate(values: any, { setErrors }: any) {
         class="ms-n2"
         hide-details
       ></v-checkbox>
-    </div>
+    </div> -->
     <v-btn color="primary" :loading="isSubmitting" block class="mt-5" variant="flat" size="large" :disabled="valid" type="submit">
-      Login</v-btn
+      {{ $t('login.signIn') }}</v-btn
     >
+    
+    <div class="text-right mt-5">
+      <a href="#" class="forgot-link text-primary">
+        {{ $t('login.forgotPassword') }}
+      </a>
+    </div>
+
+    <!-- Language switcher -->
+    <div class="d-flex justify-end mb-4 mt-4">
+      <v-menu :close-on-content-click="true" location="bottom" offset="6, 80">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            icon
+            class="ms-sm-2 ms-1"
+            color="greyText"
+            rounded="sm"
+            size="small"
+            v-bind="props"
+          >
+            <TranslationOutlined :style="{ fontSize: '16px' }" />
+          </v-btn>
+        </template>
+        <v-sheet rounded="md" width="200">
+          <LanguageDD />
+        </v-sheet>
+      </v-menu>
+    </div>
+    <!-- #Language switcher -->
+
     <div v-if="errors.apiError" class="mt-2">
-      <v-alert color="error">{{ errors.apiError }}</v-alert>
+      <v-alert color="error">{{ $t('Wrong username or password') }}</v-alert>
     </div>
   </Form>
 </template>

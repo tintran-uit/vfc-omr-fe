@@ -5,6 +5,14 @@ import VeeValidation from "@/components/forms/validation/VeeValidation.vue";
 import UiParentCard from "@/components/shared/UiParentCard.vue";
 import {useDeepModel} from '@/utils/objectUtil.js';
 import TextInput from "../input/TextInput.vue";
+import { useI18n } from 'vue-i18n'
+import {createFormRules} from '@/helpers/formRulesFactory'
+
+const { t, locale } = useI18n()
+
+const { resolveRules } = createFormRules(i18n);
+
+
 
 const emit = defineEmits(['submit']);
 
@@ -27,9 +35,13 @@ const onSubmit = function () {
                 </v-col>
 
                 <v-col cols="6">
+                  <CurrencySelect
+                  v-if="field.type === 'CurrencySelect'"
+                    />
                   <TextInput
                     :form="form"
                     :field="field"
+                    else
                     />
                 </v-col>
               </template>

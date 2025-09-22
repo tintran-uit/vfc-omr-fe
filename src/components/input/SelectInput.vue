@@ -7,14 +7,24 @@ import { computed } from 'vue'
 
 const modelValue = defineModel<any>();
 
-defineProps<{
-  items: any[]
-  label?: string
-  placeholder?: string
-  itemTitle?: string | ((item: any) => string)
-  itemValue?: string
-  returnObject?: boolean
-  noDataText?: string
+const props = withDefaults(
+  defineProps<{
+    items: any[]
+    label?: string
+    placeholder?: string
+    itemTitle?: string | ((item: any) => string)
+    itemValue?: string | ((item: any) => any)
+    returnObject?: boolean
+    noDataText?: string
+    rules?: (string | ((v: any) => boolean | string))[]
+  }>(),
+  {
+    rules: () => [],
+  }
+)
+
+const emit = defineEmits<{
+  (e: 'change', value: any): void
 }>()
 
 const translatedLabel = computed(() => label ? t(label) : '')
@@ -25,15 +35,21 @@ const translatedNoDataText = computed(() => noDataText ? t(noDataText) : t('comm
 <template>
     <v-label class="text-wrap">{{label}}</v-label>
 
-    <v-select
+    <v-autocomplete
       :items="items"
-      role="link"
       color="primary"
       variant="outlined"
-      hide-details
       density="compact"
+      :rules="rules"
+      :item-title="itemTitle"
+      :item-value="itemValue"
       v-model="modelValue"
-    ></v-select>
+      :clearable="true"
+      location="bottom"
+      position-strategy="connected"
+      scroll-strategy="close"
+      @update:modelValue="emit('change', $event)"
+    ></v-autocomplete>
 </template>
 
 <style scoped lang="scss">

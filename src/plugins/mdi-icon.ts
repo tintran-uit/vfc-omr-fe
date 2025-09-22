@@ -14,8 +14,24 @@ import {
   mdiEmoticonHappyOutline,
   mdiHeart,
   mdiHeartOutline,
-  mdiHeartHalf
+  mdiHeartHalf,
+  mdiPencil,
+  mdiInformationOutline,
+  mdiDelete,
+  mdiContentCopy,
+  mdiArrowLeft,
+  mdiAccountGroup,
+  mdiChartLine,
+  mdiTrendingUp,
+  mdiChurchOutline,
+  mdiCurrencyUsd,
+  mdiSwapHorizontal,
+  mdiPlusCircleOutline,
+  mdiSquare,
+  mdiSquareEditOutline,
+  mdiChartBar
 } from '@mdi/js';
+import { mdi } from 'vuetify/iconsets/mdi-svg';
 
 export const icons = {
   checkboxMarkedCircleOutline: mdiCheckboxMarkedCircleOutline,
@@ -33,5 +49,22 @@ export const icons = {
   emoticonHappyOutline: mdiEmoticonHappyOutline,
   heart: mdiHeart,
   heartOutline: mdiHeartOutline,
-  heartHalf: mdiHeartHalf
+  heartHalf: mdiHeartHalf,
+  pencil: mdiPencil,
+  informationOutline: mdiInformationOutline,
+  delete: mdiDelete,
+  copy: mdiContentCopy,
+  arrowLeft: mdiArrowLeft,
+
+  edit: mdiSquareEditOutline,
+  chartBar: mdiChartBar,
+
+  accountGroup: mdiAccountGroup,
+  chartLine: mdiChartLine,
+  trendingUp: mdiTrendingUp,
+  church: mdiChurchOutline,
+  currencyUsd: mdiCurrencyUsd,
+
+  swapHorizontal: mdiSwapHorizontal,
+  plusCircleOutline: mdiPlusCircleOutline
 };
