@@ -17,6 +17,7 @@ const props = withDefaults(
     formSchema: Record<string, any>
     initData?: Record<string, any> | null
     options?: Record<string, any>
+    mapper?: (source: any, destination: any) => any
   }>(),
   {
     // initData: null,
@@ -78,6 +79,10 @@ watch(
   (val) => {
     if (val) {
       mapModel(formData.value, val, {})
+      
+      if (typeof props.mapper === 'function') {
+        props.mapper(val, formData.value)
+      }
     }
   },
   {immediate: true}
@@ -148,6 +153,7 @@ watch(
               :rules="resolveRules(field)"
               v-model="field.modelValue.value"
               v-bind="field?.attrs || {}"
+              :initial-image="field?.initialImageKey ? initData?.[field.initialImageKey] : null"
               :id="`field-${field.name}-${index}`"
             />
             <CurrencySelectInput

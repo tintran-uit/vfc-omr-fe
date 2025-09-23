@@ -37,6 +37,10 @@ const handleSubmit = async (formData) => {
   }
 }
 
+const mapperFn = function (source, destination) {
+  destination.role_id = source.role ? source.role.id : null;
+}
+
 onMounted(() => {
   fetchEditData(id);
   loadOptions();
@@ -73,6 +77,7 @@ const churchId = ref();
                 :form-schema="formSchema"
                 @submit="handleSubmit"
                 :init-data="editData"
+                :mapper="mapperFn"
               />
               
             </slot>

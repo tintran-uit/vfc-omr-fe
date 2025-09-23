@@ -1,7 +1,5 @@
 const schemaForm = {
     initData: () => ({
-        date_of_birth: "2021-01-01",
-        credentials_expiry_date: "2050-01-01",
         sensitive_nation: false,
     }),
     fields: [
@@ -64,6 +62,7 @@ const schemaForm = {
             name: 'user_photo',
             description: 'fieldDescription.user.userPhoto',
             type: 'PhotoUploadInput',
+            initialImageKey: 'photo_url',
             attrs: {
                 entity_type: 'users'
             }
@@ -109,7 +108,11 @@ const schemaForm = {
         {
             label: 'label.user.credentials',
             name: 'credentials',
-            type: 'TextInput'
+            type: 'SelectInput',
+            optionName: 'credentials',
+            attrs: {
+                
+            }
         },
         {
             label: 'label.user.credentialsNumber',

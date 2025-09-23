@@ -33,6 +33,7 @@ const searchQuery = ref('')
 const noMoreItems = ref(false)
 let searchTimeout = null
 let isSelecting = false
+let selectedItem = null
 
 
 const fetchItems = async (reset = false) => {
@@ -89,10 +90,10 @@ const fetchItem = async (id) => {
   try {
     const data = await churchService.get(id)
     if (data) {
-      const item = { id: data.id, name: data.name }
-      console.log('fetchitem data', data, item)
-      if (!items.value.find(i => i.id === item.id)) {
-        items.value.push(item)
+      selectedItem = { id: data.id, name: data.name }
+      
+      if (!items.value.find(i => i.id === selectedItem.id)) {
+        items.value.push(selectedItem)
       }
     }
   } catch (err) {
@@ -136,11 +137,17 @@ function onIntersect(
 
 onMounted(() => {
   fetchItems()
-
-  if (modelValue.value) {
-    fetchItem(modelValue.value)
-  }
 })
+
+watch(
+  () => modelValue.value,
+  (id) => {
+    if (id) {
+      fetchItem(id)
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

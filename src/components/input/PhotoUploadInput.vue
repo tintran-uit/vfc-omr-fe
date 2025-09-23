@@ -24,7 +24,6 @@ const previewUrl = computed(() => {
 })
 const uploadedImageUrl = ref(null)
 
-
 function triggerFileInput() {
   fileInput.value?.click()
 }
@@ -147,9 +146,9 @@ const compressImage = (file: File, maxSizeKB = 500, maxWidth = 1024): Promise<Bl
         <v-btn size="x-small" icon variant="flat" color="white" @click.stop="changeImage">
           <v-icon size="16">$pencil</v-icon>
         </v-btn>
-        <v-btn size="x-small" icon variant="flat" color="white" @click.stop="removeImage">
+        <!-- <v-btn size="x-small" icon variant="flat" color="white" @click.stop="removeImage">
           <v-icon size="16">$delete</v-icon>
-        </v-btn>
+        </v-btn> -->
       </div>
     </div>
 

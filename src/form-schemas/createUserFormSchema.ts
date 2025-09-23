@@ -126,7 +126,11 @@ const schemaForm = {
         {
             label: 'label.user.credentials',
             name: 'credentials',
-            type: 'TextInput'
+            type: 'SelectInput',
+            optionName: 'credentials',
+            attrs: {
+                
+            }
         },
         {
             label: 'label.user.credentialsNumber',

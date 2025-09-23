@@ -6,7 +6,7 @@ export const userService  = {
       return await apiClient.get(`/users`, params);
     },
     async get(id) {
-        return await apiClient.get(`/pastors/${id}`);
+        return await apiClient.get(`/users/${id}`);
     },
     async create(jsonData) {
         return await apiClient.post(`/users`, jsonData);
