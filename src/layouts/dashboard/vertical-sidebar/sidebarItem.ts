@@ -56,7 +56,7 @@ const sidebarItem: menu[] = [
   {
     title: 'mainMenu.myDashboard',
     icon: DashboardOutlined,
-    to: '/dashboard',
+    to: '/',
     // children: [
     //   {
     //     id: 'default',

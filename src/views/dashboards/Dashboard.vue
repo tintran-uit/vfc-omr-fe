@@ -183,7 +183,7 @@ const handleChangeProfile = (churchId) => {
 </v-card>
 
     <v-row class="my-0">
-      <v-col cols="12" sm="6" md="3" v-for="(metric, i) in metrics" :key="i">
+      <v-col cols="6" sm="6" md="3" v-for="(metric, i) in metrics" :key="i">
         <v-card elevation="0" class="h-100">
           <v-card variant="outlined" class="h-100">
             <v-card-text class="h-100">
