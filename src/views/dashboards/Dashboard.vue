@@ -123,8 +123,8 @@ const handleChangeProfile = (churchId) => {
   <v-card flat>
   <!-- Cover -->
   <v-img
-    src=""
-    height="300"
+    :src="currentChurch?.photo_url"
+    height="150"
     cover
     class="bg-grey-darken-2"
     style="background-color: #ccc;"
@@ -137,16 +137,16 @@ const handleChangeProfile = (churchId) => {
       <!-- Avatar bên trái -->
       <v-col cols="12" sm="2" class="position-relative">
         <v-avatar
-          size="160"
-          class="elevation-4"
-          style="position:absolute; top:-80px; left:16px; z-index:1; border: 1px solid white;"
+          size="149"
+          class="elevation-4 profile-avatar"
         >
           <v-img :src="authStore.avatarUrl" />
         </v-avatar>
+        <div style="clear: both"></div>
       </v-col>
 
       <!-- User info ở giữa -->
-      <v-col cols="12" sm="6" class="d-flex flex-column justify-center">
+      <v-col cols="12" sm="6" class="d-flex flex-column justify-center text-center text-sm-left">
         <div class="text-h4">
           {{ currentChurch?.name }}
           <v-menu>
@@ -232,3 +232,25 @@ const handleChangeProfile = (churchId) => {
      <!-- #Menu -->
 
 </template>
+<style scoped lang="scss">
+.profile-avatar {
+  position: relative;
+    top: 0px;
+    left: none;
+  z-index:1;
+   border: 1px solid white;
+   margin-left: auto;
+   margin-right: auto;
+   margin-top: -70px;
+   display: block;
+}
+
+@media (min-width: 768px) {
+  .profile-avatar {
+    position:absolute; 
+    left:16px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+</style>
