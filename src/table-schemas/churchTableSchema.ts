@@ -1,14 +1,14 @@
 export default {
   headers: [
-    { key: 'id', title: 'Id', sortable: true, filterable: true },
-    { key: 'name', title: 'Name'},
-    { key: 'tags', title: 'Tags'},
-    { key: 'country_name', title: 'Country' },
-    { key: 'city', title: 'City/Town' },
-    { key: 'pastor_name', title: 'Pastor' },
+    { key: 'id', title: 'churchTable.id', sortable: true, filterable: true },
+    { key: 'name', title: 'churchTable.name'},
+    { key: 'tags', title: ''},
+    { key: 'country_name', title: 'churchTable.country' },
+    { key: 'city', title: 'churchTable.city' },
+    { key: 'pastor_name', title: 'churchTable.pastor' },
     { key: 'actions', title: '' },
   ],
   searches: [
-    { name: 'name', label: 'Seach', type: 'TextInput' },
+    { name: 'name', label: 'churchTable.searchName', type: 'TextInput' },
   ]
 }

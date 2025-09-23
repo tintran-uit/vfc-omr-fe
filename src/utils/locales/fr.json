@@ -302,5 +302,30 @@
   },
   "message": {
     "errorTitle": "Une erreur s'est produite"
-  }
+  },
+  "userTable": {
+  "id": "ID",
+  "name": "Nom",
+  "email": "E-mail",
+  "role": "Rôle",
+  "searchName": "Rechercher par nom"
+},
+"churchTable": {
+  "id": "ID",
+  "name": "Nom de l'église",
+  "country": "Pays",
+  "city": "Ville/Commune",
+  "pastor": "Pasteur",
+  "searchName": "Rechercher par nom",
+  "msc": "MSC",
+  "mother": "Église mère",
+  "houseCP": "Maison C.P."
+},
+"create": "Créer",
+"noData": "Aucune donnée disponible",
+"logout": "Se déconnecter",
+"profile": {
+  "editProfile": "Modifier le profil",
+  "viewProfile": "Voir le profil"
+}
 }

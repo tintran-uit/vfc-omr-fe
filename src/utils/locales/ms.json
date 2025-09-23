@@ -312,5 +312,30 @@
   },
   "message": {
     "errorTitle": "Ralat telah berlaku"
-  }
+  },
+  "userTable": {
+  "id": "ID",
+  "name": "Nama",
+  "email": "E-mel",
+  "role": "Peranan",
+  "searchName": "Cari mengikut nama"
+},
+"churchTable": {
+  "id": "ID",
+  "name": "Nama Gereja",
+  "country": "Negara",
+  "city": "Bandar/Pekan",
+  "pastor": "Pastor",
+  "searchName": "Cari mengikut nama",
+  "msc": "MSC",
+  "mother": "Gereja Induk",
+  "houseCP": "Rumah C.P."
+},
+"create": "Cipta",
+"noData": "Tiada data tersedia",
+"logout": "Log keluar",
+"profile": {
+  "editProfile": "Sunting Profil",
+  "viewProfile": "Lihat Profil"
+}
 }

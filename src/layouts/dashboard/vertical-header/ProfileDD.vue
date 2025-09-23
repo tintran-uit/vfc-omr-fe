@@ -25,14 +25,14 @@ const avatarUrl = computed(() => authStore.user?.photo_url || defaultAvatar)
           <template #prepend>
             <EditOutlined :style="{ fontSize: '14px' }" class="me-4" />
           </template>
-          <v-list-item-title class="text-h6">Edit Profile</v-list-item-title>
+          <v-list-item-title class="text-h6">{{ $t('profile.editProfile') }}</v-list-item-title>
         </v-list-item>
 
         <v-list-item color="primary" rounded="0" value="View Profile">
           <template #prepend>
             <UserOutlined :style="{ fontSize: '14px' }" class="me-4" />
           </template>
-          <v-list-item-title class="text-h6">View Profile</v-list-item-title>
+          <v-list-item-title class="text-h6">{{ $t('profile.viewProfile') }}</v-list-item-title>
         </v-list-item>
 
         <v-list-item @click="authStore.logout()" color="secondary" rounded="0">
@@ -40,7 +40,7 @@ const avatarUrl = computed(() => authStore.user?.photo_url || defaultAvatar)
                 <LogoutOutlined :style="{ fontSize: '14px' }" class="me-4" />
               </template>
 
-              <v-list-item-title class="text-h6"> Logout</v-list-item-title>
+              <v-list-item-title class="text-h6"> {{ $t('logout') }}</v-list-item-title>
             </v-list-item>
       </v-list>
     </perfect-scrollbar>

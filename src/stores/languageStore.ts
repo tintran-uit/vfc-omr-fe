@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import { i18n } from '@/i18n';
 
 export const useLanguageStore = defineStore("language", () => {
-  const availableLanguages = ['en', 'fr', 'ro', 'zh', 'ms', 'ja'];
+  const availableLanguages = ['en', 'fr', 'zh', 'ms', 'ja', 'es', 'ptBR'];
   const currentLanguage = ref('en');
 
   const setLanguage = (lang: string) => {

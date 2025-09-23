@@ -71,6 +71,16 @@ const handleSubmit = async (e) => {
 
   if (valid) {
     emit('submit', formData.value)
+    return
+  }
+
+  const firstErrorEl = document.querySelector(
+    '.v-input.error, .v-field--error'
+  ) as HTMLElement | null
+
+  if (firstErrorEl) {
+    firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    firstErrorEl.focus()
   }
 }
 

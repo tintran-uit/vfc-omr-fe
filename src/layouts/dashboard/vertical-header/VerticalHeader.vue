@@ -140,7 +140,7 @@ const avatarUrl = computed(() => {
     <!-- ---------------------------------------------- -->
     <!-- Fullscreen -->
     <!-- ---------------------------------------------- -->
-    <FullScreen />
+    <!-- <FullScreen /> -->
 
     <!-- ---------------------------------------------- -->
     <!-- Customizer -->
@@ -175,5 +175,18 @@ const avatarUrl = computed(() => {
         <ProfileDD />
       </v-sheet>
     </v-menu>
+
+    <!-- Logout -->
+    <v-btn
+    icon
+    color="darkText"
+    rounded="sm"
+    variant="text"
+    @click="authStore.logout()"
+    class="mr-2"
+  >
+    <v-icon>$logout</v-icon>
+  </v-btn>
+     <!-- #Logout -->
   </v-app-bar>
 </template>

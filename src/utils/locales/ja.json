@@ -324,5 +324,30 @@
 
   "message": {
     "errorTitle": "エラーが発生しました"
+  },
+  "userTable": {
+  "id": "ID",
+  "name": "名前",
+  "email": "メール",
+  "role": "役割",
+  "searchName": "名前で検索"
+},
+"churchTable": {
+  "id": "ID",
+  "name": "教会名",
+  "country": "国",
+  "city": "市/町",
+  "pastor": "牧師",
+  "searchName": "名前で検索",
+  "msc": "MSC",
+  "mother": "母教会",
+  "houseCP": "ハウスC.P."
+},
+"create": "作成",
+"noData": "データがありません",
+"logout": "ログアウト",
+  "profile": {
+    "editProfile": "プロフィールを編集",
+    "viewProfile": "プロフィールを見る"
   }
 }

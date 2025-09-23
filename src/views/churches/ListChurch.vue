@@ -53,27 +53,36 @@ const loadingStore = useLoadingStore();
 </script>
 
 <template>
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('church.list') }}</h1>
-          <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'ChurchCreate' })"
-          >
-            <v-icon>$plus</v-icon> {{ $t('create') }}
-          </v-btn>
-        </v-col>
-      </v-row>
+  <v-row class="page-breadcrumb mb-0 mt-n2">
+    <v-col cols="12" md="12">
+      <v-card elevation="0" variant="text">
+        <v-row no-gutters class="align-center">
+          <!-- Title -->
+          <v-col cols="12" md="6" class="d-flex align-center">
+            <h3 class="text-h3 mt-5 mb-5">{{ $t('church.list') }}</h3>
+          </v-col>
+          <!-- #Title -->
 
-      <v-row justify="center">
-        <v-col cols="12" md="12" lg="12">
-          <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
-            <!-- Slot để bỏ form -->
-            <slot name="form">
-              <DynamicTableDefault
+          <!-- Actions -->
+          <v-col cols="12" md="6" class="d-flex justify-end">
+            <v-btn 
+              color="primary" 
+              variant="outlined" 
+              @click="router.push({ name: 'ChurchCreate' })"
+            >
+              <v-icon>$plus</v-icon> {{ $t('create') }}
+            </v-btn>
+          </v-col>
+          <!-- #Actions -->
+        </v-row>
+      </v-card>
+    </v-col>
+  </v-row>
+
+  <v-row>
+    <v-col cols="12">
+      <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
+        <DynamicTableDefault
                 v-model:page="page"
                 v-model:items-per-page="itemsPerPage"
                 v-model:search="search"
@@ -89,19 +98,19 @@ const loadingStore = useLoadingStore();
                 @update:options="onUpdateOptions"
               >
                           <template v-slot:item.tags="{ item }">
-                  <div class="text-end">
-                    <v-chip
+                  <div class="text-end text-no-wrap">
+                    <!-- <v-chip
                       v-if="item?.is_msc"
                       color="orange"
-                      text="MSC"
+                      :text="$t('churchTable.msc')"
                       class="mr-2"
                       size="small"
                       label
                     ></v-chip>
                     <v-chip
-                      v-if="item?.has_children"
+                      v-if="item?.is_mother_church"
                       color="blue"
-                      text="MOTHER"
+                      :text="$t('churchTable.mother')"
                       class="mr-2"
                       size="small"
                       label
@@ -109,19 +118,43 @@ const loadingStore = useLoadingStore();
                     <v-chip
                       v-if="item?.enable_cpm"
                       color="green"
-                      text="House C.P."
+                      :text="$t('churchTable.houseCP')"
                       class="mr-2"
                       size="small"
                       label
+                    ></v-chip> -->
+                    
+                    <v-chip
+                      color="info"
+                      :text="$t('churchTable.msc')"
+                      class="mr-2"
+                      size="small"
+                      label
+                      outlined
+                    ></v-chip>
+                    <v-chip
+                      v-if="item?.is_mother_church"
+                      color="primary"
+                      :text="$t('churchTable.mother')"
+                      class="mr-2"
+                      size="small"
+                      label
+                      outlined
+                    ></v-chip>
+                    <v-chip
+                      color="warning"
+                      :text="$t('churchTable.houseCP')"
+                      class="mr-2"
+                      size="small"
+                      label
+                      outlined
                     ></v-chip>
                   </div>
                 </template>
               </DynamicTableDefault>
-            </slot>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-sheet>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped lang="scss">

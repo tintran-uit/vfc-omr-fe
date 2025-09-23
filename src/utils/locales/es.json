@@ -1,0 +1,357 @@
+{
+  "Dashboard": "Tablero",
+  "Default": "Predeterminado",
+  "Analytics": "Analíticas",
+
+  "Widget": "Widget",
+  "Statistics": "Estadísticas",
+  "Data": "Datos",
+  "Chart": "Gráfico",
+
+  "Components": "Componentes",
+
+  "Applications": "Aplicaciones",
+  "Chat": "Chat",
+  "Calendar": "Calendario",
+  "Kanban": "Kanban",
+  "Customer": "Cliente",
+  "Customer List": "Lista de Clientes",
+  "Create Invoice": "Crear Factura",
+  "Order Details": "Detalles del Pedido",
+  "Order List": "Lista de Pedidos",
+  "Product List": "Lista de Productos",
+  "Product Review": "Reseña de Producto",
+  "Invoice": "Factura",
+  "Create": "Crear",
+  "Details": "Detalles",
+  "List": "Lista",
+  "Edit": "Editar",
+  "Users": "Usuarios",
+  "Social Profile": "Perfil Social",
+  "Account Profile": "Perfil de Cuenta",
+  "Profile 01": "Perfil 01",
+  "Profile 02": "Perfil 02",
+  "Profile 03": "Perfil 03",
+  "User Profile": "Perfil de Usuario",
+  "Cards": "Tarjetas",
+  "Style 01": "Estilo 01",
+  "Style 02": "Estilo 02",
+  "Style 03": "Estilo 03",
+  "Mail": "Correo",
+  "Contact": "Contacto",
+  "Card": "Tarjeta",
+  "E-Commerce": "Comercio Electrónico",
+  "Products": "Productos",
+  "Product Detail": "Detalle del Producto",
+  "Add New Product": "Agregar Nuevo Producto",
+  "Checkout": "Pagar",
+
+  "Forms": "Formularios",
+  "Plugins": "Plugins",
+  "Editor": "Editor",
+  "Mask": "Máscara",
+  "Captcha": "Captcha",
+  "Dropzone": "Área de Arrastre",
+  "Clipboard": "Portapapeles",
+  "Layouts": "Diseños",
+  "Multi Columns Form": "Formulario de Múltiples Columnas",
+  "Action Bar": "Barra de Acciones",
+  "Sticky Action Bar": "Barra de Acciones Fija",
+  "Tables": "Tablas",
+  "Basic Table": "Tabla Básica",
+  "Dark Table": "Tabla Oscura",
+  "Density Table": "Tabla de Densidad",
+  "Height Table": "Tabla de Altura",
+  "Fixed Header Table": "Tabla con Encabezado Fijo",
+  "Charts": "Gráficos",
+  "Org Charts": "Organigramas",
+  "Apex Charts": "Gráficos Apex",
+  "Form Validation": "Validación de Formulario",
+
+  "Utilities": "Utilidades",
+  "Icons": "Iconos",
+  "Ant design Icons": "Iconos Ant Design",
+  "Tabler Icons": "Iconos Tabler",
+  "Material Icons": "Iconos Material",
+
+  "Pages": "Páginas",
+  "Authentication": "Autenticación",
+  "Login": "Iniciar Sesión",
+  "Register": "Registrarse",
+  "Forgot Password": "¿Olvidó su Contraseña?",
+  "Check Mail": "Revisar Correo",
+  "Reset Password": "Restablecer Contraseña",
+  "Code Verification": "Verificación de Código",
+  "Pricing": "Precios",
+  "Maintenance": "Mantenimiento",
+  "Error 404": "Error 404",
+  "Error 500": "Error 500",
+  "Coming soon": "Próximamente",
+  "Under Construction": "En Construcción",
+  "Landing page": "Página de Inicio",
+  "Contact Us": "Contáctenos",
+  "FAQs": "Preguntas Frecuentes",
+  "Privacy Policy": "Política de Privacidad",
+
+  "Others": "Otros",
+  "Menu levels": "Niveles de Menú",
+  "Level 1": "Nivel 1",
+  "Level 2": "Nivel 2",
+  "Level 3": "Nivel 3",
+  "Sub Caption": "Subtítulo",
+  "caption title": "título del subtítulo",
+  "Disabled Menu": "Menú Deshabilitado",
+  "Sample Page": "Página de Ejemplo",
+  "Documentation": "Documentación",
+  "Road Map": "Hoja de Ruta",
+
+  "validation": {
+    "required": "El campo {field} es obligatorio.",
+    "email": "Por favor ingrese una dirección de correo válida.",
+    "minLength": "El campo {field} debe tener al menos {length} caracteres.",
+    "maxLength": "El campo {field} no debe exceder {length} caracteres.",
+    "between": "El campo {field} debe estar entre {min} y {max}.",
+    "numeric": "El campo {field} debe ser un número.",
+    "integer": "El campo {field} debe ser un número entero.",
+    "min": "El campo {field} debe ser al menos {min}.",
+    "max": "El campo {field} debe ser como máximo {max}.",
+    "confirmed": "La confirmación de {field} no coincide.",
+    "url": "Por favor ingrese una URL válida.",
+    "alpha": "El campo {field} solo puede contener letras.",
+    "alphaNum": "El campo {field} solo puede contener letras y números.",
+    "regex": "El formato de {field} es inválido.",
+    "date": "El campo {field} no es una fecha válida.",
+    "after": "El campo {field} debe ser posterior a {date}.",
+    "before": "El campo {field} debe ser anterior a {date}."
+  },
+
+  "common": {
+    "year": "Año",
+    "month": "Mes",
+    "day": "Día",
+    "save": "Guardar",
+    "logout": "Cerrar Sesión",
+    "backToList":"Volver a la Lista",
+    "create": "Crear"
+  },
+
+  "label": {
+    "user": {
+      "username": "Nombre de Usuario",
+      "password": "Contraseña",
+      "emailAddress": "Correo Electrónico",
+      "prefix": "Prefijo",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "title": "Título",
+      "role": "Estado OMR",
+      "church": "Iglesia",
+      "userPhoto": "Foto del Usuario",
+      "country": "País",
+      "sensiveNation": "¿Nación Sensible?",
+      "language": "Idioma",
+      "mobilePhone": "Teléfono Móvil",
+      "credentials": "Credenciales",
+      "credentialsNumber": "Número de Credenciales",
+      "credentialsFrom": "Credenciales Emitidas Por",
+      "credentialsExpiryDate": "Fecha de Expiración de Credenciales",
+      "profileComments": "Comentarios del Perfil"
+    },
+    "church": {
+      "name": "Nombre de la Iglesia",
+      "shortName": "Nombre Corto [solo 8 caracteres]",
+      "isMsc": "¿Es una MSC?",
+      "enableCpm": "¿Habilitar Casa C.P.?",
+      "parent": "Iglesia Madre",
+      "language": "Idioma",
+      "churchType": "Tipo de Iglesia",
+      "pastor": "Pastor / Asistente / Admin.",
+      "churchNetwork": "Red de Iglesias",
+      "churchRegion": "Región Apostólica",
+      "geographicalRegion": "Región Geográfica de Misión",
+      "languageRegion": "Región de Idioma",
+      "sensitiveNation": "¿Nación Sensible?",
+      "country": "País",
+      "currency": "Moneda Local",
+      "city": "Ciudad / Pueblo / Aldea",
+      "photo": "Foto de la Iglesia [Max 1.5MB]",
+      "serviceAddressStreet": "Dirección del Servicio",
+      "serviceAddressPostalCode": "Código Postal del Servicio",
+      "serviceVenue": "Lugar de Encuentro",
+      "emailAddress": "Correo Electrónico [requerido]",
+      "website": "Sitio Web",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "dateOfBirth": "Fecha de Fundación de la Iglesia"
+    }
+  },
+
+  "fieldDescription": {
+    "user": {
+      "username": "Nombre de usuario que se utilizará para iniciar sesión",
+      "password": "Contraseña que se utilizará para iniciar sesión [Sensitivo a mayúsculas/minúsculas]",
+      "title": "Título del Ministerio usado",
+      "role": "Descripción simple que determina cómo funcionará el OMR para el usuario.",
+      "church": "Iglesia a la que pertenece el usuario",
+      "userPhoto": "Foto del usuario. Limite de 1.5MB.",
+      "sensitiveNation": "Indique si la nación o área del usuario se opone a actividades cristianas.",
+      "language": "Idioma que usará OMR."
+    },
+    "church": {
+      "name": "Nombre completo de la iglesia, incluyendo ciudad o suburbio o pueblo o aldea.",
+      "shortName": "Nombre corto de la iglesia. Máx 8 letras.",
+      "isMsc": "¿Es una Iglesia Multi-Servicio o Multi-Sitio?",
+      "enableCpm": "¿Es esta una Pioneer House Church Plant dentro de la estrategia Vision 2:25?",
+      "parent": "Iglesia responsable de fundar esta iglesia.",
+      "language": "Idioma usado en este servicio de la iglesia.",
+      "churchType": "Etapa de desarrollo o estatus único de la iglesia.",
+      "pastor": "Seleccione el Pastor/Líder. Si no aparece, crear en 'Agregar Nuevo Pastor'.",
+      "churchNetwork": "Red a la que pertenece. Si no se encuentra, contacte al Administrador.",
+      "churchRegion": "Iglesias Multi-Servicio y Movimientos pueden dividir la ciudad o nación en regiones para fines pastorales y estratégicos.",
+      "geographicalRegion": "Cluster de naciones cercanas agrupadas por razones estratégicas.",
+      "languageRegion": "Agrupación de naciones que comparten idioma.",
+      "sensitiveNation": "Indique si esta nación se opone a actividades cristianas.",
+      "currency": "Seleccione la moneda utilizada",
+      "photo": "Foto de la congregación. Limite de 1.5MB.",
+      "serviceVenue": "Tipo de propiedad donde se realiza el servicio.",
+      "website": "URL del sitio web de la iglesia.",
+      "facebook": "URL de Facebook de la Iglesia.",
+      "twitter": "Cuenta de Twitter de la Iglesia.",
+      "íntagram": "Cuenta de Instagram de la Iglesia.",
+      "dateOfBirth": "Fecha del primer servicio."
+    }
+  },
+
+  "column": {
+    "name": "Nombre",
+    "email": "Correo",
+    "role": "Rol",
+    "status": "Estado",
+    "actions": "Acciones"
+  },
+
+  "months": {
+    "1": "Enero",
+    "2": "Febrero",
+    "3": "Marzo",
+    "4": "Abril",
+    "5": "Mayo",
+    "6": "Junio",
+    "7": "Julio",
+    "8": "Agosto",
+    "9": "Septiembre",
+    "10": "Octubre",
+    "11": "Noviembre",
+    "12": "Diciembre"
+  },
+
+  "monthsShort": {
+    "1": "Ene",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Abr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Ago",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dic"
+  },
+
+  "itemsPerPage": "Elementos por página",
+  "pageText": "Mostrando {from}-{to} de {total}",
+  "backToList": "Volver a la Lista",
+
+  "login": {
+    "title": "Inicia sesión aquí",
+    "subtitle": "¡Bienvenido de nuevo, te hemos extrañado!",
+    "signIn": "Iniciar Sesión",
+    "emailPlaceholder": "Nombre de Usuario",
+    "passwordPlaceholder": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu Contraseña?"
+  },
+
+  "dashboardMenu": {
+    "monthlyData": "Datos Mensuales",
+    "editChurch": "Editar Iglesia",
+    "worshipServices": "Servicios de Adoración",
+    "newPastorAndNewChurch": "Nuevo Pastor & Nueva Iglesia",
+    "newPastor": "Nuevo Pastor",
+    "newChurch": "Nueva Iglesia"
+  },
+
+  "mainMenu": {
+    "myDashboard": "Mi Tablero",
+    "users": "Usuarios",
+    "userList": "Lista de Usuarios",
+    "userCreate": "Crear Nuevo Usuario",
+    "churches": "Iglesias",
+    "churchList": "Lista de Iglesias",
+    "churchCreate": "Crear Nueva Iglesia",
+    "relating": "Relaciones",
+    "faq": "Preguntas Frecuentes",
+    "visitReports": "Reportes de Visita",
+    "myDirectory": "Mi Directorio",
+    "churchReportingStatus": "Estado de Reporte de Iglesias",
+    "churchReport": "Reporte de Iglesia",
+    "generateReports": "Generar Reportes",
+    "watchList": "Lista de Seguimiento",
+    "default": "Predeterminado",
+    "analytics": "Analíticas"
+  },
+
+  "dashboard": {
+    "people": "Personas",
+    "growth": "Crecimiento",
+    "giving": "Donaciones",
+    "churchPlants": "Plantas de Iglesias"
+  },
+
+  "user": {
+    "list": "Lista de Usuarios",
+    "create": "Crear nuevo usuario",
+    "update": "Actualizar usuario #{id}"
+  },
+
+  "church": {
+    "list": "Lista de Iglesias",
+    "create": "Crear nueva iglesia",
+    "update": "Actualizar iglesia #{id}",
+    "clone": "Clonar iglesia #{id}"
+  },
+
+  "message": {
+    "errorTitle": "Ocurrió un error"
+  },
+
+  "userTable": {
+    "id": "ID",
+    "name": "Nombre",
+    "email": "Correo",
+    "role": "Rol",
+    "searchName": "Buscar por Nombre"
+  },
+
+  "churchTable": {
+    "id": "ID",
+    "name": "Nombre de la Iglesia",
+    "country": "País",
+    "city": "Ciudad/Pueblo",
+    "pastor": "Pastor",
+    "searchName": "Buscar por Nombre",
+    "msc": "MSC",
+    "mother": "MADRE",
+    "houseCP": "Casa C.P."
+  },
+
+  "create": "Crear",
+  "noData": "No hay datos disponibles",
+  "logout": "Cerrar Sesión",
+  "profile": {
+    "editProfile": "Editar Perfil",
+    "viewProfile": "Ver Perfil"
+  }
+}

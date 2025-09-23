@@ -100,20 +100,21 @@ onMounted(() => {
 </script>
 
 <template>
-   <div class="d-flex flex-wrap gap-4 mb-4">
+   <v-row class="mb-2 pt-2 px-2" dense>
      <template v-for="(item, key) in searchesConfig" :key="key">
-       <v-text-field
-         v-model="searchModel[item.name]"
-         :label="item.label"
-         density="compact"
-         variant="outlined"
-         hide-details
-         style="max-width: 200px;"
-         @input="handleSearch"
-       />
+      <v-col cols="6" md="3">
+        <v-text-field
+              v-model="searchModel[item.name]"
+              :placeholder="$t(item.label)"
+              single-line
+              variant="outlined"
+              class="mb-3"
+              @input="handleSearch"
+              hide-details
+            ></v-text-field>
+        </v-col>
      </template>
-   </div>
-
+    </v-row>
 
     <v-data-table-server
       v-model:page="page"
@@ -123,18 +124,21 @@ onMounted(() => {
       :headers="headers"
       :items="items"
       @update:options="handleUpdateOptions"
+      class="bordered-table rounded-0"
+      :no-data-text="$t('noData')"
     >
       <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
-        <tr>
+        <tr class="bg-containerBg">
           <template v-for="column in columns" :key="column.key">
-            <th>
+            <th class="text-start text-uppercase text-caption font-weight-bold">
               <div class="d-flex align-center">
                 <template v-if="column?.sortable === true">
                   <span
                     class="me-2 cursor-pointer"
                     @click="toggleSort(column)"
-                    v-text="$t(column.title)"
-                  ></span>
+                  >
+                {{ $t(column.title) }}
+                </span>
 
                   <v-icon
                     v-if="isSorted(column)"
@@ -152,8 +156,9 @@ onMounted(() => {
                 <template v-else>
                   <span
                     class="me-2 cursor-pointer"
-                    v-text="column.title"
-                  ></span>
+                  >
+                  {{ $t(column.title) }}
+                </span>
                 </template>
 
                 <!--              <v-select-->
@@ -187,21 +192,25 @@ onMounted(() => {
 
 
       <template #bottom>
-        <div class="d-flex justify-space-between align-center pa-2">
-        <span>
-          {{ $t('pageText', {
-            from: (page - 1) * itemsPerPage + 1,
-            to: Math.min(page * itemsPerPage, totalItems),
-            total: totalItems
-          }) }}
-        </span>
-        <v-pagination
-          v-model="page"
-          :length="totalPages"
-          :total-visible="5"
-          density="comfortable"
-        />
-      </div>
+        <v-row class="pa-4 align-center">
+          <v-col cols="12" md="6" class="d-flex align-center">
+            <span>
+              {{ $t('pageText', {
+                from: (page - 1) * itemsPerPage + 1,
+                to: Math.min(page * itemsPerPage, totalItems),
+                total: totalItems
+              }) }}
+            </span>
+          </v-col>
+          <v-col cols="12" md="6" class="d-flex justify-end">
+            <v-pagination
+              v-model="page"
+              :length="totalPages"
+              :total-visible="5"
+              density="comfortable"
+            />
+          </v-col>
+        </v-row>
       </template>
 
 

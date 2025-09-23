@@ -29,7 +29,8 @@ import {
   mdiPlusCircleOutline,
   mdiSquare,
   mdiSquareEditOutline,
-  mdiChartBar
+  mdiChartBar,
+  mdiLogout
 } from '@mdi/js';
 import { mdi } from 'vuetify/iconsets/mdi-svg';
 
@@ -66,5 +67,6 @@ export const icons = {
   currencyUsd: mdiCurrencyUsd,
 
   swapHorizontal: mdiSwapHorizontal,
-  plusCircleOutline: mdiPlusCircleOutline
+  plusCircleOutline: mdiPlusCircleOutline,
+  logout: mdiLogout
 };

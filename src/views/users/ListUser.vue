@@ -6,6 +6,7 @@ import {userService} from '@/services/userService.ts';
 import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/userTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
+import UiTableCard from '@/components/shared/UiTableCard.vue';
 
 const router = useRouter()
 const dialogStore = useDialogStore()
@@ -53,74 +54,53 @@ const onUpdateOptions = (options) => {
 </script>
 
 <template>
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('user.list') }}</h1>
-          <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'UserCreate' })"
-          >
-            <v-icon>$plus</v-icon> create
-          </v-btn>
-        </v-col>
-      </v-row>
+  <v-row class="page-breadcrumb mb-0 mt-n2">
+    <v-col cols="12" md="12">
+      <v-card elevation="0" variant="text">
+        <v-row no-gutters class="align-center">
+          <!-- Title -->
+          <v-col cols="12" md="6" class="d-flex align-center">
+            <h3 class="text-h3 mt-5 mb-5">{{ $t('user.list') }}</h3>
+          </v-col>
+          <!-- #Title -->
 
-      <v-row justify="center">
-        <v-col cols="12" md="12" lg="12">
-          <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
-            <!-- Slot để bỏ form -->
-            <slot name="form">
-              <DynamicTableDefault
-                v-model:page="page"
-                v-model:items-per-page="itemsPerPage"
-                v-model:searches="searches"
-                v-model:sort-by="sortBy"
-                :total-items="totalItems"
-                :headers="tableSchema.headers"
-                :searches-config="tableSchema.searches"
-                :items="items"
-                :enabled-actions="['update', 'delete']"
-                @action:delete="onDelete"
-                @action:update="onUpdate"
-                @update:options="onUpdateOptions"
-              >
-              <template v-slot:item.tags="{ item }">
-      <div class="text-end">
-        <v-chip
-          v-if="item?.is_msc"
-          color="orange"
-          text="MSC"
-          class="mr-2"
-          size="small"
-          label
-        ></v-chip>
-        <v-chip
-          v-if="item?.has_children"
-          color="blue"
-          text="MOTHER"
-          class="mr-2"
-          size="small"
-          label
-        ></v-chip>
-        <v-chip
-          v-if="item?.enable_cpm"
-          color="green"
-          text="House C.P."
-          class="mr-2"
-          size="small"
-          label
-        ></v-chip>
-      </div>
-    </template>
-              </DynamicTableDefault>
-            </slot>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-sheet>
+          <!-- Actions -->
+          <v-col cols="12" md="6" class="d-flex justify-end">
+            <v-btn 
+              color="primary" 
+              variant="outlined" 
+              @click="router.push({ name: 'UserCreate' })"
+            >
+              <v-icon>$plus</v-icon> {{ $t('common.create') }}
+            </v-btn>
+          </v-col>
+          <!-- #Actions -->
+        </v-row>
+      </v-card>
+    </v-col>
+  </v-row>
+
+  <v-row>
+    <v-col cols="12">
+      <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
+        <DynamicTableDefault
+          v-model:page="page"
+          v-model:items-per-page="itemsPerPage"
+          v-model:searches="searches"
+          v-model:sort-by="sortBy"
+          :total-items="totalItems"
+          :headers="tableSchema.headers"
+          :searches-config="tableSchema.searches"
+          :items="items"
+          :enabled-actions="['update', 'delete']"
+          @action:delete="onDelete"
+          @action:update="onUpdate"
+          @update:options="onUpdateOptions"
+        >
+        </DynamicTableDefault>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped lang="scss">

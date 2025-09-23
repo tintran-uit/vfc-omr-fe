@@ -129,7 +129,8 @@
     "day": "Day",
     "save": "save",
     "logout": "Logout",
-    "backToList":"Back to List"
+    "backToList":"Back to List",
+    "create": "Create"
   },
   "label": {
     "user": {
@@ -309,5 +310,30 @@
   },
   "message": {
     "errorTitle": "An error occurred"
+  },
+  "userTable": {
+    "id": "ID",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "searchName": "Search by Name"
+  },
+  "churchTable": {
+    "id": "ID",
+    "name": "Church Name",
+    "country": "Country",
+    "city": "City/Town",
+    "pastor": "Pastor",
+    "searchName": "Search by Name",
+    "msc": "MSC",
+    "mother": "MOTHER",
+    "houseCP": "House C.P."
+  },
+  "create": "Create",
+  "noData": "No data available",
+  "logout": "Logout",
+  "profile": {
+    "editProfile": "Edit Profile",
+    "viewProfile": "View Profile"
   }
 }

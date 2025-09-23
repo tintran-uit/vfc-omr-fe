@@ -40,7 +40,7 @@ onMounted(() => {
             variant="outlined" 
             @click="router.push({ name: 'UserList' })"
           >
-            <v-icon>$arrowLeft</v-icon> Back to list
+            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>
         </v-col>
       </v-row>
