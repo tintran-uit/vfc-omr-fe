@@ -11,7 +11,7 @@ const messages = {
   ro: ro,
   zh: zh,
   ms: ms,
-  ja: js
+  ja: ja
 };
 
 export default messages;

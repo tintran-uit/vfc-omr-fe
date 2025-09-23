@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, withDefaults } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n'
 import { churchService } from '@/services/churchService'
 const { t } = useI18n()
@@ -8,7 +8,7 @@ import { computed } from 'vue'
 
 const modelValue = defineModel<any>()
 
-const withDefaults = withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   label?: string
   placeholder?: string
   itemTitle?: string | ((item: any) => string)
