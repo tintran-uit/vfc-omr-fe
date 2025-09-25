@@ -107,7 +107,7 @@ const sidebarItem: menu[] = [
       {
         id: 'users-add',
         title: 'Add new pastor / leader',
-        to: '/users/add'
+        to: '/users/create'
       }
     ]
   },
