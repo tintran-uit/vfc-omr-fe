@@ -55,7 +55,7 @@ const churchId = ref();
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('user.update', {id: id}) }}</h1>
+          <h1>{{ $t('user.editTitle', {id: id}) }}</h1>
 
           <v-btn 
             color="primary" 

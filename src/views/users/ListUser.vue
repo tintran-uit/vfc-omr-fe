@@ -60,7 +60,7 @@ const onUpdateOptions = (options) => {
         <v-row no-gutters class="align-center">
           <!-- Title -->
           <v-col cols="12" md="6" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('user.list') }}</h3>
+            <h3 class="text-h3 mt-5 mb-5">{{ $t('user.listTitle') }}</h3>
           </v-col>
           <!-- #Title -->
 
@@ -71,7 +71,7 @@ const onUpdateOptions = (options) => {
               variant="outlined" 
               @click="router.push({ name: 'UserCreate' })"
             >
-              <v-icon>$plus</v-icon> {{ $t('common.create') }}
+              <v-icon>$plus</v-icon> {{ $t('addNew') }}
             </v-btn>
           </v-col>
           <!-- #Actions -->
@@ -92,11 +92,20 @@ const onUpdateOptions = (options) => {
           :headers="tableSchema.headers"
           :searches-config="tableSchema.searches"
           :items="items"
-          :enabled-actions="['update', 'delete']"
+          :enabled-actions="['update']"
           @action:delete="onDelete"
           @action:update="onUpdate"
           @update:options="onUpdateOptions"
         >
+        <template v-slot:item.name="{ item }">
+                  <a
+                    href="#"
+                    variant="text"
+                    class="text-primary"
+                  >
+                    {{ item.name }}
+        </a>
+                </template>
         </DynamicTableDefault>
       </v-card>
     </v-col>

@@ -59,7 +59,7 @@ const loadingStore = useLoadingStore();
         <v-row no-gutters class="align-center">
           <!-- Title -->
           <v-col cols="12" md="6" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('church.list') }}</h3>
+            <h3 class="text-h3 mt-5 mb-5">{{ $t('church.listTitle') }}</h3>
           </v-col>
           <!-- #Title -->
 
@@ -70,7 +70,7 @@ const loadingStore = useLoadingStore();
               variant="outlined" 
               @click="router.push({ name: 'ChurchCreate' })"
             >
-              <v-icon>$plus</v-icon> {{ $t('create') }}
+              <v-icon>$plus</v-icon> {{ $t('addNew') }}
             </v-btn>
           </v-col>
           <!-- #Actions -->
@@ -91,65 +91,41 @@ const loadingStore = useLoadingStore();
                 :headers="tableSchema.headers"
                 :searches-config="tableSchema.searches"
                 :items="items"
-                :enabled-actions="['update', 'clone']"
+                :enabled-actions="['update']"
                 @action:delete="onDelete"
                 @action:update="onUpdate"
                 @action:clone="handleActionClone"
                 @update:options="onUpdateOptions"
               >
-                          <template v-slot:item.tags="{ item }">
+                          <template v-slot:item.attributes="{ item }">
                   <div class="text-end text-no-wrap">
-                    <!-- <v-chip
+                    <v-chip
                       v-if="item?.is_msc"
-                      color="orange"
-                      :text="$t('churchTable.msc')"
-                      class="mr-2"
-                      size="small"
-                      label
-                    ></v-chip>
-                    <v-chip
-                      v-if="item?.is_mother_church"
-                      color="blue"
-                      :text="$t('churchTable.mother')"
-                      class="mr-2"
-                      size="small"
-                      label
-                    ></v-chip>
-                    <v-chip
-                      v-if="item?.enable_cpm"
-                      color="green"
-                      :text="$t('churchTable.houseCP')"
-                      class="mr-2"
-                      size="small"
-                      label
-                    ></v-chip> -->
-                    
-                    <v-chip
-                      color="info"
-                      :text="$t('churchTable.msc')"
-                      class="mr-2"
-                      size="small"
-                      label
-                      outlined
-                    ></v-chip>
-                    <v-chip
-                      v-if="item?.is_mother_church"
-                      color="primary"
-                      :text="$t('churchTable.mother')"
-                      class="mr-2"
-                      size="small"
-                      label
-                      outlined
-                    ></v-chip>
-                    <v-chip
                       color="warning"
-                      :text="$t('churchTable.houseCP')"
+                      :text="$t('churchTable.msc')"
                       class="mr-2"
                       size="small"
                       label
-                      outlined
+                    ></v-chip>
+                    <v-chip
+                      v-if="item?.is_mother_church"
+                      color="success"
+                      :text="$t('churchTable.mother')"
+                      class="mr-2"
+                      size="small"
+                      label
                     ></v-chip>
                   </div>
+                </template>
+
+                <template v-slot:item.name="{ item }">
+                  <a
+                    href="#"
+                    variant="text"
+                    class="text-primary"
+                  >
+                    {{ item.name }}
+                </a>
                 </template>
               </DynamicTableDefault>
       </v-card>

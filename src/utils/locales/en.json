@@ -274,12 +274,12 @@
   },
   "mainMenu": {
     "myDashboard": "My Dashboard",
-    "users": "Users",
-    "userList": "List User",
-    "userCreate": "Create A New User",
+    "users": "Pastor / leaders",
+    "userList": "List pastor / leader's",
+    "userCreate": "Add new pastor / leader",
     "churches": "Churches",
     "churchList": "List Churches",
-    "churchCreate": "Create A New Church",
+    "churchCreate": "Add new Church",
     "relating": "Relating",
     "faq": "FAQ",
     "visitReports": "Visit Reports",
@@ -298,15 +298,15 @@
     "churchPlants": "Church Plants"
   },
   "user": {
-    "list": "List user",
-    "create": "Create a new user",
-    "update": "Update user #{id}"
+    "listTitle": "List pastor / leader's",
+    "addTitle": "Add new pastor / leader",
+    "editTitle": "Edit paster / leader #{id}"
   },
   "church": {
-    "list": "List church",
-    "create": "Create a new church",
-    "update": "Update church #{id}",
-    "clone": "Clone church #{id}"
+    "listTitle": "List churches",
+    "addTitle": "Create new church",
+    "editTitle": "Edit church #{id}",
+    "cloneTitle": "Clone church #{id}"
   },
   "message": {
     "errorTitle": "An error occurred"
@@ -314,8 +314,10 @@
   "userTable": {
     "id": "ID",
     "name": "Name",
+    "mobile": "Mobile",
     "email": "Email",
     "role": "Role",
+    "country": "Country",
     "searchName": "Search by Name"
   },
   "churchTable": {
@@ -327,11 +329,12 @@
     "searchName": "Search by Name",
     "msc": "MSC",
     "mother": "MOTHER",
-    "houseCP": "House C.P."
+    "attributes": "Attributes"
   },
   "create": "Create",
   "noData": "No data available",
   "logout": "Logout",
+  "addNew": "Add new",
   "profile": {
     "editProfile": "Edit Profile",
     "viewProfile": "View Profile"

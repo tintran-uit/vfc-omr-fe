@@ -33,7 +33,7 @@ onMounted(() => {
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('church.create') }}</h1>
+          <h1>{{ $t('church.addTitle') }}</h1>
           <v-btn 
             color="primary" 
             variant="outlined" 

@@ -8,7 +8,8 @@ import {
   CommentOutlined,
   UnorderedListOutlined,
   EditOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  InfoCircleOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/authStore'
 import defaultAvatar from '@/assets/images/users/avatar-1.png'
@@ -33,6 +34,13 @@ const avatarUrl = computed(() => authStore.user?.photo_url || defaultAvatar)
             <UserOutlined :style="{ fontSize: '14px' }" class="me-4" />
           </template>
           <v-list-item-title class="text-h6">{{ $t('profile.viewProfile') }}</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item color="primary" rounded="0" value="OMR Support">
+          <template #prepend>
+            <InfoCircleOutlined :style="{ fontSize: '14px' }" class="me-4" />
+          </template>
+          <v-list-item-title class="text-h6">OMR Suppport</v-list-item-title>
         </v-list-item>
 
         <v-list-item @click="authStore.logout()" color="secondary" rounded="0">

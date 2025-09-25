@@ -57,6 +57,7 @@ const handleChangeLanguage = (lang) => {
         <v-btn class="ms-sm-2 ms-1 px-4" rounded="sm" v-bind="props">
           <v-img :src="flags[languageStore.currentLanguage]" width="24" height="24" contain class="mr-2" />
           {{ currentItem.title }}
+          <v-icon end>$menuDown</v-icon>
         </v-btn>
       </template>
       <v-sheet rounded="md" width="200">

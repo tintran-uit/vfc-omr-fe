@@ -168,6 +168,7 @@ const avatarUrl = computed(() => {
               <img :src="avatarUrl" :alt="authStore.fullName" />
             </v-avatar>
             <h6 class="text-subtitle-1 mb-0 d-sm-block d-none">{{ authStore.fullName }}</h6>
+            <v-icon class="ms-2 d-sm-block d-none">$menuDown</v-icon>
           </div>
         </v-btn>
       </template>

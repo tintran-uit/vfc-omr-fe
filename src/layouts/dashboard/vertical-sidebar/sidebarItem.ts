@@ -30,8 +30,22 @@ import {
   StopOutlined,
   BoxPlotOutlined,
   ChromeOutlined,
-  DeploymentUnitOutlined
+  DeploymentUnitOutlined,
+  BankOutlined,
+  PlusOutlined,
+  OrderedListOutlined,
 } from '@ant-design/icons-vue';
+
+import {
+  mdiChurch,
+  mdiChurchOutline,
+  mdiAccountGroup,
+  mdiChartLine,
+  mdiLogout,
+  mdiPlusCircleOutline,
+  mdiSquareEditOutline,
+  mdiChartBar
+} from '@mdi/js';
 
 export interface menu {
   id?: string;
@@ -54,6 +68,7 @@ export interface menu {
 const sidebarItem: menu[] = [
   // { header: 'Dashboard' },
   {
+    id: 'dashboard',
     title: 'mainMenu.myDashboard',
     icon: DashboardOutlined,
     to: '/',
@@ -77,7 +92,7 @@ const sidebarItem: menu[] = [
   //   to: '/test/report-form'
   // },
   {
-    title: 'mainMenu.users',
+    title: 'Pastors / leaders',
     icon: UserOutlined,
     to: 'components/buttons',
     getURL: true,
@@ -86,19 +101,19 @@ const sidebarItem: menu[] = [
     children: [
       {
         id: 'users-list',
-        title: 'mainMenu.userList',
+        title: 'List Pastor / leader\'s',
         to: '/users'
       },
       {
-        id: 'users-create',
-        title: 'mainMenu.userCreate',
-        to: '/users/create'
+        id: 'users-add',
+        title: 'Add new pastor / leader',
+        to: '/users/add'
       }
     ]
   },
   {
     title: 'mainMenu.churches',
-    icon: GoldOutlined,
+    icon: BankOutlined,
     to: 'components/buttons',
     getURL: true,
     type: 'external',
