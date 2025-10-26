@@ -3,6 +3,7 @@
 @use 'sass:meta';
 @use 'vuetify/lib/styles/tools/functions' as *;
 
+
 // This will false all colors which is not necessory for theme
 $color-pack: false;
 
@@ -137,4 +138,15 @@ $theme-colors: (
   info: var(--v-theme-info),
   warning: var(--v-theme-warning),
   error: var(--v-theme-error)
+);
+
+$chart-colors: (
+  attendance: var(--v-theme-chartAttendance),
+  cell-group: var(--v-theme-chartCellGroup),
+  chart-prayer-meeting: var(--v-theme-chartPrayerMeeting),
+  chart-liw-class: var(--v-theme-chartLiwClass),
+  local-giving: var(--v-theme-chartLocalGiving),
+  mfp-giving: var(--v-theme-chartMfpGiving),
+  total-giving: var(--v-theme-chartTotalGiving),
+  selected: var(--v-theme-chartSelected)
 );

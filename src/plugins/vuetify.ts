@@ -55,7 +55,17 @@ const light: ThemeDefinition = {
     linkedin: '#0e76a8',
     gray100: '#f5f5f5',
     primary200: '#a1d2ff',
-    secondary200: '#eeeeee'
+    secondary200: '#eeeeee',
+
+    chartAttendance: '#B5282E',
+    chartCellGroup: '#FFA500',
+    chartPrayerMeeting: '#64635B',
+    chartLiwClass: '#337DB9',
+
+    chartGiving: '#96639B',
+    chartMfp: '#C5893E',
+    
+    chartVisit: '#B5282E',
   }
 };
 

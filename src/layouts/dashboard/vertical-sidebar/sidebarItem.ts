@@ -63,6 +63,7 @@ export interface menu {
   disabled?: boolean;
   type?: string;
   subCaption?: string;
+  permissions?: string[];
 }
 
 const sidebarItem: menu[] = [
@@ -86,13 +87,13 @@ const sidebarItem: menu[] = [
     // ]
   },
   // {
-  //   id: 'relating',
+  //   id: 'my-church-profile',
   //   title: 'Enter Report',
   //   icon: MessageOutlined,
   //   to: '/test/report-form'
   // },
   {
-    title: 'Pastors / leaders',
+    title: 'mainMenu.users',
     icon: UserOutlined,
     to: 'components/buttons',
     getURL: true,
@@ -101,13 +102,27 @@ const sidebarItem: menu[] = [
     children: [
       {
         id: 'users-list',
-        title: 'List Pastor / leader\'s',
-        to: '/users'
+        title: 'mainMenu.userList',
+        to: '/users',
+        permissions: ['user.read']
+      },
+      {
+        id: 'users-overseer-list',
+        title: 'Overseers',
+        to: '/users/overseers',
+        permissions: ['user.read-overseer'],
       },
       {
         id: 'users-add',
-        title: 'Add new pastor / leader',
-        to: '/users/create'
+        title: 'mainMenu.userAdd',
+        to: '/users/create',
+        permissions: ['user.create'],
+      },
+      {
+        id: 'users-churches-add',
+        title: 'mainMenu.churchAddWithPastor',
+        to: '/churches/add-with-new-pastor',
+        permissions: ['user.create', 'church.create'],
       }
     ]
   },
@@ -122,13 +137,27 @@ const sidebarItem: menu[] = [
       {
         id: 'church-list',
         title: 'mainMenu.churchList',
-        to: '/churches'
+        to: '/churches',
+        permissions: ['church.read']
       },
       {
-        id: 'church-create',
-        title: 'mainMenu.churchCreate',
-        to: '/churches/create'
-      }
+        id: 'church-add',
+        title: 'mainMenu.churchAdd',
+        to: '/churches/add',
+        permissions: ['church.create'],
+      },
+      {
+        id: 'church-add-with-pastor',
+        title: 'mainMenu.churchAddWithPastor',
+        to: '/churches/add-with-new-pastor',
+        permissions: ['user.create', 'church.create'],
+      },
+      {
+        id: 'church-disabeded-list',
+        title: 'Disabled Churches',
+        to: '/churches/disabled-list',
+        permissions: ['church.enable'],
+      },
     ]
   },
   {
@@ -140,12 +169,19 @@ const sidebarItem: menu[] = [
     chipVariant: 'tonal',
     children: [
       {
-        id: 'default',
-        title: 'mainMenu.default',
+        id: 'watch-list-list',
+        title: 'mainMenu.watchListList',
+        permissions: ['watch-list.read']
       },
       {
-        id: 'analytics',
-        title: 'mainMenu.analytics',
+        id: 'watch-list-add',
+        title: 'mainMenu.watchListAdd',
+        permissions: ['watch-list.add']
+      },
+      {
+        id: 'watch-list-generate-reports',
+        title: 'mainMenu.watchListGenerateReports',
+        permissions: ['watch-list.report']
       }
     ]
   },

@@ -10,6 +10,7 @@ import VueTablerIcons from 'vue-tabler-icons';
 import Vue3Marquee from 'vue3-marquee';
 import * as Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
+import { useAuthStore } from '@/stores/authStore'
 
 // google-fonts
 import '@fontsource/roboto/400.css';
@@ -33,20 +34,25 @@ import '@fontsource/public-sans/600.css';
 import '@fontsource/public-sans/700.css';
 
 // Global component
-// import YesNoInput from './components/input/YesNoInput.vue';
 import TextInput from './components/input/TextInput.vue';
 import SelectInput from './components/input/SelectInput.vue';
 import PasswordInput from './components/input/PasswordInput.vue';
 import PhotoUploadInput from './components/input/PhotoUploadInput.vue';
 import ChurchSelectInput from './components/input/ChurchSelectInput.vue';
+import ChurchRegionSelectInput from './components/input/ChurchRegionSelectInput.vue';
+import ChurchNetworkSelectInput from './components/input/ChurchNetworkSelectInput.vue';
+import ChurchTypeSelectInput from './components/input/ChurchTypeSelectInput.vue';
 import YearMonthDayInput from './components/input/YearMonthDayInput.vue';
-import MultiTextInput from './components/input/MultiTextInput.vue';
 import YesNoInput from './components/input/YesNoInput.vue';
 import TextareaInput from './components/input/TextareaInput.vue';
 import CurrencySelectInput from './components/input/CurrencySelectInput.vue'
 import ServiceVenueSelectInput from './components/input/ServiceVenueSelectInput.vue'
 import GeographicalRegionSelectInput from './components/input/GeographicalRegionSelectInput.vue';
-import CityInput from './components/input/CityInput.vue';
+import CitySelectInput from './components/input/CitySelectInput.vue';
+import CountrySelectInput from './components/input/CountrySelectInput.vue';
+import LanguageSelectInput from './components/input/LanguageSelectInput.vue';
+import PastorSelectInput from './components/input/PastorSelectInput.vue';
+import ChangePassword from './components/input/ChangePassword.vue';
 
 //Mock Api data
 import './_mockApis';
@@ -70,13 +76,19 @@ app.component('PasswordInput', PasswordInput)
 app.component('ChurchSelectInput', ChurchSelectInput)
 app.component('PhotoUploadInput', PhotoUploadInput)
 app.component('YearMonthDayInput', YearMonthDayInput)
-app.component('MultiTextInput', MultiTextInput)
 app.component('YesNoInput', YesNoInput)
 app.component('TextareaInput', TextareaInput)
 app.component('CurrencySelectInput', CurrencySelectInput)
 app.component('ServiceVenueSelectInput', ServiceVenueSelectInput)
 app.component('GeographicalRegionSelectInput', GeographicalRegionSelectInput)
-app.component('CityInput', CityInput)
+app.component('CitySelectInput', CitySelectInput)
+app.component('CountrySelectInput', CountrySelectInput)
+app.component('LanguageSelectInput', LanguageSelectInput)
+app.component('ChurchTypeSelectInput', ChurchTypeSelectInput)
+app.component('ChurchRegionSelectInput', ChurchRegionSelectInput)
+app.component('ChurchNetworkSelectInput', ChurchNetworkSelectInput)
+app.component('PastorSelectInput', PastorSelectInput)
+app.component('ChangePassword', ChangePassword)
 
 
 fakeBackend();
@@ -91,9 +103,14 @@ app.use(Vue3Marquee);
 app.use(i18n);
 app.directive('maska', vMaska);
 app.use(VueApexCharts);
-app.use(vuetify).mount('#app');
+
 
 // load language từ localStorage
 import { useLanguageStore } from '@/stores/languageStore'
 const languageStore = useLanguageStore()
 languageStore.loadLanguage()  // <-- đây là bước quan trọng
+
+const authStore = useAuthStore()
+app.config.globalProperties.$can = (...args) => authStore.can(...args)
+
+app.use(vuetify).mount('#app');

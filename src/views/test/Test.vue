@@ -1,11 +1,14 @@
 <script setup lang="ts">
   import YesNoInput from "@/components/input/YesNoInput.vue";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import CurrencySelectInput from "@/components/input/CurrencySelectInput.vue";
 import GeographicalRegionSelectInput from "@/components/input/GeographicalRegionSelectInput.vue";
-import CityInput from "@/components/input/CityInput.vue";
+import CityInput from "@/components/input/CitySelectInput.vue";
+import { useTheme } from "vuetify";
 
+const theme = useTheme();
 
+// console.log('theme color', theme.current.value.colors.chartAttendance)
 
   const val = ref();
   const currencyVal = ref();
@@ -70,111 +73,212 @@ function onUpdate(value: string[]) {
     selected.value = [value[value.length - 1]];
   }
 }
+
+import RadialTree from "@/components/charts/RadialTree.vue";
+import JITChart from "@/components/charts/JITChart.vue";
+const data = {
+  name: "Root",
+  children: [
+    {
+      name: "Branch A",
+      children: [
+        { name: "Leaf A1" },
+        { name: "Leaf A2" }
+      ]
+    },
+    {
+      name: "Branch B",
+      children: [
+        { name: "Leaf B1" },
+        { name: "Leaf B2" }
+      ]
+    }
+  ]
+};
+import AttendanceLineChart from "@/components/charts/AttendanceLineChart.vue";
+import GivingChart from "@/components/charts/GivingChartzzz.vue";
+
+import TimeInput from "@/components/input/TimeInput.vue";
+import CitySelectInput from "@/components/input/CitySelectInput.vue";
+import ChangePassword from "@/components/input/ChangePassword.vue";
+import AttendanceChartWidget from "@/components/widgets/AttendanceChartWidget.vue";
+import VisitChart from "@/components/charts/VisitChart.vue";
+import AttachmentWidget from "@/components/widgets/AttachmentWidget.vue";
+import BibleVerseWidget from "@/components/widgets/BibleVerseWidget.vue";
+import ChurchDetailWidget from "@/components/widgets/ChurchDetailWidget.vue";
+import PastorLeaderWidget from "@/components/widgets/PastorLeaderWidget.vue";
+const timeVal = ref(null)
+
+const firstName = ref('Nguyen');
+const lastName = ref('Van A');
+const fullName = computed({
+  get() {
+    return `${firstName.value} ${lastName.value}`
+  },
+  set(newValue) {
+    // Khi gán fullName.value = 'Nguyễn Văn A'
+    const parts = newValue.split(' ')
+    firstName.value = parts[0] || ''
+    lastName.value = parts.slice(1).join(' ') || ''
+  },
+})
+
+// const fields = [
+//   {
+//     label: 'First Name',
+//     name: 'firstName'
+//   },
+//   {
+//     label: 'Last Name',
+//     name: 'lastName'
+//   },
+//   {
+//     label: 'Full Name',
+//     name: 'fullName'
+//   }
+// ]
+
+// const realModelValue = ref({})
+// const virtualModelValue = fields.map(field => {
+//   return computed({
+//     get: () => realModelValue.value[field.name] || '',
+//     set: (val) => {
+//       console.log('set', field.name, val)
+//       realModelValue.value[field.name] = val
+//     }
+//   })
+// })
+// console.log('virtualModelValue:', virtualModelValue)
+
+
+// // Hàm này trả về một computed động cho từng field
+// function getFieldModel(field) {
+//   return computed({
+//     get: () => realModelValue.value[field.name] ?? '',
+//     set: (val) => {
+//       realModelValue.value[field.name] = val
+//     }
+//   })
+// }
+
+
+// const fields = [
+//   { label: 'First Name', name: 'firstName' },
+//   { label: 'Last Name', name: 'lastName' },
+//   { label: 'Full Name', name: 'fullName' },
+// ]
+
+// const realModelValue = ref({})
+// const virtualModelValue = reactive({})
+
+// // ✅ Chuẩn bị trước các computed cho từng field
+// fields.forEach(field => {
+//   virtualModelValue[field.name] = computed({
+//     get: () => realModelValue.value[field.name] ?? '',
+//     set: (val) => {
+//       realModelValue.value[field.name] = val
+//     }
+//   })
+// })
+
+// import plantIcon from '@/assets/images/metrics/plant-01.svg';
+
+const visitData = [
+  { week: 1, visits: 4 },
+  { week: 2, visits: 6 },
+  { week: 3, visits: 3 },
+  { week: 4, visits: 5 },
+  { week: 5, visits: 0 },
+  { week: 6, visits: 2 },
+  { week: 7, visits: 7 },
+  { week: 8, visits: 4 },
+  { week: 9, visits: 8 },
+  { week: 10, visits: 6 },
+  { week: 11, visits: 9 },
+  { week: 12, visits: 3 },
+  { week: 13, visits: 5 },
+  { week: 14, visits: 4 },
+  { week: 15, visits: 6 },
+  { week: 16, visits: 2 },
+  { week: 17, visits: 7 },
+  { week: 18, visits: 5 },
+  { week: 19, visits: 8 },
+  { week: 20, visits: 4 },
+  { week: 21, visits: 6 },
+  { week: 22, visits: 3 },
+  { week: 23, visits: 5 },
+  { week: 24, visits: 4 },
+  { week: 25, visits: 6 },
+  { week: 26, visits: 7 },
+  { week: 27, visits: 8 },
+  { week: 28, visits: 5 },
+  { week: 29, visits: 6 },
+  { week: 30, visits: 4 },
+  { week: 31, visits: 3 },
+  { week: 32, visits: 7 },
+  { week: 33, visits: 5 },
+  { week: 34, visits: 8 },
+  { week: 35, visits: 4 },
+  { week: 36, visits: 9 },
+  { week: 37, visits: 6 },
+  { week: 38, visits: 7 },
+  { week: 39, visits: 3 },
+  { week: 40, visits: 4 },
+  { week: 41, visits: 5 },
+  { week: 42, visits: 2 },
+  { week: 43, visits: 6 },
+  { week: 44, visits: 3 },
+  { week: 45, visits: 4 },
+  { week: 46, visits: 7 },
+  { week: 47, visits: 5 },
+  { week: 48, visits: 8 },
+  { week: 49, visits: 3 },
+  { week: 50, visits: 4 },
+  { week: 51, visits: 6 },
+  { week: 52, visits: 5 },
+]
 </script>
 
 <template>
   <v-container>
-    <v-row
-        no-gutters
-    >
-      <!-- <v-col cols="6" sm="3" lg="3" v-for="n in 6" -->
-             <!-- :key="n"> -->
-        <!-- <v-text-field label="firstName" /> -->
-      <!-- </v-col> -->
+    <AttendanceChartWidget church-id="76" />
+    <!-- <PastorLeaderWidget :user-id="4" /> -->
+    <!-- <ChurchDetailWidget church-id="76" /> -->
+    <!-- <AttendanceWidget /> -->
 
-      <v-col>
-        <CityInput v-model="vmodel" />
-          <v-combobox
-    v-model="selected"
-    :items="items"
-    label="Chọn hoặc nhập"
-    multiple
-    clearable
-    chips
-    closable-chips
-    @update:model-value="onUpdate"
-  />
+    <!-- <AttachmentWidget :church-id="76" /> -->
+     <!-- <BibleVerseWidget /> -->
 
-        <!-- <YesNoInput v-model="val" /> -->
-        <!-- <CurrencySelectInput v-model="currencyVal" /> -->
-        <!-- <v-combobox
-            v-model="value"
-            :items="['one', 'two', 'three']"
-            density="comfortable"
-            label="Comfortable"
-          ></v-combobox> -->
+    <!-- <VisitChart :data="visitData" :year="2024" /> -->
+    <!--
+    <pre>
+      realModelValue: {{ realModelValue }}
+    </pre>
+    <pre>
+      VirtualModel {{ virtualModelValue }}
+    </pre>
+    <div v-for="(field, index) in fields" :key="field.name">
+      <v-text-field v-model="virtualModelValue[index]" :label="field.label" />
+    </div>
+  -->
 
-         <!-- <v-autocomplete
-    v-model="value"
-    v-model:search="search"
-    :items="filtered"
-    item-title="fake ? '___empty___' : item"
-    item-value="fake ? '' : item"
-    hide-no-data
-    label="Chọn option"
-    :menu-props="{ closeOnContentClick: false }"
-  >
-    <template #item="{ item }">
-      <template v-if="item.raw.fake">
-        <v-list-item>
-          <v-list-item-title>
-            Không tìm thấy: <strong>{{ search }}</strong>
-          </v-list-item-title>
-          <template #append>
-            <v-btn size="small" color="primary" @click.stop="addNew">+ Thêm</v-btn>
-          </template>
-        </v-list-item>
-      </template>
-      <template v-else>
-        <v-list-item>
-          <v-list-item-title>{{ item.raw }}</v-list-item-title>
-        </v-list-item>
-      </template>
-    </template>
-  </v-autocomplete> -->
+    <!-- <CitySelectInput /> -->
+    <!-- <AttendanceLineChart /> -->
+    <!-- <RadialTree :data="data" :width="800" :height="800" /> -->
+      <!-- <GivingChart />
+     <JITChart /> -->
 
-<!-- <pre>{{ filtered }}</pre>
-<v-combobox
-    v-model="value"
-    v-model:search="search"
-    :items="filtered"
-    item-title="title"
-    item-value="value"
-    hide-no-data
-    label="Chọn hoặc thêm"
-    :menu-props="{ closeOnContentClick: false }"
-  >
-    <template #item="{ item }">
-      <template v-if="item.raw.add">
-        <v-list-item>
-          <v-list-item-title>
-            Thêm mới: <strong>{{ item.raw.title }}</strong>
-          </v-list-item-title>
-          <template #append>
-            <v-btn size="small" color="primary" @click.stop="addNew(item.raw.title)">
-              + Add
-            </v-btn>
-          </template>
-        </v-list-item>
-      </template>
-      <template v-else>
-        <v-list-item>
-          <v-list-item-title>{{ item.raw.title }}</v-list-item-title>
-        </v-list-item>
-      </template>
-    </template>
-  </v-combobox> -->
-
-
-        <div style="max-width: 500px;">
-            
-        </div>
-        <pre>
-            {{ model }}
-        </pre>
-      </v-col>
-    </v-row>
+     <!-- <TimeInput v-model="timeVal" /> -->
   </v-container>
+
+  <!-- <div class="my-box">
+    mai box nè
+  </div>
+  <p>
+    <v-btn class="myBtn">
+      Button
+    </v-btn>
+  </p> -->
 </template>
 
 <style scoped lang="scss">

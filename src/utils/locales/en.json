@@ -1,109 +1,4 @@
 {
-  "Dashboard": "Dashboard",
-  "Default": "Default",
-  "Analytics": "Analytics",
-
-  "Widget": "Widget",
-  "Statistics": "Statistics",
-  "Data": "Data",
-  "Chart": "Chart",
-
-  "Components": "Components",
-
-  "Applications": "Applications",
-  "Chat": "Chat",
-  "Calendar": "Calendar",
-  "Kanban": "Kanban",
-  "Customer": "Customer",
-  "Customer List": "Customer List",
-  "Create Invoice": "Create Invoice",
-  "Order Details": "Order Details",
-  "Order List": "Order List",
-  "Product List": "Product List",
-  "Product Review": "Product Review",
-  "Invoice": "Invoice",
-  "Create": "Create",
-  "Details": "Details",
-  "List": "List",
-  "Edit": "Edit",
-  "Users": "Users",
-  "Social Profile": "Social Profile",
-  "Account Profile": "Account Profile",
-  "Profile 01": "Profile 01",
-  "Profile 02": "Profile 02",
-  "Profile 03": "Profile 03",
-  "User Profile": "User Profile",
-  "Cards": "Cards",
-  "Style 01": "Style 01",
-  "Style 02": "Style 02",
-  "Style 03": "Style 03",
-  "Mail": "Mail",
-  "Contact": "Contact",
-  "Card": "Card",
-  "E-Commerce": "E-Commerce",
-  "Products": "Products",
-  "Product Detail": "Product Detail",
-  "Add New Product": "Add New Product",
-  "Checkout": "Checkout",
-
-  "Forms": "Forms",
-  "Plugins": "Plugins",
-  "Editor": "Editor",
-  "Mask": "Mask",
-  "Captcha": "Captcha",
-  "Dropzone": "Dropzone",
-  "Clipboard": "Clipboard",
-  "Layouts": "Layouts",
-  "Multi Columns Form": "Multi Columns Form",
-  "Action Bar": "Action Bar",
-  "Sticky Action Bar": "Sticky Action Bar",
-  "Tables": "Tables",
-  "Basic Table": "Basic Table",
-  "Dark Table": "Dark Table",
-  "Density Table": "Density Table",
-  "Height Table": "Height Table",
-  "Fixed Header Table": "Fixed Header Table",
-  "Charts": "Charts",
-  "Org Charts": "Org Charts",
-  "Apex Charts": "Apex Charts",
-  "Form Validation": "Form Validation",
-
-  "Utilities": "Utilities",
-  "Icons": "Icons",
-  "Ant design Icons": "Ant design Icons",
-  "Tabler Icons": "Tabler Icons",
-  "Material Icons": "Material Icons",
-
-  "Pages": "Pages",
-  "Authentication": "Authentication",
-  "Login": "Login",
-  "Register": "Register",
-  "Forgot Password": "Forgot Password",
-  "Check Mail": "Check Mail",
-  "Reset Password": "Reset Password",
-  "Code Verification": "Code Verification",
-  "Pricing": "Pricing",
-  "Maintenance": "Maintenance",
-  "Error 404": "Error 404",
-  "Error 500": "Error 500",
-  "Coming soon": "Coming soon",
-  "Under Construction": "Under Construction",
-  "Landing page": "Landing page",
-  "Contact Us": "Contact Us",
-  "FAQs": "FAQs",
-  "Privacy Policy": "Privacy Policy",
-
-  "Others": "Others",
-  "Menu levels": "Menu levels",
-  "Level 1": "Level 1",
-  "Level 2": "Level 2",
-  "Level 3": "Level 3",
-  "Sub Caption": "Sub Caption",
-  "caption title": "caption title",
-  "Disabled Menu": "Disabled Menu",
-  "Sample Page": "Sample Page",
-  "Documentation": "Documentation",
-  "Road Map": "Road Map",
   "validation": {
     "required": "The {field} field is required.",
     "email": "Please enter a valid email address.",
@@ -121,7 +16,9 @@
     "regex": "The {field} format is invalid.",
     "date": "The {field} is not a valid date.",
     "after": "The {field} must be after {date}.",
-    "before": "The {field} must be before {date}."
+    "before": "The {field} must be before {date}.",
+    "password": "The {field} must be at least 6 characters and contain both letters and numbers.",
+    "repeatPassword": "The {field} does not match the new password."
   },
   "common": {
     "year": "Year",
@@ -274,22 +171,34 @@
   },
   "mainMenu": {
     "myDashboard": "My Dashboard",
-    "users": "Pastor / leaders",
-    "userList": "List pastor / leader's",
-    "userCreate": "Add new pastor / leader",
+    "users": "Users",
+    "userList": "All",
+    "userAdd": "Add New Pastor",
     "churches": "Churches",
     "churchList": "List Churches",
-    "churchCreate": "Add new Church",
-    "relating": "Relating",
-    "faq": "FAQ",
+    "churchAdd": "Add New Church",
+    "churchAddWithPastor": "Add New Church & New Pastor",
     "visitReports": "Visit Reports",
     "myDirectory": "My Directory",
     "churchReportingStatus": "Churches Reporting Status",
     "churchReport": "Church Report",
-    "generateReports": "Generate Reports",
     "watchList": "Watch List",
-    "default": "Default",
-    "analytics": "Analytics"
+    "watchListList": "View My Watchlists",
+    "watchListAdd": "Add new Watchlist",
+    "watchListgenerateReport": "Generate Reports",
+    "generateReports": "Generate Reports",
+
+    
+    "relating": "Relating",
+    "relatingSearch": "Search",
+    "relatingViewEdit": "View/Edit My Relating Details",
+    "relatingMultiUserRestrictions": "Multi-User Restrictions",
+
+    "faq": "FAQ",
+    "faqList": "List FAQ",
+    "faqAdd": "Add FAQ"
+
+
   },
   "dashboard": {
     "people": "People",
@@ -298,15 +207,18 @@
     "churchPlants": "Church Plants"
   },
   "user": {
-    "listTitle": "List pastor / leader's",
-    "addTitle": "Add new pastor / leader",
-    "editTitle": "Edit paster / leader #{id}"
+    "listTitle": "List of Users",
+    "addTitle": "Add new User",
+    "editTitle": "Edit User #{id}",
+    "listOverseerTitle": "List of Overseers"
   },
   "church": {
     "listTitle": "List churches",
-    "addTitle": "Create new church",
+    "addTitle": "Add new church",
     "editTitle": "Edit church #{id}",
-    "cloneTitle": "Clone church #{id}"
+    "cloneTitle": "Clone church #{id}",
+    "addWithNewUserTitle": "Add with new pastor",
+    "listDisabledTitle": "Disabled Churches"
   },
   "message": {
     "errorTitle": "An error occurred"
@@ -318,7 +230,9 @@
     "email": "Email",
     "role": "Role",
     "country": "Country",
-    "searchName": "Search by Name"
+    "searchName": "Search by Name",
+    "title": "Title",
+    "currentAssignments": "Current Assigments"
   },
   "churchTable": {
     "id": "ID",
@@ -335,8 +249,40 @@
   "noData": "No data available",
   "logout": "Logout",
   "addNew": "Add new",
+  "cancel": "Cancel",
   "profile": {
     "editProfile": "Edit Profile",
     "viewProfile": "View Profile"
+  },
+  "weekDays": {
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday"
+  },
+  "timeSuffixes": {
+    "am": "am",
+    "pm": "pm"
+  },
+  "labelService": {
+    "name": "Name",
+    "dayName": "Day Name",
+    "time": "Time"
+  },
+  "dataTable": {
+    "buttonEditTitle": "Edit",
+    "buttonDeleteTitle": "Delete",
+    "buttonCloneTitle": "Clone",
+    "buttonAssignOverseerTitle": "Assign Overseer",
+    "buttonDisableTitle": "Disable",
+    "buttonEnableTitle": "Enable"
+  },
+  "userLabel": {
+    "newPassword": "New password",
+    "repeatNewPassword": "Repeat new password",
+    "oldPassword": "Old password"
   }
 }

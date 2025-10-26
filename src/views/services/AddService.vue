@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import createChurchFormSchema from '@/form-schemas/createChurchFormSchema';
-import {churchService} from '@/services/churchService';
+import formSchema from '@/form-schemas/addServiceFormSchema';
+import {userService} from '@/services/userService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from 'vue-router'
 
-const options = ref({});
-const router = useRouter();
+const router = useRouter()
+const options = ref({})
 
 const loadOptions = async function () {
-  options.value = await churchService.getFormData();
+  options.value = await userService.getFormData();
 }
 
 const handleSubmit = async (formData) => {
   try {
-    await churchService.create(formData)
+    await userService.create(formData)
 
-    router.push({ name: 'ChurchList' });
+    router.push({ name: 'UserList' });
   } catch (e) {
     console.log('error', e);
   }
@@ -33,24 +33,24 @@ onMounted(() => {
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('church.addTitle') }}</h1>
+          <h1>{{ $t('user.addTitle') }}</h1>
           <v-btn 
             color="primary" 
             variant="outlined" 
             @click="router.push({ name: 'UserList' })"
           >
-            <v-icon>$arrowLeft</v-icon> {{$t('backToList')}}
+            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>
         </v-col>
       </v-row>
 
       <v-row justify="center">
-        <v-col cols="12" md="12" lg="12">
+        <v-col cols="12" md="10" lg="12">
           <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
             <slot name="form">
               <DynamicFormDefault
                 :options="options"
-                :form-schema="createChurchFormSchema"
+                :form-schema="formSchema"
                 @submit="handleSubmit"
               />
             </slot>

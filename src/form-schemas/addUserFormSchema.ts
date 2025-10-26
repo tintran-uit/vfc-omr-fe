@@ -1,4 +1,5 @@
-const schemaForm = {
+export const createFormSchema = () => ({
+    name: 'Pastor / Assist. Pastor / Admin. Data',
     // initData: () => ({
     //     username: 'hai01',
     //     password: '123456',
@@ -25,7 +26,7 @@ const schemaForm = {
             label: 'label.user.password',
             name: 'password',
             description: 'fieldDescription.user.password',
-            rules: ['required'],
+            rules: ['required', 'min:6'],
             type: 'PasswordInput'
         },
         {
@@ -89,12 +90,7 @@ const schemaForm = {
             label: 'label.user.country',
             name: 'country_id',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'countries',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'CountrySelectInput',
         },
         {
             label: 'label.user.sensiveNation',
@@ -108,12 +104,7 @@ const schemaForm = {
             name: 'language_id',
             desciprion: 'fieldDescription.user.language',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'languages',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'LanguageSelectInput',
         },
         {
             label: 'label.user.mobilePhone',
@@ -129,7 +120,7 @@ const schemaForm = {
             type: 'SelectInput',
             optionName: 'credentials',
             attrs: {
-                
+                mode: 'future'
             }
         },
         {
@@ -146,6 +137,9 @@ const schemaForm = {
             label: 'label.user.credentialsExpiryDate',
             name: 'credentials_expiry_date',
             type: 'YearMonthDayInput',
+            attrs: {
+                mode: 'future'
+            }
         },
         {
             label: 'label.user.profileComments',
@@ -153,7 +147,4 @@ const schemaForm = {
             type: 'TextareaInput',
         },
     ]
-}
-
-
-export default schemaForm;
+})

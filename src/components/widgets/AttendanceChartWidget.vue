@@ -1,0 +1,186 @@
+<script setup lang="ts">
+import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
+import CardHeader from '../shared/CardHeader.vue';
+import { graphService } from '@/services/graphService';
+import AttendanceChart from '@/components/charts/AttendanceChart.vue'
+import GivingChart from '@/components/charts/GivingChart.vue';
+import VisitChart from '@/components/charts/VisitChart.vue';
+import { PERIOD_12_MONTHS, PERIOD_24_MONTHS } from '@/constants/graphConstant';
+
+const periodOptions = [
+  {
+    value: PERIOD_12_MONTHS,
+    title: "Last 12 months"
+  },
+  {
+    value: PERIOD_24_MONTHS,
+    title: "Last 24 months"
+  }
+]
+const periodModel = ref(PERIOD_12_MONTHS)
+
+const onChangePeriod = (val) => {
+  console.log('change period to: ', val)
+}
+
+const tab = ref('profile')
+
+const props = withDefaults(
+  defineProps<{
+    churchId: number
+  }>(),
+  {}
+)
+
+const emit = defineEmits<{
+  
+}>()
+
+const formatAttendanceData = (weekKeys, attendanceValues, cellGroupValues, prayerMeetingValues, liwClassValues, labels) => {
+  return weekKeys.map(({Year, Week}, index) => {
+    return {
+      week: Week,
+      year: Year,
+      label: labels[index],
+      attendance: attendanceValues[index],
+      cellGroup: cellGroupValues[index],
+      prayerMeeting: prayerMeetingValues[index],
+      liwClass: liwClassValues[index] 
+    }
+  });
+}
+
+const formatGiving = (weekKeys, givingUsdValues, givingLocalCurrencyValues, mfpUsdValues, mfpLocalCurrencyValues, labels) => {
+  return weekKeys.map(({Year, Week}, index) => {
+    return {
+      week: Week,
+      year: Year,
+      label: labels[index],
+      givingUsd: givingUsdValues[index],
+      givingLocalCurrency: givingLocalCurrencyValues[index],
+      mfpUsd: mfpUsdValues[index],
+      mfpLocalCurrency: mfpLocalCurrencyValues[index],
+    }
+  });
+}
+
+const formatVisitData = (weekKeys, visitSummary, labels) => {
+  return weekKeys.map(({Year, Week}, index) => {
+    return {
+      week: Week,
+      year: Year,
+      label: labels[index],
+      visit: visitSummary[index],
+    }
+  });
+}
+
+const apiData = ref(null);
+const listChartDataByChurch = computed(() => {
+  if (apiData.value == null) {
+    return [];
+  }
+
+  const { week_keys: weekKeys, dates, data} = apiData.value;
+
+  const list = []
+
+  data.forEach(church => {
+    const chartDataByChurch = {};
+
+    chartDataByChurch.church_id = church.church_id;
+    chartDataByChurch.church_name = church.church_name;
+    
+    chartDataByChurch.attendanceData = formatAttendanceData(
+      weekKeys,
+      church.attendance_values,
+      church.cell_group_values,
+      church.prayer_meeting_values,
+      church.liw_class_values,
+      dates
+    );
+
+    chartDataByChurch.givingData = formatGiving(
+      weekKeys,
+      church.giving_in_local_currency,
+      church.giving_in_usd,
+      church.mfp_giving_in_local_currency,
+      church.mfp_giving_in_usd,
+      dates
+    );
+
+    chartDataByChurch.visitData = formatVisitData(
+      weekKeys,
+      church.visit_summary,
+      dates
+    );
+
+    list.push(chartDataByChurch)
+  });
+  
+  return list
+})
+
+onMounted(async () => {
+  apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId);
+})
+
+</script>
+
+<template>
+
+   <CardHeader title="Attendance Graph">
+    <!-- Tabs -->
+    <v-tabs v-model="tab" color="primary">
+      <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
+        <v-tab :value="`chart-${chartDataByChurch.church_id}`">{{ chartDataByChurch.church_name }}</v-tab>
+      </template>
+    </v-tabs>
+
+    <v-divider></v-divider>
+
+    <v-window v-model="tab">
+      <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
+        <v-window-item :value="`chart-${chartDataByChurch.church_id}`">
+        
+          <template #default>
+            <AttendanceChart
+              :data="chartDataByChurch.attendanceData"
+              title="Attendance – Last 12 Months"
+              />
+
+              <GivingChart
+                :data="chartDataByChurch.givingData"
+                title="Giving – Last 12 Months"
+                />
+
+                <VisitChart
+                  :data="chartDataByChurch.visitData"
+                  title="Visit - last 12 months"
+                  />
+          </template>
+      </v-window-item>
+      </template>
+    </v-window>
+    
+
+    <!-- 👇 Đây là slot header (tùy chọn) -->
+    <template #header>
+      <div class="d-flex align-center justify-end" style="min-width: 180px;">
+        <SelectInput
+          v-model="periodModel"
+          :items="periodOptions"
+          @change="onChangePeriod"
+          density="compact"
+          hide-details
+          style="max-width: 160px;"
+          :clearable="false"
+        />
+      </div>
+    </template>
+   </CardHeader>
+</template>
+
+<style scoped>
+
+</style>

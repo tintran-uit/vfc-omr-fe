@@ -30,7 +30,10 @@ import {
   mdiSquare,
   mdiSquareEditOutline,
   mdiChartBar,
-  mdiLogout
+  mdiLogout,
+  mdiEarthPlus,
+  mdiCancel,
+  mdiCheck
 } from '@mdi/js';
 import { mdi } from 'vuetify/iconsets/mdi-svg';
 
@@ -68,5 +71,8 @@ export const icons = {
 
   swapHorizontal: mdiSwapHorizontal,
   plusCircleOutline: mdiPlusCircleOutline,
-  logout: mdiLogout
+  logout: mdiLogout,
+  earthPlus: mdiEarthPlus,
+  cancel: mdiCancel,
+  check: mdiCheck
 };

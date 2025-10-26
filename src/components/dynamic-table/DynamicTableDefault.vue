@@ -28,12 +28,21 @@ const props = withDefaults(
     // options: any,
     // onOptionsChange: (opts: any) => void,
     // onAction: (action: string, item: any) => void
-    enabledActions?:string[]
+    enabledActions?:string[],
+    actionTitles?: Record<string, string>
   }>(),
   {
     totalItems: 0,
     itemsPerPage: 25,
-    enabledActions: []
+    enabledActions: [],
+    actionTitles: {
+      edit: "dataTable.buttonEditTitle",
+      delete: "dataTable.buttonDeleteTitle",
+      clone: "dataTable.buttonCloneTitle",
+      assignOverseer: "dataTable.buttonAssignOverseerTitle",
+      disable: "dataTable.buttonDisableTitle",
+      enable: "dataTable.buttonEnableTitle",
+    }
   }
 )
 
@@ -43,8 +52,12 @@ const emit = defineEmits<{
   (e: 'update:options', value: any): void
   (e: 'action', payload: { action: string, item: any }): void
   (e: 'filter-change', value: any): void
-  (e: 'action:update', value: any): void
+  (e: 'action:edit', value: any): void
   (e: 'action:delete', value: any): void
+  (e: 'action:assignOverseer', value: any): void
+  (e: 'action:clone', value: any): void
+  (e: 'action:disable', value: any): void
+  (e: 'action:enable', value: any): void
 }>()
 
 // Search
@@ -82,8 +95,8 @@ const buildOptions = () => {
 }
 
 // Handle actions
-const handleActionUpdate = (item) => {
-  emit('action:update', item)
+const handleActionEdit = (item) => {
+  emit('action:edit', item)
 }
 
 const handleActionDelete = async (item) => {
@@ -92,6 +105,18 @@ const handleActionDelete = async (item) => {
 
 const handleActionClone = (item) => {
   emit('action:clone', item)
+}
+
+const handleAssignOverseerAction = (item) => {
+  emit('action:assignOverseer', item)
+}
+
+const handleDisableAction = async (item) => {
+  emit('action:disable', item)
+}
+
+const handleEnableAction = async (item) => {
+  emit('action:enable', item)
 }
 
 onMounted(() => {
@@ -178,9 +203,41 @@ onMounted(() => {
           <template v-for="(header, index) in headers" :key="item.id">
             <td>
               <div v-if="header.key === 'actions'" class="d-flex ga-2 text-no-wrap">
-                <v-btn icon="$edit" size="x-small" @click="handleActionUpdate(item)" v-if="enabledActions.includes('update')" />
-                <v-btn icon="$delete" size="x-small" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
-                <v-btn icon="$copy" size="x-small" @click="handleActionClone(item)" v-if="enabledActions.includes('clone')" />
+                <v-tooltip :text="$t('dataTable.buttonEditTitle')">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" icon="$edit" size="x-small" @click="handleActionEdit(item)" v-if="enabledActions.includes('edit')" />
+                  </template>
+                </v-tooltip>
+                
+                <v-tooltip :text="$t('dataTable.buttonDeleteTitle')">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" icon="$delete" size="x-small" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
+                  </template>
+                </v-tooltip>
+                
+                <v-tooltip :text="$t('dataTable.buttonCloneTitle')">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" icon="$copy" size="x-small" @click="handleActionClone(item)" v-if="enabledActions.includes('clone')" />
+                  </template>
+                </v-tooltip>
+                
+                <v-tooltip :text="$t('dataTable.buttonAssignOverseerTitle')">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" icon="$earthPlus" size="x-small" @click="handleAssignOverseerAction(item)" v-if="enabledActions.includes('assignOverseer')" />
+                  </template>
+                </v-tooltip>
+                
+               <v-tooltip :text="$t('dataTable.buttonDisableTitle')">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" icon="$cancel" size="x-small" @click="handleDisableAction(item)" v-if="enabledActions.includes('disable')" />
+                  </template>
+               </v-tooltip>
+
+                <v-tooltip :text="$t('dataTable.buttonEnableTitle')">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" icon="$check" size="x-small" @click="handleEnableAction(item)" v-if="enabledActions.includes('enable')" />
+                  </template>
+                </v-tooltip>
               </div>
               <slot v-else :name="`item.${header.key}`" :item="item" :value="item[header.key]">
                 {{ item[header.key] }}

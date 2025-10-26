@@ -7,8 +7,47 @@ import NavGroup from './NavGroup/NavGroup.vue';
 import NavItem from './NavItem/NavItem.vue';
 import NavCollapse from './NavCollapse/NavCollapse.vue';
 
+import { useAuthStore } from '@/stores/authStore';
+
+function filterNavigationByPermissions(items, canFn) {
+  return items
+    .map(item => {
+      // Lọc đệ quy children
+      const filteredChildren = item.children
+        ? filterNavigationByPermissions(item.children, canFn)
+        : undefined;
+
+      // ✅ Nếu không có permissions => mặc định cho phép
+      let hasPermission = true;
+      if (item.permissions) {
+        if (Array.isArray(item.permissions)) {
+          hasPermission = item.permissions.every(perm => canFn(perm));
+        } else {
+          hasPermission = canFn(item.permissions);
+        }
+      }
+
+      const hasChildren = filteredChildren && filteredChildren.length > 0;
+
+      // Loại item nếu:
+      // - Không có quyền
+      // - Và không có children hợp lệ
+      if (!hasPermission && !hasChildren) {
+        return null;
+      }
+
+      return {
+        ...item,
+        children: hasChildren ? filteredChildren : undefined,
+      };
+    })
+    .filter(Boolean);
+}
+
+const authStore = useAuthStore();
+const filteredSidebarItems = filterNavigationByPermissions(sidebarItems, authStore.can);
 const customizer = useCustomizerStore();
-const sidebarMenu = shallowRef(sidebarItems);
+const sidebarMenu = shallowRef(filteredSidebarItems);
 </script>
 
 <template>

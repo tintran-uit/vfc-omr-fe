@@ -8,32 +8,20 @@ const {t} = useI18n()
 
 const modelValue = defineModel()
 
-// const props = defineProps({
-//   name: {type: String, default: ''},
-//   label: {type: String, default: ''},
-//   type: {type: String, default: 'text'},
-//   placeholder: {type: String, default: ''},
-//   rules: {type: [String, Object, Function], default: ''},
-// })
-
-// const props = defineProps<{
-//   name?: string,
-//   label?: string,
-//   type?: string,
-//   placeholder?: string,
-//   rules?: string | object | Function,
-// }>()
-
 const props = withDefaults(
   defineProps<{
     name?: string,
     label?: string,
     type?: string,
     placeholder?: string,
-    rules?: (string | ((v: any) => boolean | string))[]
+    rules?: (string | ((v: any) => boolean | string))[],
+    mode?: 'past' | 'future' | 'range'
+    minYear?: Number
+    maxYear?: Number
   }>(),
   {
     rules: () => [],
+    mode: 'past',
   }
 )
 
@@ -49,26 +37,67 @@ const modelDay = ref<number | null>(null);
 
 
 const currentYear = new Date().getFullYear();
-const minYear = currentYear - 120;
-const maxYear = currentYear - 6;
-const listYears = range(minYear, maxYear).reverse()
 
-const listMonths = range(1, 12).reduce((acc, val) => {
-  acc.push({
-    value: val,
-    title: t(`monthsShort.${val}`),
-  })
+// ✅ Tính range năm theo mode
+const listYears = computed(() => {
+  let minYear, maxYear, years
 
-  return acc;
-}, []);
-
-const listDays = computed(() => {
-  if (!modelYear.value || !modelMonth.value) {
-    return range(1, 31);
+  switch (props.mode) {
+    case 'future':
+      minYear = currentYear
+      maxYear = currentYear + 120
+      years = range(minYear, maxYear) // tăng dần (2025 → 2145)
+      break
+    case 'range':
+      minYear = props.minYear ?? currentYear - 120
+      maxYear = props.maxYear ?? currentYear + 120
+      years = range(minYear, maxYear)
+      break
+    case 'past':
+    default:
+      minYear = currentYear - 120
+      maxYear = currentYear
+      years = range(minYear, maxYear).reverse() // giảm dần (2024 → 1904)
+      break
   }
 
-  return range(1, daysInMonth(modelYear.value, modelMonth.value));
-});
+  return years
+})
+
+// ✅ Tháng
+const listMonths = range(1, 12).map((val) => ({
+  value: val,
+  title: t(`monthsShort.${val}`),
+}))
+
+// ✅ Ngày
+const listDays = computed(() => {
+  if (!modelYear.value || !modelMonth.value) {
+    return range(1, 31)
+  }
+
+  return range(1, daysInMonth(modelYear.value, modelMonth.value))
+})
+// const minYear = currentYear - 120;
+// const maxYear = currentYear - 6;
+// const listYears = range(minYear, maxYear).reverse()
+
+// const listMonths = range(1, 12).reduce((acc, val) => {
+//   acc.push({
+//     value: val,
+//     title: t(`monthsShort.${val}`),
+//   })
+
+//   return acc;
+// }, []);
+
+// const listDays = computed(() => {
+//   if (!modelYear.value || !modelMonth.value) {
+//     return range(1, 31);
+//   }
+
+//   return range(1, daysInMonth(modelYear.value, modelMonth.value));
+// });
 
 watch(
   modelValue,
@@ -91,6 +120,8 @@ watch(
 watch([modelYear, modelMonth, modelDay], ([newYear, newMonth, newDay]) => {
   if (newYear && newMonth && newDay) {
     modelValue.value = `${newYear}-${String(newMonth).padStart(2, '0')}-${String(newDay).padStart(2, '0')}`;
+  } else {
+    modelValue.value = null;
   }
 });
 

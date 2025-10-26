@@ -4,20 +4,16 @@ export const useMessageStore = defineStore('message', {
   state: () => ({
     loading: false,
     errorMessage: null,
-    message: null,
-    dialog: false,
     errorDialog: false,
-    errorMessage: null,
+    infoMessage: null,
+    infoDialog: false,
     confirmOpen: false,
     confirmMessage: null,
   }),
   actions: {
-    showMessage(message) {
-      this.message = message;
-      this.dialog = true;
-    },
-    showSuccessMessage(message) {
-      this.showMessage(message);
+    info(message) {
+      this.infoMessage = message;
+      this.infoDialog = true;
     },
     error(message) {
       this.errorMessage = message;

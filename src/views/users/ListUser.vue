@@ -6,7 +6,7 @@ import {userService} from '@/services/userService.ts';
 import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/userTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
-import UiTableCard from '@/components/shared/UiTableCard.vue';
+import { useAuthStore } from '@/stores/authStore';
 
 const router = useRouter()
 const dialogStore = useDialogStore()
@@ -18,6 +18,20 @@ const searches = ref([])
 const sortBy = ref([
   { key: 'id', order: 'desc' }
 ])
+const authStore = useAuthStore();
+const actions = computed(() => {
+  const actions = [];
+
+  if (authStore.can('user.update')) {
+    actions.push('edit');
+  }
+
+  if (authStore.can('user.delete')) {
+    actions.push('delete');
+  }
+  
+  return actions;
+})
 
 const fetchData = async function (options = {}) {
   const data = await userService.getList(
@@ -36,8 +50,8 @@ const buildOptions = () => {
   }
 }
 
-const onUpdate = (item: any) => {
-  router.push({ name: 'UserUpdate', params: { id: item.id } })
+const onEdit = (item: any) => {
+  router.push({ name: 'UserEdit', params: { id: item.id } })
 }
 
 const onDelete = async (item: any) => {
@@ -69,7 +83,7 @@ const onUpdateOptions = (options) => {
             <v-btn 
               color="primary" 
               variant="outlined" 
-              @click="router.push({ name: 'UserCreate' })"
+              @click="router.push({ name: 'UserAdd' })"
             >
               <v-icon>$plus</v-icon> {{ $t('addNew') }}
             </v-btn>
@@ -92,9 +106,9 @@ const onUpdateOptions = (options) => {
           :headers="tableSchema.headers"
           :searches-config="tableSchema.searches"
           :items="items"
-          :enabled-actions="['update']"
+          :enabled-actions="actions"
           @action:delete="onDelete"
-          @action:update="onUpdate"
+          @action:edit="onEdit"
           @update:options="onUpdateOptions"
         >
         <template v-slot:item.name="{ item }">

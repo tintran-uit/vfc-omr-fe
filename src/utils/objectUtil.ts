@@ -25,54 +25,13 @@
 //   target[lastKey] = value ?? (typeof(defaultValue) === 'function' ? defaultValue() : defaultValue)
 // }
 
-// export const getNestedValue = (obj, path, defaultValue = null) => {
-//   const keys = path.split('.');
-//   let target = obj;
-
-//   keys.forEach((key, index) => {
-//     if (target[key] === undefined) {
-//       // Khởi tạo field nếu chưa tồn tại
-//       target[key] = (typeof defaultValue === 'function' && index === keys.length - 1) 
-//         ? defaultValue() 
-//         : defaultValue;
-//     }
-//     target = target[key];
-//   });
-
-//   return target;
-// }
-
-// export const setNestedValue = (obj, path, value, defaultValue = null) => {
-//   const keys = path.split('.');
-//   const lastKey = keys.pop();
-//   const target = keys.reduce((o, k) => {
-//     if (!o[k]) o[k] = {}; // khởi tạo các nested object
-//     return o[k];
-//   }, obj);
-
-//   // Gán giá trị, nếu value undefined thì dùng defaultValue
-//   target[lastKey] = value !== undefined 
-//     ? value 
-//     : (typeof defaultValue === 'function' ? defaultValue() : defaultValue);
-// }
-
-const castValue = (value: any, type?: string) => {
-  if (value == null) return ''; // null hoặc undefined → empty string
-  switch (type) {
-    case 'number': return Number(value);
-    case 'string': return String(value);
-    case 'boolean': return Boolean(value);
-    case 'date': return new Date(value);
-    default: return value;
-  }
-}
-
-export const getNestedValue = (obj: any, path: string, defaultValue: any = '', type?: string) => {
+export const getNestedValue = (obj, path, defaultValue = null) => {
   const keys = path.split('.');
   let target = obj;
 
   keys.forEach((key, index) => {
-    if (target[key] == null) {
+    if (target[key] === undefined) {
+      // Khởi tạo field nếu chưa tồn tại
       target[key] = (typeof defaultValue === 'function' && index === keys.length - 1) 
         ? defaultValue() 
         : defaultValue;
@@ -80,22 +39,64 @@ export const getNestedValue = (obj: any, path: string, defaultValue: any = '', t
     target = target[key];
   });
 
-  return castValue(target, type);
+  return target;
 }
 
-export const setNestedValue = (obj: any, path: string, value: any, defaultValue: any = '', type?: string) => {
+export const setNestedValue = (obj, path, value, defaultValue = null) => {
   const keys = path.split('.');
   const lastKey = keys.pop();
   const target = keys.reduce((o, k) => {
-    if (o[k] == null) o[k] = {};
+    if (!o[k]) o[k] = {}; // khởi tạo các nested object
     return o[k];
   }, obj);
 
-  target[lastKey] = castValue(
-    value != null ? value : (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
-    type
-  );
+  // Gán giá trị, nếu value undefined thì dùng defaultValue
+  target[lastKey] = value !== undefined 
+    ? value 
+    : (typeof defaultValue === 'function' ? defaultValue() : defaultValue);
 }
+
+// const castValue = (value: any, type?: string) => {
+//   if (value == null) return null; // null hoặc undefined → empty string
+//   switch (type) {
+//     case 'number': return Number(value);
+//     case 'string': return String(value);
+//     case 'boolean': return Boolean(value);
+//     case 'date': return new Date(value);
+//     default: return value;
+//   }
+// }
+
+// export const getNestedValue = (obj: any, path: string, defaultValue: any = '', type?: string) => {
+  
+//   const keys = path.split('.');
+//   let target = obj;
+
+//   keys.forEach((key, index) => {
+//     if (target[key] == null) {
+//       target[key] = (typeof defaultValue === 'function' && index === keys.length - 1) 
+//         ? defaultValue() 
+//         : defaultValue;
+//     }
+//     target = target[key];
+//   });
+  
+//   return castValue(target, type);
+// }
+
+// export const setNestedValue = (obj: any, path: string, value: any, defaultValue: any = '', type?: string) => {
+//   const keys = path.split('.');
+//   const lastKey = keys.pop();
+//   const target = keys.reduce((o, k) => {
+//     if (o[k] == null) o[k] = {};
+//     return o[k];
+//   }, obj);
+
+//   target[lastKey] = castValue(
+//     value != null ? value : (typeof defaultValue === 'function' ? defaultValue() : defaultValue),
+//     type
+//   );
+// }
 
 // export const initializeFormData = (schema) => {
 //   const result = {}

@@ -50,7 +50,7 @@ const assignedChurches = computed(() => {
   return profile.value.assigned_churches || [];
 })
 const currentChurchId = ref(null)
-const currentChurch = computed(() => {console.log('ccid', currentChurchId.value)
+const currentChurch = computed(() => {
   return assignedChurches.value.find(church => church.id === currentChurchId.value) || null;
 })
 const metrics = shallowRef([

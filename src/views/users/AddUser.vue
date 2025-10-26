@@ -1,46 +1,32 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import createChurchFormSchema from '@/form-schemas/createChurchFormSchema';
-import {churchService} from '@/services/churchService';
+import { createFormSchema } from '@/form-schemas/addUserFormSchema';
+import {userService} from '@/services/userService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from 'vue-router'
+import { useMessageStore } from '@/stores/messageStore';
 
-const route = useRoute();
-const router = useRouter();
-const options = ref({});
-const id = route.params.id as string;
-const editData = ref(null);
+const router = useRouter()
+const options = ref({})
+const formSchema = createFormSchema();
 
 const loadOptions = async function () {
-  options.value = await churchService.getFormData();
-}
-
-const fetchEditData = async function (id) {
-  if (!id) return;
-  try {
-    const data = await churchService.get(id);
-    
-    editData.value = data;
-  } catch (e) {
-    console.log('error', e);
-  }
+  options.value = await userService.getFormData();
 }
 
 const handleSubmit = async (formData) => {
-  console.log('formData', formData, formData.value);
   try {
-    await churchService.update(id, formData)
+    await userService.create(formData)
+
+    router.push({ name: 'UserList' });
   } catch (e) {
     console.log('error', e);
   }
 }
 
 onMounted(() => {
-  fetchEditData(id);
   loadOptions();
 });
-
-const churchId = ref();
 </script>
 
 <template>
@@ -49,11 +35,11 @@ const churchId = ref();
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('church.editTitle', {id: id}) }}</h1>
+          <h1>{{ $t('user.addTitle') }}</h1>
           <v-btn 
             color="primary" 
             variant="outlined" 
-            @click="router.push({ name: 'ChurchList' })"
+            @click="router.push({ name: 'UserList' })"
           >
             <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>
@@ -61,16 +47,14 @@ const churchId = ref();
       </v-row>
 
       <v-row justify="center">
-        <v-col cols="12" md="12" lg="12">
+        <v-col cols="12" md="10" lg="12">
           <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
             <slot name="form">
               <DynamicFormDefault
                 :options="options"
-                :form-schema="createChurchFormSchema"
+                :form-schema="formSchema"
                 @submit="handleSubmit"
-                :init-data="editData"
               />
-              
             </slot>
           </v-sheet>
         </v-col>

@@ -1,6 +1,5 @@
-import { at } from "lodash";
-
-const schemaForm = {
+export const createFormSchema = () => ({
+    name: "Church Data",
     initData: () => ({
         is_first_msc: false,
     }),
@@ -42,60 +41,35 @@ const schemaForm = {
             name: 'language_id',
             description: 'fieldDescription.church.language',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'languages',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'LanguageSelectInput',
         },
         {
             label: 'label.church.churchType',
             name: 'church_type_id',
             description: 'fieldDescription.church.churchType',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'types',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'ChurchTypeSelectInput',
         },
         {
             label: 'label.church.pastor',
             name: 'pastor_id',
             description: 'fieldDescription.church.pastor',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'pastor',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'PastorSelectInput',
         },
         {
             label: 'label.church.churchNetwork',
             name: 'church_network_id',
             description: 'fieldDescription.church.churchNetwork',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'networks',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'ChurchNetworkSelectInput',
         },
         {
             label: 'label.church.churchRegion',
             name: 'church_region_id',
             description: 'fieldDescription.church.churchRegion',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'regions',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'ChurchRegionSelectInput',
         },
         {
             label: 'Geographic Mission’s Region',
@@ -115,12 +89,7 @@ const schemaForm = {
             label: 'label.church.country',
             name: 'country_id',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'countries',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'CountrySelectInput',
         },
         {
             label: 'label.church.currency',
@@ -131,8 +100,8 @@ const schemaForm = {
         },
         {
             label: 'label.church.city',
-            name: 'city',
-            type: 'CityInput'
+            name: 'city_id',
+            type: 'CitySelectInput'
         },
         {
             label: 'label.church.photo',
@@ -200,7 +169,4 @@ const schemaForm = {
             type: 'YearMonthDayInput'
         },
     ]
-}
-
-
-export default schemaForm;
+})

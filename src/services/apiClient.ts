@@ -15,7 +15,7 @@ const instance = axios.create({
 });
 
 const get = async (uri, params = {}, showLoading = true) => {
-  try {
+  // try {
     const { data: respData} = await instance.get(
       uri,
       {
@@ -25,13 +25,13 @@ const get = async (uri, params = {}, showLoading = true) => {
     );
 
     return respData;
-  } catch (e) {
-    console.log('api err', e);
-  }
+  // } catch (e) {
+  //   console.log('api err', e);
+  // }
 }
 
 const post = async (uri, payload, showLoading = true) => {
-  try {
+  // try {
     const {data: respData} = await instance.post(
       uri,
       payload,
@@ -39,15 +39,15 @@ const post = async (uri, payload, showLoading = true) => {
         showLoading
       }
     )
-    console.log('respData', respData);
+    
     return respData;
-  } catch (e) {
-    console.log('api err', e);
-  }
+  // } catch (e) {
+  //   console.log('api err', e);
+  // }
 }
 
 const del = async (uri, params, showLoading = true) => {
-  try {
+  // try {
     const { data: respData} = await instance.delete(
       uri,
       {
@@ -57,9 +57,9 @@ const del = async (uri, params, showLoading = true) => {
     );
 
     return respData;
-  } catch (e) {
-    console.log('api err', e);
-  }
+  // } catch (e) {
+  //   console.log('api err', e);
+  // }
 }
 
 const postFormData = async(uri, payload, showLoading = true) => {
@@ -87,29 +87,29 @@ const postFormData = async(uri, payload, showLoading = true) => {
 }
 
 const put = async (uri, data, showLoading = true) => {
-  try {
+  // try {
     const { data: respData} = await instance.put(
       uri,
       data
     );
 
     return respData;
-  } catch (e) {
-    console.log('api err', e);
-  }
+  // } catch (e) {
+  //   console.log('api err', e);
+  // }
 }
 
 const patch = async (uri, data, showLoading = true) => {
-  try {
+  // try {
     const { data: respData} = await instance.patch(
       uri,
       data
     );
 
     return respData;
-  } catch (e) {
-    console.log('api err', e);
-  }
+  // } catch (e) {
+  //   console.log('api err', e);
+  // }
 }
 
 instance.interceptors.request.use(

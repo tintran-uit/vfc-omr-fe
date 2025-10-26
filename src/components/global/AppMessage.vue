@@ -7,19 +7,19 @@ const messageStore = useMessageStore();
 </script>
 
 <template>
-  <v-dialog v-model="messageStore.dialog" max-width="400">
-    <v-card color="error" dark>
+  <v-dialog v-model="messageStore.infoDialog" max-width="400">
+    <v-card dark>
       <v-card-title class="text-h6">
         
       </v-card-title>
 
       <v-card-text>
-        {{ messageStore.message }}
+        {{ messageStore.infoMessage }}
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="messageStore().dialog = false">Đóng</v-btn>
+        <v-btn text @click="messageStore.infoDialog = false">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

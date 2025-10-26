@@ -22,19 +22,19 @@ const MainRoutes = {
       component: () => import('@/views/test/ReportForm.vue')
     },
     {
-      name: 'Dynamic Form',
-      path: 'test/dynamic-form',
-      component: () => import('@/views/test/DynamicForm.vue')
+      name: 'ChurchAdd',
+      path: '/churches/add',
+      component: () => import('@/views/churches/AddChurch.vue')
     },
     {
-      name: 'ChurchCreate',
-      path: '/churches/create',
-      component: () => import('@/views/churches/CreateChurch.vue')
+      name: 'ChurchWithNewPastorAdd',
+      path: '/churches/add-with-new-pastor',
+      component: () => import('@/views/churches/AddChurchWithNewPastor.vue'),
     },
     {
-      name: 'ChurchUpdate',
-      path: '/churches/:id/update',
-      component: () => import('@/views/churches/UpdateChurch.vue')
+      name: 'ChurchEdit',
+      path: '/churches/:id/edit',
+      component: () => import('@/views/churches/EditChurch.vue')
     },
     {
       name: 'ChurchClone',
@@ -42,25 +42,50 @@ const MainRoutes = {
       component: () => import('@/views/churches/CloneChurch.vue')
     },
     {
+      name: 'ChurchDisabledList',
+      path: '/churches/disabled-list',
+      component: () => import('@/views/churches/ListDisabledChurch.vue')
+    },
+    {
       name: 'ChurchList',
       path: '/churches',
       component: () => import('@/views/churches/ListChurch.vue')
     },
     {
-      name: 'UserCreate',
-      path: 'users/create',
-      component: () => import('@/views/users/CreateUser.vue')
+      name: 'UserAdd',
+      path: 'users/add',
+      component: () => import('@/views/users/AddUser.vue')
     },
     {
-      name: 'UserUpdate',
-      path: 'users/:id/update',
-      component: () => import('@/views/users/UpdateUser.vue')
+      name: 'UserEdit',
+      path: 'users/:id/edit',
+      component: () => import('@/views/users/EditUser.vue')
     },
     {
       name: 'UserList',
       path: 'users',
       component: () => import('@/views/users/ListUser.vue')
     },
+    {
+      name: 'UserOverseerList',
+      path: 'users/overseers',
+      component: () => import('@/views/users/ListOverseerUser.vue')
+    },
+    {
+      name: 'ServiceList',
+      path: 'churches/:churchId/services',
+      component: () => import('@/views/services/ListService.vue')
+    },
+    {
+      name: 'ServiceAdd',
+      path: 'churches/:churchId/services/add',
+      component: () => import('@/views/services/AddService.vue')
+    },
+    {
+      name: 'ServiceEdit',
+      path: 'churches/:churchId/services/:id/edit',
+      component: () => import('@/views/services/EditService.vue')
+    }
   ]
 };
 

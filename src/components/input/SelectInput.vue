@@ -49,6 +49,8 @@ const translatedNoDataText = computed(() => noDataText ? t(noDataText) : t('comm
       position-strategy="connected"
       scroll-strategy="close"
       @update:modelValue="emit('change', $event)"
+      v-bind="$attrs"
+
     ></v-autocomplete>
 </template>
 

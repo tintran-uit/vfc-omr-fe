@@ -1,4 +1,4 @@
-export const required = (fieldName = 'Trường này') => {
+export const required = (fieldName = 'Trường này') => {console.log('check require')
   return v => !!v || `${fieldName} là bắt buộc`;
 };
 
@@ -11,7 +11,11 @@ export const minLength = (length) => {
   return v => !v || v.length >= length || `Phải có ít nhất ${length} ký tự`;
 };
 
-export const maxLength = (length) => {
+export const min = (length) => {console.log('leng', length)
+  return v => !v || v.length >= length || `Phải có ít nhất ${length} ký tự`;
+};
+
+export const max = (length) => {
   return v => !v || v.length <= length || `Không được vượt quá ${length} ký tự`;
 };
 

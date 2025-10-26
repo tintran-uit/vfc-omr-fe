@@ -45,8 +45,6 @@ const fetchItems = async (reset = false) => {
   
   if (noMoreItems.value) return
 
-  // First time (page == 1) => toogle loading
-  // nth time (page > 1) => toogle loadingMore
   loading.value = page.value === 1
   loadingMore.value = page.value > 1
 
@@ -55,28 +53,29 @@ const fetchItems = async (reset = false) => {
       limit: itemsPerPage,
       page: page.value
     }
-    
+
     if (searchQuery.value) {
-        params.name = searchQuery.value;
+      params.name = searchQuery.value
     }
-    
-    const data = await churchService.getList(params);
 
-      if (data.has_next) {
-        noMoreItems.value = false
-      } else {
-        noMoreItems.value = true
-      }
+    const data = await churchService.getList(params, false)
 
-      items.value = [
-        ...items.value,
-        ...(data.items || []).map(item => {
-          return {
-            id: item.id,
-            name: item.name,
-          }
-        })
-      ]
+    noMoreItems.value = !data.has_next
+
+    // ✅ Gộp dữ liệu mới + lọc trùng theo id
+    const newItems = (data.items || []).map(item => ({
+      id: item.id,
+      name: item.name
+    }))
+
+    const merged = [...items.value, ...newItems]
+    // ✅ Loại bỏ bản trùng theo id
+    const unique = merged.filter(
+      (item, index, self) => index === self.findIndex(i => i.id === item.id)
+    )
+
+    items.value = unique
+
     page.value++
   } catch (error) {
     console.error('Error fetching items:', error)
@@ -88,7 +87,7 @@ const fetchItems = async (reset = false) => {
 
 const fetchItem = async (id) => {
   try {
-    const data = await churchService.get(id)
+    const data = await churchService.get(id, false)
     if (data) {
       selectedItem = { id: data.id, name: data.name }
       

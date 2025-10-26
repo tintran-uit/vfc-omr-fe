@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import formSchema from '@/form-schemas/updateUserFormSchema.ts';
+import { createFormSchema } from '@/form-schemas/editUserFormSchema';
 import {userService as service} from '@/services/userService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import { useRoute, useRouter } from "vue-router";
@@ -10,6 +10,7 @@ const router = useRouter();
 const options = ref({});
 const id = route.params.id as string;
 const editData = ref(null);
+const formSchema = createFormSchema();
 
 const loadOptions = async function () {
   options.value = await service.getFormData();
@@ -42,11 +43,9 @@ const mapperFn = function (source, destination) {
 }
 
 onMounted(() => {
-  fetchEditData(id);
   loadOptions();
+  fetchEditData(id);
 });
-
-const churchId = ref();
 </script>
 
 <template>

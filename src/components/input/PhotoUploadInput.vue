@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits, computed } from 'vue'
+import { ref, watch, defineEmits, computed } from 'vue'
 import { imageService } from '@/services/imageService'
 
 const modelValue = defineModel<any>()

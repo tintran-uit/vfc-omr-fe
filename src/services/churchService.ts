@@ -2,14 +2,25 @@ import apiClient from '@/services/apiClient';
 import { update } from 'lodash';
 
 export const churchService  = {
-    async getList(params = {}) {
-      return await apiClient.get(`/churches`, params);
+    async getList(params = {}, loading = true) {
+      return await apiClient.get(`/churches`, params, loading);
     },
-    async get(id) {
-      return await apiClient.get(`/churches/${id}`);
+    async getEnabledList(params = {}) {
+      const myParams = { ...params, disabled: false };
+      return await apiClient.get(`/churches`, myParams);
+    },
+    async getDisabledList(params = {}) {
+      const myParams = { ...params, disabled: true };
+      return await apiClient.get(`/churches`, myParams);
+    },
+    async get(id, showLoading = true) {
+      return await apiClient.get(`/churches/${id}`, {}, showLoading);
     },
     async create(data) {
       return await apiClient.post(`/churches`, data);
+    },
+    async createWithNewPastor(data) {
+      return await apiClient.post(`/churches/with-user`, data);
     },
     async update(id, data) {
       return await apiClient.patch(`/churches/${id}`, data);
@@ -19,5 +30,11 @@ export const churchService  = {
     },
     async getFormData() {
       return await apiClient.get(`/churches/form-data`)
+    },
+    async disable(id) {
+      return await apiClient.patch(`/churches/${id}/disable`)
+    },
+    async enable(id) {
+      return await apiClient.patch(`/churches/${id}/enable`)
     }
 }

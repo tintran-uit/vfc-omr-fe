@@ -1,4 +1,4 @@
-const schemaForm = {
+export const createFormSchema = () => ({
     initData: () => ({
         sensitive_nation: false,
     }),
@@ -9,6 +9,11 @@ const schemaForm = {
             description: 'fieldDescription.user.username',
             rules: ['required'],
             type: 'TextInput'
+        },
+        {
+            label: 'label.user.password',
+            type: 'ChangePassword',
+            component: true,
         },
         {
             label: 'label.user.prefix',
@@ -71,12 +76,7 @@ const schemaForm = {
             label: 'label.user.country',
             name: 'country_id',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'countries',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'CountrySelectInput',
         },
         {
             label: 'label.user.sensiveNation',
@@ -90,12 +90,7 @@ const schemaForm = {
             name: 'language_id',
             desciprion: 'fieldDescription.user.language',
             rules: ['required'],
-            type: 'SelectInput',
-            optionName: 'languages',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
+            type: 'LanguageSelectInput',
         },
         {
             label: 'label.user.mobilePhone',
@@ -135,7 +130,4 @@ const schemaForm = {
             type: 'TextareaInput',
         },
     ]
-}
-
-
-export default schemaForm;
+});

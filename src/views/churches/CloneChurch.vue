@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import createChurchFormSchema from '@/form-schemas/createChurchFormSchema';
+import { createFormSchema } from '@/form-schemas/addChurchFormSchema';
 import {churchService} from '@/services/churchService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import ChurchSelectInput from '@/components/input/ChurchSelectInput.vue';
@@ -8,13 +8,9 @@ import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
-const options = ref({});
 const id = route.params.id as string;
 const editData = ref(null);
-
-const loadOptions = async function () {
-  options.value = await churchService.getFormData();
-}
+const formSchema = createFormSchema();
 
 const fetchEditData = async function (id) {
   if (!id) return;
@@ -70,8 +66,7 @@ const churchId = ref();
             <!-- Slot để bỏ form -->
             <slot name="form">
               <DynamicFormDefault
-                :options="options"
-                :form-schema="createChurchFormSchema"
+                :form-schema="formSchema"
                 @submit="handleSubmit"
                 :init-data="editData"
               />

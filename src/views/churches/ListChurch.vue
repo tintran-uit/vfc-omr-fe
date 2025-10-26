@@ -6,7 +6,9 @@ import {churchService} from '@/services/churchService.ts';
 import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/churchTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
+import { useAuthStore } from '@/stores/authStore';
 
+const authStore = useAuthStore();
 const router = useRouter()
 const dialogStore = useDialogStore()
 const items = ref([])
@@ -18,6 +20,14 @@ const sortBy = ref([
   { key: 'id', order: 'desc' }
 ])
 
+const actions = computed(() => {
+  return [
+  ...(authStore.can('church.update') ? ['edit'] : []),
+   ...(authStore.can('church.clone') ? ['clone'] : []),
+    ...(authStore.can('church.disable') ? ['disable'] : []),
+  ];
+})
+
 const fetchData = async function (options = {}) {
   const data = await churchService.getList(
     tableOptionsToParams(options)
@@ -26,8 +36,8 @@ const fetchData = async function (options = {}) {
   totalItems.value = data.total_pages;
 }
 
-const onUpdate = (item: any) => {
-  router.push({ name: 'ChurchUpdate', params: { id: item.id } })
+const onEdit = (item: any) => {
+  router.push({ name: 'ChurchEdit', params: { id: item.id } })
 }
 
 const onDelete = async (item: any) => {
@@ -38,8 +48,15 @@ const onDelete = async (item: any) => {
   fetchData()
 }
 
-const handleActionClone = (item) => {
+const onClone = (item) => {
   router.push({ name: 'ChurchClone', params: { id: item.id } })
+}
+
+const onDisable = async (item: any) => {
+  if (!await dialogStore.confirm('Are you sure you want to disable?')) return
+  await churchService.disable(item.id)
+  
+  fetchData()
 }
 
 const onUpdateOptions = (options) => {
@@ -68,7 +85,7 @@ const loadingStore = useLoadingStore();
             <v-btn 
               color="primary" 
               variant="outlined" 
-              @click="router.push({ name: 'ChurchCreate' })"
+              @click="router.push({ name: 'ChurchAdd' })"
             >
               <v-icon>$plus</v-icon> {{ $t('addNew') }}
             </v-btn>
@@ -91,10 +108,10 @@ const loadingStore = useLoadingStore();
                 :headers="tableSchema.headers"
                 :searches-config="tableSchema.searches"
                 :items="items"
-                :enabled-actions="['update']"
-                @action:delete="onDelete"
-                @action:update="onUpdate"
-                @action:clone="handleActionClone"
+                :enabled-actions="actions"
+                @action:edit="onEdit"
+                @action:clone="onClone"
+                @action:disable="onDisable"
                 @update:options="onUpdateOptions"
               >
                           <template v-slot:item.attributes="{ item }">
