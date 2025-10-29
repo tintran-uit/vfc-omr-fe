@@ -115,7 +115,7 @@ const sidebarItem: menu[] = [
       {
         id: 'users-add',
         title: 'mainMenu.userAdd',
-        to: '/users/create',
+        to: '/users/add',
         permissions: ['user.create'],
       },
       {
