@@ -2,8 +2,11 @@
 import * as d3 from 'd3'
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useTheme } from 'vuetify'
+import { getWeekRange } from '@/helpers/dateTimeHelper'
+import { useI18n } from 'vue-i18n'
 
 const theme = useTheme()
+const { t } = useI18n()
 
 // ✅ Props
 const props = defineProps({
@@ -19,14 +22,30 @@ const props = defineProps({
 
 // ✅ Legend cấu hình
 const legends = [
-  { key: 'attendance', label: 'Worship Service', color: theme.current.value.colors.chartAttendance },
-  { key: 'cellGroup', label: 'Cell Group', color: theme.current.value.colors.chartCellGroup },
-  { key: 'prayerMeeting', label: 'Prayer Meeting', color: theme.current.value.colors.chartPrayerMeeting },
-  { key: 'liwClass', label: 'LIW Classes', color: theme.current.value.colors.chartLiwClass },
+  { key: 'attendance', label: t('chart.worshipService'), color: theme.current.value.colors.chartAttendance },
+  { key: 'cellGroup', label: t('chart.cellGroup'), color: theme.current.value.colors.chartCellGroup },
+  { key: 'prayerMeeting', label: t('chart.prayerMeeting'), color: theme.current.value.colors.chartPrayerMeeting },
+  { key: 'liwClass', label: t('chart.liwClasses'), color: theme.current.value.colors.chartLiwClass },
 ]
 
 const chartContainer = ref(null)
 const hiddenLines = ref(new Set())
+
+const formatDomain = (d) => {
+  // const [start, end] = getWeekRange(d.year, d.week, 'DD MMM')
+  return `W${d.week}.${d.year}`
+}
+
+const formatTooltipContent = (legend, d) => {
+  const val = d.value ? d.value : 'No data'
+  return `
+    <div style="line-height: 1.5">
+    <b>${legend.label}</b><br>
+    <b>${t('chart.week')}</b>: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>
+    <b>${t('chart.attendance')}</b>: ${val}
+    </div>
+  `;
+}
 
 function toggleLine(key) {
   if (hiddenLines.value.has(key)) hiddenLines.value.delete(key)
@@ -83,7 +102,7 @@ function drawChart() {
   // ✅ X scale
   const x = d3
     .scalePoint()
-    .domain(data.map((d) => d.week))
+    .domain(data.map(formatDomain))
     .range([0, width])
     .padding(0.5)
 
@@ -128,7 +147,13 @@ function drawChart() {
   svg
     .append('g')
     .attr('transform', `translate(0,${height})`)
-    .call(d3.axisBottom(x).tickValues(xTickValues))
+    .call(
+      d3
+        .axisBottom(x)
+        .tickValues(xTickValues)
+        // .tickFormat(d => {
+        // })
+    )
     .selectAll('text')
     .attr('transform', 'rotate(-20)')
     .style('text-anchor', 'end')
@@ -154,7 +179,7 @@ function drawChart() {
   const line = d3
     .line()
     .defined((d) => d.value != null)
-    .x((d) => x(d.week))
+    .x((d) => x(d.key))
     .y((d) => y(d.value))
     .curve(d3.curveMonotoneX)
 
@@ -162,10 +187,18 @@ function drawChart() {
   legends.forEach((legend) => {
     if (hiddenLines.value.has(legend.key)) return
 
-    const lineData = data.map((d) => ({
-      week: d.week,
-      value: d[legend.key],
-    }))
+    const lineData = data.map((d) => {
+      const [start, end] = getWeekRange(d.year, d.week, 'DD MMM')
+      
+      return {
+        key: formatDomain(d),
+        week: d.week,
+        year: d.year,
+        startDate: start,
+        endDate: end,
+        value: d[legend.key],
+      }
+  })
 
     // Path line
     svg
@@ -183,7 +216,7 @@ function drawChart() {
       .enter()
       .append('circle')
       .attr('class', `dot-${legend.key}`)
-      .attr('cx', (d) => x(d.week))
+      .attr('cx', (d) => x(d.key))
       .attr('cy', (d, i, arr) => {
         if (d.value != null) return y(d.value)
         const prev = arr[i - 1] ? arr[i - 1].__data__?.value : null
@@ -199,9 +232,7 @@ function drawChart() {
         tooltip
           .style('opacity', 1)
           .html(
-            d.value != null
-              ? `<b>${legend.label}</b><br>${d.week}<br>Attendance: ${d.value}`
-              : `<b>${legend.label}</b><br>${d.week}<br><i>No data</i>`
+            formatTooltipContent(legend, d)
           )
           .style('left', event.pageX + 10 + 'px')
           .style('top', event.pageY - 28 + 'px')

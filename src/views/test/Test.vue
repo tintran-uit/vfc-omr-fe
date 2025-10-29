@@ -95,8 +95,6 @@ const data = {
     }
   ]
 };
-import AttendanceLineChart from "@/components/charts/AttendanceLineChart.vue";
-import GivingChart from "@/components/charts/GivingChartzzz.vue";
 
 import TimeInput from "@/components/input/TimeInput.vue";
 import CitySelectInput from "@/components/input/CitySelectInput.vue";
@@ -107,6 +105,8 @@ import AttachmentWidget from "@/components/widgets/AttachmentWidget.vue";
 import BibleVerseWidget from "@/components/widgets/BibleVerseWidget.vue";
 import ChurchDetailWidget from "@/components/widgets/ChurchDetailWidget.vue";
 import PastorLeaderWidget from "@/components/widgets/PastorLeaderWidget.vue";
+import D3ChurchPlanting from "@/components/charts/D3ChurchPlanting.vue";
+import ChurchPlanting from "@/components/charts/ChurchPlanting.vue";
 const timeVal = ref(null)
 
 const firstName = ref('Nguyen');
@@ -237,11 +237,41 @@ const visitData = [
   { week: 51, visits: 6 },
   { week: 52, visits: 5 },
 ]
+
+const treeData = {
+  id: 'root',
+  name: 'Main Church',
+  attendance: 1200,
+  children: [
+    {
+      id: 'c1',
+      name: 'Church A',
+      attendance: 300,
+      children: [
+        { id: 'c1a', name: 'Church A1', attendance: 80, children: [] },
+        { id: 'c1b', name: 'Church A2', attendance: 450, children: [] },
+      ],
+    },
+    {
+      id: 'c2',
+      name: 'Church B',
+      attendance: 1800,
+      children: [],
+    },
+  ],
+}
+
 </script>
 
 <template>
   <v-container>
-    <AttendanceChartWidget church-id="76" />
+    <!-- <AttendanceChartWidget church-id="76" /> -->
+
+
+
+    <D3ChurchPlanting :width="800" :height="600" :data="treeData" />
+     <!-- <JITChart /> -->
+     <!-- <ChurchPlanting :width="800" :height="600" :data="churchTreeData" /> -->
     <!-- <PastorLeaderWidget :user-id="4" /> -->
     <!-- <ChurchDetailWidget church-id="76" /> -->
     <!-- <AttendanceWidget /> -->

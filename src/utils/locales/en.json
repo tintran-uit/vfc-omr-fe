@@ -284,5 +284,17 @@
     "newPassword": "New password",
     "repeatNewPassword": "Repeat new password",
     "oldPassword": "Old password"
+  },
+  "chart": {
+    "worshipService": "Worship Service",
+    "cellGroup": "Cell Group",
+    "prayerMeeting": "Prayer Meeting",
+    "liwClasses": "LIW Classes",
+    "attendanceLastNumberMonth": "Attendance – Last {number} Months",
+    "givingLastNumberMonth": "Giving - Last {number} Months",
+    "visitLastNumberMonth": "Visit - Last {number} Months",
+    "attendance": "Attendance",
+    "giving": "Giving",
+    "week": "Week"
   }
 }

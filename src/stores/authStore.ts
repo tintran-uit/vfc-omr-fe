@@ -109,6 +109,7 @@ export const useAuthStore = defineStore('auth', {
       return state.user?.photo_url ?? 'https://placehold.co/128x128.png';
     },
     countryId: (state) => {
+      return 231;
       return state.user?.country_id || null;
     },
   }

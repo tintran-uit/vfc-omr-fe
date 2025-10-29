@@ -23,6 +23,65 @@ export function formatDate(date: string | Date | null, pattern = 'YYYY-MM-DD'): 
   if (!date) return ''
   return dayjs(date).format(pattern)
 }
+
+/**
+ *
+ * @param {number} year - Năm (VD: 2025)
+ * @param {number} week - Số tuần trong năm (VD: 43)
+ * @param {string} [format='YY.MM.DD'] - Định dạng ngày (VD: 'YYYY-MM-DD', 'DD/MM/YYYY', 'YY.MM.DD')
+ * @returns [string, string]
+ */
+export /**
+* Trả về ngày bắt đầu (Thứ Hai) và ngày kết thúc (Chủ Nhật)
+* của một tuần trong năm (ISO week), hỗ trợ nhiều kiểu format.
+*
+* @param {number} year - Năm (VD: 2025)
+* @param {number} week - Số tuần trong năm (VD: 43)
+* @param {string} [format='YY.MM.DD'] - Định dạng ngày
+* @returns {{ start: string, end: string }}
+*/
+function getWeekRange(year, week, format = 'YY.MM.DD') {
+ const monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+ const monthsFull  = ['January', 'February', 'March', 'April', 'May', 'June',
+                      'July', 'August', 'September', 'October', 'November', 'December']
+
+ // Ngày 4/1 luôn thuộc tuần 1 ISO
+ const simple = new Date(year, 0, 4)
+ const dayOfWeek = simple.getDay() || 7
+ const firstMonday = new Date(simple)
+ firstMonday.setDate(simple.getDate() - dayOfWeek + 1)
+
+ // Tính ngày thứ Hai và Chủ Nhật
+ const monday = new Date(firstMonday)
+ monday.setDate(firstMonday.getDate() + (week - 1) * 7)
+ const sunday = new Date(monday)
+ sunday.setDate(monday.getDate() + 6)
+
+ // Hàm format linh hoạt
+ const formatDate = (d) => {
+   const YYYY = d.getFullYear()
+   const YY = String(YYYY).slice(2)
+   const MM = String(d.getMonth() + 1).padStart(2, '0')
+   const DD = String(d.getDate()).padStart(2, '0')
+   const MMM = monthsShort[d.getMonth()]
+   const MMMM = monthsFull[d.getMonth()]
+
+   return format
+     .replace('YYYY', YYYY)
+     .replace('YY', YY)
+     .replace('MMMM', MMMM)
+     .replace('MMM', MMM)
+     .replace('MM', MM)
+     .replace('DD', DD)
+ }
+
+ return [
+  formatDate(monday),
+  formatDate(sunday),
+ ]
+}
+
+
   
 //   export function toISODate(dateOnly: string): string {
 //     if (!dateOnly) return ''

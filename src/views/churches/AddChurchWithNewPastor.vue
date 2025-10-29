@@ -23,7 +23,7 @@ const loadOptions = async function () {
 
 const handleSubmit = async (formData) => {
   try {
-    await churchService.create(formData)
+    await churchService.createWithNewPastor(formData)
 
     router.push({ name: 'ChurchList' });
   } catch (e) {

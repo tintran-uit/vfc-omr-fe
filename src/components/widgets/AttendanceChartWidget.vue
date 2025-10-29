@@ -6,7 +6,14 @@ import AttendanceChart from '@/components/charts/AttendanceChart.vue'
 import GivingChart from '@/components/charts/GivingChart.vue';
 import VisitChart from '@/components/charts/VisitChart.vue';
 import { PERIOD_12_MONTHS, PERIOD_24_MONTHS } from '@/constants/graphConstant';
+import { useI18n } from 'vue-i18n';
 
+const props = withDefaults(
+  defineProps<{
+    churchId: number
+  }>(),
+  {}
+)
 const periodOptions = [
   {
     value: PERIOD_12_MONTHS,
@@ -18,23 +25,18 @@ const periodOptions = [
   }
 ]
 const periodModel = ref(PERIOD_12_MONTHS)
-
-const onChangePeriod = (val) => {
-  console.log('change period to: ', val)
-}
-
+const { t } = useI18n()
 const tab = ref('profile')
 
-const props = withDefaults(
-  defineProps<{
-    churchId: number
-  }>(),
-  {}
-)
-
-const emit = defineEmits<{
-  
-}>()
+const titleAttendance = computed(() => {
+  return t('chart.attendanceLastNumberMonth', { number: periodModel.value === PERIOD_12_MONTHS ? 12 : 24 })
+})
+const titleGiving = computed(() => {
+  return t('chart.givingLastNumberMonth', { number: periodModel.value === PERIOD_12_MONTHS ? 12 : 24 })
+})
+const titleVisit = computed(() => {
+  return t('chart.visitLastNumberMonth', { number: periodModel.value === PERIOD_12_MONTHS ? 12 : 24 })
+})
 
 const formatAttendanceData = (weekKeys, attendanceValues, cellGroupValues, prayerMeetingValues, liwClassValues, labels) => {
   return weekKeys.map(({Year, Week}, index) => {
@@ -121,6 +123,13 @@ const listChartDataByChurch = computed(() => {
   return list
 })
 
+const onChangePeriod = async (val) => {
+  apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(
+    props.churchId,
+    val
+  );
+}
+
 onMounted(async () => {
   apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId);
 })
@@ -146,17 +155,17 @@ onMounted(async () => {
           <template #default>
             <AttendanceChart
               :data="chartDataByChurch.attendanceData"
-              title="Attendance – Last 12 Months"
+              :title="titleAttendance"
               />
 
               <GivingChart
                 :data="chartDataByChurch.givingData"
-                title="Giving – Last 12 Months"
+                :title="titleGiving"
                 />
 
                 <VisitChart
                   :data="chartDataByChurch.visitData"
-                  title="Visit - last 12 months"
+                  :title="titleVisit"
                   />
           </template>
       </v-window-item>

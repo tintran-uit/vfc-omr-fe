@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import formSchema from '@/form-schemas/editUserFormSchema';
 import {userService as service} from '@/services/userService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import { useRoute, useRouter } from "vue-router";

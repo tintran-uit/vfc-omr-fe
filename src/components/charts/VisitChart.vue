@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import * as d3 from 'd3'
 import { ref, watch, nextTick, onMounted } from 'vue'
 import { useTheme } from 'vuetify'
@@ -6,13 +6,15 @@ import { useTheme } from 'vuetify'
 const theme = useTheme()
 
 // ✅ Props
-const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-    // ví dụ: [{ week: 1, visits: 4 }, { week: 2, visits: 7 }]
-  },
-})
+const props = withDefaults(
+  defineProps<{
+    data: any[]
+    title?: string
+  }>(),
+  {
+    title: 'Visit Graph'
+  }
+)
 
 // ✅ Màu cấu hình theo theme
 const barColor = theme.current.value.colors.chartVisit || '#B5282E'
@@ -143,6 +145,9 @@ watch(
 
 <template>
   <v-card class="pa-4">
+    <v-card-title class="d-flex justify-space-between align-center">
+      <span class="text-h6">{{ title }}</span>
+    </v-card-title>
 
     <v-card-text>
       <div ref="chartRef" class="w-100" style="height: 360px; position: relative;"></div>

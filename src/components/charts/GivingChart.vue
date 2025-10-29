@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import * as d3 from 'd3'
 import { ref, watch, nextTick } from 'vue'
 import { useTheme } from 'vuetify'
@@ -6,12 +6,15 @@ import { useTheme } from 'vuetify'
 const theme = useTheme()
 
 // ✅ Props
-const props = defineProps({
-  data: {
-    type: Array,
-    required: true,
-  },
-})
+const props = withDefaults(
+  defineProps<{
+    data: any[]
+    title?: string
+  }>(),
+  {
+    title: 'Giving graph'
+  }
+)
 
 // ✅ Legend cấu hình
 const legends = [
@@ -188,7 +191,7 @@ legends.forEach((legend) => {
 <template>
   <v-card class="pa-4">
     <v-card-title class="d-flex justify-space-between align-center">
-      <span class="text-h6"></span>
+      <span class="text-h6">{{ title }}</span>
       <div class="d-flex flex-row flex-wrap justify-end">
         <div
           v-for="legend in legends"
