@@ -2,26 +2,52 @@
 import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
 import CardHeader from '../shared/CardHeader.vue';
 import { userService } from '@/services/userService';
+import tableSchema from '@/table-schemas/relatedUserTableSchema';
+import { tableOptionsToParams } from '@/helpers/dataTableHelper';
+import DynamicTableDefault from '@/components/dynamic-table/DynamicTableDefault.vue';
+import defaultAvatar from '@/assets/images/users/avatar-default.svg';
 
 const props = withDefaults(
   defineProps<{
-    userId: number,
+    churchId: number,
   }>(),
   {
   }
 )
-const detail = ref({})
-const fetchData = async (userId) => {
-  detail.value = await userService.get(userId)
-}
-const headingClass = 'text-left font-weight-medium'
 
+const items = ref([])
+const page = ref(1)
+const itemsPerPage = ref(25)
+const totalItems = ref(0)
+const search = ref({})
+const sortBy = ref([
+  { key: 'id', order: 'desc' }
+])
+
+const fetchData = async function (options = {}) {
+  const data = await userService.getRelatedUserListOfChurch(
+    props.churchId,
+    tableOptionsToParams(options)
+  )
+
+  items.value = data.items;
+  totalItems.value = data.total_pages;
+}
+
+const onUpdateOptions = (options) => {
+  fetchData(options);
+}
 
 watch(
-  () => props.userId,
+  () => props.churchId,
   async (newVal, oldVal) => {
     if (newVal && newVal !== oldVal) {
-      fetchData(newVal)
+      fetchData({
+        page: page.value,
+        itemsPerPage: itemsPerPage.value,
+        sortBy: sortBy.value,
+        search: search.value
+      })
     }
   },
   { immediate: true }
@@ -29,81 +55,69 @@ watch(
 </script>
 
 <template>
-  <CardHeader title="Pastor Leader Details">
-    <v-table class="text-no-wrap bordered-table" density="compact" hover>
-      <tbody>
-        <tr>
-          <th :class="headingClass">Full Name</th>
-          <td>{{ detail?.name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Title</th>
-          <td>{{ detail?.title }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">OMR #</th>
-          <td>{{ detail?.id }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">User Name</th>
-          <td>{{ detail?.username }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">OMR Role</th>
-          <td>{{ detail?.role?.name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Language</th>
-          <td>{{ detail?.language_name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Nation</th>
-          <td>{{ detail?.country_name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Sensitive Nation</th>
-          <td>{{ detail?.sensitive_nation ? 'Yes' : 'No' }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">E-mail</th>
-          <td>{{ detail?.email_address }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Phone</th>
-          <td>{{ detail?.mobile_phone }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">From</th>
-          <td>{{ detail?.church_name }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+  <CardHeader title="Related Users">
+    <DynamicTableDefault
+      v-model:page="page"
+      v-model:items-per-page="itemsPerPage"
+      v-model:search="search"
+      v-model:sort-by="sortBy"
+      :total-items="totalItems"
+      :headers="tableSchema.headers"
+      :searches-config="tableSchema.searches"
+      :items="items"
+    >
+      <template v-slot:item.avatar="{ item }">
+        <v-img :src="item?.photo_url || defaultAvatar" alt="User avatar"
+    width="50"
+    height="50"
+    class="py-2"
+     />
+      </template>
+      
+      <template v-slot:item.full_name="{ item }">
+        {{ item.first_name }} {{ item.last_name }}
+      </template>
+    </DynamicTableDefault>
   </CardHeader>
 </template>
 
 <style scoped>
-.bordered-table {
-  border: 1px solid #ddd;
+.user-info-table {
   width: 100%;
-  font-size: 0.9rem;
+  border-collapse: collapse;
+  border: 1px solid #e5e5e5; /* viền ngoài nhẹ */
 }
 
-.bordered-table th,
-.bordered-table td {
-  border-bottom: 1px solid #ddd;
-  padding: 6px 12px !important;
+.user-info-table td {
+  border: 1px solid #e5e5e5; /* viền cell nhẹ */
+  padding: 8px 12px;
   vertical-align: middle;
 }
 
-.bordered-table th {
-  background-color: #f8f8f8;
-  width: 35%;
+.user-info-table tr:nth-child(even) {
+  background-color: #fafafa; /* xen kẽ nhẹ cho dễ đọc */
+}
+
+.label-cell {
+  width: 160px;
   font-weight: 600;
+  color: #555;
+  background-color: #f8f8f8;
+}
+
+.value-cell {
   color: #333;
 }
 
-.bordered-table tr:last-child th,
-.bordered-table tr:last-child td {
-  border-bottom: none;
+.text-sm {
+  font-size: 0.9rem;
+}
+
+.border-light {
+  border: 1px solid #e5e5e5; /* avatar cũng có viền nhẹ */
+}
+
+.border-bottom {
+  border-bottom: 1px solid #e0e0e0; /* ngăn cách từng user */
 }
 </style>

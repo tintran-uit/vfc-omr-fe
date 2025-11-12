@@ -40,14 +40,6 @@ const onEdit = (item: any) => {
   router.push({ name: 'ChurchEdit', params: { id: item.id } })
 }
 
-const onDelete = async (item: any) => {
-  if (!await dialogStore.confirm('Are you sure you want to delete?')) return
-  console.log('call to edit')
-  await churchService.del(item.id)
-  
-  fetchData()
-}
-
 const onClone = (item) => {
   router.push({ name: 'ChurchClone', params: { id: item.id } })
 }
@@ -64,9 +56,6 @@ const onUpdateOptions = (options) => {
 
   fetchData(options);
 }
-
-import { useLoadingStore } from '@/stores/loadingStore';
-const loadingStore = useLoadingStore();
 </script>
 
 <template>

@@ -52,6 +52,11 @@ const MainRoutes = {
       component: () => import('@/views/churches/ListChurch.vue')
     },
     {
+      name: 'ChurchDetail',
+      path: '/churches/:id',
+      component: () => import('@/views/churches/DetailChurch.vue')
+    },
+    {
       name: 'UserAdd',
       path: 'users/add',
       component: () => import('@/views/users/AddUser.vue')

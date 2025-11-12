@@ -1,5 +1,4 @@
 import apiClient from '@/services/apiClient';
-import { update } from 'lodash';
 
 export const userService  = {
     async getList(params = {}) {
@@ -32,4 +31,8 @@ export const userService  = {
     async changePasswordMe(data) {
 
     },
+    async getRelatedUserListOfChurch(churchId, params = {}) {
+        const combinedParams = { ...params , church_id: churchId };
+        return await apiClient.get(`/users`, combinedParams);
+    }
 }

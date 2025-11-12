@@ -81,7 +81,10 @@ const drawChart = () => {
     .attr('x', (d) => x(d.week) - 5)
     .attr('y', (d) => y(d.visits))
     .attr('width', 10)
-    .attr('height', (d) => y(0) - y(d.visits))
+    .attr('height', (d) => {
+      const v = Number(d.visits) || 0
+      return Math.max(0, y(0) - y(v))
+    })
     .attr('fill', barColor)
     .on('mouseover', function (event, d) {
       d3.select(this).attr('fill', d3.color(barColor).darker(0.8))
@@ -146,7 +149,7 @@ watch(
 <template>
   <v-card class="pa-4">
     <v-card-title class="d-flex justify-space-between align-center">
-      <span class="text-h6">{{ title }}</span>
+      <span class="text-h5">{{ title }}</span>
     </v-card-title>
 
     <v-card-text>

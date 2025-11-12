@@ -38,7 +38,6 @@ const props = withDefaults(
     churchId: number
   }>(),
   {
-    churchId: 76
   }
 )
 
@@ -83,21 +82,6 @@ const formatVisitData = (weekKeys, visitSummary) => {
   });
 }
 
-const sampleData = [
-  { week: 'Jan', year: 2024, attendance: 120, cellGroup: 80, prayerMeeting: 45, liwClass: 30 },
-  { week: 'Feb', year: 2024, attendance: 130, cellGroup: 85, prayerMeeting: 50, liwClass: 28 },
-  { week: 'Mar', year: 2024, attendance: 125, cellGroup: 90, prayerMeeting: 55, liwClass: 35 },
-  { week: 'Apr', year: 2024, attendance: 140, cellGroup: 95, prayerMeeting: 52, liwClass: 38 },
-  { week: 'May', year: 2024, attendance: 150, cellGroup: 100, prayerMeeting: 60, liwClass: null },
-  { week: 'Jun', year: 2024, attendance: 160, cellGroup: 110, prayerMeeting: 62, liwClass: null },
-  { week: 'Jul', year: 2024, attendance: 155, cellGroup: 108, prayerMeeting: 58, liwClass: 41 },
-  { week: 'Aug', year: 2024, attendance: 165, cellGroup: 112, prayerMeeting: 63, liwClass: 45 },
-  { week: 'Sep', year: 2024, attendance: 170, cellGroup: 115, prayerMeeting: 66, liwClass: 47 },
-  { week: 'Oct', year: 2024, attendance: 175, cellGroup: 118, prayerMeeting: 70, liwClass: null },
-  { week: 'Nov', year: 2024, attendance: 180, cellGroup: 120, prayerMeeting: 72, liwClass: 50 },
-  { week: 'Dec', year: 2024, attendance: 190, cellGroup: 125, prayerMeeting: 75, liwClass: 52 },
-]
-
 const apiData = ref(null);
 const attendanceChartData = computed(() => {
   if (apiData.value == null) {
@@ -137,32 +121,11 @@ const attendanceChartData = computed(() => {
   return listChartDataByChurch
 })
 
-onMounted(async () => {
-  apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId);
-  
-  // 'attendance_values',
-  // 'cell_group_values',
-  // 'prayer_meeting_values',
-  // 'liw_class_values',
-
-  // 'giving_in_usd',
-  // 'giving_in_local_currency',
-  // 'mfp_giving_in_local_currency',
-  // 'mfp_giving_in_usd',
-
-  // 'visit_summary'
-})
+apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId);
 
 </script>
 
 <template>
-  <!-- <pre>
-    {{ attendanceChartData }}
-  </pre> -->
-  <AttendanceChart
-    :chart-data="sampleData"
-    />
-
    <CardHeader title="Attendance Graph">
 
     <!-- Tabs -->

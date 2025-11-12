@@ -37,7 +37,7 @@ const formatDomain = (d) => {
 }
 
 const formatTooltipContent = (legend, d) => {
-  const val = d.value ? d.value : 'No data'
+  const val = d.value ? d.value : 'No data' 
   return `
     <div style="line-height: 1.5">
     <b>${legend.label}</b><br>
@@ -85,7 +85,7 @@ function drawChart() {
 
   // Clear old chart
   d3.select(container).selectAll('*').remove()
-  d3.select('body').selectAll('.d3-tooltip').remove()
+  // d3.select('body').selectAll('.d3-tooltip').remove()
 
   const margin = { top: 20, right: 20, bottom: 60, left: 50 }
   const width = container.clientWidth - margin.left - margin.right
@@ -162,23 +162,27 @@ function drawChart() {
   svg.append('g').call(d3.axisLeft(y))
 
   // ✅ Tooltip
-  const tooltip = d3.select('body')
-    .append('div')
-    .attr('class', 'd3-tooltip')
-    .style('position', 'absolute')
-    .style('background', 'rgba(0,0,0,0.75)')
-    .style('color', '#fff')
-    .style('padding', '6px 8px')
-    .style('border-radius', '4px')
-    .style('font-size', '12px')
-    .style('pointer-events', 'none')
-    .style('opacity', 0)
-    .style('transition', 'opacity 0.2s')
+  let tooltip = d3.select('body').select('.d3-tooltip-global')
+  if (tooltip.empty()) {
+      tooltip = d3.select('body')
+      .append('div')
+      .attr('class', 'd3-tooltip-global')
+      .style('position', 'fixed')
+      .style('z-index', 999999)
+      .style('pointer-events', 'none')
+      .style('background', 'rgba(0,0,0,0.75)')
+      .style('color', '#fff')
+      .style('padding', '6px 8px')
+      .style('border-radius', '4px')
+      .style('font-size', '12px')
+      .style('opacity', 0)
+      .style('transition', 'opacity 0.2s')
+  }
 
   // ✅ Line generator
   const line = d3
     .line()
-    .defined((d) => d.value != null)
+    .defined((d) => d.value != null && d.value !== 0)
     .x((d) => x(d.key))
     .y((d) => y(d.value))
     .curve(d3.curveMonotoneX)
@@ -218,47 +222,61 @@ function drawChart() {
       .attr('class', `dot-${legend.key}`)
       .attr('cx', (d) => x(d.key))
       .attr('cy', (d, i, arr) => {
-        if (d.value != null) return y(d.value)
-        const prev = arr[i - 1] ? arr[i - 1].__data__?.value : null
-        const next = arr[i + 1] ? arr[i + 1].__data__?.value : null
-        const refValue = prev ?? next ?? 0
+        if (d.value != null && d.value !== 0) return y(d.value)
+
+        // Tìm điểm trước hợp lệ
+        let prev = null
+        for (let j = i - 1; j >= 0; j--) {
+          const val = arr[j].__data__?.value
+          if (val != null && val !== 0) {
+            prev = val
+            break
+          }
+        }
+
+        // Tìm điểm sau hợp lệ
+        let next = null
+        for (let j = i + 1; j < arr.length; j++) {
+          const val = arr[j].__data__?.value
+          if (val != null && val !== 0) {
+            next = val
+            break
+          }
+        }
+
+        // Lấy giá trị tham chiếu trung bình giữa prev & next
+        const refValue =
+          prev != null && next != null
+            ? (prev + next) / 2
+            : prev ?? next ?? 0
+
         return y(refValue)
       })
-      .attr('r', (d) => (d.value == null ? 3 : 4))
+      .attr('r', (d) => (d.value == null || d.value === 0 ? 3 : 4))
       .attr('fill', legend.color)
-      .style('opacity', (d) => (d.value == null ? 0.3 : 1))
+      .style('opacity', (d) => (d.value == null || d.value === 0 ? 0.3 : 1))
       .style('cursor', 'pointer')
       .on('mouseenter', function (event, d) {
         tooltip
           .style('opacity', 1)
-          .html(
-            formatTooltipContent(legend, d)
-          )
-          .style('left', event.pageX + 10 + 'px')
-          .style('top', event.pageY - 28 + 'px')
+          .html(formatTooltipContent(legend, d))
+          .style('left', `${event.clientX + 10}px`)
+          .style('top', `${event.clientY - 28}px`)
       })
+      // .on('mousemove', function(event, d) {
+      //   tooltip
+      //     .style('left', `${event.clientX + 10}px`)
+      //     .style('top', `${event.clientY - 28}px`)
+      // })
       .on('mouseleave', () => tooltip.style('opacity', 0))
   })
 }
 </script>
 
-<style scoped>
-.cursor-pointer {
-  cursor: pointer;
-}
-</style>
-
-<style>
-.d3-tooltip {
-  font-family: Roboto, sans-serif;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-</style>
-
 <template>
   <v-card class="pa-4">
     <v-card-title class="d-flex justify-space-between align-center">
-      <span class="text-h6">{{ title }}</span>
+      <span class="text-h5">{{ title }}</span>
       <div class="d-flex flex-row flex-wrap justify-end">
         <div
           v-for="legend in legends"
@@ -290,7 +308,10 @@ function drawChart() {
       <div v-if="!props.data?.length" class="text-center pa-8 text-grey">
         Loading chart data...
       </div>
-      <div v-else ref="chartContainer" style="width: 100%; height: 400px;"></div>
+      <div v-else ref="chartContainer" style="width: 100%; height: 400px; position: relative; overflow: visible;"></div>
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped>
+</style>

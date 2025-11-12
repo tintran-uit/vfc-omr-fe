@@ -33,7 +33,14 @@ import {
   mdiLogout,
   mdiEarthPlus,
   mdiCancel,
-  mdiCheck
+  mdiCheck,
+  mdiFacebook,
+  mdiTwitter,
+  mdiInstagram,
+  mdiWeb,
+  mdiCheckDecagramOutline,
+  mdiCheckboxBlankOutline,
+  mdiCheckboxMarkedOutline,
 } from '@mdi/js';
 import { mdi } from 'vuetify/iconsets/mdi-svg';
 
@@ -74,5 +81,15 @@ export const icons = {
   logout: mdiLogout,
   earthPlus: mdiEarthPlus,
   cancel: mdiCancel,
-  check: mdiCheck
+  check: mdiCheck,
+
+  facebook: mdiFacebook,
+  twitter: mdiTwitter,
+  instagram: mdiInstagram,
+  web: mdiWeb,
+
+  checkDecagramOutline: mdiCheckDecagramOutline,
+
+  checkboxBlankOutline: mdiCheckboxBlankOutline,
+  checkboxMarkedOutline: mdiCheckboxMarkedOutline,
 };

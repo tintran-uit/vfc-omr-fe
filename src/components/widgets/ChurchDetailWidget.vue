@@ -2,6 +2,7 @@
 import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
 import CardHeader from '../shared/CardHeader.vue';
 import { churchService } from '@/services/churchService';
+import { geographicalRegionService } from '@/services/geographicalRegionService';
 import { formatDate, getAge } from '@/helpers/dateTimeHelper';
 
 const props = withDefaults(
@@ -12,11 +13,30 @@ const props = withDefaults(
   }
 )
 const detail = ref({})
+const geographicalRegionTree = ref('')
+const headingClass = 'text-left font-weight-medium'
+const getPath = function (node) {
+  const path = [node.name]
+  let current = node
+  while (current.children && current.children.length > 0) {
+    current = current.children[0]
+    path.push(current.name)
+  }
+  return path.join(' > ')
+}
 const fetchData = async (churchId) => {
   detail.value = await churchService.get(churchId)
-}
-const headingClass = 'text-left font-weight-medium'
 
+  // detail.value.twitter = 'https://twitter.com/examplechurch'
+  // detail.value.instagram = 'https://instagram.com/examplechurch'
+  // detail.value.facebook = 'https://facebook.com/examplechurch'
+  // detail.value.website = 'https://www.examplechurch.org'
+
+  // fetch extra - geo Ancestors
+  const accestors = await geographicalRegionService.getListAncestor(detail.value?.geographical_region_id)
+
+  geographicalRegionTree.value = getPath(accestors[0])
+}
 
 watch(
   () => props.churchId,
@@ -39,7 +59,7 @@ watch(
         </tr>
         <tr>
           <th :class="headingClass">Mother Church</th>
-          <td>{{ detail?.motherChurch }}</td>
+          <td>{{ detail?.parent_name }}</td>
         </tr>
         <tr>
           <th :class="headingClass">Language</th>
@@ -47,7 +67,7 @@ watch(
         </tr>
         <tr>
           <th :class="headingClass">Nation</th>
-          <td>{{ detail?.sensitive_nation ? 'Yes' : 'No' }}</td>
+          <td>{{ detail?.country_name }}</td>
         </tr>
         <tr>
           <th :class="headingClass">Date of Birth</th>
@@ -62,20 +82,41 @@ watch(
           <td>{{ detail?.office_phone }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Website</th>
-          <td>{{ detail?.website }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Fb</th>
-          <td>{{ detail?.face }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Instagram</th>
-          <td>{{ detail?.xxx }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">YouTube</th>
-          <td>{{ detail?.xxx }}</td>
+          <th :class="headingClass">Links</th>
+          <td>
+            <v-btn
+              v-if="detail?.website"
+              icon="$web"
+              variant="text"
+              :href="detail?.website"
+              target="_blank"
+              rel="noopener"
+            />
+            <v-btn
+              v-if="detail?.facebook"
+              icon="$facebook"
+              variant="text"
+              :href="detail?.facebook"
+              target="_blank"
+              rel="noopener"
+            />
+            <v-btn
+              v-if="detail?.twitter"
+              icon="$twitter"
+              variant="text"
+              :href="detail?.twitter"
+              target="_blank"
+              rel="noopener"
+            />
+            <v-btn
+              v-if="detail?.instagram"
+              icon="$instagram"
+              variant="text"
+              :href="detail?.instagram"
+              target="_blank"
+              rel="noopener"
+            />
+          </td>
         </tr>
       </tbody>
     </v-table>
@@ -84,10 +125,9 @@ watch(
       <!-- 🏠 Service Address -->
       <v-expansion-panel>
         <v-expansion-panel-title>
-          <v-icon start>mdi-home-map-marker</v-icon>
           Service Address
         </v-expansion-panel-title>
-        <v-expansion-panel-text>
+        <v-expansion-panel-text class="pa-0">
           <v-table class="text-no-wrap bordered-table" hover density="comfortable">
             <tbody>
               <tr>
@@ -110,7 +150,6 @@ watch(
       <!-- 🏢 Office Address -->
       <v-expansion-panel>
         <v-expansion-panel-title>
-          <v-icon start>mdi-office-building-marker</v-icon>
           Office Address
         </v-expansion-panel-title>
         <v-expansion-panel-text>
@@ -132,7 +171,6 @@ watch(
       <!-- ℹ️ More -->
       <v-expansion-panel>
         <v-expansion-panel-title>
-          <v-icon start>mdi-information-outline</v-icon>
           More
         </v-expansion-panel-title>
         <v-expansion-panel-text>
@@ -156,7 +194,7 @@ watch(
               </tr>
               <tr>
                 <th :class="headingClass">Geographic Region Tree</th>
-                <td>{{ detail?.xxx }}</td>
+                <td>{{ geographicalRegionTree }}</td>
               </tr>
               <tr>
                 <th :class="headingClass">Church Apostolic Region</th>
@@ -164,16 +202,16 @@ watch(
               </tr>
               <tr>
                 <th :class="headingClass">Language Region</th>
-                <td>{{ detail?.xxx }}</td>
+                <td>{{ detail?.language_region_name }}</td>
               </tr>
               <tr>
                 <th :class="headingClass">Local Currency</th>
                 <td>{{ detail?.currency_name }}</td>
               </tr>
-              <!-- <tr>
+              <tr v-if="detail?.disabled">
                 <th :class="headingClass">Reason for Disabling</th>
-                <td>---</td>
-              </tr> -->
+                <td>{{ detail?.disabled_reason }}</td>
+              </tr>
             </tbody>
           </v-table>
         </v-expansion-panel-text>
@@ -206,5 +244,9 @@ watch(
 .bordered-table tr:last-child th,
 .bordered-table tr:last-child td {
   border-bottom: none;
+}
+
+:deep(.v-expansion-panel-text__wrapper) {
+  padding: 0 !important;
 }
 </style>

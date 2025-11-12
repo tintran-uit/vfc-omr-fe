@@ -56,7 +56,7 @@ watch([page, itemsPerPage, sortBy, search], () => {
 </script>
 
 <template>
-  <CardHeader title="Attachments">
+  <CardHeader :title="$t('attachment.dashboardTitle')">
     <DynamicTableDefault
                 v-model:page="page"
                 v-model:items-per-page="itemsPerPage"

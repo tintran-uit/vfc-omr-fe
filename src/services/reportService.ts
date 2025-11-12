@@ -1,6 +1,6 @@
 import apiClient from '@/services/apiClient';
 
-const ReportService  = {
+export const reportService  = {
     async getReport(churchId, year, weekNumber) {
         
         try {
@@ -21,7 +21,8 @@ const ReportService  = {
         alert('Error occur');
         throw error;
       }
+    },
+    async getLast4WeeksOfChurch(churchId) {
+      return await apiClient.get(`/weekly-reports/churches/${churchId}?period=last_4_weeks`);
     }
 }
-
-export default ReportService;

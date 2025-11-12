@@ -29,7 +29,8 @@ const props = withDefaults(
     // onOptionsChange: (opts: any) => void,
     // onAction: (action: string, item: any) => void
     enabledActions?:string[],
-    actionTitles?: Record<string, string>
+    actionTitles?: Record<string, string>,
+    emptyPlaceholder?: string,
   }>(),
   {
     totalItems: 0,
@@ -42,7 +43,8 @@ const props = withDefaults(
       assignOverseer: "dataTable.buttonAssignOverseerTitle",
       disable: "dataTable.buttonDisableTitle",
       enable: "dataTable.buttonEnableTitle",
-    }
+    },
+    emptyPlaceholder: '-'
   }
 )
 
@@ -240,7 +242,7 @@ onMounted(() => {
                 </v-tooltip>
               </div>
               <slot v-else :name="`item.${header.key}`" :item="item" :value="item[header.key]">
-                {{ item[header.key] }}
+                {{ item[header.key] || emptyPlaceholder }}
               </slot>
             </td>
         </template>

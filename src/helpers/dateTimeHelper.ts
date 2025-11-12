@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import 'dayjs/locale/en'
 
 /**
  * Chuyển chuỗi ISO sang định dạng YYYY-MM-DD
@@ -81,7 +82,12 @@ function getWeekRange(year, week, format = 'YY.MM.DD') {
  ]
 }
 
-
+export function formatDateTimeHumanReadable(dateStr) {
+  let locale = 'en';
+  let format = 'DD MMM YYYY';
+  if (!dateStr) return ''
+  return dayjs(dateStr).locale(locale).format(format)
+}
   
 //   export function toISODate(dateOnly: string): string {
 //     if (!dateOnly) return ''

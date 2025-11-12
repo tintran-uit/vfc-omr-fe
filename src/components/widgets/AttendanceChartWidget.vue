@@ -26,7 +26,7 @@ const periodOptions = [
 ]
 const periodModel = ref(PERIOD_12_MONTHS)
 const { t } = useI18n()
-const tab = ref('profile')
+const tab = ref(null)
 
 const titleAttendance = computed(() => {
   return t('chart.attendanceLastNumberMonth', { number: periodModel.value === PERIOD_12_MONTHS ? 12 : 24 })
@@ -104,10 +104,10 @@ const listChartDataByChurch = computed(() => {
 
     chartDataByChurch.givingData = formatGiving(
       weekKeys,
-      church.giving_in_local_currency,
       church.giving_in_usd,
-      church.mfp_giving_in_local_currency,
+      church.giving_in_local_currency,
       church.mfp_giving_in_usd,
+      church.mfp_giving_in_local_currency,
       dates
     );
 
@@ -123,16 +123,33 @@ const listChartDataByChurch = computed(() => {
   return list
 })
 
-const onChangePeriod = async (val) => {
+const onChangePeriod = async (period) => {
   apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(
     props.churchId,
-    val
+    period
   );
 }
 
-onMounted(async () => {
+const fetchData = async () => {
   apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId);
-})
+}
+
+watch(
+  () => props.churchId,
+  async (val) => {
+    if (val) {
+      fetchData()
+    }
+  },
+  { immediate: true }
+)
+
+watch(listChartDataByChurch, (newVal) => {
+  if (newVal.length > 0 && !tab.value) {
+    tab.value = `chart-${newVal[0].church_id}`
+  }
+},
+{ immediate: true })
 
 </script>
 
@@ -158,7 +175,7 @@ onMounted(async () => {
               :title="titleAttendance"
               />
 
-              <GivingChart
+               <GivingChart
                 :data="chartDataByChurch.givingData"
                 :title="titleGiving"
                 />

@@ -13,6 +13,10 @@ export const churchService  = {
       const myParams = { ...params, disabled: true };
       return await apiClient.get(`/churches`, myParams);
     },
+    async getListDaughter(parentId, params = {}) {
+      const myParams = { ...params, parent_id: parentId };
+      return await apiClient.get(`/churches`, myParams);
+    },
     async get(id, showLoading = true) {
       return await apiClient.get(`/churches/${id}`, {}, showLoading);
     },

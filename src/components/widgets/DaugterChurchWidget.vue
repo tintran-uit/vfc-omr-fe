@@ -1,21 +1,55 @@
 <script setup lang="ts">
 import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
 import CardHeader from '../shared/CardHeader.vue';
-import { userService } from '@/services/userService';
+import { churchService } from '@/services/churchService';
+import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
+import tableSchema from '@/table-schemas/churchTableSchema';
+import { tableOptionsToParams } from '@/helpers/dataTableHelper';
 
 const props = withDefaults(
   defineProps<{
-    userId: number,
+    churchId: number,
   }>(),
   {
   }
 )
-const detail = ref({})
-const fetchData = async (userId) => {
-  detail.value = await userService.get(userId)
-}
-const headingClass = 'text-left font-weight-medium'
+const items = ref([])
+const page = ref(1)
+const itemsPerPage = ref(25)
+const totalItems = ref(0)
+const search = ref({})
+const sortBy = ref([
+  { key: 'id', order: 'desc' }
+])
 
+const fetchData = async function (options = {}) {
+  const data = await churchService.getListDaughter(
+    props.churchId,
+    tableOptionsToParams(options)
+  )
+
+  items.value = data.items;
+  totalItems.value = data.total_pages;
+}
+
+const onEdit = (item: any) => {
+  router.push({ name: 'ChurchEdit', params: { id: item.id } })
+}
+
+const onClone = (item) => {
+  router.push({ name: 'ChurchClone', params: { id: item.id } })
+}
+
+const onDisable = async (item: any) => {
+  if (!await dialogStore.confirm('Are you sure you want to disable?')) return
+  await churchService.disable(item.id)
+  
+  fetchData()
+}
+
+const onUpdateOptions = (options) => {
+  fetchData(options);
+}
 
 watch(
   () => props.userId,
@@ -29,55 +63,52 @@ watch(
 </script>
 
 <template>
-  <CardHeader title="Pastor Leader Details">
-    <v-table class="text-no-wrap bordered-table" density="compact" hover>
-      <tbody>
-        <tr>
-          <th :class="headingClass">Full Name</th>
-          <td>{{ detail?.name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Title</th>
-          <td>{{ detail?.title }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">OMR #</th>
-          <td>{{ detail?.id }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">User Name</th>
-          <td>{{ detail?.username }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">OMR Role</th>
-          <td>{{ detail?.role?.name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Language</th>
-          <td>{{ detail?.language_name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Nation</th>
-          <td>{{ detail?.country_name }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Sensitive Nation</th>
-          <td>{{ detail?.sensitive_nation ? 'Yes' : 'No' }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">E-mail</th>
-          <td>{{ detail?.email_address }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">Phone</th>
-          <td>{{ detail?.mobile_phone }}</td>
-        </tr>
-        <tr>
-          <th :class="headingClass">From</th>
-          <td>{{ detail?.church_name }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+  <CardHeader :title="$t('church.dashboardDaugterChurchTitle')">
+    <DynamicTableDefault
+      v-model:page="page"
+      v-model:items-per-page="itemsPerPage"
+      v-model:search="search"
+      v-model:sort-by="sortBy"
+      :total-items="totalItems"
+      :headers="tableSchema.headers"
+      :searches-config="tableSchema.searches"
+      :items="items"
+      :enabled-actions="['edit', 'disable']"
+      @action:edit="onEdit"
+      @action:disable="onDisable"
+      @update:options="onUpdateOptions"
+    >
+      <template v-slot:item.attributes="{ item }">
+        <div class="text-end text-no-wrap">
+          <v-chip
+            v-if="item?.is_msc"
+            color="warning"
+            :text="$t('churchTable.msc')"
+            class="mr-2"
+            size="small"
+            label
+          ></v-chip>
+          <v-chip
+            v-if="item?.is_mother_church"
+            color="success"
+            :text="$t('churchTable.mother')"
+            class="mr-2"
+            size="small"
+            label
+          ></v-chip>
+        </div>
+      </template>
+
+      <template v-slot:item.name="{ item }">
+        <a
+          href="#"
+          variant="text"
+          class="text-primary"
+        >
+          {{ item.name }}
+      </a>
+      </template>
+    </DynamicTableDefault>
   </CardHeader>
 </template>
 

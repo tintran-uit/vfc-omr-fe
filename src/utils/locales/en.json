@@ -75,7 +75,7 @@
       "emailAddress": "Email Address [requested]",
       "website": "Website",
       "facebook": "Facebook",
-      "twitter": "Twitter",
+      "twitter": "X",
       "instagram": "Instagram",
       "dateOfBirth": "Church's Birthday"
     }
@@ -203,14 +203,26 @@
   "dashboard": {
     "people": "People",
     "growth": "Growth",
-    "giving": "Giving",
-    "churchPlants": "Church Plants"
+    "givingTithes": "Giving Tithes",
+    "churchPlants": "Church Plants",
+    "givingMFP": "Giving MFP",
+    "peopleInCG": "People in CG's",
+    "peopleInGTAndLIW": "People in GT & LIW",
+    "newDecisions": "New Decisions"
   },
   "user": {
     "listTitle": "List of Users",
     "addTitle": "Add new User",
     "editTitle": "Edit User #{id}",
-    "listOverseerTitle": "List of Overseers"
+    "listOverseerTitle": "List of Overseers",
+    "title": "Title",
+    "omrStatus": "OMR Status",
+    "omrRole": "OMR Role",
+    "mobilePhone": "Mobile Phone",
+    "ormId": "OMR #",
+    "username": "Username",
+    "avatar": "Avatar",
+    "name": "Name"
   },
   "church": {
     "listTitle": "List churches",
@@ -218,7 +230,8 @@
     "editTitle": "Edit church #{id}",
     "cloneTitle": "Clone church #{id}",
     "addWithNewUserTitle": "Add with new pastor",
-    "listDisabledTitle": "Disabled Churches"
+    "listDisabledTitle": "Disabled Churches",
+    "dashboardDaugterChurchTitle": "Daughter Churches"
   },
   "message": {
     "errorTitle": "An error occurred"
@@ -295,6 +308,31 @@
     "visitLastNumberMonth": "Visit - Last {number} Months",
     "attendance": "Attendance",
     "giving": "Giving",
-    "week": "Week"
+    "givingUsd": "Giving (USD)",
+    "givingLocalCurrency": "Giving (Local Currency)",
+    "week": "Week",
+    "averageAttendance": "Average Attendance",
+    "churchPlantingTitle": "Generational Church Planting by {churchName}",
+    "legendTithesAndOfferings": "Tithes & Offerings",
+    "legendMissionsMFPGiving": "Missions MFP Giving",
+    "noData": "No Data"
+  },
+  "report": {
+    "rangeDateOfWeek": "{start} - {end}<br />W{weekNumber}-{year}"
+
+  },
+  "churchPlantingProjection": {
+    "dashboardTitle": "Church Planting Projections",
+    "proposedLaunchDate": "Proposed Launch Date",
+    "targetTown": "Church Plant Target Town",
+    "estPop": "Est. Pop.",
+    "proposedLeader": "Proposed Leader",
+    "stepProgressIndicator": "6 Step Progress Indicator",
+    "xxx": "xxx"
+  },
+  "attachment": {
+    "dashboardTitle": "Attachments",
+    "labelFile": "Upload file to this Church [Max 2MB]",
+    "labelName": "Name"
   }
 }
