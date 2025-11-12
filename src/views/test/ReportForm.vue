@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UiParentCard from "@/components/shared/UiParentCard.vue";
 import { ref, watch, computed } from 'vue';
-import reportService from '@/services/reportService';
+import {reportService} from '@/services/reportService';
 import reportSchemaForm from "@/form-schemas/reportFormSchema";
 
 const modelYear = ref(2024);
