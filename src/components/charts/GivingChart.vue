@@ -48,7 +48,7 @@ function handleResize() {
 }
 
 // ✅ Domain format giống AttendanceChart
-const formatDomain = (d) => `W${d.week}.${d.year}`
+const formatDomain = (d) => d.label
 
 // ✅ Tooltip content giống AttendanceChart
 const formatTooltipContent = (legend, d) => {

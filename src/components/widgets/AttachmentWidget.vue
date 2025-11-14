@@ -13,7 +13,6 @@ const props = withDefaults(
     title?: string
   }>(),
   {
-    churchId: 76,
     title: 'Attachments'
   }
 )

@@ -231,7 +231,9 @@
     "cloneTitle": "Clone church #{id}",
     "addWithNewUserTitle": "Add with new pastor",
     "listDisabledTitle": "Disabled Churches",
-    "dashboardDaugterChurchTitle": "Daughter Churches"
+    "dashboardDaugterChurchTitle": "Daughter Churches",
+    "verifiedBy": "Verified by {name}<br />{date}",
+    "lastMonthlyRecord": "Last Monthly Record"
   },
   "message": {
     "errorTitle": "An error occurred"

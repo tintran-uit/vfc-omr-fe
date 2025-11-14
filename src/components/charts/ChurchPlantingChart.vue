@@ -258,9 +258,8 @@ const showWeekRange = (year, weekNumber) => {
 const fetchChurchReport = async (churchId) => {
   data4Weeks.value = await reportService.getLast4WeeksOfChurch(churchId)
 }
-const fetchChurchDetail = async (churchId) => {console.log('fetchChurchDetail', churchId)
+const fetchChurchDetail = async (churchId) => {
   selectedChurch.value = await churchService.get(churchId)
-  console.log('fetchChurchDetail', selectedChurch.value)
 }
 watch(
   () => selectedChurchId.value,

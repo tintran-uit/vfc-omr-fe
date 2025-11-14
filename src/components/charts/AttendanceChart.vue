@@ -32,8 +32,10 @@ const chartContainer = ref(null)
 const hiddenLines = ref(new Set())
 
 const formatDomain = (d) => {
+  return d.label
   // const [start, end] = getWeekRange(d.year, d.week, 'DD MMM')
-  return `W${d.week}.${d.year}`
+  // return `${start} - ${end}`
+  // return `W${d.week}.${d.year}`
 }
 
 const formatTooltipContent = (legend, d) => {

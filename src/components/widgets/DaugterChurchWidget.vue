@@ -100,13 +100,13 @@ watch(
       </template>
 
       <template v-slot:item.name="{ item }">
-        <a
-          href="#"
+        <v-btn
+          color="primary"
           variant="text"
-          class="text-primary"
+          :to="{ name: 'ChurchDetail', params: { id: item.id } }"
         >
-          {{ item.name }}
-      </a>
+        {{ item.name }}
+        </v-btn>
       </template>
     </DynamicTableDefault>
   </CardHeader>

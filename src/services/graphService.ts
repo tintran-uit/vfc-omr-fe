@@ -6,6 +6,6 @@ export const graphService  = {
         return await apiClient.get(`/graph/churches/${churchId}/attendance-giving-visitor`, {period});
     },
     async getDataGenerationalGraph(churchId) {
-        return await apiClient.get(`/graph/churches/${churchId}/generational-graph`);
+        return await apiClient.get(`/churches/${churchId}/generational-graph`);
     },
 }

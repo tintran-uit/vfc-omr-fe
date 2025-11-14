@@ -1,3 +1,16 @@
+<template>
+  <v-card class="pa-4">
+    <v-card-title class="d-flex justify-space-between align-center">
+      <span class="text-h4">{{ title }}</span>
+    </v-card-title>
+
+    <v-card-text>
+      <div ref="chartRef" class="w-100" style="height: 360px; position: relative;"></div>
+      <div ref="tooltipRef" class="chart-tooltip" style="opacity: 0"></div>
+    </v-card-text>
+  </v-card>
+</template>
+
 <script setup lang="ts">
 import * as d3 from 'd3'
 import { ref, watch, nextTick, onMounted } from 'vue'
@@ -5,22 +18,20 @@ import { useTheme } from 'vuetify'
 
 const theme = useTheme()
 
-// ✅ Props
+// Props
 const props = withDefaults(
   defineProps<{
     data: any[]
     title?: string
   }>(),
-  {
-    title: 'Visit Graph'
-  }
+  { title: 'Visit Graph' }
 )
 
-// ✅ Màu cấu hình theo theme
+// Theme colors
 const barColor = theme.current.value.colors.chartVisit || '#B5282E'
-const gridColor = '#aaaaaa' // <- thêm màu grid
+const gridColor = '#aaaaaa'
 
-// ✅ Ref
+// Refs
 const chartRef = ref(null)
 const tooltipRef = ref(null)
 let svg = null
@@ -29,13 +40,13 @@ const drawChart = () => {
   const data = props.data || []
   const container = chartRef.value
   const tooltip = d3.select(tooltipRef.value)
-  if (!container) return
+  if (!container || data.length === 0) return
 
   const width = container.clientWidth
   const height = 360
-  const margin = { top: 20, right: 20, bottom: 40, left: 60 }
+  const margin = { top: 20, right: 20, bottom: 100, left: 60 } // margin-bottom cao hơn để không che
 
-  // Xoá chart cũ
+  // Clear old chart
   d3.select(container).selectAll('*').remove()
 
   // SVG
@@ -45,24 +56,26 @@ const drawChart = () => {
     .attr('width', width)
     .attr('height', height)
 
-  // Thang đo
+  // X scale — label từ data
   const x = d3
-    .scaleLinear()
-    .domain([1, d3.max(data, (d) => d.week) || 52])
+    .scaleBand()
+    .domain(data.map((d) => d.label))
     .range([margin.left, width - margin.right])
+    .padding(0.2)
 
+  // Y scale
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.visits) || 10])
+    .domain([0, d3.max(data, (d) => Number(d.visits)) || 10])
     .nice()
     .range([height - margin.bottom, margin.top])
 
-  // ✅ Grid ngang (mờ, lấy từ theme)
+  // Grid
   const yAxisGrid = d3
     .axisLeft(y)
     .ticks(5)
     .tickSize(-width + margin.left + margin.right)
-    .tickFormat('')
+    .tickFormat(() => '')
 
   svg
     .append('g')
@@ -73,24 +86,21 @@ const drawChart = () => {
     .attr('stroke', gridColor)
     .attr('stroke-opacity', 0.3)
 
-  // ✅ Vẽ cột
+  // Bars
   svg
     .selectAll('rect')
     .data(data)
     .join('rect')
-    .attr('x', (d) => x(d.week) - 5)
-    .attr('y', (d) => y(d.visits))
-    .attr('width', 10)
-    .attr('height', (d) => {
-      const v = Number(d.visits) || 0
-      return Math.max(0, y(0) - y(v))
-    })
+    .attr('x', (d) => x(d.label))
+    .attr('y', (d) => y(Number(d.visits) || 0))
+    .attr('width', x.bandwidth())
+    .attr('height', (d) => y(0) - y(Number(d.visits) || 0))
     .attr('fill', barColor)
     .on('mouseover', function (event, d) {
       d3.select(this).attr('fill', d3.color(barColor).darker(0.8))
       tooltip
         .style('opacity', 1)
-        .html(`<strong>Week ${d.week}</strong><br/>Visits: ${d.visits}`)
+        .html(`<strong>${d.label}</strong><br/>Visits: ${d.visits}`)
         .style('left', event.offsetX + 15 + 'px')
         .style('top', event.offsetY - 20 + 'px')
     })
@@ -104,34 +114,27 @@ const drawChart = () => {
       tooltip.style('opacity', 0)
     })
 
-  // ✅ Trục X
+  // --- Trục X với tick group 5 tuần + rotate
+  const groupSize = 5 // group 5 tuần
   svg
     .append('g')
     .attr('transform', `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).ticks(10).tickFormat(d3.format('d')))
+    .call(
+      d3.axisBottom(x)
+        .tickFormat((d, i) => (i % groupSize === 0 ? d : ''))
+    )
+    .selectAll('text')
+    .attr('transform', 'rotate(-45)')
+    .style('text-anchor', 'end')
+    .style('font-size', '10px') // nhỏ hơn để không che
+    .style('dominant-baseline', 'middle') // căn giữa chữ dọc
+  
 
-  svg
-    .append('text')
-    .attr('x', width / 2)
-    .attr('y', height - 5)
-    .attr('fill', '#1e4a7b')
-    .attr('text-anchor', 'middle')
-    .attr('font-weight', 'bold')
-
-  // ✅ Trục Y
+  // Axis Y
   svg
     .append('g')
     .attr('transform', `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).ticks(5))
-
-  svg
-    .append('text')
-    .attr('x', -height / 2)
-    .attr('y', 15)
-    .attr('transform', 'rotate(-90)')
-    .attr('fill', '#1e4a7b')
-    .attr('text-anchor', 'middle')
-    .attr('font-weight', 'bold')
 }
 
 onMounted(() => nextTick(drawChart))
@@ -145,19 +148,6 @@ watch(
   { deep: true }
 )
 </script>
-
-<template>
-  <v-card class="pa-4">
-    <v-card-title class="d-flex justify-space-between align-center">
-      <span class="text-h5">{{ title }}</span>
-    </v-card-title>
-
-    <v-card-text>
-      <div ref="chartRef" class="w-100" style="height: 360px; position: relative;"></div>
-      <div ref="tooltipRef" class="chart-tooltip" style="opacity: 0"></div>
-    </v-card-text>
-  </v-card>
-</template>
 
 <style scoped>
 .grid path {
