@@ -71,7 +71,6 @@ watch(
 
 <template>
   <OverviewChurch />
- 
 </template>
 <style scoped lang="scss">
 

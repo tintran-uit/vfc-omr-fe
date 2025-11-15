@@ -157,17 +157,16 @@ const metrics = shallowRef([
 
       <!-- User info ở giữa -->
       <v-col cols="12" sm="10" class="d-flex flex-column justify-center text-center text-sm-left">
-        <div class="text-h4 mb-1 text-medium-emphasis">
-          {{ pastor?.first_name }}  {{ pastor?.last_name }}
-        </div>
-
-        <div class="text-h4">
-          {{ churchDetail?.name }}
-        </div>
-        
         <v-row class="align-center">
           <v-col cols="8" class="text-medium-emphasis text-body-1">
-            <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
+            <div class="text-h4 mb-1 text-medium-emphasis">
+              {{ pastor?.first_name }}  {{ pastor?.last_name }}
+            </div>
+
+            <div class="text-h4">
+              {{ churchDetail?.name }}
+
+              <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
             <v-tooltip>
               <template #activator="{ props: tooltipProps }">
                 <v-icon v-bind="{ ...menuProps, ...tooltipProps }" class="text-success" size="20">$checkDecagramOutline</v-icon>
@@ -179,6 +178,11 @@ const metrics = shallowRef([
                 })"></span>
             </v-tooltip>
           </template>
+
+
+        <slot name="switch" />
+            </div>
+            
             {{ churchDetail?.city_name }}, {{ churchDetail?.country_name }}<br />
             {{ $t('church.lastMonthlyRecord') }}: {{ formatDate(dashboardData?.dashboard_info?.last_report_date, 'MMMM YYYY') || 'N/A' }}
           </v-col>

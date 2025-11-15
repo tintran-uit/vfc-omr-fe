@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
+import {useDialogStore} from '@/stores/dialogStore'
 import CardHeader from '../shared/CardHeader.vue';
 import { churchService } from '@/services/churchService';
 import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
@@ -13,6 +14,7 @@ const props = withDefaults(
   {
   }
 )
+const dialogStore = useDialogStore()
 const items = ref([])
 const page = ref(1)
 const itemsPerPage = ref(25)
