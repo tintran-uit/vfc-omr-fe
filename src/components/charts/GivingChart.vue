@@ -4,6 +4,7 @@ import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useTheme } from 'vuetify'
 import { getWeekRange } from '@/helpers/dateTimeHelper'
 import { useI18n } from 'vue-i18n';
+import { formatNumber } from '@/helpers/appHelper';
 
 const theme = useTheme()
 
@@ -58,8 +59,8 @@ const formatTooltipContent = (legend, d) => {
     <div style="line-height: 1.5">
     <b>${legend.label}</b><br>
     <b>${t('chart.week')}</b>: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>
-    <b>${t('chart.givingUsd')}</b>: ${val}<br />
-    <b>${t('chart.givingLocalCurrency')}</b>: ${givingLocal}
+    <b>${t('chart.giving')}</b>: ${formatNumber(givingLocal) || 'N/A'}<br />
+    <b>${t('chart.givingUsd')}</b>: ${formatNumber(val) || 'N/A'}<br />
     </div>
   `;
 }

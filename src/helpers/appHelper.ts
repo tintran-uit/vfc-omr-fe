@@ -1,5 +1,5 @@
 export function getLocale(): string {
-  return localStorage.getItem('language') || 'en-US'
+  return localStorage.getItem('language') || 'en'
 }
 
 /**
@@ -10,10 +10,12 @@ export function getLocale(): string {
  * @returns string đã format
  */
 export function formatCurrency(
-  value: number,
-  currency: string = 'VND',
+  value: number | null | undefined,
+  currency: string = 'USD',
   options?: Intl.NumberFormatOptions
 ): string {
+  if (value == null || isNaN(value as number)) return ''
+
   const locale = getLocale()
 
   return new Intl.NumberFormat(locale, {
@@ -24,9 +26,11 @@ export function formatCurrency(
 }
 
 export function formatNumber(
-  value: number,
+  value: number | null | undefined,
   options?: Intl.NumberFormatOptions
 ): string {
+  if (value == null || isNaN(value as number)) return ''
+
   const locale = getLocale()
   return new Intl.NumberFormat(locale, options).format(value)
 }

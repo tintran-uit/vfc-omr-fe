@@ -5,6 +5,7 @@ import { reportService } from "@/services/reportService";
 import { churchService } from "@/services/churchService";
 import { getWeekRange } from "@/helpers/dateTimeHelper";
 import { graphService } from '@/services/graphService';
+import { formatNumber, formatCurrency } from "@/helpers/appHelper";
 
 const { t } = useI18n();
 const selectedChurchId = ref(null);
@@ -242,11 +243,11 @@ const rows = [
   },
   {
     "label": "Local Giving VND",
-    "fn": (r) => r?.givings?.in_local_currency || '-'
+    "fn": (r) => r?.givings?.in_local_currency ? formatNumber(r?.givings?.in_local_currency) : '-'
   },
   {
     "label": "Local Giving USD",
-    "fn": (r) => r?.givings?.in_usd || '-'
+    "fn": (r) => r?.givings?.in_usd ? formatNumber(r?.givings?.in_usd) : '-'
   },
 ]
 

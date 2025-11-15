@@ -17,6 +17,7 @@ import DaugterChurchWidget from '@/components/widgets/DaugterChurchWidget.vue';
 import AttendanceChartWidget from '@/components/widgets/AttendanceChartWidget.vue';
 import ChurchPlantingChartWidget from '@/components/widgets/ChurchPlantingChartWidget.vue';
 import { churchService } from '@/services/churchService';
+import { formatCurrency } from '@/helpers/appHelper';
 
 const props = withDefaults(
   defineProps<{
@@ -58,6 +59,7 @@ const authStore = useAuthStore();
 const churchDetail = inject('churchDetail')
 const dashboardData = inject('dashboardData')
 const pastor = inject('pastor')
+const currencyCodeLocal = computed(() => churchDetail.value?.currency_name)
 const metrics = shallowRef([
   {
     name: 'dashboard.people',
@@ -75,7 +77,12 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.givingTithes',
-    earnKey: 'avg_monthly_giving',
+    // earnKey: ,
+    earnFn: (item) => {
+      if (!currencyCodeLocal) return 0; 
+
+      return formatCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
+    },
     percentKey: null,
     color: 'primary',
     icon: givingIcon,
@@ -89,7 +96,11 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.givingMFP',
-    earnKey: 'avg_monthly_mfp_giving',
+    earnFn: (item) => {
+      if (!currencyCodeLocal) return 0; 
+
+      return formatCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
+    },
     percentKey: null,
     color: 'primary',
     icon: givingIcon,
@@ -129,7 +140,7 @@ const metrics = shallowRef([
     style="background-color: #ccc;"
   >
   </v-img>
-
+  
   <!-- Avatar + Info -->
   <v-container class="position-relative">
     <v-row>
@@ -187,16 +198,21 @@ const metrics = shallowRef([
             <v-card-text class="h-100">
               <div class="d-flex align-items-center justify-space-between">
                 <v-row class="mb-0">
-                  <v-col cols="3" class="d-flex align-center justify-center">
+                  <v-col cols="3" class="d-flex align-center justify-center pb-0">
                     <v-img :src="metric.icon" alt="icon" width="40" height="40" />
                   </v-col>
 
-                  <v-col cols="7">
+                  <v-col cols="9" class="pb-0">
                     <h4 class="text-h4 d-flex align-center mb-0" v-if="metric.earnKey">
                       {{ dashboardData?.dashboard_indicators?.[metric.earnKey] || 0 }}
                     </h4>
                     <h4 class="text-h4 d-flex align-center mb-0" v-else-if="metric.percentKey">
                       {{ dashboardData?.dashboard_indicators?.[metric.percentKey] || 0 }}%
+                    </h4>
+                    <h4 class="text-h4 d-flex align-center mb-0" v-else-if="metric.earnFn && typeof(metric.earnFn) === 'function'">
+                      <!-- <v-badge location="top right" color="error" content="9999"> -->
+                        {{ metric.earnFn(dashboardData?.dashboard_indicators || 0) }}
+                      <!-- </v-badge> -->
                     </h4>
                     <h6 class="text-h6 text-lightText mb-1">
                       {{ $t(metric.name) }}
@@ -209,7 +225,6 @@ const metrics = shallowRef([
         </v-card>
       </v-col>
     </v-row>
-
     
     
       <!-- Menu -->
