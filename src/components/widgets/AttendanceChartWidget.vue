@@ -72,7 +72,7 @@ const formatVisitData = (weekKeys, visitSummary, labels) => {
       week: Week,
       year: Year,
       label: labels[index],
-      visit: visitSummary[index],
+      visits: visitSummary[index],
     }
   });
 }

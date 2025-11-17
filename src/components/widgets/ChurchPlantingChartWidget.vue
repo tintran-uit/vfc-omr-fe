@@ -17,7 +17,7 @@ const churchDetail = inject('churchDetail')
 </script>
 
 <template>
-   <CardHeader :title="t('chart.churchPlantingTitle', {churchName: churchDetail?.church_name})">
+   <CardHeader :title="t('chart.churchPlantingTitle', {churchName: churchDetail?.name})">
       <ChurchPlantingChart :church-id="churchId" />
    </CardHeader>
 </template>

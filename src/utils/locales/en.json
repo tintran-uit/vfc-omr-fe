@@ -317,7 +317,8 @@
     "churchPlantingTitle": "Generational Church Planting by {churchName}",
     "legendTithesAndOfferings": "Tithes & Offerings",
     "legendMissionsMFPGiving": "Missions MFP Giving",
-    "noData": "No Data"
+    "noData": "No Data",
+    "visits": "Visits"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />W{weekNumber}-{year}"

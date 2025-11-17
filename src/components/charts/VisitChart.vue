@@ -5,8 +5,13 @@
     </v-card-title>
 
     <v-card-text>
-      <div ref="chartRef" class="w-100" style="height: 360px; position: relative;"></div>
-      <div ref="tooltipRef" class="chart-tooltip" style="opacity: 0"></div>
+      <div
+        ref="chartRef"
+        class="w-100"
+        style="height: 360px; position: relative;"
+      >
+        <div ref="tooltipRef" class="chart-tooltip" style="opacity: 0"></div>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -15,10 +20,10 @@
 import * as d3 from 'd3'
 import { ref, watch, nextTick, onMounted } from 'vue'
 import { useTheme } from 'vuetify'
+import { useI18n } from 'vue-i18n'
 
 const theme = useTheme()
-
-// Props
+const { t } = useI18n()
 const props = withDefaults(
   defineProps<{
     data: any[]
@@ -27,36 +32,40 @@ const props = withDefaults(
   { title: 'Visit Graph' }
 )
 
-// Theme colors
 const barColor = theme.current.value.colors.chartVisit || '#B5282E'
 const gridColor = '#aaaaaa'
 
-// Refs
 const chartRef = ref(null)
 const tooltipRef = ref(null)
 let svg = null
+const formatTooltipContent = (d) => {
+  return `
+    <strong>W${d.week}.${d.year}</strong><br/>
+    (${d.label})<br />
+    <b>${t('chart.visits')}</b>: ${d.visits}
+  `
+}
 
 const drawChart = () => {
   const data = props.data || []
   const container = chartRef.value
   const tooltip = d3.select(tooltipRef.value)
+
   if (!container || data.length === 0) return
 
   const width = container.clientWidth
   const height = 360
-  const margin = { top: 20, right: 20, bottom: 100, left: 60 } // margin-bottom cao hơn để không che
+  const margin = { top: 20, right: 20, bottom: 100, left: 60 }
 
-  // Clear old chart
-  d3.select(container).selectAll('*').remove()
+  d3.select(container).selectAll('*:not(.chart-tooltip)').remove()
 
-  // SVG
   svg = d3
     .select(container)
     .append('svg')
     .attr('width', width)
     .attr('height', height)
 
-  // X scale — label từ data
+  // X scale
   const x = d3
     .scaleBand()
     .domain(data.map((d) => d.label))
@@ -70,7 +79,7 @@ const drawChart = () => {
     .nice()
     .range([height - margin.bottom, margin.top])
 
-  // Grid
+  // Grid Y
   const yAxisGrid = d3
     .axisLeft(y)
     .ticks(5)
@@ -97,70 +106,80 @@ const drawChart = () => {
     .attr('height', (d) => y(0) - y(Number(d.visits) || 0))
     .attr('fill', barColor)
     .on('mouseover', function (event, d) {
+      const [mouseX, mouseY] = d3.pointer(event, container)
       d3.select(this).attr('fill', d3.color(barColor).darker(0.8))
+      console.log(d)
       tooltip
         .style('opacity', 1)
-        .html(`<strong>${d.label}</strong><br/>Visits: ${d.visits}`)
-        .style('left', event.offsetX + 15 + 'px')
-        .style('top', event.offsetY - 20 + 'px')
+        .html(formatTooltipContent(d))
+        .style('left', `${mouseX + 15}px`)
+        .style('top', `${mouseY - 20}px`)
     })
     .on('mousemove', function (event) {
+      const [mouseX, mouseY] = d3.pointer(event, container)
       tooltip
-        .style('left', event.offsetX + 15 + 'px')
-        .style('top', event.offsetY - 20 + 'px')
+        .style('left', `${mouseX + 15}px`)
+        .style('top', `${mouseY - 20}px`)
     })
     .on('mouseout', function () {
       d3.select(this).attr('fill', barColor)
       tooltip.style('opacity', 0)
     })
 
-  // --- Trục X với tick group 5 tuần + rotate
-  const groupSize = 5 // group 5 tuần
-  svg
-    .append('g')
+  // X Axis: chỉ hiển thị label mỗi 5 tuần
+  const tickEvery = 5
+
+  const xAxis = d3.axisBottom(x)
+    .tickFormat((d, i) => (i % tickEvery === 0 ? d : ''))
+    .tickSize(0) // tạm ẩn tick gốc
+    .tickPadding(10)
+
+  const xAxisGroup = svg.append('g')
     .attr('transform', `translate(0,${height - margin.bottom})`)
-    .call(
-      d3.axisBottom(x)
-        .tickFormat((d, i) => (i % groupSize === 0 ? d : ''))
-    )
-    .selectAll('text')
+    .call(xAxis)
+
+  // X tick lines thủ công cho index 0,5,10,15...
+  xAxisGroup.selectAll('text')
     .attr('transform', 'rotate(-45)')
     .style('text-anchor', 'end')
-    .style('font-size', '10px') // nhỏ hơn để không che
-    .style('dominant-baseline', 'middle') // căn giữa chữ dọc
-  
+    .style('font-size', '10px')
 
-  // Axis Y
-  svg
-    .append('g')
+  data.forEach((d, i) => {
+    if (i % tickEvery === 0) {
+      xAxisGroup.append('line')
+        .attr('x1', x(d.label) + x.bandwidth() / 2)
+        .attr('y1', 0)
+        .attr('x2', x(d.label) + x.bandwidth() / 2)
+        .attr('y2', 6) // độ dài tick
+        .attr('stroke', '#000')
+    }
+  })
+
+  // Y Axis
+  svg.append('g')
     .attr('transform', `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).ticks(5))
 }
 
 onMounted(() => nextTick(drawChart))
-
-watch(
-  () => props.data,
-  async () => {
-    await nextTick()
-    drawChart()
-  },
-  { deep: true }
-)
+watch(() => props.data, async () => { await nextTick(); drawChart() }, { deep: true })
 </script>
 
 <style scoped>
 .grid path {
   stroke-width: 0;
 }
+
 .chart-tooltip {
   position: absolute;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0,0,0,0.8);
   color: #fff;
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 4px 8px; /* nhỏ hơn */
+  border-radius: 4px;
   pointer-events: none;
-  font-size: 13px;
+  font-size: 12px; /* chữ nhỏ hơn */
+  line-height: 1.4; /* giống attendance chart */
   transition: opacity 0.1s;
+  z-index: 10;
 }
 </style>
