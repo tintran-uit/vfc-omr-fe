@@ -1,40 +1,25 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import { createFormSchema } from '@/form-schemas/addChurchFormSchema';
-import {churchService} from '@/services/churchService';
+import { createFormSchema } from '@/form-schemas/addWorshipServiceFormSchema';
+import { worshipServiceService } from '@/services/worshipServiceService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
-import { useRoute, useRouter } from "vue-router";
+import { useRouter, useRoute } from 'vue-router'
 
-const route = useRoute();
-const router = useRouter();
-const id = route.params.id as string;
-const editData = ref(null);
+const router = useRouter()
+const route = useRoute()
+const options = ref({})
+const churchId = computed(() => route.params.churchId);
 const formSchema = createFormSchema();
-
-const fetchEditData = async function (id) {
-  if (!id) return;
-  try {
-    const data = await churchService.get(id);
-    
-    editData.value = data;
-  } catch (e) {
-    console.log('error', e);
-  }
-}
 
 const handleSubmit = async (formData) => {
   try {
-    await churchService.update(id, formData)
+    await worshipServiceService.createForChurch(churchId.value, formData)
+
+    router.push({ name: 'WorshipServiceList' });
   } catch (e) {
     console.log('error', e);
   }
 }
-
-onMounted(() => {
-  fetchEditData(id);
-});
-
-const churchId = ref();
 </script>
 
 <template>
@@ -43,11 +28,11 @@ const churchId = ref();
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('church.editTitle', {id: id}) }}</h1>
+          <h1>{{ $t('worshipService.addTitle') }}</h1>
           <v-btn 
             color="primary" 
             variant="outlined" 
-            @click="router.push({ name: 'ChurchList' })"
+            @click="router.push({ name: 'WorshipServiceList' })"
           >
             <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>
@@ -55,15 +40,14 @@ const churchId = ref();
       </v-row>
 
       <v-row justify="center">
-        <v-col cols="12" md="12" lg="12">
+        <v-col cols="12" md="10" lg="12">
           <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
             <slot name="form">
               <DynamicFormDefault
+                :options="options"
                 :form-schema="formSchema"
                 @submit="handleSubmit"
-                :init-data="editData"
               />
-              
             </slot>
           </v-sheet>
         </v-col>

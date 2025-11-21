@@ -1,8 +1,5 @@
-import { at } from "lodash";
-
-const schemaForm = {
+export const createFormSchema = () => ({
     initData: () => ({
-        
     }),
     fields: [
         {
@@ -20,9 +17,6 @@ const schemaForm = {
             label: 'labelService.time',
             name: 'time',
             type: 'TimeInput'
-        },
+        }
     ]
-}
-
-
-export default schemaForm;
+})

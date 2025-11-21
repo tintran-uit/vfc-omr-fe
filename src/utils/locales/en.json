@@ -29,6 +29,7 @@
     "backToList":"Back to List",
     "create": "Create"
   },
+  "areYouSureWantToDelete": "Are you sure you want to delete this item?",
   "label": {
     "user": {
       "username": "Username",
@@ -337,5 +338,14 @@
     "dashboardTitle": "Attachments",
     "labelFile": "Upload file to this Church [Max 2MB]",
     "labelName": "Name"
+  },
+  "worshipService": {
+    "addTitle": "Add Worship Service",
+    "listTitle": "Worship Services - {churchName}",
+    "editTitle": "Edit Worship Service #{id}",
+    "labelChurch": "Church",
+    "labelName": "Name",
+    "labelDayName": "Day Name",
+    "labelTime": "Time"
   }
 }

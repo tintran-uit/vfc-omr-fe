@@ -53,6 +53,8 @@ import CountrySelectInput from './components/input/CountrySelectInput.vue';
 import LanguageSelectInput from './components/input/LanguageSelectInput.vue';
 import PastorSelectInput from './components/input/PastorSelectInput.vue';
 import ChangePassword from './components/input/ChangePassword.vue';
+import WeekDayInput from './components/input/WeekDayInput.vue';
+import TimeInput from './components/input/TimeInput.vue';
 
 //Mock Api data
 import './_mockApis';
@@ -89,6 +91,8 @@ app.component('ChurchRegionSelectInput', ChurchRegionSelectInput)
 app.component('ChurchNetworkSelectInput', ChurchNetworkSelectInput)
 app.component('PastorSelectInput', PastorSelectInput)
 app.component('ChangePassword', ChangePassword)
+app.component('WeekDayInput', WeekDayInput)
+app.component('TimeInput', TimeInput)
 
 
 fakeBackend();

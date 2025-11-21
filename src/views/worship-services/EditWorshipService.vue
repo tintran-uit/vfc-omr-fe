@@ -1,30 +1,47 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import formSchema from '@/form-schemas/addServiceFormSchema';
-import {userService} from '@/services/userService';
+import { createFormSchema } from '@/form-schemas/addWorshipServiceFormSchema';
+import { worshipServiceService } from '@/services/worshipServiceService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const options = ref({})
+const churchId = computed(() => route.params.churchId);
+const id = computed(() => route.params.id);
+const formSchema = createFormSchema();
+const editData = ref(null);
 
-const loadOptions = async function () {
-  options.value = await userService.getFormData();
-}
-
-const handleSubmit = async (formData) => {
+const fetchEditData = async function (id) {
+  if (!id) return;
   try {
-    await userService.create(formData)
-
-    router.push({ name: 'UserList' });
+    const data = await worshipServiceService.getById(id);
+    
+    editData.value = data;
   } catch (e) {
     console.log('error', e);
   }
 }
 
-onMounted(() => {
-  loadOptions();
-});
+const handleSubmit = async (formData) => {
+  try {
+    await worshipServiceService.update(id, formData)
+
+    router.push({ name: 'WorshipServiceList' });
+  } catch (e) {
+    console.log('error', e);
+  }
+}
+
+watch(
+  () => id.value,
+  async (id) => {
+    if (!id) return
+    fetchEditData(id)
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -33,11 +50,11 @@ onMounted(() => {
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('user.addTitle') }}</h1>
+          <h1>{{ $t('worshipService.editTitle', {id: id}) }}</h1>
           <v-btn 
             color="primary" 
             variant="outlined" 
-            @click="router.push({ name: 'UserList' })"
+            @click="router.push({ name: 'WorshipServiceList' })"
           >
             <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>

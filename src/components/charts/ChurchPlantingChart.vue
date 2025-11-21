@@ -109,8 +109,7 @@ function renderGraph(json: any) {
         const data = node.data || {};
         tooltipContent = `
           <b>${node.name}</b><br/>
-          ${t("chart.averageAttendance")}: ${data.avg_attendace ?? "N/A"}<br/>
-          ${t("chart.health")}: ${data.health ?? "-"}
+          ${t("chart.averageAttendance")}: ${data.avg_attendance ?? "N/A"}<br/>
         `;
         tooltip.show(tooltipContent, event);
       };
@@ -144,18 +143,10 @@ function renderGraph(json: any) {
 
   // ✅ Thiết lập màu sắc node
   rgraph.graph.eachNode((n) => {
-    const members = n.data.members ?? 0;
-    let color = "#ccc";
-    if (members < 50) color = "#C93C47";
-    else if (members < 150) color = "#58AC45";
-    else if (members < 300) color = "#8FCAF0";
-    else if (members < 500) color = "#4687C1";
-    else if (members < 1000) color = "#756CB7";
-    else if (members < 3000) color = "#D171B8";
-    else color = "#D1E015";
+    n.setData("color", n.data.color);
+    n.setData("dim", n.data.dim);
+    n.setData("avg_attendance", n.data.avg_attendance);
 
-    n.setData("color", color);
-    n.setData("dim", Math.min(6 + members / 250, 25));
     n.getPos().setc(-200, -200);
   });
 
@@ -173,8 +164,49 @@ function renderGraph(json: any) {
 //   }
 // });
 
+const buckets = [
+  { max: 50, dim: 6, color: "#C93C47" },        // đỏ nhạt
+  { max: 150, dim: 6.5, color: "#58AC45" },       // xanh lá
+  { max: 300, dim: 7, color: "#8FCAF0" },      // xanh da trời nhạt
+  { max: 500, dim: 7.5, color: "#4687C1" },      // xanh da trời đậm
+  { max: 1000, dim: 8, color: "#756CB7" },     // tím
+  { max: 3000, dim: 8.5, color: "#D171B8" },     // hồng
+  { max: Infinity, dim: 9, color: "#D1E015" }, // vàng
+];
+
+function buildDataForNode(node) {
+  // xử lý node hiện tại
+  const items = [50, 100, 200, 400, 700, 1001, 3000, 4000];
+  node.avg_attendance = items[Math.floor(Math.random() * items.length)];
+
+  const avgAttendance = node.avg_attendance;
+  const bucket = buckets.find(b => avgAttendance <= b.max);
+
+  let dataColor = '#ccc';
+  let dataDim = 8
+
+  if (bucket) {
+    dataDim = bucket.dim
+    dataColor = bucket.color
+  }
+    
+  node.data = {
+    avg_attendance: node.avg_attendance,
+    color: dataColor,
+    dim: dataDim
+  }
+
+  if (Array.isArray(node.children) && node.children.length > 0) {
+    node.children.forEach(child => buildDataForNode(child));
+  }
+}
+
 const fetchData = async (churchId) => {
-  data.value = await graphService.getDataGenerationalGraph(churchId);
+  
+  const rootNode = await graphService.getDataGenerationalGraph(churchId);
+  buildDataForNode(rootNode);
+  
+  data.value = rootNode;
   await nextTick();
   renderGraph(data.value);
   selectedChurchId.value = churchId

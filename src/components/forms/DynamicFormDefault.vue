@@ -255,6 +255,20 @@ watch(
                 v-bind="field?.attrs || {}"
                 :id="`field-${field.name}-${index}`"
               />
+              <WeekDayInput
+                v-else-if="field.type === 'WeekDayInput'"
+                :rules="resolveRules(field, formData)"
+                v-model="field.modelValue.value"
+                v-bind="field?.attrs || {}"
+                :id="`field-${field.name}-${index}`"
+              />
+              <TimeInput
+                v-else-if="field.type === 'TimeInput'"
+                :rules="resolveRules(field, formData)"
+                v-model="field.modelValue.value"
+                v-bind="field?.attrs || {}"
+                :id="`field-${field.name}-${index}`"
+              />
               <TextareaInput
                 v-else-if="field.type === 'TextareaInput'"
                 :rules="resolveRules(field, formData)"

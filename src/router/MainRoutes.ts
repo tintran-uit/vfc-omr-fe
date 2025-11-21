@@ -77,20 +77,20 @@ const MainRoutes = {
       component: () => import('@/views/users/ListOverseerUser.vue')
     },
     {
-      name: 'ServiceList',
+      name: 'WorshipServiceList',
       path: 'churches/:churchId/services',
-      component: () => import('@/views/services/ListService.vue')
+      component: () => import('@/views/worship-services/ListWorshipService.vue')
     },
     {
-      name: 'ServiceAdd',
+      name: 'WorshipServiceAdd',
       path: 'churches/:churchId/services/add',
-      component: () => import('@/views/services/AddService.vue')
+      component: () => import('@/views/worship-services/AddWorshipService.vue')
     },
     {
-      name: 'ServiceEdit',
+      name: 'WorshipServiceEdit',
       path: 'churches/:churchId/services/:id/edit',
-      component: () => import('@/views/services/EditService.vue')
-    }
+      component: () => import('@/views/worship-services/EditWorshipService.vue')
+    },
   ]
 };
 

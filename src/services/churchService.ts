@@ -17,6 +17,9 @@ export const churchService  = {
       const myParams = { ...params, parent_id: parentId };
       return await apiClient.get(`/churches`, myParams);
     },
+    async getById(id, showLoading = true) {
+      return await apiClient.get(`/churches/${id}`, {}, showLoading);
+    },
     async get(id, showLoading = true) {
       return await apiClient.get(`/churches/${id}`, {}, showLoading);
     },
