@@ -175,9 +175,8 @@ const buckets = [
 ];
 
 function buildDataForNode(node) {
-  // xử lý node hiện tại
-  const items = [50, 100, 200, 400, 700, 1001, 3000, 4000];
-  node.avg_attendance = items[Math.floor(Math.random() * items.length)];
+  // const items = [50, 100, 200, 400, 700, 1001, 3000, 4000];
+  // node.avg_attendance = items[Math.floor(Math.random() * items.length)];
 
   const avgAttendance = node.avg_attendance;
   const bucket = buckets.find(b => avgAttendance <= b.max);
