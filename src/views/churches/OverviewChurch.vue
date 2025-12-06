@@ -17,7 +17,7 @@ import DaugterChurchWidget from '@/components/widgets/DaugterChurchWidget.vue';
 import AttendanceChartWidget from '@/components/widgets/AttendanceChartWidget.vue';
 import ChurchPlantingChartWidget from '@/components/widgets/ChurchPlantingChartWidget.vue';
 import { churchService } from '@/services/churchService';
-import { formatCurrency } from '@/helpers/appHelper';
+import { formatCompactCurrency } from '@/helpers/appHelper';
 
 const props = withDefaults(
   defineProps<{
@@ -28,38 +28,70 @@ const props = withDefaults(
   }
 )
 
-const menus = [
-  {
-    title: 'dashboardMenu.monthlyData',
-    icon: '$chartBar',
-  },
-  {
-    title: 'dashboardMenu.editChurch',
-    icon: '$edit',
-  },
-  {
-    title: 'dashboardMenu.worshipServices',
-    icon: '$plusCircleOutline',
-  },
-  {
-    title: 'dashboardMenu.newPastorAndNewChurch',
-    icon: '$plusCircleOutline'
-  },
-  {
-    title: 'dashboardMenu.newPastor',
-    icon: '$plusCircleOutline'
-  },
-  {
-    title: 'dashboardMenu.newChurch',
-    icon: '$plusCircleOutline'
-  },
-]
-
 const authStore = useAuthStore();
 const churchDetail = inject('churchDetail')
 const dashboardData = inject('dashboardData')
 const pastor = inject('pastor')
 const currencyCodeLocal = computed(() => churchDetail.value?.currency_name)
+const actions = computed(() => {
+  if (!churchDetail.value?.id) return [];
+
+  return [
+    {
+      title: 'dashboardMenu.monthlyData',
+      icon: '$chartBar',
+      to: {
+        name: 'MonthlyDataAdd',
+        params: {
+          id: churchDetail.value?.id
+        }
+      }
+    },
+    {
+      title: 'dashboardMenu.editChurch',
+      icon: '$edit',
+      to: {
+        name: 'ChurchEdit',
+        params: {
+          id: churchDetail.value?.id
+        }
+      }
+    },
+    {
+      title: 'dashboardMenu.worshipServices',
+      icon: '$plusCircleOutline',
+      to: {
+        name: 'WorshipServiceList',
+        params: {
+          churchId: churchDetail.value?.id
+        }
+      }
+    },
+    {
+      title: 'dashboardMenu.newPastorAndNewChurch',
+      icon: '$plusCircleOutline',
+      to: {
+        name: 'ChurchAddWithNewPastor'
+      }
+    },
+    {
+      title: 'dashboardMenu.newPastor',
+      icon: '$plusCircleOutline',
+      to: {
+        name: 'UserAdd'
+      }
+    },
+    {
+      title: 'dashboardMenu.newChurch',
+      icon: '$plusCircleOutline',
+      to: {
+        name: 'ChurchAdd'
+      }
+    },
+  ]
+})
+
+
 const metrics = shallowRef([
   {
     name: 'dashboard.people',
@@ -81,7 +113,7 @@ const metrics = shallowRef([
     earnFn: (item) => {
       if (!currencyCodeLocal) return 0; 
 
-      return formatCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
+      return formatCompactCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
     },
     percentKey: null,
     color: 'primary',
@@ -99,7 +131,7 @@ const metrics = shallowRef([
     earnFn: (item) => {
       if (!currencyCodeLocal) return 0; 
 
-      return formatCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
+      return formatCompactCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
     },
     percentKey: null,
     color: 'primary',
@@ -194,6 +226,26 @@ const metrics = shallowRef([
     </v-row>
   </v-container>
 </v-card>
+
+<v-card class="pa-4 mt-4" variant="text">
+  <div
+    class="d-flex flex-wrap"
+    style="gap: 12px; justify-content: flex-end;"
+  >
+    <v-btn
+      v-for="item in actions"
+      :key="item.title"
+      :to="item.to"
+      variant="outlined"
+      color="primary"
+      class="d-inline-flex align-center"
+    >
+      <v-icon :icon="item.icon" size="20" class="mr-2" />
+      <span class="text-body-2">{{ $t(item.title) }}</span>
+    </v-btn>
+  </div>
+</v-card>
+
 
     <v-row class="my-0">
       <v-col cols="6" sm="6" md="3" v-for="(metric, i) in metrics" :key="i">

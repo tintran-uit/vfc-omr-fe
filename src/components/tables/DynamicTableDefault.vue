@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import {ref, watch, computed, onMounted} from 'vue'
-import {useDialogStore} from '@/stores/dialogStore';
+import { useDialogStore } from '@/stores/dialogStore';
+import { useI18n } from 'vue-i18n';
 
 const dialogStore = useDialogStore()
-
+const { t } = useI18n();
 interface SearchField {
   type: 'TextInput' | 'SelectInput';
   label: string;
@@ -102,6 +103,7 @@ const handleActionEdit = (item) => {
 }
 
 const handleActionDelete = async (item) => {
+  if (!await dialogStore.confirm(t('areYouSureWantToDelete'))) return
   emit('action:delete', item)
 }
 
@@ -114,10 +116,12 @@ const handleAssignOverseerAction = (item) => {
 }
 
 const handleDisableAction = async (item) => {
+  if (!await dialogStore.confirm(t('areYouSureWantToDisable'))) return
   emit('action:disable', item)
 }
 
 const handleEnableAction = async (item) => {
+  if (!await dialogStore.confirm(t('areYouSureWantToEnable'))) return
   emit('action:enable', item)
 }
 

@@ -25,6 +25,23 @@ export function formatCurrency(
   }).format(value)
 }
 
+export function formatCompactCurrency(
+  value: number,
+  currency: string = 'USD'
+) {
+  if (value == null || isNaN(value as number)) return ''
+
+  const locale = getLocale()
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    notation: "compact",
+    compactDisplay: "short",
+    maximumFractionDigits: 1,
+  }).format(value);
+}
+
 export function formatNumber(
   value: number | null | undefined,
   options?: Intl.NumberFormatOptions
@@ -33,4 +50,16 @@ export function formatNumber(
 
   const locale = getLocale()
   return new Intl.NumberFormat(locale, options).format(value)
+}
+
+export function formatCompactNumber(value: number) {
+  if (value == null || isNaN(value as number)) return ''
+
+  const locale = getLocale()
+
+  return new Intl.NumberFormat(locale, {
+    notation: "compact",
+    compactDisplay: "short",
+    maximumFractionDigits: 1,
+  }).format(value);
 }

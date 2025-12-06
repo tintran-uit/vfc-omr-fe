@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import {ref, watch, computed, onMounted} from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useDialogStore } from '@/stores/dialogStore'
 
 const {t} = useI18n()
 const page = defineModel('page', { default: 1 })
 const itemsPerPage = defineModel('itemsPerPage', { default: 25 })
 const sortBy = defineModel('sortBy', { default: () => [] })
+const dialogStore = useDialogStore()
 
 const props = withDefaults(
   defineProps<{
@@ -166,8 +168,11 @@ const handleEnableAction = async (item) => {
                   </template>
                 </v-tooltip>
               </div>
+              <div v-if="header.key === 'disabled'">
+                {{ item.disabled ? $t('yes') : $t('no') }}
+              </div>
               <slot v-else :name="`item.${header.key}`" :item="item" :value="item[header.key]">
-                {{ item[header.key] || emptyPlaceholder }}
+                {{ item[header.key] }}
               </slot>
             </td>
         </template>

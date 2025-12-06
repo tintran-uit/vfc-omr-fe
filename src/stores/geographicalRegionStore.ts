@@ -31,9 +31,10 @@ export const useGeographicalRegionStore = defineStore('geographicalRegion', {
   },
   getters: {
     asyncOptions(state) {
-      if (!state.loaded && !state.loading) {
-        this.fetchForOptions()
-      }
+      this.fetchForOptions();// @todo: remove this line to enable caching
+      // if (!state.loaded && !state.loading) {
+      //   this.fetchForOptions()
+      // }
       return state.options
     },
   }

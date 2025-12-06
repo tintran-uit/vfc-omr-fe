@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import {useDialogStore} from '@/stores/dialogStore'
 import { worshipServiceService } from '@/services/worshipServiceService';
 import { churchService } from '@/services/churchService';
-import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
+import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/worshipServiceTableSchema';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper';
 import UiTableCard from '@/components/shared/UiTableCard.vue';

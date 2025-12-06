@@ -31,7 +31,22 @@ const adminPermissions = [
   'church.disable',
   'church.enable',
   'church.delete',
-  'user.read-overseer'
+  'user.read-overseer',
+
+  'church-networks.read',
+  'church-networks.create',
+  'church-types.read',
+  'church-types.create',
+  'church-regions.read',
+  'church-regions.create',
+  'geographical-regions.read',
+  'geographical-regions.create',
+  'language-regions.read',
+  'language-regions.create',
+  'countries.read',
+  'countries.create',
+  'languages.read',
+  'languages.create'
 ];
 
 export const useAuthStore = defineStore('auth', {

@@ -11,7 +11,7 @@ export const languageService = {
     async getList(params = {}) {
         return await apiClient.get(`/languages`, params);
       },
-      async get(id) {
+      async getById(id) {
         return await apiClient.get(`/languages/${id}`);
       },
       async create(data) {

@@ -4,7 +4,7 @@ export const churchNetworkService = {
     async getAll(params = {}) {
         return await apiClient.get(`/church-networks`, params);
       },
-      async get(id) {
+      async getById(id) {
         return await apiClient.get(`/church-networks/${id}`);
       },
       async create(data) {

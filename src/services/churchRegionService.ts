@@ -4,7 +4,7 @@ export const churchRegionService = {
     async getAll(params = {}) {
         return await apiClient.get(`/church-regions`, params);
       },
-      async get(id) {
+      async getById(id) {
         return await apiClient.get(`/church-regions/${id}`);
       },
       async create(data) {

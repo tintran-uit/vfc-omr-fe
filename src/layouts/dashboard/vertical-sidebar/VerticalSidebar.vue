@@ -12,12 +12,11 @@ import { useAuthStore } from '@/stores/authStore';
 function filterNavigationByPermissions(items, canFn) {
   return items
     .map(item => {
-      // Lọc đệ quy children
       const filteredChildren = item.children
         ? filterNavigationByPermissions(item.children, canFn)
         : undefined;
 
-      // ✅ Nếu không có permissions => mặc định cho phép
+      // Kiểm tra permission
       let hasPermission = true;
       if (item.permissions) {
         if (Array.isArray(item.permissions)) {
@@ -28,10 +27,19 @@ function filterNavigationByPermissions(items, canFn) {
       }
 
       const hasChildren = filteredChildren && filteredChildren.length > 0;
+      const isEmptyTo = !item.to || item.to === "#";
 
-      // Loại item nếu:
+      // ❗ Loại khi:
+      // - Không có children
+      // - Và không có to (hoặc to === "#")
+      // - Và không có quyền
+      if (!hasChildren && isEmptyTo && !hasPermission) {
+        return null;
+      }
+
+      // ❗ Loại item khi:
       // - Không có quyền
-      // - Và không có children hợp lệ
+      // - Và không có children (standard case cũ)
       if (!hasPermission && !hasChildren) {
         return null;
       }

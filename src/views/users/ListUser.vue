@@ -3,7 +3,7 @@ import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router'
 import {useDialogStore} from '@/stores/dialogStore'
 import {userService} from '@/services/userService.ts';
-import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
+import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/userTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 import { useAuthStore } from '@/stores/authStore';
@@ -38,7 +38,7 @@ const fetchData = async function (options = {}) {
     tableOptionsToParams(options)
   )
   items.value = data.items;
-  totalItems.value = data.total_pages;
+  totalItems.value = data.total;
 }
 
 const buildOptions = () => {
@@ -55,8 +55,6 @@ const onEdit = (item: any) => {
 }
 
 const onDelete = async (item: any) => {
-  if (!await dialogStore.confirm('Are you sure you want to delete?')) return
-  console.log('call to edit')
   await userService.del(item.id)
   
   fetchData(buildOptions())

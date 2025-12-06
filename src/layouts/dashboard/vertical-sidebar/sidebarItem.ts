@@ -34,6 +34,13 @@ import {
   BankOutlined,
   PlusOutlined,
   OrderedListOutlined,
+  GlobalOutlined,
+  FlagOutlined,
+  ClusterOutlined,
+  AppstoreOutlined,
+  EnvironmentOutlined,
+  CompassOutlined,
+  HomeOutlined
 } from '@ant-design/icons-vue';
 
 import {
@@ -95,7 +102,7 @@ const sidebarItem: menu[] = [
   {
     title: 'mainMenu.users',
     icon: UserOutlined,
-    to: 'components/buttons',
+    to: '#',
     getURL: true,
     type: 'external',
     chipVariant: 'tonal',
@@ -128,8 +135,8 @@ const sidebarItem: menu[] = [
   },
   {
     title: 'mainMenu.churches',
-    icon: BankOutlined,
-    to: 'components/buttons',
+    icon: HomeOutlined,
+    to: '#',
     getURL: true,
     type: 'external',
     chipVariant: 'tonal',
@@ -161,66 +168,220 @@ const sidebarItem: menu[] = [
     ]
   },
   {
-    title: 'mainMenu.watchList',
-    icon: FileTextOutlined,
+    title: 'mainMenu.churchNetworks',
+    icon: ClusterOutlined,
     to: '#',
     getURL: true,
     type: 'external',
     chipVariant: 'tonal',
     children: [
       {
-        id: 'watch-list-list',
-        title: 'mainMenu.watchListList',
-        permissions: ['watch-list.read']
+        id: 'church-networks-list',
+        title: 'mainMenu.churchNetworksList',
+        to: '/church-networks',
+        permissions: ['church-networks.read']
       },
       {
-        id: 'watch-list-add',
-        title: 'mainMenu.watchListAdd',
-        permissions: ['watch-list.add']
-      },
-      {
-        id: 'watch-list-generate-reports',
-        title: 'mainMenu.watchListGenerateReports',
-        permissions: ['watch-list.report']
+        id: 'church-networks-add',
+        title: 'mainMenu.churchNetworksAdd',
+        to: '/church-networks/add',
+        permissions: ['church-networks.create']
       }
     ]
   },
   {
-    title: 'mainMenu.generateReports',
-    icon: LineChartOutlined,
+    title: 'mainMenu.churchTypes',
+    icon: AppstoreOutlined,
     to: '#',
     getURL: true,
     type: 'external',
     chipVariant: 'tonal',
     children: [
       {
-        id: 'report-church',
-        title: 'mainMenu.churchReport',
+        id: 'church-types-list',
+        title: 'mainMenu.churchTypesList',
+        to: '/church-types',
+        permissions: ['church-types.read']
       },
       {
-        id: 'report-church-status',
-        title: 'mainMenu.churchReportingStatus',
-      },
-      {
-        id: 'report-my-directory',
-        title: 'mainMenu.myDirectory',
-      },
-      {
-        id: 'report-visit',
-        title: 'mainMenu.visitReports',
+        id: 'church-types-add',
+        title: 'mainMenu.churchTypesAdd',
+        to: '/church-types/add',
+        permissions: ['church-types.create']
       }
     ]
   },
   {
-    id: 'relating',
-    title: 'mainMenu.relating',
-    icon: MessageOutlined,
+    title: 'mainMenu.churchRegions',
+    icon: EnvironmentOutlined,
+    to: '#',
+    getURL: true,
+    type: 'external',
+    chipVariant: 'tonal',
+    children: [
+      {
+        id: 'church-regions-list',
+        title: 'mainMenu.list',
+        to: '/church-regions',
+        permissions: ['church-regions.read']
+      },
+      {
+        id: 'church-regions-add',
+        title: 'mainMenu.addNew',
+        to: '/church-regions/add',
+        permissions: ['church-regions.create']
+      }
+    ]
   },
   {
-    id: 'faq',
-    title: 'mainMenu.faq',
-    icon: QuestionOutlined,
+    title: 'mainMenu.geographicalRegions',
+    icon: CompassOutlined,
+    to: '#',
+    getURL: true,
+    type: 'external',
+    chipVariant: 'tonal',
+    children: [
+      {
+        id: 'geographical-regions-list',
+        title: 'mainMenu.list',
+        to: '/geographical-regions',
+        permissions: ['geographical-regions.read']
+      },
+      {
+        id: 'geographical-regions-add',
+        title: 'mainMenu.addNew',
+        to: '/geographical-regions/add',
+        permissions: ['geographical-regions.create']
+      }
+    ]
   },
+  {
+    title: 'mainMenu.languageRegions',
+    icon: GlobalOutlined,
+    to: '#',
+    getURL: true,
+    type: 'external',
+    chipVariant: 'tonal',
+    children: [
+      {
+        id: 'language-regions-list',
+        title: 'mainMenu.list',
+        to: '/language-regions',
+        permissions: ['language-regions.read']
+      },
+      {
+        id: 'language-regions-add',
+        title: 'mainMenu.addNew',
+        to: '/language-regions/add',
+        permissions: ['language-regions.create']
+      }
+    ]
+  },
+  {
+    title: 'mainMenu.countries',
+    icon: FlagOutlined,
+    to: '#',
+    getURL: true,
+    type: 'external',
+    chipVariant: 'tonal',
+    children: [
+      {
+        id: 'countries-list',
+        title: 'mainMenu.list',
+        to: '/countries',
+        permissions: ['countries.read']
+      },
+      {
+        id: 'countries-add',
+        title: 'mainMenu.addNew',
+        to: '/countries/add',
+        permissions: ['countries.create']
+      }
+    ]
+  },
+  {
+    title: 'mainMenu.languages',
+    icon: GlobalOutlined,
+    to: '#',
+    getURL: true,
+    type: 'external',
+    chipVariant: 'tonal',
+    children: [
+      {
+        id: 'languages-list',
+        title: 'mainMenu.list',
+        to: '/languages',
+        permissions: ['languages.read']
+      },
+      {
+        id: 'languages-add',
+        title: 'mainMenu.addNew',
+        to: '/languages/add',
+        permissions: ['languages.create']
+      }
+    ]
+  },
+  // {
+  //   title: 'mainMenu.watchList',
+  //   icon: FileTextOutlined,
+  //   to: '#',
+  //   getURL: true,
+  //   type: 'external',
+  //   chipVariant: 'tonal',
+  //   children: [
+  //     {
+  //       id: 'watch-list-list',
+  //       title: 'mainMenu.watchListList',
+  //       permissions: ['watch-list.read']
+  //     },
+  //     {
+  //       id: 'watch-list-add',
+  //       title: 'mainMenu.watchListAdd',
+  //       permissions: ['watch-list.create']
+  //     },
+  //     {
+  //       id: 'watch-list-generate-reports',
+  //       title: 'mainMenu.watchListGenerateReports',
+  //       permissions: ['watch-list.report']
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: 'mainMenu.generateReports',
+  //   icon: LineChartOutlined,
+  //   to: '#',
+  //   getURL: true,
+  //   type: 'external',
+  //   chipVariant: 'tonal',
+  //   children: [
+  //     {
+  //       id: 'report-church',
+  //       title: 'mainMenu.churchReport',
+  //     },
+  //     {
+  //       id: 'report-church-status',
+  //       title: 'mainMenu.churchReportingStatus',
+  //     },
+  //     {
+  //       id: 'report-my-directory',
+  //       title: 'mainMenu.myDirectory',
+  //     },
+  //     {
+  //       id: 'report-visit',
+  //       title: 'mainMenu.visitReports',
+  //     }
+  //   ]
+  // },
+  // {
+  //   id: 'relating',
+  //   title: 'mainMenu.relating',
+  //   icon: MessageOutlined,
+  // },
+  // {
+  //   id: 'faq',
+  //   title: 'mainMenu.faq',
+  //   icon: QuestionOutlined,
+  // },
 ];
 
 export default sidebarItem;

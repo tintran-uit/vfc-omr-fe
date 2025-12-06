@@ -298,6 +298,27 @@ watch(
                   v-bind="field?.attrs || {}"
                   :id="`field-${field.name}-${index}`"
                 />
+                <TimeInput
+                v-else-if="field.type === 'TimeInput'"
+                :rules="resolveRules(field, formData)"
+                v-model="field.modelValue.value"
+                v-bind="field?.attrs || {}"
+                :id="`field-${field.name}-${index}`"
+              />
+              <LanguageRegionSelectInput
+                v-else-if="field.type === 'LanguageRegionSelectInput'"
+                :rules="resolveRules(field, formData)"
+                v-model="virtualModelValue[field.accessKey]"
+                v-bind="field?.attrs || {}"
+                :id="`field-${field.name}-${index}`"
+              />
+              <PhotoCropperInput
+                v-else-if="field.type === 'PhotoCropperInput'"
+                :rules="resolveRules(field, formData)"
+                v-model="field.modelValue.value"
+                v-bind="field?.attrs || {}"
+                :id="`field-${field.name}-${index}`"
+              />
                 <TextareaInput
                   v-else-if="field.type === 'TextareaInput'"
                   :rules="resolveRules(field)"

@@ -34,9 +34,6 @@ const noMoreItems = ref(false)
 let searchTimeout = null
 let isSelecting = false
 
-
-
-
 const _fetchItems = async function () {
   const items = await fetchItems({
     

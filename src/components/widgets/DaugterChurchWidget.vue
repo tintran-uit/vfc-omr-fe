@@ -3,7 +3,7 @@ import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
 import {useDialogStore} from '@/stores/dialogStore'
 import CardHeader from '../shared/CardHeader.vue';
 import { churchService } from '@/services/churchService';
-import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
+import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/churchTableSchema';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper';
 
@@ -43,7 +43,6 @@ const onClone = (item) => {
 }
 
 const onDisable = async (item: any) => {
-  if (!await dialogStore.confirm('Are you sure you want to disable?')) return
   await churchService.disable(item.id)
   
   fetchData()

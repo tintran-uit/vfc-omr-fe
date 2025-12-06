@@ -4,7 +4,7 @@ import CardHeader from '../shared/CardHeader.vue';
 import { userService } from '@/services/userService';
 import tableSchema from '@/table-schemas/relatedUserTableSchema';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper';
-import DynamicTableDefault from '@/components/dynamic-table/DynamicTableDefault.vue';
+import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue';
 import defaultAvatar from '@/assets/images/users/avatar-default.svg';
 
 const props = withDefaults(

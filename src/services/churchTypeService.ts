@@ -4,7 +4,7 @@ export const churchTypeService = {
     async getAll(params = {}) {
         return await apiClient.get(`/church-types`, params);
       },
-      async get(id) {
+      async getById(id) {
         return await apiClient.get(`/church-types/${id}`);
       },
       async create(data) {

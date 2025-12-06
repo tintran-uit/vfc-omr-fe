@@ -3,7 +3,7 @@ import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router'
 import {useDialogStore} from '@/stores/dialogStore'
 import {userService} from '@/services/userService.ts';
-import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
+import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/overseerTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 

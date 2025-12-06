@@ -41,6 +41,8 @@ import {
   mdiCheckDecagramOutline,
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
+
+  mdiDotsVertical
 } from '@mdi/js';
 import { mdi } from 'vuetify/iconsets/mdi-svg';
 
@@ -92,4 +94,6 @@ export const icons = {
 
   checkboxBlankOutline: mdiCheckboxBlankOutline,
   checkboxMarkedOutline: mdiCheckboxMarkedOutline,
+
+  dotsVertical: mdiDotsVertical
 };

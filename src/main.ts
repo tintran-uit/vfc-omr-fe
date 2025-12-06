@@ -55,6 +55,8 @@ import PastorSelectInput from './components/input/PastorSelectInput.vue';
 import ChangePassword from './components/input/ChangePassword.vue';
 import WeekDayInput from './components/input/WeekDayInput.vue';
 import TimeInput from './components/input/TimeInput.vue';
+import LanguageRegionSelectInput from './components/input/LanguageRegionSelectInput.vue';
+import PhotoCropperInput from './components/input/PhotoCropperInput.vue';
 
 //Mock Api data
 import './_mockApis';
@@ -93,6 +95,8 @@ app.component('PastorSelectInput', PastorSelectInput)
 app.component('ChangePassword', ChangePassword)
 app.component('WeekDayInput', WeekDayInput)
 app.component('TimeInput', TimeInput)
+app.component('LanguageRegionSelectInput', LanguageRegionSelectInput)
+app.component('PhotoCropperInput', PhotoCropperInput)
 
 
 fakeBackend();

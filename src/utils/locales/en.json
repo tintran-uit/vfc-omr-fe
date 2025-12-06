@@ -30,6 +30,10 @@
     "create": "Create"
   },
   "areYouSureWantToDelete": "Are you sure you want to delete this item?",
+  "areYouSureWantToDisable": "Are you sure you want to disable this item?",
+  "areYouSureWantToEnable": "Are you sure you want to enable this item?",
+  "yes": "Yes",
+  "no": "No",
   "label": {
     "user": {
       "username": "Username",
@@ -179,6 +183,19 @@
     "churchList": "List Churches",
     "churchAdd": "Add New Church",
     "churchAddWithPastor": "Add New Church & New Pastor",
+    "churchNetworks": "Church Networks",
+    "churchNetworksList": "List",
+    "churchNetworksAdd": "Add New Church Networks",
+    "churchTypes": "Church Types",
+    "churchTypesList": "List",
+    "churchTypesAdd": "Add New Church Types",
+    "churchRegions": "Church Apostolic Regions",
+    "churchRegionsList": "List",
+    "churchRegionsAdd": "Add New",
+    "geographicalRegions": "Geographical Regions",
+    "languageRegions": "Language Regions",
+    "countries": "Countries",
+    "languages": "Languages",
     "visitReports": "Visit Reports",
     "myDirectory": "My Directory",
     "churchReportingStatus": "Churches Reporting Status",
@@ -197,9 +214,10 @@
 
     "faq": "FAQ",
     "faqList": "List FAQ",
-    "faqAdd": "Add FAQ"
+    "faqAdd": "Add FAQ",
 
-
+    "list": "List",
+    "addNew": "Add New"
   },
   "dashboard": {
     "people": "People",
@@ -347,5 +365,53 @@
     "labelName": "Name",
     "labelDayName": "Day Name",
     "labelTime": "Time"
+  },
+  "churchNetwork": {
+    "addTitle": "Add Church Network",
+    "listTitle": "List Of Church Networks",
+    "editTitle": "Edit Church Network #{id}",
+    "labelName": "Name",
+    "labelPastorCredentialLocked": "Pastor Credential Locked?"
+  },
+  "churchType": {
+    "addTitle": "Add Church Type",
+    "listTitle": "List Of Church Types",
+    "editTitle": "Edit Church Type #{id}",
+    "labelName": "Name"
+  },
+  "country": {
+    "addTitle": "Add Country",
+    "listTitle": "List Of Countries",
+    "editTitle": "Edit country #{id}",
+    "labelName": "Name"
+  },
+  "language": {
+    "addTitle": "Add Language",
+    "listTitle": "List Of Languages",
+    "editTitle": "Edit Language #{id}",
+    "labelName": "Name"
+  },
+  "languageRegions": {
+    "addTitle": "Add Language Regions",
+    "listTitle": "List Of Language Regions",
+    "editTitle": "Edit Language Region #{id}",
+    "labelName": "Name",
+    "labelParent": "Parent",
+    "labelDisabled": "Disabled"
+  },
+  "geographicalRegions": {
+    "addTitle": "Add Geographical Region",
+    "listTitle": "List Of Geographical Region",
+    "editTitle": "Edit Geographical Region #{id}",
+    "labelName": "Name",
+    "labelParent": "Parent"
+  },
+  "churchRegions": {
+    "addTitle": "Add Church Apostolic Region",
+    "listTitle": "List Of Church Apostolic Regions",
+    "editTitle": "Edit Church Apostolic Region #{id}",
+    "labelName": "Name",
+    "labelLogo": "Logo",
+    "labelParent": "Parent"
   }
 }

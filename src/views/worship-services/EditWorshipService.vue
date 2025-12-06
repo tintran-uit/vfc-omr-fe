@@ -26,7 +26,7 @@ const fetchEditData = async function (id) {
 
 const handleSubmit = async (formData) => {
   try {
-    await worshipServiceService.update(id, formData)
+    await worshipServiceService.update(id.value, formData)
 
     router.push({ name: 'WorshipServiceList' });
   } catch (e) {
@@ -68,6 +68,7 @@ watch(
               <DynamicFormDefault
                 :options="options"
                 :form-schema="formSchema"
+                :init-data="editData"
                 @submit="handleSubmit"
               />
             </slot>

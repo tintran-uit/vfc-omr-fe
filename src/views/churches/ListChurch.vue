@@ -3,7 +3,7 @@ import { ref, watch, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router'
 import {useDialogStore} from '@/stores/dialogStore'
 import {churchService} from '@/services/churchService.ts';
-import DynamicTableDefault from "@/components/dynamic-table/DynamicTableDefault.vue";
+import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/churchTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 import { useAuthStore } from '@/stores/authStore';
@@ -15,7 +15,7 @@ const items = ref([])
 const page = ref(1)
 const itemsPerPage = ref(25)
 const totalItems = ref(0)
-const search = ref({})
+const searches = ref([])
 const sortBy = ref([
   { key: 'id', order: 'desc' }
 ])
@@ -33,7 +33,7 @@ const fetchData = async function (options = {}) {
     tableOptionsToParams(options)
   )
   items.value = data.items;
-  totalItems.value = data.total_pages;
+  totalItems.value = data.total;
 }
 
 const onEdit = (item: any) => {
@@ -45,15 +45,12 @@ const onClone = (item) => {
 }
 
 const onDisable = async (item: any) => {
-  if (!await dialogStore.confirm('Are you sure you want to disable?')) return
   await churchService.disable(item.id)
   
   fetchData()
 }
 
 const onUpdateOptions = (options) => {
-  console.log('onUpdateOptions', options);
-
   fetchData(options);
 }
 </script>
@@ -91,7 +88,7 @@ const onUpdateOptions = (options) => {
         <DynamicTableDefault
                 v-model:page="page"
                 v-model:items-per-page="itemsPerPage"
-                v-model:search="search"
+                v-model:searches="searches"
                 v-model:sort-by="sortBy"
                 :total-items="totalItems"
                 :headers="tableSchema.headers"

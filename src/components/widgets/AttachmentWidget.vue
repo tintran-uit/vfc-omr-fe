@@ -2,7 +2,7 @@
 import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
 import CardHeader from '../shared/CardHeader.vue';
 import tableSchema from '@/table-schemas/attachmentTableSchema';
-import DynamicTableDefault from '@/components/dynamic-table/DynamicTableDefault.vue';
+import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue';
 import { attachmentService } from '@/services/attachmentService';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 import { useAuthStore } from '@/stores/authStore';
