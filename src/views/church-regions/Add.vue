@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import { createFormSchema } from '@/form-schemas/addChurchRegionFormSChema'
+import { createFormSchema } from '@/form-schemas/addChurchRegionFormSchema'
 import { churchRegionService } from '@/services/churchRegionService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import { useRouter, useRoute } from 'vue-router'
