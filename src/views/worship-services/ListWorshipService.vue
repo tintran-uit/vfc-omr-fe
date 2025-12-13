@@ -35,6 +35,8 @@ const onEdit = (item: any) => {
 
 const onDelete = async (item: any) => {
   await worshipServiceService.del(item.id)
+
+  fetchData(churchId.value)
 }
 
 watch(

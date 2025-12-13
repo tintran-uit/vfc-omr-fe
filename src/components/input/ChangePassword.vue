@@ -12,7 +12,7 @@ const authStore = useAuthStore();
 const dialog = ref(false)
 const messageStore = useMessageStore()
 const formSchema = computed(() => {
-  if (authStore.isRoleAdmin()) {
+  if (authStore.isRoleAdmin() || authStore.isRoleSuperAdmin()) {
     return createWithNoOldPasswordSchema();
   }
 

@@ -13,7 +13,7 @@ const MainRoutes = {
       component: () => {
         const authStore = useAuthStore()
 
-        if(authStore.isRoleAdmin()) {
+        if(authStore.isRoleAdmin() || authStore.isRoleSuperAdmin()) {
           return import('@/views/dashboards/DashboardAdmin.vue')
         } else if (authStore.isRoleOverseer()) {
           return import('@/views/dashboards/DashboardOverseer.vue')

@@ -2,7 +2,7 @@ import { authService } from '@/services/authService';
 import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { userService } from '@/services/userService';
-import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER } from '@/constants/roleConstant';
+import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from '@/constants/roleConstant';
 const pastorLeaderPermissions = [
   'user.read',
   'user.create',
@@ -48,6 +48,10 @@ const adminPermissions = [
   'languages.read',
   'languages.create'
 ];
+
+const superAdminPermissions = [
+  ...adminPermissions
+]
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -112,6 +116,9 @@ export const useAuthStore = defineStore('auth', {
     },
     isRolePastorLeader() {
       return this.user?.role?.id === ROLE_PASTOR_LEADER;
+    },
+    isRoleSuperAdmin() {
+      return this.user?.role?.id === ROLE_SUPER_ADMIN;
     }
   },
   getters: {
@@ -124,7 +131,6 @@ export const useAuthStore = defineStore('auth', {
       return state.user?.photo_url ?? 'https://placehold.co/128x128.png';
     },
     countryId: (state) => {
-      return 231;
       return state.user?.country_id || null;
     },
   }

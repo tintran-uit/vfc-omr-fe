@@ -59,7 +59,7 @@ const actions = computed(() => {
     },
     {
       title: 'dashboardMenu.worshipServices',
-      icon: '$plusCircleOutline',
+      icon: '$handClap',
       to: {
         name: 'WorshipServiceList',
         params: {
@@ -190,7 +190,7 @@ const metrics = shallowRef([
       <!-- User info ở giữa -->
       <v-col cols="12" sm="10" class="d-flex flex-column justify-center text-center text-sm-left">
         <v-row class="align-center">
-          <v-col cols="8" class="text-medium-emphasis text-body-1">
+          <v-col cols="12" md="8" class="text-medium-emphasis text-body-1">
             <div class="text-h4 mb-1 text-medium-emphasis">
               {{ pastor?.first_name }}  {{ pastor?.last_name }}
             </div>
@@ -199,27 +199,31 @@ const metrics = shallowRef([
               {{ churchDetail?.name }}
 
               <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
-            <v-tooltip>
-              <template #activator="{ props: tooltipProps }">
-                <v-icon v-bind="{ ...menuProps, ...tooltipProps }" class="text-success" size="20">$checkDecagramOutline</v-icon>
+                <v-tooltip>
+                  <template #activator="{ props: tooltipProps }">
+                    <v-icon v-bind="{ ...menuProps, ...tooltipProps }" class="text-success" size="20">$checkDecagramOutline</v-icon>
+                  </template>
+
+                  <span v-html="$t('church.verifiedBy', {
+                      name: dashboardData?.dashboard_info?.verified_by_user_name,
+                      date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
+                    })"></span>
+                </v-tooltip>
               </template>
-
-              <span v-html="$t('church.verifiedBy', {
-                  name: dashboardData?.dashboard_info?.verified_by_user_name,
-                  date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
-                })"></span>
-            </v-tooltip>
-          </template>
-
-
-        <slot name="switch" />
+            
+              <slot name="switch" />
             </div>
             
             {{ churchDetail?.city_name }}, {{ churchDetail?.country_name }}<br />
             {{ $t('church.lastMonthlyRecord') }}: {{ formatDate(dashboardData?.dashboard_info?.last_report_date, 'MMMM YYYY') || 'N/A' }}
           </v-col>
-          <v-col cols="4" class="text-right text-medium-emphasis text-body-1">
-            <v-img :src="dashboardData?.dashboard_info?.church_region_logo_url" :alt="dashboardData?.dashboard_info?.church_region_name" :width="100"></v-img>
+          <v-col cols="12" md="4" class="text-center text-md-right text-medium-emphasis text-body-1">
+            <v-img
+             :src="dashboardData?.dashboard_info?.church_region_logo_url"
+             :alt="dashboardData?.dashboard_info?.church_region_name"
+             :width="100"
+             class="mx-auto mx-md-0"
+             />
           </v-col>
         </v-row>
       </v-col>
@@ -238,7 +242,7 @@ const metrics = shallowRef([
       :to="item.to"
       variant="outlined"
       color="primary"
-      class="d-inline-flex align-center"
+      class="d-inline-flex align-center w-100 w-sm-auto"
     >
       <v-icon :icon="item.icon" size="20" class="mr-2" />
       <span class="text-body-2">{{ $t(item.title) }}</span>

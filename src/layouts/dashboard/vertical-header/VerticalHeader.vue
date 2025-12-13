@@ -30,7 +30,7 @@ const avatarUrl = computed(() => {
 
 <template>
   <v-app-bar elevation="0" :priority="priority" height="60">
-    <v-btn
+    <!-- <v-btn
       class="hidden-md-and-down text-secondary me-3"
       color="darkText"
       icon
@@ -49,6 +49,17 @@ const avatarUrl = computed(() => {
       variant="text"
       @click.stop="customizer.SET_SIDEBAR_DRAWER"
       size="small"
+    >
+      <MenuFoldOutlined :style="{ fontSize: '16px' }" />
+    </v-btn> -->
+    <v-btn
+      class="hidden-lg-and-up text-secondary ms-3"
+      color="darkText"
+      icon
+      rounded="sm"
+      variant="text"
+      size="small"
+      @click.stop="customizer.SET_SIDEBAR_DRAWER"
     >
       <MenuFoldOutlined :style="{ fontSize: '16px' }" />
     </v-btn>
