@@ -3,12 +3,12 @@ import * as d3 from 'd3'
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useTheme } from 'vuetify'
 import { getWeekRange } from '@/helpers/dateTimeHelper'
-import { useI18n } from 'vue-i18n';
-import { formatNumber } from '@/helpers/appHelper';
+import { useI18n } from 'vue-i18n'
+import { formatNumber } from '@/helpers/appHelper'
 
 const theme = useTheme()
 
-// ✅ Props
+// ✅ Props (GIỮ NGUYÊN)
 const props = withDefaults(
   defineProps<{
     data: any[]
@@ -17,107 +17,132 @@ const props = withDefaults(
   { title: 'Giving graph' }
 )
 
-const { t } = useI18n();
-// ✅ Legend cấu hình
+const { t } = useI18n()
+
+// ✅ Legend (GIỮ NGUYÊN 100%)
 const legends = [
   { key: 'givingUsd', label: t('chart.legendTithesAndOfferings'), color: theme.current.value.colors.chartGiving },
   { key: 'mfpUsd', label: t('chart.legendMissionsMFPGiving'), color: theme.current.value.colors.chartMfp },
 ]
 
-const chartContainer = ref(null)
-const hiddenLines = ref(new Set())
+const chartContainer = ref<HTMLElement | null>(null)
+const hiddenLines = ref(new Set<string>())
+
+// ===== CHỈ PHỤC VỤ RESPONSIVE (MOBILE) =====
+const MIN_POINT_WIDTH = 64
+const isMobile = ref(false)
+
+function updateBreakpoint() {
+  isMobile.value = window.innerWidth < 768
+}
 
 function toggleLine(key: string) {
-  if (hiddenLines.value.has(key)) hiddenLines.value.delete(key)
-  else hiddenLines.value.add(key)
+  hiddenLines.value.has(key)
+    ? hiddenLines.value.delete(key)
+    : hiddenLines.value.add(key)
   drawChart()
 }
 
-// Watch dữ liệu
-watch(() => props.data, async () => {
-  await nextTick()
-  drawChart()
-}, { deep: true, immediate: true })
+// ===== WATCH =====
+watch(
+  () => props.data,
+  async () => {
+    await nextTick()
+    drawChart()
+  },
+  { deep: true, immediate: true }
+)
 
 watch(hiddenLines, () => nextTick(drawChart), { deep: true })
 
-// Resize
-onMounted(() => window.addEventListener('resize', handleResize))
-onBeforeUnmount(() => window.removeEventListener('resize', handleResize))
+// ===== RESIZE =====
+onMounted(() => {
+  updateBreakpoint()
+  window.addEventListener('resize', updateBreakpoint)
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateBreakpoint)
+  window.removeEventListener('resize', handleResize)
+})
+
 function handleResize() {
   nextTick(drawChart)
 }
 
-// ✅ Domain format giống AttendanceChart
-const formatDomain = (d) => d.label
+// ===== HELPERS (GIỮ NGUYÊN) =====
+const formatDomain = (d: any) => d.label
 
-// ✅ Tooltip content giống AttendanceChart
-const formatTooltipContent = (legend, d) => {
-  const val = d.value ? d.value : t('chart.noData'); 
+const formatTooltipContent = (legend: any, d: any) => {
+  const val = d.value ? d.value : t('chart.noData')
   const givingLocal = d?.givingLocalCurrency || t('chart.noData')
   return `
     <div style="line-height: 1.5">
-    <b>${legend.label}</b><br>
-    <b>${t('chart.week')}</b>: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>
-    <b>${t('chart.giving')}</b>: ${formatNumber(givingLocal) || 'N/A'}<br />
-    <b>${t('chart.givingUsd')}</b>: ${formatNumber(val) || 'N/A'}<br />
+      <b>${legend.label}</b><br>
+      <b>${t('chart.week')}</b>: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>
+      <b>${t('chart.giving')}</b>: ${formatNumber(givingLocal) || 'N/A'}<br />
+      <b>${t('chart.givingUsd')}</b>: ${formatNumber(val) || 'N/A'}<br />
     </div>
-  `;
+  `
 }
-// const formatTooltipContent = (legend, d) => {
-//   return d.value != null
-//     ? `<b>${legend.label}</b><br>Week: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>Amount: ${d.value}`
-//     : `<b>${legend.label}</b><br>Week: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br><i>No data</i>`
-// }
 
-// ✅ Draw chart
+// ===== DRAW CHART (LOGIC GỐC, CHỈ CHÈN WIDTH MOBILE) =====
 function drawChart() {
   const data = props.data
   const container = chartContainer.value
   if (!container || !data?.length) return
 
   d3.select(container).selectAll('*').remove()
-  // d3.select('body').selectAll('.d3-tooltip').remove()
 
   const margin = { top: 20, right: 20, bottom: 60, left: 50 }
-  const width = container.clientWidth - margin.left - margin.right
+
+  const wrapperWidth = container.parentElement!.clientWidth
+
+  const contentWidth = isMobile.value
+    ? Math.max(data.length * MIN_POINT_WIDTH, wrapperWidth)
+    : wrapperWidth
+
+  const width = contentWidth - margin.left - margin.right
   const height = container.clientHeight - margin.top - margin.bottom
 
-  const svg = d3.select(container)
+  const svg = d3
+    .select(container)
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
+    .attr('width', contentWidth)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`)
 
-  // X scale
-  const x = d3.scalePoint()
+  const x = d3
+    .scalePoint()
     .domain(data.map(formatDomain))
     .range([0, width])
     .padding(0.5)
 
-  // Y scale
-  const maxY = d3.max(data, d => d3.max(legends.map(l => d[l.key] || 0)))
-  const y = d3.scaleLinear().domain([0, maxY]).nice().range([height, 0])
+  const maxY = d3.max(data, (d) => d3.max(legends.map((l) => d[l.key] || 0)))
+  const y = d3.scaleLinear().domain([0, maxY!]).nice().range([height, 0])
 
   const xTickValues = x.domain().filter((_, i) => i % 4 === 0)
 
-  // Grid lines
-  svg.append('g').attr('class', 'grid grid-y')
+  svg
+    .append('g')
     .call(d3.axisLeft(y).tickSize(-width).tickFormat(''))
     .selectAll('line')
     .attr('stroke', '#ddd')
     .attr('stroke-opacity', 0.5)
 
-  svg.append('g').attr('class', 'grid grid-x')
+  svg
+    .append('g')
     .attr('transform', `translate(0,${height})`)
     .call(d3.axisBottom(x).tickSize(-height).tickFormat('').tickValues(xTickValues))
     .selectAll('line')
     .attr('stroke', '#eee')
     .attr('stroke-opacity', 0.5)
 
-  // Axes
-  svg.append('g').attr('transform', `translate(0,${height})`)
+  svg
+    .append('g')
+    .attr('transform', `translate(0,${height})`)
     .call(d3.axisBottom(x).tickValues(xTickValues))
     .selectAll('text')
     .attr('transform', 'rotate(-20)')
@@ -126,10 +151,10 @@ function drawChart() {
 
   svg.append('g').call(d3.axisLeft(y))
 
-  // Tooltip
   let tooltip = d3.select('body').select('.d3-tooltip-global')
   if (tooltip.empty()) {
-      tooltip = d3.select('body')
+    tooltip = d3
+      .select('body')
       .append('div')
       .attr('class', 'd3-tooltip-global')
       .style('position', 'fixed')
@@ -144,20 +169,18 @@ function drawChart() {
       .style('transition', 'opacity 0.2s')
   }
 
-  // Line generator
-  const line = d3.line()
+  const line = d3
+    .line<any>()
     .defined((d) => d.value != null && d.value !== 0)
-    .x(d => x(d.key))
-    .y(d => y(d.value))
+    .x((d) => x(d.key)!)
+    .y((d) => y(d.value))
     .curve(d3.curveMonotoneX)
 
-  // Draw lines & dots
-  legends.forEach(legend => {
+  legends.forEach((legend) => {
     if (hiddenLines.value.has(legend.key)) return
 
-    const lineData = data.map(d => {
+    const lineData = data.map((d) => {
       const [start, end] = getWeekRange(d.year, d.week, 'DD MMM')
-      
       return {
         key: formatDomain(d),
         week: d.week,
@@ -165,54 +188,47 @@ function drawChart() {
         startDate: start,
         endDate: end,
         value: d[legend.key],
-        givingLocalCurrency: legend.key === 'givingUsd' ? d.givingLocalCurrency : d.mfpLocalCurrency
+        givingLocalCurrency:
+          legend.key === 'givingUsd' ? d.givingLocalCurrency : d.mfpLocalCurrency,
       }
     })
 
-    // Path line
-    svg.append('path')
+    svg
+      .append('path')
       .datum(lineData)
       .attr('fill', 'none')
       .attr('stroke', legend.color)
       .attr('stroke-width', 2)
       .attr('d', line)
 
-    // Dots
-    svg.selectAll(`.dot-${legend.key}`)
+    svg
+      .selectAll(`.dot-${legend.key}`)
       .data(lineData)
       .enter()
       .append('circle')
-      .attr('class', `dot-${legend.key}`)
-      .attr('cx', d => x(d.key))
-      .attr('cy', (d, i, arr) => {
+      .attr('cx', (d) => x(d.key)!)
+      .attr('cy', (d, i, arr: any[]) => {
         if (d.value != null && d.value !== 0) return y(d.value)
 
-        // Tìm điểm trước hợp lệ
-        let prev = null
+        let prev: number | null = null
         for (let j = i - 1; j >= 0; j--) {
-          const val = arr[j].__data__?.value
-          if (val != null && val !== 0) {
-            prev = val
+          const v = arr[j]?.value
+          if (v != null && v !== 0) {
+            prev = v
             break
           }
         }
 
-        // Tìm điểm sau hợp lệ
-        let next = null
+        let next: number | null = null
         for (let j = i + 1; j < arr.length; j++) {
-          const val = arr[j].__data__?.value
-          if (val != null && val !== 0) {
-            next = val
+          const v = arr[j]?.value
+          if (v != null && v !== 0) {
+            next = v
             break
           }
         }
 
-        // Lấy giá trị tham chiếu trung bình giữa prev & next
-        const refValue =
-          prev != null && next != null
-            ? (prev + next) / 2
-            : prev ?? next ?? 0
-
+        const refValue = prev != null && next != null ? (prev + next) / 2 : prev ?? next ?? 0
         return y(refValue)
       })
       .attr('r', (d) => (d.value == null || d.value === 0 ? 3 : 4))
@@ -231,21 +247,18 @@ function drawChart() {
 }
 </script>
 
-<style scoped>
-.cursor-pointer {
-  cursor: pointer;
-}
-</style>
-
 <template>
   <v-card class="pa-4">
     <v-card-title class="d-flex justify-space-between align-center">
       <span class="text-h4">{{ title }}</span>
-      <div class="d-flex flex-row flex-wrap justify-end">
+    </v-card-title>
+
+    <v-card-text>
+      <div class="d-flex flex-row flex-wrap justify-end chart-legends">
         <div
           v-for="legend in legends"
           :key="legend.key"
-          class="d-flex align-center mr-3 cursor-pointer"
+          class="d-flex align-center mr-3 cursor-pointer legend-item"
           @click="toggleLine(legend.key)"
         >
           <div
@@ -266,13 +279,38 @@ function drawChart() {
           </span>
         </div>
       </div>
-    </v-card-title>
 
-    <v-card-text>
       <div v-if="!props.data?.length" class="text-center pa-8 text-grey">
         Loading chart data...
       </div>
-      <div v-else ref="chartContainer" style="width: 100%; height: 400px;"></div>
+
+      <div v-else class="chart-scroll-wrapper">
+        <div ref="chartContainer" class="chart-inner"></div>
+      </div>
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped>
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.chart-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.chart-inner {
+  height: 400px;
+  min-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .chart-legends .legend-item {
+    width: 100%;
+    margin-right: 0 !important;
+  }
+}
+</style>

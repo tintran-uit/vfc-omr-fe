@@ -8,7 +8,7 @@ import { useI18n } from 'vue-i18n'
 const theme = useTheme()
 const { t } = useI18n()
 
-// ✅ Props
+/* ================== PROPS ================== */
 const props = defineProps({
   data: {
     type: Array,
@@ -20,7 +20,7 @@ const props = defineProps({
   },
 })
 
-// ✅ Legend cấu hình
+/* ================== LEGEND ================== */
 const legends = [
   { key: 'attendance', label: t('chart.worshipService'), color: theme.current.value.colors.chartAttendance },
   { key: 'cellGroup', label: t('chart.cellGroup'), color: theme.current.value.colors.chartCellGroup },
@@ -31,112 +31,117 @@ const legends = [
 const chartContainer = ref(null)
 const hiddenLines = ref(new Set())
 
-const formatDomain = (d) => {
-  return d.label
-  // const [start, end] = getWeekRange(d.year, d.week, 'DD MMM')
-  // return `${start} - ${end}`
-  // return `W${d.week}.${d.year}`
+const MIN_POINT_WIDTH = 64 // px / point → chỉnh tùy thích
+const isMobile = ref(false)
+
+function updateBreakpoint() {
+  isMobile.value = window.innerWidth < 768
 }
 
+const formatDomain = (d) => d.label
+
 const formatTooltipContent = (legend, d) => {
-  const val = d.value ? d.value : 'No data' 
+  const val = d.value ? d.value : 'No data'
   return `
     <div style="line-height: 1.5">
-    <b>${legend.label}</b><br>
-    <b>${t('chart.week')}</b>: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>
-    <b>${t('chart.attendance')}</b>: ${val}
+      <b>${legend.label}</b><br>
+      <b>${t('chart.week')}</b>: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>
+      <b>${t('chart.attendance')}</b>: ${val}
     </div>
-  `;
+  `
 }
 
 function toggleLine(key) {
-  if (hiddenLines.value.has(key)) hiddenLines.value.delete(key)
-  else hiddenLines.value.add(key)
+  hiddenLines.value.has(key)
+    ? hiddenLines.value.delete(key)
+    : hiddenLines.value.add(key)
+
   drawChart()
 }
 
-// ✅ Watch dữ liệu từ API → vẽ lại chart
+/* ================== WATCH ================== */
 watch(
   () => props.data,
-  async (newData) => {
-    if (!newData || !newData.length) return
+  async (val) => {
+    if (!val?.length) return
     await nextTick()
     drawChart()
   },
   { deep: true, immediate: true }
 )
 
-// ✅ Watch khi ẩn/hiện line
 watch(hiddenLines, () => nextTick(drawChart), { deep: true })
 
-// ✅ Vẽ lại khi resize
+/* ================== RESIZE ================== */
 onMounted(() => {
+  updateBreakpoint()
+  window.addEventListener('resize', updateBreakpoint)
   window.addEventListener('resize', handleResize)
 })
+
 onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateBreakpoint)
   window.removeEventListener('resize', handleResize)
 })
+
 function handleResize() {
   nextTick(drawChart)
 }
 
+/* ================== DRAW CHART ================== */
 function drawChart() {
   const data = props.data
   const container = chartContainer.value
   if (!container || !data?.length) return
 
-  // Clear old chart
   d3.select(container).selectAll('*').remove()
-  // d3.select('body').selectAll('.d3-tooltip').remove()
 
   const margin = { top: 20, right: 20, bottom: 60, left: 50 }
-  const width = container.clientWidth - margin.left - margin.right
-  const height = container.clientHeight - margin.top - margin.bottom
+  const height = 400 - margin.top - margin.bottom
+  
+  const wrapperWidth = container.parentElement.clientWidth
+  const contentWidth = isMobile.value
+    ? Math.max(data.length * MIN_POINT_WIDTH, wrapperWidth)
+    : wrapperWidth
+  const width = contentWidth - margin.left - margin.right
 
   const svg = d3
     .select(container)
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
+    .attr('width', contentWidth)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`)
 
-  // ✅ X scale
+  /* ===== SCALE ===== */
   const x = d3
     .scalePoint()
     .domain(data.map(formatDomain))
     .range([0, width])
     .padding(0.5)
 
-  // ✅ Y scale
   const maxY = d3.max(data, (d) =>
     d3.max(legends.map((l) => d[l.key] || 0))
   )
+
   const y = d3.scaleLinear().domain([0, maxY]).nice().range([height, 0])
 
-  // ✅ Giảm tick cho trục X
   const xTickValues = x.domain().filter((_, i) => i % 4 === 0)
 
-  // ✅ Grid lines Y
+  /* ===== GRID ===== */
   svg
     .append('g')
-    .attr('class', 'grid grid-y')
-    .call(
-      d3.axisLeft(y)
-        .tickSize(-width)
-        .tickFormat('')
-    )
+    .call(d3.axisLeft(y).tickSize(-width).tickFormat(''))
     .selectAll('line')
     .attr('stroke', '#ddd')
     .attr('stroke-opacity', 0.5)
 
-  // ✅ Grid lines X
   svg
     .append('g')
-    .attr('class', 'grid grid-x')
     .attr('transform', `translate(0,${height})`)
     .call(
-      d3.axisBottom(x)
+      d3
+        .axisBottom(x)
         .tickSize(-height)
         .tickFormat('')
         .tickValues(xTickValues)
@@ -145,17 +150,11 @@ function drawChart() {
     .attr('stroke', '#eee')
     .attr('stroke-opacity', 0.5)
 
-  // ✅ Axes
+  /* ===== AXIS ===== */
   svg
     .append('g')
     .attr('transform', `translate(0,${height})`)
-    .call(
-      d3
-        .axisBottom(x)
-        .tickValues(xTickValues)
-        // .tickFormat(d => {
-        // })
-    )
+    .call(d3.axisBottom(x).tickValues(xTickValues))
     .selectAll('text')
     .attr('transform', 'rotate(-20)')
     .style('text-anchor', 'end')
@@ -163,10 +162,11 @@ function drawChart() {
 
   svg.append('g').call(d3.axisLeft(y))
 
-  // ✅ Tooltip
+  /* ===== TOOLTIP (GIỮ NGUYÊN LOGIC) ===== */
   let tooltip = d3.select('body').select('.d3-tooltip-global')
   if (tooltip.empty()) {
-      tooltip = d3.select('body')
+    tooltip = d3
+      .select('body')
       .append('div')
       .attr('class', 'd3-tooltip-global')
       .style('position', 'fixed')
@@ -181,7 +181,6 @@ function drawChart() {
       .style('transition', 'opacity 0.2s')
   }
 
-  // ✅ Line generator
   const line = d3
     .line()
     .defined((d) => d.value != null && d.value !== 0)
@@ -189,13 +188,12 @@ function drawChart() {
     .y((d) => y(d.value))
     .curve(d3.curveMonotoneX)
 
-  // ✅ Draw lines
+  /* ===== DRAW LINES ===== */
   legends.forEach((legend) => {
     if (hiddenLines.value.has(legend.key)) return
 
     const lineData = data.map((d) => {
       const [start, end] = getWeekRange(d.year, d.week, 'DD MMM')
-      
       return {
         key: formatDomain(d),
         week: d.week,
@@ -204,9 +202,8 @@ function drawChart() {
         endDate: end,
         value: d[legend.key],
       }
-  })
+    })
 
-    // Path line
     svg
       .append('path')
       .datum(lineData)
@@ -215,61 +212,24 @@ function drawChart() {
       .attr('stroke-width', 2)
       .attr('d', line)
 
-    // Dots
     svg
       .selectAll(`.dot-${legend.key}`)
       .data(lineData)
       .enter()
       .append('circle')
-      .attr('class', `dot-${legend.key}`)
       .attr('cx', (d) => x(d.key))
-      .attr('cy', (d, i, arr) => {
-        if (d.value != null && d.value !== 0) return y(d.value)
-
-        // Tìm điểm trước hợp lệ
-        let prev = null
-        for (let j = i - 1; j >= 0; j--) {
-          const val = arr[j].__data__?.value
-          if (val != null && val !== 0) {
-            prev = val
-            break
-          }
-        }
-
-        // Tìm điểm sau hợp lệ
-        let next = null
-        for (let j = i + 1; j < arr.length; j++) {
-          const val = arr[j].__data__?.value
-          if (val != null && val !== 0) {
-            next = val
-            break
-          }
-        }
-
-        // Lấy giá trị tham chiếu trung bình giữa prev & next
-        const refValue =
-          prev != null && next != null
-            ? (prev + next) / 2
-            : prev ?? next ?? 0
-
-        return y(refValue)
-      })
-      .attr('r', (d) => (d.value == null || d.value === 0 ? 3 : 4))
+      .attr('cy', (d) => y(d.value ?? 0))
+      .attr('r', (d) => (d.value ? 4 : 3))
       .attr('fill', legend.color)
-      .style('opacity', (d) => (d.value == null || d.value === 0 ? 0.3 : 1))
+      .style('opacity', (d) => (d.value ? 1 : 0.3))
       .style('cursor', 'pointer')
-      .on('mouseenter', function (event, d) {
+      .on('mouseenter', (e, d) => {
         tooltip
           .style('opacity', 1)
           .html(formatTooltipContent(legend, d))
-          .style('left', `${event.clientX + 10}px`)
-          .style('top', `${event.clientY - 28}px`)
+          .style('left', `${e.clientX + 10}px`)
+          .style('top', `${e.clientY - 28}px`)
       })
-      // .on('mousemove', function(event, d) {
-      //   tooltip
-      //     .style('left', `${event.clientX + 10}px`)
-      //     .style('top', `${event.clientY - 28}px`)
-      // })
       .on('mouseleave', () => tooltip.style('opacity', 0))
   })
 }
@@ -279,11 +239,14 @@ function drawChart() {
   <v-card class="pa-4">
     <v-card-title class="d-flex justify-space-between align-center">
       <span class="text-h5">{{ title }}</span>
-      <div class="d-flex flex-row flex-wrap justify-end">
+    </v-card-title>
+
+    <v-card-text>
+      <div class="d-flex flex-row flex-wrap justify-end chart-legends">
         <div
           v-for="legend in legends"
           :key="legend.key"
-          class="d-flex align-center mr-3 cursor-pointer"
+          class="d-flex align-center mr-3 cursor-pointer legend-item"
           @click="toggleLine(legend.key)"
         >
           <div
@@ -295,7 +258,7 @@ function drawChart() {
               backgroundColor: legend.color,
               opacity: hiddenLines.has(legend.key) ? 0.3 : 1,
             }"
-          ></div>
+          />
           <span
             class="text-caption"
             :style="{ opacity: hiddenLines.has(legend.key) ? 0.3 : 1 }"
@@ -304,16 +267,35 @@ function drawChart() {
           </span>
         </div>
       </div>
-    </v-card-title>
-
-    <v-card-text>
+      
       <div v-if="!props.data?.length" class="text-center pa-8 text-grey">
         Loading chart data...
       </div>
-      <div v-else ref="chartContainer" style="width: 100%; height: 400px; position: relative; overflow: visible;"></div>
+
+      <!-- SCROLL WRAPPER -->
+      <div class="chart-scroll-wrapper">
+        <div ref="chartContainer" class="chart-inner"></div>
+      </div>
     </v-card-text>
   </v-card>
 </template>
 
 <style scoped>
+.chart-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.chart-inner {
+  height: 400px;
+  min-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .chart-legends .legend-item {
+    width: 100%;
+    margin-right: 0 !important;
+  }
+}
 </style>

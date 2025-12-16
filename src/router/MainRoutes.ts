@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/stores/authStore';
 const MainRoutes = {
   path: '/',
   meta: {
@@ -10,17 +9,7 @@ const MainRoutes = {
     {
       name: 'Dashboard',
       path: '',
-      component: () => {
-        const authStore = useAuthStore()
-
-        if(authStore.isRoleAdmin() || authStore.isRoleSuperAdmin()) {
-          return import('@/views/dashboards/DashboardAdmin.vue')
-        } else if (authStore.isRoleOverseer()) {
-          return import('@/views/dashboards/DashboardOverseer.vue')
-        } else {
-          return import('@/views/dashboards/Dashboard.vue')
-        }
-      }
+      component: () => import('@/views/dashboards/Dashboard.vue')
     },
     {
       name: 'Test',

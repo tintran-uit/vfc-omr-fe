@@ -62,6 +62,7 @@ export const useAuthStore = defineStore('auth', {
     token: localStorage.getItem('token') || null,
     returnUrl: null,
     permissions: JSON.parse(localStorage.getItem('permissions') || '[]') as string[],
+    role: null
   }),
   actions: {
     async login(username: string, password: string) {
@@ -83,6 +84,8 @@ export const useAuthStore = defineStore('auth', {
         this.permissions = overseerPermissions;
       } else if (this.user?.role?.id === ROLE_ADMIN) {
         this.permissions = adminPermissions
+      } else if (this.user?.role?.id === ROLE_SUPER_ADMIN) {
+        this.permissions = superAdminPermissions
       }
       localStorage.setItem('permissions', JSON.stringify(this.permissions));
 
@@ -92,8 +95,10 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.user = null;
       this.token = null;
+      this.permissions = []
       localStorage.removeItem('user');
       localStorage.removeItem('token');
+      localStorage.removeItem('permissions')
 
       router.push({
         name: 'Login',
@@ -108,18 +113,18 @@ export const useAuthStore = defineStore('auth', {
     
       return this.permissions.includes(permissions.toLowerCase());
     },
-    isRoleAdmin() {
-      return this.user?.role?.id === ROLE_ADMIN;
-    },
-    isRoleOverseer() {
-      return this.user?.role?.id === ROLE_OVERSEER;
-    },
-    isRolePastorLeader() {
-      return this.user?.role?.id === ROLE_PASTOR_LEADER;
-    },
-    isRoleSuperAdmin() {
-      return this.user?.role?.id === ROLE_SUPER_ADMIN;
-    }
+    // isRoleAdmin() {
+    //   return this.user?.role?.id === ROLE_ADMIN;
+    // },
+    // isRoleOverseer() {
+    //   return this.user?.role?.id === ROLE_OVERSEER;
+    // },
+    // isRolePastorLeader() {
+    //   return this.user?.role?.id === ROLE_PASTOR_LEADER;
+    // },
+    // isRoleSuperAdmin() {
+    //   return this.user?.role?.id === ROLE_SUPER_ADMIN;
+    // }
   },
   getters: {
     fullName: (state) => {
@@ -133,5 +138,17 @@ export const useAuthStore = defineStore('auth', {
     countryId: (state) => {
       return state.user?.country_id || null;
     },
+    isRoleAdmin: (state) => {
+      return state.user?.role?.id === ROLE_ADMIN;
+    },
+    isRoleOverseer: (state) => {
+      return state.user?.role?.id === ROLE_OVERSEER;
+    },
+    isRolePastorLeader: (state) => {
+      return state.user?.role?.id === ROLE_PASTOR_LEADER;
+    },
+    isRoleSuperAdmin: (state) => {
+      return state.user?.role?.id === ROLE_SUPER_ADMIN;
+    }
   }
 });
