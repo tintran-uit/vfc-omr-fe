@@ -44,8 +44,9 @@ const onClone = (item) => {
   router.push({ name: 'ChurchClone', params: { id: item.id } })
 }
 
-const onDisable = async (item: any) => {
-  await churchService.disable(item.id)
+const onDisable = async (item: any, reason: string) => {
+  // Open popup disable
+  await churchService.disable(item.id, reason)
   
   fetchData()
 }
@@ -105,7 +106,7 @@ const onUpdateOptions = (options) => {
                     <v-chip
                       v-if="item?.is_msc"
                       color="warning"
-                      :text="$t('churchTable.msc')"
+                      :text="$t('church.msc')"
                       class="mr-2"
                       size="small"
                       label
@@ -113,7 +114,7 @@ const onUpdateOptions = (options) => {
                     <v-chip
                       v-if="item?.is_mother_church"
                       color="success"
-                      :text="$t('churchTable.mother')"
+                      :text="$t('church.mother')"
                       class="mr-2"
                       size="small"
                       label

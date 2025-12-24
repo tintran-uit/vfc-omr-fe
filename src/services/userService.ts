@@ -31,8 +31,8 @@ export const userService  = {
     async changePasswordMe(data) {
 
     },
-    async getRelatedUserListOfChurch(churchId, params = {}) {
+    async getRelatedUserListOfChurch(churchId, params = {}, showLoading = true) {
         const combinedParams = { ...params , church_id: churchId };
-        return await apiClient.get(`/users`, combinedParams);
+        return await apiClient.get(`/users`, combinedParams, showLoading);
     }
 }

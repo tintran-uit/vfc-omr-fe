@@ -281,7 +281,7 @@ function drawChart() {
       </div>
 
       <div v-if="!props.data?.length" class="text-center pa-8 text-grey">
-        Loading chart data...
+        ...
       </div>
 
       <div v-else class="chart-scroll-wrapper">

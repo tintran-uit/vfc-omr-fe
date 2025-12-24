@@ -10,6 +10,5 @@ export default {
     
   ],
   searches: [
-    // { name: 'name', label: 'userTable.searchName', type: 'TextInput' },
   ]
 }

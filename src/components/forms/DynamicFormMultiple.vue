@@ -170,9 +170,9 @@ watch(
                 <v-label class="mb-1" v-if="field.label" :for="`field-${field.name}-${index}`">
                   {{ $t(field.label)}}
                   <span class="text-error" v-if="field?.rules?.includes('required')">*</span>
-                  <v-tooltip :text="$t(field.description)" v-if="field.description" class="ml-2">
+                  <v-tooltip :text="$t(field.description)" v-if="field.description">
                       <template #activator="{ props }">
-                        <v-icon v-bind="props" size="16" color="primary">
+                        <v-icon v-bind="props" size="16" color="primary" class="ml-1">
                           $informationOutline
                         </v-icon>
                       </template>
@@ -301,7 +301,7 @@ watch(
                 <TimeInput
                 v-else-if="field.type === 'TimeInput'"
                 :rules="resolveRules(field, formData)"
-                v-model="field.modelValue.value"
+                v-model="virtualModelValue[field.accessKey]"
                 v-bind="field?.attrs || {}"
                 :id="`field-${field.name}-${index}`"
               />
@@ -312,10 +312,17 @@ watch(
                 v-bind="field?.attrs || {}"
                 :id="`field-${field.name}-${index}`"
               />
+              <FileUploadInput
+                v-else-if="field.type === 'FileUploadInput'"
+                :rules="resolveRules(field, formData)"
+                v-model="virtualModelValue[field.accessKey]"
+                v-bind="field?.attrs || {}"
+                :id="`field-${field.name}-${index}`"
+              />
               <PhotoCropperInput
                 v-else-if="field.type === 'PhotoCropperInput'"
                 :rules="resolveRules(field, formData)"
-                v-model="field.modelValue.value"
+                v-model="virtualModelValue[field.accessKey]"
                 v-bind="field?.attrs || {}"
                 :id="`field-${field.name}-${index}`"
               />
@@ -342,7 +349,7 @@ watch(
       <v-row class="mt-4">
         <v-col cols="12" class="text-end">
           <v-btn type="submit" color="primary" variant="flat">
-            {{ $t('common.save') }}
+            {{ $t('save') }}
           </v-btn>
         </v-col>
       </v-row>

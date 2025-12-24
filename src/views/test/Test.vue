@@ -697,11 +697,16 @@ onMounted(async () => {
 
   console.log('data4Weeks:', data4Weeks.value)
 })  
+
+const avatar = ref(null)
 </script>
 
 <template>
+  <pre>Avatar: {{ avatar }}</pre>
   <v-container>
-    <AttendanceChartWidget church-id="76" />
+    <PhotoCropperInput v-model="avatar"
+  :aspect-ratio="1"></PhotoCropperInput>
+    <!-- <AttendanceChartWidget church-id="76" /> -->
 
     <!-- <DaugterChurchWidget church-id="76" /> -->
 

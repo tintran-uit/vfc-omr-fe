@@ -55,7 +55,7 @@ const churchId = ref();
             variant="outlined" 
             @click="router.push({ name: 'ChurchList' })"
           >
-            <v-icon>$arrowLeft</v-icon> {{ $t('common.backToList') }}
+            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>
         </v-col>
       </v-row>

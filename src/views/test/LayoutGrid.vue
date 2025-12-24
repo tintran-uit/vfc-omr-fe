@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import DynamicForm from "@/components/forms/DynamicForm.vue";
 import { ref } from "vue";
 
   const item = ref({

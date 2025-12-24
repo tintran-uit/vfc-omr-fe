@@ -27,7 +27,8 @@ const sortBy = ref([
 const fetchData = async function (options = {}) {
   const data = await userService.getRelatedUserListOfChurch(
     props.churchId,
-    tableOptionsToParams(options)
+    tableOptionsToParams(options),
+    false
   )
 
   items.value = data.items;

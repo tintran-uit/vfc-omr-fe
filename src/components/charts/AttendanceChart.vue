@@ -40,7 +40,7 @@ function updateBreakpoint() {
 
 const formatDomain = (d) => d.label
 
-const formatTooltipContent = (legend, d) => {
+const formatTooltipContent = (legend, d) => {console.log('d', d)
   const val = d.value ? d.value : 'No data'
   return `
     <div style="line-height: 1.5">
@@ -218,7 +218,37 @@ function drawChart() {
       .enter()
       .append('circle')
       .attr('cx', (d) => x(d.key))
-      .attr('cy', (d) => y(d.value ?? 0))
+      .attr('cy', (d, i, arr) => {
+        if (d.value != null && d.value !== 0) return y(d.value)
+
+        // Tìm điểm trước hợp lệ
+        let prev = null
+        for (let j = i - 1; j >= 0; j--) {
+          const val = arr[j].__data__?.value
+          if (val != null && val !== 0) {
+            prev = val
+            break
+          }
+        }
+
+        // Tìm điểm sau hợp lệ
+        let next = null
+        for (let j = i + 1; j < arr.length; j++) {
+          const val = arr[j].__data__?.value
+          if (val != null && val !== 0) {
+            next = val
+            break
+          }
+        }
+
+        // Lấy giá trị tham chiếu trung bình giữa prev & next
+        const refValue =
+          prev != null && next != null
+            ? (prev + next) / 2
+            : prev ?? next ?? 0
+
+        return y(refValue)
+      })
       .attr('r', (d) => (d.value ? 4 : 3))
       .attr('fill', legend.color)
       .style('opacity', (d) => (d.value ? 1 : 0.3))

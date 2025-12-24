@@ -33,6 +33,8 @@ import '@fontsource/public-sans/500.css';
 import '@fontsource/public-sans/600.css';
 import '@fontsource/public-sans/700.css';
 
+import 'cropperjs/dist/cropper.css'
+
 // Global component
 import TextInput from './components/input/TextInput.vue';
 import SelectInput from './components/input/SelectInput.vue';
@@ -57,6 +59,7 @@ import WeekDayInput from './components/input/WeekDayInput.vue';
 import TimeInput from './components/input/TimeInput.vue';
 import LanguageRegionSelectInput from './components/input/LanguageRegionSelectInput.vue';
 import PhotoCropperInput from './components/input/PhotoCropperInput.vue';
+import FileUploadInput from './components/input/FileUploadInput.vue'
 
 //Mock Api data
 import './_mockApis';
@@ -97,6 +100,7 @@ app.component('WeekDayInput', WeekDayInput)
 app.component('TimeInput', TimeInput)
 app.component('LanguageRegionSelectInput', LanguageRegionSelectInput)
 app.component('PhotoCropperInput', PhotoCropperInput)
+app.component('FileUploadInput', FileUploadInput)
 
 
 fakeBackend();

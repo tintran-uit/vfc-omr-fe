@@ -137,20 +137,20 @@ watch([modelYear, modelMonth, modelDay], ([newYear, newMonth, newDay]) => {
     <div class="d-flex ga-2 w-100">
       <v-autocomplete
         v-model="modelYear"
-        :placeholder="$t('common.year')"
+        :placeholder="$t('year')"
         :items="listYears"
         variant="outlined"
       />
       <v-autocomplete
         v-model="modelMonth"
-        :placeholder="$t('common.month')"
+        :placeholder="$t('month')"
         variant="outlined"
         :items="listMonths"
         :return-object="false"
       />
       <v-autocomplete
         v-model="modelDay"
-        :placeholder="$t('common.day')"
+        :placeholder="$t('day')"
         variant="outlined"
         :items="listDays"
       />

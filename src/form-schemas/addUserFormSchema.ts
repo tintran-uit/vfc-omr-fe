@@ -16,46 +16,46 @@ export const createFormSchema = () => ({
     // }),
     fields: [
         {
-            label: 'label.user.username',
-            name: 'username',
-            description: 'fieldDescription.user.username',
-            rules: ['required'],
-            type: 'TextInput'
-        },
-        {
-            label: 'label.user.password',
-            name: 'password',
-            description: 'fieldDescription.user.password',
-            rules: ['required', 'min:6'],
-            type: 'PasswordInput'
-        },
-        {
-            label: 'label.user.prefix',
+            label: 'user.labelPrefix',
             name: 'prefix',
             type: 'SelectInput',
             optionName: 'prefixes',
         },
         {
-            label: 'label.user.firstName',
+            label: 'user.labelFirstName',
             name: 'first_name',
             rules: ['required'],
             type: 'TextInput'
         },
         {
-            label: 'label.user.lastName',
+            label: 'user.labelLastName',
             name: 'last_name',
             type: 'TextInput'
         },
         {
-            label: 'label.user.title',
-            name: 'title',
-            description: 'fieldDescription.user.title',
+            label: 'user.labelUsername',
+            name: 'username',
+            description: 'user.infoUsername',
+            rules: ['required'],
             type: 'TextInput'
         },
         {
-            label: 'label.user.role',
+            label: 'user.labelPassword',
+            name: 'password',
+            description: 'user.infoPassword',
+            rules: ['required', 'min:6'],
+            type: 'PasswordInput'
+        },
+        {
+            label: 'user.labelTitle',
+            name: 'title',
+            description: 'user.infoTitle',
+            type: 'TextInput'
+        },
+        {
+            label: 'user.labelRole',
             name: 'role_id',
-            description: 'fieldDescription.user.role',
+            description: 'user.infoRole',
             rules: ['required'],
             type: 'SelectInput',
             optionName: 'roles',
@@ -65,9 +65,9 @@ export const createFormSchema = () => ({
             }
         },
         {
-            label: 'label.user.church',
+            label: 'user.labelChurch',
             name: 'church_id',
-            description: 'fieldDescription.user.church',
+            description: 'user.infoChurch',
             rules: ['required'],
             type: 'ChurchSelectInput',
             optionName: 'churches',
@@ -77,45 +77,46 @@ export const createFormSchema = () => ({
             }
         },
         {
-            label: 'label.user.userPhoto',
+            label: 'user.labelUserPhoto',
             name: 'user_photo',
-            description: 'fieldDescription.user.userPhoto',
-            type: 'PhotoUploadInput',
+            type: 'PhotoCropperInput',
             initialImageKey: 'photo_url',
             attrs: {
-                entity_type: 'users'
+                entity_type: 'users',
+                aspectRatio: '1',
+                mode: 'avatar'
             }
         },
         {
-            label: 'label.user.country',
+            label: 'user.labelCountry',
             name: 'country_id',
             rules: ['required'],
             type: 'CountrySelectInput',
         },
         {
-            label: 'label.user.sensiveNation',
+            label: 'user.labelSensiveNation',
             name: 'sensitive_nation',
-            description: 'fieldDescription.user.sensitiveNation',
+            description: 'user.infoSensitiveNation',
             type: 'YesNoInput',
             defaultValue: false,
         },
         {
-            label: 'label.user.language',
+            label: 'user.labelLanguage',
             name: 'language_id',
-            desciprion: 'fieldDescription.user.language',
+            desciprion: 'user.infoLanguage',
             rules: ['required'],
             type: 'LanguageSelectInput',
         },
         {
-            label: 'label.user.mobilePhone',
+            label: 'user.labelMobilePhone',
             name: 'mobile_phone',
         },
         {
-            label: 'label.user.emailAddress',
+            label: 'user.labelEmailAddress',
             name: 'email_address',
         },
         {
-            label: 'label.user.credentials',
+            label: 'user.labelCredentials',
             name: 'credentials',
             type: 'SelectInput',
             optionName: 'credentials',
@@ -124,17 +125,17 @@ export const createFormSchema = () => ({
             }
         },
         {
-            label: 'label.user.credentialsNumber',
+            label: 'user.labelCredentialsNumber',
             name: 'credentials_number',
             type: 'TextInput'
         },
         {
-            label: 'label.user.credentialsFrom',
+            label: 'user.labelCredentialsFrom',
             name: 'credentials_from',
             type: 'TextInput'
         },
         {
-            label: 'label.user.credentialsExpiryDate',
+            label: 'user.labelCredentialsExpiryDate',
             name: 'credentials_expiry_date',
             type: 'YearMonthDayInput',
             attrs: {
@@ -142,7 +143,7 @@ export const createFormSchema = () => ({
             }
         },
         {
-            label: 'label.user.profileComments',
+            label: 'user.labelProfileComments',
             name: 'profile_comments',
             type: 'TextareaInput',
         },

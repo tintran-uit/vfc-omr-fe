@@ -12,7 +12,7 @@ const props = withDefaults(
 )
 const detail = ref({})
 const fetchData = async (userId) => {
-  detail.value = await userService.get(userId)
+  detail.value = await userService.get(userId, false)
 }
 const headingClass = 'text-left font-weight-medium'
 

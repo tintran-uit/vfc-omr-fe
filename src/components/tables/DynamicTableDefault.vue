@@ -15,6 +15,10 @@ const page = defineModel('page', { default: 1 })
 const itemsPerPage = defineModel('itemsPerPage', { default: 25 })
 const sortBy = defineModel('sortBy', { default: () => [] })
 const searches = defineModel('searches', { default: () => [] })
+const disableDialog = ref(false)
+const disableItem = ref(null)
+const disableReason = ref('')
+let disableCb = null
 
 const props = withDefaults(
   defineProps<{
@@ -116,8 +120,27 @@ const handleAssignOverseerAction = (item) => {
 }
 
 const handleDisableAction = async (item) => {
-  if (!await dialogStore.confirm(t('areYouSureWantToDisable'))) return
-  emit('action:disable', item)
+  disableDialog.value = true;
+  disableItem.value = item;
+
+  disableCb = (reason) => {
+    emit('action:disable', item, reason)
+  }
+
+  // if (!await dialogStore.confirm(t('areYouSureWantToDisable'))) return
+  // emit('action:disable', item)
+}
+const onSubmitDisableAction = async() => {
+  if (typeof(disableCb) === 'function') {
+    disableCb(disableReason.value)
+
+    closeDisableDialog()
+  }
+}
+const closeDisableDialog = () => {
+  disableDialog.value = false;
+  disableItem.value = null;
+  disableReason.value = '';
 }
 
 const handleEnableAction = async (item) => {
@@ -310,6 +333,37 @@ onMounted(() => {
   <!--      @update:modelValue="onChangePage"-->
   <!--    ></v-pagination>-->
   <!--  </div>-->
+
+  <v-dialog v-model="disableDialog" max-width="480">
+    <v-card rounded="lg">
+      <v-card-title class="text-h6">
+        {{ $t('church.disableReason') }}
+      </v-card-title>
+
+      <v-card-text>
+        <v-textarea
+          v-model="disableReason"
+          rows="3"
+          auto-grow
+          :rules="[v => !!v || $t('reasonIsRequired')]"
+          required
+        />
+      </v-card-text>
+
+      <v-card-actions class="justify-end">
+        <v-btn variant="text" @click="closeDisableDialog">
+          Cancel
+        </v-btn>
+        <v-btn
+          color="error"
+          :disabled="!disableReason.trim()"
+          @click="onSubmitDisableAction"
+        >
+          Disable
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>

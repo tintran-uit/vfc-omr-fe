@@ -5,6 +5,6 @@ export default {
     { key: 'actions', title: '', sortable: false },
   ],
   searches: [
-    { name: 'name', label: 'language.labelName', type: 'TextInput' },
+    { name: 'name', label: 'searchByName', type: 'TextInput' },
   ]
 }

@@ -1,17 +1,17 @@
 export const createFormSchema = () => ({
-    name: "Church Data",
-    initData: () => ({
-        is_first_msc: false,
-    }),
+    name: '',
     fields: [
         {
             label: 'attachment.labelFile',
-            name: 'name',
+            name: 'file',
             rules: ['required'],
+            type: 'FileUploadInput'
         },
         {
             label: 'attachment.labelName',
             name: 'name',
-        },
+            rules: [],
+            type: 'TextInput'
+        }
     ]
 })

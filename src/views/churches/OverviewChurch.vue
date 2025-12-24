@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/authStore';
 import { dashboardService } from '@/services/dashboardService';
 import { computed, onMounted, ref, shallowRef, inject } from 'vue';
+import { useDisplay } from 'vuetify'
 import { formatDate } from '@/helpers/dateTimeHelper';
 import peopleIcon from '@/assets/images/metrics/people.svg'
 import givingIcon from '@/assets/images/metrics/giving.svg'
@@ -28,6 +29,8 @@ const props = withDefaults(
   }
 )
 
+const { smAndDown } = useDisplay()
+const isMobile = computed(() => smAndDown.value)
 const authStore = useAuthStore();
 const churchDetail = inject('churchDetail')
 const dashboardData = inject('dashboardData')
@@ -165,13 +168,10 @@ const metrics = shallowRef([
   <v-card flat>
   <!-- Cover -->
   <v-img
-    :src="churchDetail?.photo_url"
-    height="150"
+  :src="churchDetail?.photo_url"
     cover
-    class="bg-grey-darken-2"
-    style="background-color: #ccc;"
-  >
-  </v-img>
+    class="church-cover bg-grey-darken-2"
+  />
   
   <!-- Avatar + Info -->
   <v-container class="position-relative">
@@ -367,14 +367,22 @@ const metrics = shallowRef([
 <style scoped lang="scss">
 .profile-avatar {
   position: relative;
-    top: 0px;
-    left: none;
+  top: 0px;
+  left: none;
   z-index:1;
    border: 1px solid white;
    margin-left: auto;
    margin-right: auto;
-   margin-top: -70px;
+   margin-top: -60px;
    display: block;
+}
+
+.church-cover {
+  height: 180px;      // mobile
+}
+
+.church-cover img {
+  object-position: center 30%;
 }
 
 @media (min-width: 768px) {
@@ -383,6 +391,22 @@ const metrics = shallowRef([
     left:16px;
     margin-left: 0;
     margin-right: 0;
+  }
+}
+
+@media (min-width: 600px) {
+  .church-cover {
+    height: 220px;    // tablet
+  }
+}
+
+@media (min-width: 960px) {
+  .church-cover {
+    height: 260px;    // desktop
+  }
+
+  .profile-avatar {
+    margin-top: -75px;
   }
 }
 </style>

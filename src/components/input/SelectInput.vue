@@ -29,7 +29,7 @@ const emit = defineEmits<{
 
 const translatedLabel = computed(() => label ? t(label) : '')
 const translatedPlaceholder = computed(() => placeholder ? t(placeholder) : '')
-const translatedNoDataText = computed(() => noDataText ? t(noDataText) : t('common.no_data'))
+const translatedNoDataText = computed(() => noDataText ? t(noDataText) : t('noData'))
 </script>
 
 <template>

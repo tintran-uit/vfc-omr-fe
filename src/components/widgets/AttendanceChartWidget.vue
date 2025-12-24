@@ -8,6 +8,7 @@ import VisitChart from '@/components/charts/VisitChart.vue';
 import { PERIOD_12_MONTHS, PERIOD_24_MONTHS } from '@/constants/graphConstant';
 import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n()
 const props = withDefaults(
   defineProps<{
     churchId: number
@@ -17,15 +18,14 @@ const props = withDefaults(
 const periodOptions = [
   {
     value: PERIOD_12_MONTHS,
-    title: "Last 12 months"
+    title: t('last12Months')
   },
   {
     value: PERIOD_24_MONTHS,
-    title: "Last 24 months"
+    title: t('last24Months')
   }
 ]
 const periodModel = ref(PERIOD_12_MONTHS)
-const { t } = useI18n()
 const tab = ref(null)
 
 const titleAttendance = computed(() => {
@@ -39,10 +39,10 @@ const titleVisit = computed(() => {
 })
 
 const formatAttendanceData = (weekKeys, attendanceValues, cellGroupValues, prayerMeetingValues, liwClassValues, labels) => {
-  return weekKeys.map(({Year, Week}, index) => {
+  return weekKeys.map(({year, week}, index) => {
     return {
-      week: Week,
-      year: Year,
+      week: week,
+      year: year,
       label: labels[index],
       attendance: attendanceValues[index],
       cellGroup: cellGroupValues[index],
@@ -53,10 +53,10 @@ const formatAttendanceData = (weekKeys, attendanceValues, cellGroupValues, praye
 }
 
 const formatGiving = (weekKeys, givingUsdValues, givingLocalCurrencyValues, mfpUsdValues, mfpLocalCurrencyValues, labels) => {
-  return weekKeys.map(({Year, Week}, index) => {
+  return weekKeys.map(({year, week}, index) => {
     return {
-      week: Week,
-      year: Year,
+      week: week,
+      year: year,
       label: labels[index],
       givingUsd: givingUsdValues[index],
       givingLocalCurrency: givingLocalCurrencyValues[index],
@@ -67,10 +67,10 @@ const formatGiving = (weekKeys, givingUsdValues, givingLocalCurrencyValues, mfpU
 }
 
 const formatVisitData = (weekKeys, visitSummary, labels) => {
-  return weekKeys.map(({Year, Week}, index) => {
+  return weekKeys.map(({year, week}, index) => {
     return {
-      week: Week,
-      year: Year,
+      week: week,
+      year: year,
       label: labels[index],
       visits: visitSummary[index],
     }
@@ -131,7 +131,7 @@ const onChangePeriod = async (period) => {
 }
 
 const fetchData = async () => {
-  apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId);
+  apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId, PERIOD_12_MONTHS, false);
 }
 
 watch(

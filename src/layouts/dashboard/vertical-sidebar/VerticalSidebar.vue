@@ -14,9 +14,9 @@ function filterNavigationByPermissions(items, canFn) {
     .map(item => {
       const filteredChildren = item.children
         ? filterNavigationByPermissions(item.children, canFn)
-        : undefined;
+        : [];
 
-      // Kiểm tra permission
+      // Check permission
       let hasPermission = true;
       if (item.permissions) {
         if (Array.isArray(item.permissions)) {
@@ -26,21 +26,26 @@ function filterNavigationByPermissions(items, canFn) {
         }
       }
 
-      const hasChildren = filteredChildren && filteredChildren.length > 0;
-      const isEmptyTo = !item.to || item.to === "#";
+      const hasChildren = filteredChildren.length > 0;
+      const isLink =
+        item.to !== undefined &&
+        item.to !== null &&
+        item.to !== '#';
 
-      // ❗ Loại khi:
-      // - Không có children
-      // - Và không có to (hoặc to === "#")
-      // - Và không có quyền
-      if (!hasChildren && isEmptyTo && !hasPermission) {
+      /**
+       * ❗ RULE QUAN TRỌNG:
+       * - Không phải link
+       * - Và không có children
+       * => REMOVE LUÔN
+       */
+      if (!isLink && !hasChildren) {
         return null;
       }
 
-      // ❗ Loại item khi:
-      // - Không có quyền
-      // - Và không có children (standard case cũ)
-      if (!hasPermission && !hasChildren) {
+      /**
+       * ❗ Item là link nhưng không có quyền
+       */
+      if (isLink && !hasPermission) {
         return null;
       }
 

@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<{
 
 const translatedLabel = computed(() => props.label ? t(props.label) : '')
 const translatedPlaceholder = computed(() => props.placeholder ? t(props.placeholder) : '')
-const translatedNoDataText = computed(() => props.noDataText ? t(props.noDataText) : t('common.no_data'))
+const translatedNoDataText = computed(() => props.noDataText ? t(props.noDataText) : t('noData'))
 
 const items = ref<any[]>([])
 const loading = ref(false)

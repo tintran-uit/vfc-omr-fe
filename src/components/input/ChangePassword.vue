@@ -66,6 +66,7 @@ const { t } = useI18n()
             @submit="handleSubmit"
             @cancel="handleCancel"
             :break-line="true"
+            :showCancel="true"
           />
       </v-card-text>
     </v-card>

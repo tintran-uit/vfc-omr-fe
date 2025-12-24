@@ -202,7 +202,7 @@ function buildDataForNode(node) {
 
 const fetchData = async (churchId) => {
   
-  const rootNode = await graphService.getDataGenerationalGraph(churchId);
+  const rootNode = await graphService.getDataGenerationalGraph(churchId, false);
   buildDataForNode(rootNode);
   
   data.value = rootNode;

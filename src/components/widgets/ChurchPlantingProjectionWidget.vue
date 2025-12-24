@@ -15,7 +15,7 @@ const props = withDefaults(
 
 const projections = ref([])
 const fetchData = async (churchId) => {
-  const {items} = await churchPlantingProjectionService.getListByChurchWithStep(churchId)
+  const {items} = await churchPlantingProjectionService.getListByChurchWithStep(churchId, false)
 
   projections.value = items
 }

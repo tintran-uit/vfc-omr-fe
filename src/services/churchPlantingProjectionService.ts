@@ -8,9 +8,9 @@ export const churchPlantingProjectionService  = {
         const combinedParams = { ...params , church_id: churchId };
         return await apiClient.get(`/church-planting-projections`, combinedParams);
     },
-    async getListByChurchWithStep(churchId, params = {}) {
+    async getListByChurchWithStep(churchId, params = {}, showLoading = true) {
         const combinedParams = { ...params , church_id: churchId, completed_steps: true };
-        return await apiClient.get(`/church-planting-projections`, combinedParams);
+        return await apiClient.get(`/church-planting-projections`, combinedParams, showLoading);
     },
     async get(id, showLoading = true) {
         return await apiClient.get(`/church-planting-projections/${id}`, null, showLoading);

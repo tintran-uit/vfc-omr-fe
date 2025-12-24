@@ -7,6 +7,11 @@ import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
 const formSchema = createFormSchema();
+const defaultData = ref({})
+
+async function fetchDefaultData() {
+  defaultData.value = await churchService.getDefaultFormData()
+}
 
 const handleSubmit = async (formData) => {
   try {
@@ -17,6 +22,10 @@ const handleSubmit = async (formData) => {
     console.log('error', e);
   }
 }
+
+onMounted(() => {
+  fetchDefaultData()
+})
 </script>
 
 <template>
@@ -43,6 +52,7 @@ const handleSubmit = async (formData) => {
               <DynamicFormDefault
                 :form-schema="formSchema"
                 @submit="handleSubmit"
+                :init-data="defaultData"
               />
             </slot>
           </v-sheet>

@@ -3,7 +3,7 @@ export const createFormSchema = () => ({
     // }),
     fields: [
         {
-            label: 'userLabel.newPassword',
+            label: 'user.labelNewPassword',
             name: 'new_password',
             rules: [
                 'required',
@@ -12,7 +12,7 @@ export const createFormSchema = () => ({
             type: 'PasswordInput'
         },
         {
-            label: 'userLabel.repeatNewPassword',
+            label: 'user.labelRepeatNewPassword',
             name: 'repeat_new_password',
             rules: [
                 'required',

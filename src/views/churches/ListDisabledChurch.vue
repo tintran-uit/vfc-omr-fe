@@ -96,7 +96,7 @@ const loadingStore = useLoadingStore();
                     <v-chip
                       v-if="item?.is_msc"
                       color="warning"
-                      :text="$t('churchTable.msc')"
+                      :text="$t('church.msc')"
                       class="mr-2"
                       size="small"
                       label
@@ -104,7 +104,7 @@ const loadingStore = useLoadingStore();
                     <v-chip
                       v-if="item?.is_mother_church"
                       color="success"
-                      :text="$t('churchTable.mother')"
+                      :text="$t('church.mother')"
                       class="mr-2"
                       size="small"
                       label

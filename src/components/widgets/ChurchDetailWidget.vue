@@ -25,7 +25,7 @@ const getPath = function (node) {
   return path.join(' > ')
 }
 const fetchData = async (churchId) => {
-  detail.value = await churchService.get(churchId)
+  detail.value = await churchService.get(churchId, false)
 
   // detail.value.twitter = 'https://twitter.com/examplechurch'
   // detail.value.instagram = 'https://instagram.com/examplechurch'

@@ -5,31 +5,27 @@ export const createFormSchema = () => ({
     }),
     fields: [
         {
-            label: 'label.church.name',
+            label: 'church.labelName',
             name: 'name',
-            description: 'fieldDescription.church.name',
+            description: 'church.infoName',
+            placeholder: 'church.phName',
             rules: ['required'],
         },
         {
-            label: 'label.church.shortName',
+            label: 'church.labelShortName',
             name: 'short_name',
-            description: 'fieldDescription.church.shortName',
+            rules: ['max:10'],
+            description: 'church.infoShortName',
+            placeholder: 'church.phShortName'
         },
         {
-            label: 'label.church.isMsc',
+            label: 'church.labelIsMsc',
             name: 'is_msc',
-            description: 'fieldDescription.church.isMsc',
             type: 'YesNoInput'
         },
-        // {
-        //     label: 'label.church.isFirstMsc',
-        //     name: 'is_first_msc',
-        //     type: 'HiddenInput'
-        // }
         {
-            label: 'label.church.parent',
+            label: 'church.labelParent',
             name: 'parent_id',
-            description: 'fieldDescription.church.parent',
             type: 'ChurchSelectInput',
             attrs: {
                 itemTitle: 'name',
@@ -37,135 +33,136 @@ export const createFormSchema = () => ({
             }
         },
         {
-            label: 'label.church.language',
+            label: 'church.labelLanguage',
             name: 'language_id',
-            description: 'fieldDescription.church.language',
             rules: ['required'],
             type: 'LanguageSelectInput',
         },
         {
-            label: 'label.church.churchType',
+            label: 'church.labelChurchType',
             name: 'church_type_id',
-            description: 'fieldDescription.church.churchType',
+            description: 'church.infoChurchType',
             rules: ['required'],
             type: 'ChurchTypeSelectInput',
         },
         {
-            label: 'label.church.pastor',
+            label: 'church.labelPastor',
             name: 'pastor_id',
-            description: 'fieldDescription.church.pastor',
+            description: 'church.infoPastor',
             rules: ['required'],
             type: 'PastorSelectInput',
         },
         {
-            label: 'label.church.churchNetwork',
+            label: 'church.labelChurchNetwork',
             name: 'church_network_id',
-            description: 'fieldDescription.church.churchNetwork',
+            description: 'church.infoChurchNetwork',
             rules: ['required'],
             type: 'ChurchNetworkSelectInput',
         },
         {
-            label: 'label.church.churchRegion',
+            label: 'church.labelChurchRegion',
             name: 'church_region_id',
-            description: 'fieldDescription.church.churchRegion',
+            description: 'church.infoChurchRegion',
             rules: ['required'],
             type: 'ChurchRegionSelectInput',
         },
         {
-            label: 'Geographic Mission’s Region',
+            label: 'church.labelGeographicalRegion',
             name: 'geographical_region_id',
             rules: ['required'],
             type: 'GeographicalRegionSelectInput'
         },
         {
-            label: 'label.church.sensitiveNation',
+            label: 'church.labelSensitiveNation',
             name: 'sensitive_nation',
-            desciption: 'fieldDescription.church.sensitiveNation',
+            desciption: 'church.infoSensitiveNation',
             type: 'YesNoInput',
             default: () => false
         },
 
         {
-            label: 'label.church.country',
+            label: 'church.labelCountry',
             name: 'country_id',
             rules: ['required'],
             type: 'CountrySelectInput',
         },
         {
-            label: 'label.church.currency',
+            label: 'church.labelCurrency',
             name: 'currency_id',
-            desciption: 'fieldDescription.church.currency',
+            desciption: 'church.infoCurrency',
             rules: ['required'],
             type: 'CurrencySelectInput',
         },
         {
-            label: 'label.church.city',
+            label: 'church.labelCity',
             name: 'city_id',
             type: 'CitySelectInput'
         },
         {
-            label: 'label.church.photo',
+            label: 'church.labelPhoto',
             name: 'photo',
-            desciption: 'fieldDescription.church.photo',
-            type: 'PhotoUploadInput',
+            desciption: 'church.infoPhoto',
+            type: 'PhotoCropperInput',
             attrs: {
-                entity_type: 'churches'
+                entity_type: 'churches',
+                aspectRatio: 16 / 9,
+                mode: 'cover'
             }
         },
         {
-            label: 'label.church.serviceAddressStreet',
+            label: 'church.labelServiceAddressStreet',
             name: 'service_address_street',
             type: 'TextareaInput'
         },
         {
-            label: 'label.church.serviceAddressPostalCode',
+            label: 'church.labelServiceAddressPostalCode',
             name: 'service_address_postal_code',
             type: 'TextInput'
         },
         {
-            label: 'label.church.serviceVenue',
+            label: 'church.labelServiceVenue',
             name: 'service_venue',
-            description: 'fieldDescription.church.serviceVenue',
+            description: 'church.infoServiceVenue',
             type: 'ServiceVenueSelectInput',
         },
         {
-            label: 'label.church.emailAddress',
+            label: 'church.labelEmailAddress',
             name: 'email_address',
             rules: ['required', 'email'],
             type: 'EmailInput'
         },
         {
-            label: 'label.church.website',
+            label: 'church.labelWebsite',
             name: 'website',
             rules: ['url'],
-            desciption: 'fieldDescription.church.website',
+            desciption: 'church.infoWebsite',
             type: 'TextInput'
         },
         {
-            label: 'label.church.facebook',
+            label: 'church.labelFacebook',
             name: 'facebook',
             rules: ['url'],
-            desciption: 'fieldDescription.church.facebook',
+            desciption: 'church.infoFacebook',
             type: 'TextInput'
         },
         {
-            label: 'label.church.twitter',
+            label: 'church.labelTwitter',
             name: 'twitter',
             rules: ['url'],
-            desciption: 'fieldDescription.church.twitter',
+            desciption: 'church.infoTwitter',
             type: 'TextInput'
         },
         {
-            label: 'label.church.instagram',
+            label: 'church.labelInstagram',
             name: 'instagram',
             rules: ['url'],
             type: 'TextInput'
         },
         {
-            label: 'label.church.dateOfBirth',
+            label: 'church.labelDateOfBirth',
             name: 'date_of_birth',
             rules: ['required'],
-            desciption: 'fieldDescription.church.dateOfBirth',
+            desciption: 'church.infoDateOfBirth',
             type: 'YearMonthDayInput'
         },
     ]

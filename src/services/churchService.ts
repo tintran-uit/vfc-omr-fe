@@ -13,9 +13,9 @@ export const churchService  = {
       const myParams = { ...params, disabled: true };
       return await apiClient.get(`/churches`, myParams);
     },
-    async getListDaughter(parentId, params = {}) {
+    async getListDaughter(parentId, params = {}, showLoading = true) {
       const myParams = { ...params, parent_id: parentId };
-      return await apiClient.get(`/churches`, myParams);
+      return await apiClient.get(`/churches`, myParams, showLoading);
     },
     async getById(id, showLoading = true) {
       return await apiClient.get(`/churches/${id}`, {}, showLoading);
@@ -38,10 +38,15 @@ export const churchService  = {
     async getFormData() {
       return await apiClient.get(`/churches/form-data`)
     },
-    async disable(id) {
-      return await apiClient.patch(`/churches/${id}/disable`)
+    async disable(id, reason = '') {
+      return await apiClient.patch(`/churches/${id}/disable`, {
+        disabled_reason: reason
+      })
     },
     async enable(id) {
       return await apiClient.patch(`/churches/${id}/enable`)
+    },
+    async getDefaultFormData() {
+      return await apiClient.get(`/churches/defaults`)
     }
 }
