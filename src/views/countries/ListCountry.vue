@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from "vue-router";
-import { churchTypeService } from '@/services/churchTypeService';
+import { countryService } from '@/services/countryService';
 import DataTable from '@/components/tables/DataTable.vue';
 import tableSchema from '@/table-schemas/churchTypeTableSchema';
 import { useI18n } from 'vue-i18n';
@@ -12,7 +12,7 @@ const {t} = useI18n()
 const items = ref([])
 
 const fetchData = async () => {
-  items.value = await churchTypeService.getAll()
+  items.value = await countryService.getAll()
 }
 
 const onEdit = (item: any) => {
@@ -20,7 +20,7 @@ const onEdit = (item: any) => {
 }
 
 const onDelete = async (item: any) => {
-  await churchTypeService.del(item.id)
+  await countryService.del(item.id)
 }
 
 onMounted(() => {
