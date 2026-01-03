@@ -2,8 +2,9 @@
 import { ref, watch, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from "vue-router";
 import { countryService } from '@/services/countryService';
-import DataTable from '@/components/tables/DataTable.vue';
-import tableSchema from '@/table-schemas/churchTypeTableSchema';
+import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue';
+import tableSchema from '@/table-schemas/countryTableSchema';
+import { tableOptionsToParams } from '@/helpers/dataTableHelper';
 import { useI18n } from 'vue-i18n';
 
 const router = useRouter()
@@ -11,21 +12,44 @@ const route = useRoute()
 const {t} = useI18n()
 const items = ref([])
 
-const fetchData = async () => {
-  items.value = await countryService.getAll()
+// Data table options
+const page = ref(1)
+const itemsPerPage = ref(25)
+const totalItems = ref(0)
+const searches = ref([])
+const sortBy = ref([
+  { key: 'id', order: 'desc' }
+])
+
+const buildOptions = () => {
+  return {
+    page: page.value,
+    itemsPerPage: itemsPerPage.value,
+    sortBy: sortBy.value,
+    searches: searches.value
+  }
+}
+
+const fetchData = async function (options = {}) {
+  const data = await countryService.getList(
+    tableOptionsToParams(options)
+  )
+  items.value = data.items;
+  totalItems.value = data.total;
 }
 
 const onEdit = (item: any) => {
-  router.push({ name: 'ChurchTypeEdit', params: { id: item.id } })
+  router.push({ name: 'CountryEdit', params: { id: item.id } })
 }
 
 const onDelete = async (item: any) => {
   await countryService.del(item.id)
+  fetchData(buildOptions())
 }
 
-onMounted(() => {
-  fetchData()
-})
+const onUpdateOptions = (options) => {
+  fetchData(options);
+}
 </script>
 
 <template>
@@ -35,7 +59,7 @@ onMounted(() => {
         <v-row no-gutters class="align-center">
           <!-- Title -->
           <v-col cols="12" md="8" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('churchType.listTitle') }}</h3>
+            <h3 class="text-h3 mt-5 mb-5">{{ $t('country.listTitle') }}</h3>
           </v-col>
           <!-- #Title -->
 
@@ -58,14 +82,21 @@ onMounted(() => {
   <v-row>
     <v-col cols="12">
       <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
-        <DataTable
-          :headers="tableSchema.headers"
-          :items="items"
-          :enabled-actions="['edit', 'delete']"
-          @action:delete="onDelete"
-          @action:edit="onEdit"
-        >
-        </DataTable>
+        <DynamicTableDefault
+                v-model:page="page"
+                v-model:items-per-page="itemsPerPage"
+                v-model:searches="searches"
+                v-model:sort-by="sortBy"
+                :total-items="totalItems"
+                :headers="tableSchema.headers"
+                :searches-config="tableSchema.searches"
+                :items="items"
+                :enabled-actions="['edit', 'delete']"
+                @action:edit="onEdit"
+                @action:delete="onDelete"
+                @update:options="onUpdateOptions"
+              >
+              </DynamicTableDefault>
       </v-card>
     </v-col>
   </v-row>

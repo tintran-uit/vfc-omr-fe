@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import { createFormSchema } from '@/form-schemas/addChurchTypeFormSchema';
-import { churchTypeService } from '@/services/churchTypeService';
+import { createFormSchema } from '@/form-schemas/addCountryFormSchema';
+import { countryService } from '@/services/countryService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import { useRouter, useRoute } from 'vue-router'
 
@@ -12,9 +12,9 @@ const formSchema = createFormSchema();
 
 const handleSubmit = async (formData) => {
   try {
-    await churchTypeService.create(formData)
+    await countryService.create(formData)
 
-    router.push({ name: 'ChurchTypeList' });
+    router.push({ name: 'CountryList' });
   } catch (e) {
     console.log('error', e);
   }
@@ -27,11 +27,11 @@ const handleSubmit = async (formData) => {
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('churchType.addTitle') }}</h1>
+          <h1>{{ $t('country.addTitle') }}</h1>
           <v-btn 
             color="primary" 
             variant="outlined" 
-            @click="router.push({ name: 'ChurchTypeList' })"
+            @click="router.push({ name: 'CountryList' })"
           >
             <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>

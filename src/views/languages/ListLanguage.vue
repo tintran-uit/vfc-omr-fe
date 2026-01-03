@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue';
 import { languageService } from '@/services/languageService';
 import tableSchema from '@/table-schemas/languageTableSchema';
-import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
+import { tableOptionsToParams } from '@/helpers/dataTableHelper';
 import { useI18n } from 'vue-i18n';
 
 const router = useRouter()

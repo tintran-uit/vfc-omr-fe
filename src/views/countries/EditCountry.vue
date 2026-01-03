@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue';
-import { createFormSchema } from '@/form-schemas/addChurchTypeFormSchema';
-import { churchTypeService } from '@/services/churchTypeService';
+import { createFormSchema } from '@/form-schemas/addCountryFormSchema';
+import { countryService } from '@/services/countryService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import { useRouter, useRoute } from 'vue-router'
 
@@ -14,7 +14,7 @@ const editData = ref(null);
 const fetchEditData = async function (id) {
   if (!id) return;
   try {
-    const data = await churchTypeService.getById(id);
+    const data = await countryService.getById(id);
     
     editData.value = data;
   } catch (e) {
@@ -24,9 +24,9 @@ const fetchEditData = async function (id) {
 
 const handleSubmit = async (formData) => {
   try {
-    await churchTypeService.update(id.value, formData)
+    await countryService.update(id.value, formData)
 
-    router.push({ name: 'ChurchTypeList' });
+    router.push({ name: 'CountryList' });
   } catch (e) {
     console.log('error', e);
   }
@@ -48,11 +48,11 @@ watch(
     <v-sheet color="grey lighten-4" class="pa-8">
       <v-row>
         <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('churchType.editTitle', {id: id}) }}</h1>
+          <h1>{{ $t('country.editTitle', {id: id}) }}</h1>
           <v-btn 
             color="primary" 
             variant="outlined" 
-            @click="router.push({ name: 'ChurchTypeList' })"
+            @click="router.push({ name: 'CountryList' })"
           >
             <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
           </v-btn>
