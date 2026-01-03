@@ -305,6 +305,7 @@ watch(
                 :rules="resolveRules(field, formData)"
                 v-model="field.modelValue.value"
                 v-bind="field?.attrs || {}"
+                :placeholder="field?.placeholder ? $t(field.placeholder) : ''"
                 :id="`field-${field.name}-${index}`"
               ></TextInput>
             </template>

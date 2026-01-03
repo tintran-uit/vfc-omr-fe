@@ -33,7 +33,7 @@ const fetchData = async (churchId) => {
   // detail.value.website = 'https://www.examplechurch.org'
 
   // fetch extra - geo Ancestors
-  const accestors = await geographicalRegionService.getListAncestor(detail.value?.geographical_region_id)
+  const accestors = await geographicalRegionService.getListAncestor(detail.value?.geographical_region_id, false)
 
   geographicalRegionTree.value = getPath(accestors[0])
 }
@@ -54,35 +54,35 @@ watch(
     <v-table class="text-no-wrap bordered-table" density="compact" hover>
       <tbody>
         <tr>
-          <th :class="headingClass">Church Name</th>
+          <th :class="headingClass">{{ $t('church.labelName') }}</th>
           <td>{{ detail?.name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Mother Church</th>
+          <th :class="headingClass">{{ $t('church.motherChurch') }}</th>
           <td>{{ detail?.parent_name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Language</th>
+          <th :class="headingClass">{{ $t('church.language') }}</th>
           <td>{{ detail?.language_name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Nation</th>
+          <th :class="headingClass">{{ $t('church.labelCountry') }}</th>
           <td>{{ detail?.country_name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Date of Birth</th>
+          <th :class="headingClass">{{ $t('church.labelDateOfBirth') }}</th>
           <td>{{ formatDate(detail?.date_of_birth) }} [{{ getAge(detail?.date_of_birth) }} Yrs old]</td>
         </tr>
         <tr>
-          <th :class="headingClass">Email</th>
+          <th :class="headingClass">{{ $t('church.labelEmailAddress') }}</th>
           <td>{{ detail?.email }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Office Phone</th>
+          <th :class="headingClass"></th>
           <td>{{ detail?.office_phone }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Links</th>
+          <th :class="headingClass">{{ $t('church.links') }}</th>
           <td>
             <v-btn
               v-if="detail?.website"
@@ -125,21 +125,21 @@ watch(
       <!-- 🏠 Service Address -->
       <v-expansion-panel>
         <v-expansion-panel-title>
-          Service Address
+          {{ $t('church.serviceAddress') }}
         </v-expansion-panel-title>
         <v-expansion-panel-text class="pa-0">
           <v-table class="text-no-wrap bordered-table" hover density="comfortable">
             <tbody>
               <tr>
-                <th :class="headingClass">Street</th>
+                <th :class="headingClass">{{ $t('church.street') }}</th>
                 <td>{{ detail.service_address_street }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Postal Code</th>
+                <th :class="headingClass">{{ $t('church.postalCode') }}</th>
                 <td>{{ detail?.service_address_postal_code }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">We are meeting</th>
+                <th :class="headingClass">{{ $t('church.labelServiceVenue') }}</th>
                 <td>{{ detail?.service_venue }}</td>
               </tr>
             </tbody>
@@ -150,17 +150,17 @@ watch(
       <!-- 🏢 Office Address -->
       <v-expansion-panel>
         <v-expansion-panel-title>
-          Office Address
+          {{ $t('church.officeAddress') }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-table class="text-no-wrap bordered-table" hover density="comfortable">
             <tbody>
               <tr>
-                <th :class="headingClass">Street</th>
+                <th :class="headingClass">{{ $t('church.street') }}</th>
                 <td>{{ detail?.office_address_street }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Postal Code</th>
+                <th :class="headingClass">{{ $t('church.postalCode') }}</th>
                 <td>{{ detail?.office_address_postal_code }}</td>
               </tr>
             </tbody>
@@ -171,45 +171,45 @@ watch(
       <!-- ℹ️ More -->
       <v-expansion-panel>
         <v-expansion-panel-title>
-          More
+          {{ $t('more') }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-table class="text-no-wrap bordered-table" hover density="comfortable">
             <tbody>
               <tr>
-                <th :class="headingClass">OMR #</th>
+                <th :class="headingClass">{{ $t('ormId') }}</th>
                 <td>{{ detail?.id }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Church Type</th>
+                <th :class="headingClass">{{ $t('church.labelChurchType') }}</th>
                 <td>{{ detail?.church_type_name }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Church Network</th>
+                <th :class="headingClass">{{ $t('church.labelChurchNetwork') }}</th>
                 <td>{{ detail?.church_network_name }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Geographic Region</th>
+                <th :class="headingClass">{{ $t('church.geographicRegion') }}</th>
                 <td>{{ detail?.geographical_region_name }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Geographic Region Tree</th>
+                <th :class="headingClass">{{ $t('church.geographicRegionTree') }}</th>
                 <td>{{ geographicalRegionTree }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Church Apostolic Region</th>
+                <th :class="headingClass">{{ $t('church.labelChurchRegion') }}</th>
                 <td>{{ detail?.church_region_name }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Language Region</th>
+                <th :class="headingClass">{{ $t('church.labelLanguageRegion') }}</th>
                 <td>{{ detail?.language_region_name }}</td>
               </tr>
               <tr>
-                <th :class="headingClass">Local Currency</th>
+                <th :class="headingClass">{{ $t('church.labelCurrency') }}</th>
                 <td>{{ detail?.currency_name }}</td>
               </tr>
               <tr v-if="detail?.disabled">
-                <th :class="headingClass">Reason for Disabling</th>
+                <th :class="headingClass">{{ $t('church.reasonDisabling') }}</th>
                 <td>{{ detail?.disabled_reason }}</td>
               </tr>
             </tbody>

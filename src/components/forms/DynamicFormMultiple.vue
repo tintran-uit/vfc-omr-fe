@@ -163,7 +163,7 @@ watch(
 <template>
     <v-form ref="formRef" @submit.prevent="handleSubmit">
       <template v-for="(schemaDef, schemaKey) in formSchema" :key="schemaKey">
-        <UiChildCard :title="schemaDef.name" class="mt-5">
+        <UiChildCard :title="$t(schemaDef.name)" class="mt-5">
           <v-row dense>
             <template v-for="(field, index) in schemaDef.fields" :key="`${schemaKey}-${index}`">
               <v-col cols="12" md="6">

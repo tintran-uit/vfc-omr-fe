@@ -7,6 +7,9 @@ export const userService  = {
     async get(id, showLoading = true) {
         return await apiClient.get(`/users/${id}`, null, showLoading);
     },
+    async getById(id, showLoading = true) {
+        return await apiClient.get(`/users/${id}`, null, showLoading);
+    },
     async getPastorList(params = {}, showLoading = true) {
         return await apiClient.get(`/users/pastors`, params, showLoading);
     },

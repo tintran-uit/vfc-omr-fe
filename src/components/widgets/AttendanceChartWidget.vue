@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
+import { ref, watch, computed, onMounted, defineAsyncComponent } from 'vue'
 import CardHeader from '../shared/CardHeader.vue';
 import { graphService } from '@/services/graphService';
 import AttendanceChart from '@/components/charts/AttendanceChart.vue'
@@ -39,7 +39,7 @@ const titleVisit = computed(() => {
 })
 
 const formatAttendanceData = (weekKeys, attendanceValues, cellGroupValues, prayerMeetingValues, liwClassValues, labels) => {
-  return weekKeys.map(({year, week}, index) => {
+  return weekKeys.map(({ year, week }, index) => {
     return {
       week: week,
       year: year,
@@ -47,13 +47,13 @@ const formatAttendanceData = (weekKeys, attendanceValues, cellGroupValues, praye
       attendance: attendanceValues[index],
       cellGroup: cellGroupValues[index],
       prayerMeeting: prayerMeetingValues[index],
-      liwClass: liwClassValues[index] 
+      liwClass: liwClassValues[index]
     }
   });
 }
 
 const formatGiving = (weekKeys, givingUsdValues, givingLocalCurrencyValues, mfpUsdValues, mfpLocalCurrencyValues, labels) => {
-  return weekKeys.map(({year, week}, index) => {
+  return weekKeys.map(({ year, week }, index) => {
     return {
       week: week,
       year: year,
@@ -67,7 +67,7 @@ const formatGiving = (weekKeys, givingUsdValues, givingLocalCurrencyValues, mfpU
 }
 
 const formatVisitData = (weekKeys, visitSummary, labels) => {
-  return weekKeys.map(({year, week}, index) => {
+  return weekKeys.map(({ year, week }, index) => {
     return {
       week: week,
       year: year,
@@ -83,7 +83,7 @@ const listChartDataByChurch = computed(() => {
     return [];
   }
 
-  const { week_keys: weekKeys, dates, data} = apiData.value;
+  const { week_keys: weekKeys, dates, data } = apiData.value;
 
   const list = []
 
@@ -92,7 +92,7 @@ const listChartDataByChurch = computed(() => {
 
     chartDataByChurch.church_id = church.church_id;
     chartDataByChurch.church_name = church.church_name;
-    
+
     chartDataByChurch.attendanceData = formatAttendanceData(
       weekKeys,
       church.attendance_values,
@@ -119,19 +119,24 @@ const listChartDataByChurch = computed(() => {
 
     list.push(chartDataByChurch)
   });
-  
+
   return list
 })
 
 const onChangePeriod = async (period) => {
   apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(
     props.churchId,
-    period
+    period,
+    false
   );
 }
 
 const fetchData = async () => {
-  apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(props.churchId, PERIOD_12_MONTHS, false);
+  apiData.value = await graphService.getDataAttendanceGivingPastoralVisit(
+    props.churchId,
+    PERIOD_12_MONTHS,
+    false
+  );
 }
 
 watch(
@@ -149,13 +154,13 @@ watch(listChartDataByChurch, (newVal) => {
     tab.value = `chart-${newVal[0].church_id}`
   }
 },
-{ immediate: true })
+  { immediate: true })
 
 </script>
 
 <template>
 
-   <CardHeader title="Attendance Graph">
+  <CardHeader :title="$t('chart.attendanceGraph')">
     <!-- Tabs -->
     <v-tabs v-model="tab" color="primary">
       <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
@@ -168,45 +173,26 @@ watch(listChartDataByChurch, (newVal) => {
     <v-window v-model="tab">
       <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
         <v-window-item :value="`chart-${chartDataByChurch.church_id}`">
-        
           <template #default>
-            <AttendanceChart
-              :data="chartDataByChurch.attendanceData"
-              :title="titleAttendance"
-              />
+            <AttendanceChart :data="chartDataByChurch.attendanceData" :title="titleAttendance" />
 
-               <GivingChart
-                :data="chartDataByChurch.givingData"
-                :title="titleGiving"
-                />
+            <GivingChart :data="chartDataByChurch.givingData" :title="titleGiving" />
 
-                <VisitChart
-                  :data="chartDataByChurch.visitData"
-                  :title="titleVisit"
-                  />
+            <VisitChart :data="chartDataByChurch.visitData" :title="titleVisit" />
           </template>
-      </v-window-item>
+        </v-window-item>
       </template>
     </v-window>
-    
+
 
     <!-- 👇 Đây là slot header (tùy chọn) -->
     <template #header>
       <div class="d-flex align-center justify-end" style="min-width: 180px;">
-        <SelectInput
-          v-model="periodModel"
-          :items="periodOptions"
-          @change="onChangePeriod"
-          density="compact"
-          hide-details
-          style="max-width: 160px;"
-          :clearable="false"
-        />
+        <SelectInput v-model="periodModel" :items="periodOptions" @change="onChangePeriod" density="compact"
+          hide-details style="max-width: 160px;" :clearable="false" />
       </div>
     </template>
-   </CardHeader>
+  </CardHeader>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

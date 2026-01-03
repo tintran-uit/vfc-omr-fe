@@ -77,6 +77,11 @@ const MainRoutes = {
       component: () => import('@/views/users/ListUser.vue')
     },
     {
+      name: 'UserDetail',
+      path: 'users/:id',
+      component: () => import('@/views/users/Detail.vue')
+    },
+    {
       name: 'UserOverseerList',
       path: 'users/overseers',
       component: () => import('@/views/users/ListOverseerUser.vue')

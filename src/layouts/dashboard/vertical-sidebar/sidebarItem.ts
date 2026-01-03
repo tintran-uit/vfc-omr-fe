@@ -115,7 +115,7 @@ const sidebarItem: menu[] = [
       },
       {
         id: 'users-overseer-list',
-        title: 'Overseers',
+        title: 'mainMenu.overseers',
         to: '/users/overseers',
         permissions: ['user.read-overseer'],
       },
@@ -161,7 +161,7 @@ const sidebarItem: menu[] = [
       },
       {
         id: 'church-disabeded-list',
-        title: 'Disabled Churches',
+        title: 'mainMenu.disabledChurches',
         to: '/churches/disabled-list',
         permissions: ['church.enable'],
       },

@@ -201,7 +201,6 @@ function buildDataForNode(node) {
 }
 
 const fetchData = async (churchId) => {
-  
   const rootNode = await graphService.getDataGenerationalGraph(churchId, false);
   buildDataForNode(rootNode);
   
@@ -223,61 +222,61 @@ watch(
 
 const rows = [
   {
-    "label": "Adult",
+    "label": "report.adult",
     "fn": (r) => r?.worship_sessions?.reduce((acc, session) => acc + (session.attendance.adult_attendance || 0), 0) || '-'
   },
   {
-    "label": "Youth [13-18]",
+    "label": "report.youth",
     "fn": (r) => r?.worship_sessions?.reduce((acc, session) => acc + (session.attendance.youth_attendance || 0), 0) || '-'
   },
   {
-    "label": "Children [0-12]",
+    "label": "report.children",
     "fn": (r) => r?.worship_sessions?.reduce((acc, session) => acc + (session.attendance.child_attendance || 0), 0) || '-'
   },
   {
-    "label": "Total Attendance",
+    "label": "report.totalAttendance",
     "fn": (r) => r?.worship_sessions?.reduce((acc, session) => acc + (session.attendance.total_attendance || 0), 0) || '-',
     "classes": ['summary-class']
   },
   {
-    "label": "No. of Cell Groups",
+    "label": "report.numberCellGroups",
     "fn": (r) => r?.weekly_church_events?.cell_group_count || '-'
   },
   {
-    "label": "Total Cell Attendance",
+    "label": "report.totalCellAttendance",
     "fn": (r) => r?.weekly_church_events?.cell_group_weekly_attendance || '-',
     "classes": ['summary-class']
   },
   {
-    "label": "New Decisions",
+    "label": "report.newDecisions",
     "fn": (r) => r?.weekly_spiritual_growth?.new_decisions || '-'
   },
   {
-    "label": "Actively Discipled",
+    "label": "report.activelyDiscipled",
     "fn": (r) => r?.weekly_spiritual_growth?.active_disciples || '-'
   },
   {
-    "label": "Water Baptised",
+    "label": "report.waterBaptised",
     "fn": (r) => r?.weekly_spiritual_growth?.water_baptisms || '-'
   },
   {
-    "label": "LIW Classes",
+    "label": "report.liwClasses",
     "fn": (r) => r?.weekly_church_events?.liw_class_count || '-'
   },
   {
-    "label": "LIW Students",
+    "label": "report.liwStudents",
     "fn": (r) => r?.weekly_church_events?.liw_class_total_students || '-'
   },
   {
-    "label": "No. of Leaders",
+    "label": "report.numberLeaders",
     "fn": (r) => r?.weekly_spiritual_growth?.number_of_leaders_in_training_for_cpm || '-'
   },
   {
-    "label": "Local Giving VND",
+    "label": "report.localGivingLocal",
     "fn": (r) => r?.givings?.in_local_currency ? formatNumber(r?.givings?.in_local_currency) : '-'
   },
   {
-    "label": "Local Giving USD",
+    "label": "report.localGivingUsd",
     "fn": (r) => r?.givings?.in_usd ? formatNumber(r?.givings?.in_usd) : '-'
   },
 ]
@@ -313,13 +312,13 @@ watch(
       style="width: 100%; height: 600px; position: relative;"
     ></div>
 
-    <p class="mt-5">Selected Church: {{ selectedChurch?.name }}</p>
-    <p>Selected Pastor/Leader: {{ selectedChurch?.pastor_name }}</p>
-    <p>Maturity: {{ selectedChurch?.church_type_name }}</p>
+    <p class="mt-5">{{ $t('chart.selectedChurch') }}: {{ selectedChurch?.name }}</p>
+    <p>{{ $t('chart.selectedPastorLeader') }}: {{ selectedChurch?.pastor_name }}</p>
+    <p>{{ $t('chart.maturity') }}: {{ selectedChurch?.church_type_name }}</p>
     <v-table class="elevation-1 striped-table">
       <thead>
         <tr>
-          <th class="font-weight-bold text-center">Week, Year</th>
+          <th class="font-weight-bold text-center">{{ $t('chart.weekYear') }}</th>
           <th class="font-weight-bold text-center" v-for="col in data4Weeks" :key="`${col.year}-${col.weekNumber}`" v-html="showWeekRange(col.year, col.week_number)">
             
           </th>
@@ -327,7 +326,9 @@ watch(
       </thead>
       <tbody>
       <tr v-for="(row, index) in rows" :key="index" :class="row?.classes || [] ">
-        <td class="font-weight-bold">{{ row.label }}:</td>
+        <td class="font-weight-bold" v-if="row.label === 'report.localGiving'">{{ $t(row.label, {localCurrencyCode: selectedChurch?.currency_name}) }}:</td>
+        <td class="font-weight-bold" v-else>{{ $t(row.label) }}:</td>
+        
         <td class="text-center" v-for="col in data4Weeks" :key="`${col.year}-${col.weekNumber}`">{{ row?.fn ? row.fn(col) : null }}</td>
       </tr>
       </tbody>

@@ -1,5 +1,5 @@
 export const createFormSchema = () => ({
-    name: "Church Data",
+    name: "church.churchData",
     initData: () => ({
         is_first_msc: false,
     }),

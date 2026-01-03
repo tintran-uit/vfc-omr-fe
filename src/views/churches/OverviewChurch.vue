@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore';
-import { dashboardService } from '@/services/dashboardService';
 import { computed, onMounted, ref, shallowRef, inject } from 'vue';
 import { useDisplay } from 'vuetify'
 import { formatDate } from '@/helpers/dateTimeHelper';
@@ -17,7 +16,6 @@ import AttachmentWidget from '@/components/widgets/AttachmentWidget.vue';
 import DaugterChurchWidget from '@/components/widgets/DaugterChurchWidget.vue';
 import AttendanceChartWidget from '@/components/widgets/AttendanceChartWidget.vue';
 import ChurchPlantingChartWidget from '@/components/widgets/ChurchPlantingChartWidget.vue';
-import { churchService } from '@/services/churchService';
 import { formatCompactCurrency } from '@/helpers/appHelper';
 
 const props = withDefaults(

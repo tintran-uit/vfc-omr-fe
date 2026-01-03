@@ -22,26 +22,26 @@ const avatarUrl = computed(() => authStore.user?.photo_url || defaultAvatar)
   <div>
     <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 150px">
       <v-list class="py-0" aria-label="profile list">
-        <v-list-item color="primary" rounded="0" value="Edit profile">
+        <v-list-item color="primary" rounded="0" value="Edit profile" :to="{name: 'UserEdit', params: {id: authStore.user?.id}}">
           <template #prepend>
             <EditOutlined :style="{ fontSize: '14px' }" class="me-4" />
           </template>
           <v-list-item-title class="text-h6">{{ $t('profile.editProfile') }}</v-list-item-title>
         </v-list-item>
 
-        <v-list-item color="primary" rounded="0" value="View Profile">
+        <!-- <v-list-item color="primary" rounded="0" value="View Profile" :to="{name: 'UserEdit', params: {id: authStore.user?.id}}">
           <template #prepend>
             <UserOutlined :style="{ fontSize: '14px' }" class="me-4" />
           </template>
           <v-list-item-title class="text-h6">{{ $t('profile.viewProfile') }}</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
 
-        <v-list-item color="primary" rounded="0" value="OMR Support">
+        <!-- <v-list-item color="primary" rounded="0" value="OMR Support">
           <template #prepend>
             <InfoCircleOutlined :style="{ fontSize: '14px' }" class="me-4" />
           </template>
-          <v-list-item-title class="text-h6">OMR Suppport</v-list-item-title>
-        </v-list-item>
+          <v-list-item-title class="text-h6">{{ $t('omrSupport') }}</v-list-item-title>
+        </v-list-item> -->
 
         <v-list-item @click="authStore.logout()" color="secondary" rounded="0">
               <template v-slot:prepend>

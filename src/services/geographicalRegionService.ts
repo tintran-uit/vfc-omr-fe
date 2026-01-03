@@ -32,8 +32,8 @@ export const geographicalRegionService = {
     async getAll() {
         return await apiClient.get(`/geographical-regions`);
     },
-    async getListAncestor(regionId) {
-        return await apiClient.get(`/geographical-regions/${regionId}/ancestors`);
+    async getListAncestor(regionId, showLoading = true) {
+        return await apiClient.get(`/geographical-regions/${regionId}/ancestors`, {}, showLoading);
     },
     async getAllFlattened() {
         const data =  await apiClient.get(`/geographical-regions`);

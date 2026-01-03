@@ -12,7 +12,7 @@ const authStore = useAuthStore();
 const dialog = ref(false)
 const messageStore = useMessageStore()
 const formSchema = computed(() => {
-  if (authStore.isRoleAdmin() || authStore.isRoleSuperAdmin()) {
+  if (authStore.isRoleAdmin || authStore.isRoleSuperAdmin) {
     return createWithNoOldPasswordSchema();
   }
 
@@ -50,14 +50,24 @@ const { t } = useI18n()
 
 <template>
   <div>
-    <v-btn @click="dialog = true">Change password</v-btn>
+    <v-btn @click="dialog = true">{{ $t('user.changePassword') }}</v-btn>
   </div>
     
     
   <v-dialog v-model="dialog" max-width="400">
     <v-card>
-      <v-card-title class="text-h3">
-        Change Password
+      <v-card-title class="d-flex align-center justify-space-between">
+        <span class="text-h3">
+          {{ $t('user.changePassword') }}
+        </span>
+
+        <v-btn
+          icon
+          variant="text"
+          @click="dialog = false"
+        >
+          <v-icon>$close</v-icon>
+        </v-btn>
       </v-card-title>
 
       <v-card-text>

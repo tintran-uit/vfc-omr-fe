@@ -56,7 +56,7 @@ watch(
 </script>
 
 <template>
-  <CardHeader title="Related Users">
+  <CardHeader :title="$t('user.relatedUsers')">
     <DynamicTableDefault
       v-model:page="page"
       v-model:items-per-page="itemsPerPage"
@@ -68,7 +68,7 @@ watch(
       :items="items"
     >
       <template v-slot:item.avatar="{ item }">
-        <v-img :src="item?.photo_url || defaultAvatar" alt="User avatar"
+        <v-img :src="item?.photo_url || defaultAvatar" alt=""
     width="50"
     height="50"
     class="py-2"

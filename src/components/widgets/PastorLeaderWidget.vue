@@ -2,15 +2,26 @@
 import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
 import CardHeader from '../shared/CardHeader.vue';
 import { userService } from '@/services/userService';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
   defineProps<{
     userId: number,
+    user?: Record<string, any> | null,
+    title?: string
   }>(),
   {
+    title: undefined
   }
 )
+const { t } = useI18n()
+const cardTitle = computed(() => {
+  return props.title ?? t('user.pastorLeaderDetails')
+})
 const detail = ref({})
+const resolvedDetail = computed(() => {
+  return props.user ?? detail.value
+})
 const fetchData = async (userId) => {
   detail.value = await userService.get(userId, false)
 }
@@ -19,62 +30,62 @@ const headingClass = 'text-left font-weight-medium'
 
 watch(
   () => props.userId,
-  async (newVal, oldVal) => {
-    if (newVal && newVal !== oldVal) {
-      fetchData(newVal)
-    }
+  async (id) => {
+    if (!id || props.user) return
+
+    fetchData(id)
   },
   { immediate: true }
 )
 </script>
 
 <template>
-  <CardHeader title="Pastor Leader Details">
+  <CardHeader :title="cardTitle">
     <v-table class="text-no-wrap bordered-table" density="compact" hover>
       <tbody>
         <tr>
-          <th :class="headingClass">Full Name</th>
-          <td>{{ detail?.name }}</td>
+          <th :class="headingClass">{{ $t('user.fullName') }}</th>
+          <td>{{ resolvedDetail?.name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Title</th>
-          <td>{{ detail?.title }}</td>
+          <th :class="headingClass">{{ $t('user.labelTitle') }}</th>
+          <td>{{ resolvedDetail?.title }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">OMR #</th>
-          <td>{{ detail?.id }}</td>
+          <th :class="headingClass">{{ $t('omrId') }}</th>
+          <td>{{ resolvedDetail?.id }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">User Name</th>
-          <td>{{ detail?.username }}</td>
+          <th :class="headingClass">{{ $t('user.labelUsername') }}</th>
+          <td>{{ resolvedDetail?.username }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">OMR Role</th>
-          <td>{{ detail?.role?.name }}</td>
+          <th :class="headingClass">{{ $t('user.omrRole') }}</th>
+          <td>{{ resolvedDetail?.role?.name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Language</th>
-          <td>{{ detail?.language_name }}</td>
+          <th :class="headingClass">{{ $t('user.language') }}</th>
+          <td>{{ resolvedDetail?.language_name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Nation</th>
-          <td>{{ detail?.country_name }}</td>
+          <th :class="headingClass">{{ $t('user.nation') }}</th>
+          <td>{{ resolvedDetail?.country_name }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Sensitive Nation</th>
-          <td>{{ detail?.sensitive_nation ? 'Yes' : 'No' }}</td>
+          <th :class="headingClass">{{ $t('user.sensitiveNation') }}</th>
+          <td>{{ resolvedDetail?.sensitive_nation ? 'Yes' : 'No' }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">E-mail</th>
-          <td>{{ detail?.email_address }}</td>
+          <th :class="headingClass">{{ $t('user.labelEmailAddress') }}</th>
+          <td>{{ resolvedDetail?.email_address }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">Phone</th>
-          <td>{{ detail?.mobile_phone }}</td>
+          <th :class="headingClass">{{ $t('user.mobilePhone') }}</th>
+          <td>{{ resolvedDetail?.mobile_phone }}</td>
         </tr>
         <tr>
-          <th :class="headingClass">From</th>
-          <td>{{ detail?.church_name }}</td>
+          <th :class="headingClass">{{ $t('user.from') }}</th>
+          <td>{{ resolvedDetail?.church_name }}</td>
         </tr>
       </tbody>
     </v-table>

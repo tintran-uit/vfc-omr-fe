@@ -1,19 +1,5 @@
 export const createFormSchema = () => ({
-    name: 'Pastor / Assist. Pastor / Admin. Data',
-    // initData: () => ({
-    //     username: 'hai01',
-    //     password: '123456',
-    //     date_of_birth: "2021-01-01",
-    //     credentials_expiry_date: "2050-01-01",
-    //     sensitive_nation: false,
-    //     first_name: 'Hai',
-    //     last_name: 'Van',
-
-    //     church_id: 11,
-    //     country_id: 231,
-    //     langauge_id: 14,
-    //     role_id: 3,
-    // }),
+    name: 'user.pastorLeaderData',
     fields: [
         {
             label: 'user.labelPrefix',
