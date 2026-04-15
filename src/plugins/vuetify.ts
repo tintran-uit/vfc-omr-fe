@@ -28,12 +28,13 @@ const light: ThemeDefinition = {
     'shadow-opacity': 0.08
   },
   colors: {
-    primary: '#2478CE',
+    primary: '#3E76C8',// '#2478CE',
     secondary: '#8c8c8c',
     info: '#13c2c2',
     success: '#52c41a',
     accent: '#FFAB91',
-    warning: '#faad14',
+    warning: '#F9A825', // vàng đậm hơn '#faad14',
+
     error: '#ff4d4f',
     lightprimary: PrimaryLightColor,
     lightsecondary: '#f5f5f5',

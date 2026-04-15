@@ -1,6 +1,7 @@
 import {
   mdiCheckboxMarkedCircleOutline,
   mdiMagnify,
+  mdiMagnifyPlusOutline,
   mdiMenuDown,
   mdiChevronUp,
   mdiChevronDown,
@@ -41,15 +42,17 @@ import {
   mdiCheckDecagramOutline,
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
-
   mdiDotsVertical,
-  mdiHandClap
-} from '@mdi/js';
-import { mdi } from 'vuetify/iconsets/mdi-svg';
+  mdiHandClap,
+  mdiExclamation,
+  mdiCheckCircleOutline,
+} from "@mdi/js";
+import { mdi } from "vuetify/iconsets/mdi-svg";
 
 export const icons = {
   checkboxMarkedCircleOutline: mdiCheckboxMarkedCircleOutline,
   magnify: mdiMagnify,
+  magnifyPlusOutline: mdiMagnifyPlusOutline,
   menuDown: mdiMenuDown,
   chevronUp: mdiChevronUp,
   chevronDown: mdiChevronDown,
@@ -98,5 +101,7 @@ export const icons = {
 
   dotsVertical: mdiDotsVertical,
 
-  handClap: mdiHandClap
+  handClap: mdiHandClap,
+  exclamation: mdiExclamation,
+  checkCircleOutline: mdiCheckCircleOutline,
 };

@@ -66,13 +66,14 @@ const formatGiving = (weekKeys, givingUsdValues, givingLocalCurrencyValues, mfpU
   });
 }
 
-const formatVisitData = (weekKeys, visitSummary, labels) => {
+const formatVisitData = (weekKeys, visitSummary, labels, visitUser) => {
   return weekKeys.map(({ year, week }, index) => {
     return {
       week: week,
       year: year,
       label: labels[index],
       visits: visitSummary[index],
+      visitedUser: visitUser[index]
     }
   });
 }
@@ -114,7 +115,8 @@ const listChartDataByChurch = computed(() => {
     chartDataByChurch.visitData = formatVisitData(
       weekKeys,
       church.visit_summary,
-      dates
+      dates,
+      church.visited_user
     );
 
     list.push(chartDataByChurch)
@@ -159,10 +161,21 @@ watch(listChartDataByChurch, (newVal) => {
 </script>
 
 <template>
-
   <CardHeader :title="$t('chart.attendanceGraph')">
+    <div class="d-flex align-center justify-end" style="min-width: 180px;">
+      <SelectInput
+       v-model="periodModel"
+       :items="periodOptions"
+       @change="onChangePeriod"
+       density="compact"
+        hide-details
+        :clearable="false"
+        class="select-fit my-5 ml-4"
+      />
+    </div>
+
     <!-- Tabs -->
-    <v-tabs v-model="tab" color="primary">
+    <v-tabs v-model="tab" color="primary" class="attendant-tab" bg-color="transparent">
       <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
         <v-tab :value="`chart-${chartDataByChurch.church_id}`">{{ chartDataByChurch.church_name }}</v-tab>
       </template>
@@ -170,9 +183,9 @@ watch(listChartDataByChurch, (newVal) => {
 
     <v-divider></v-divider>
 
-    <v-window v-model="tab">
+    <v-window v-model="tab" :touch="false">
       <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
-        <v-window-item :value="`chart-${chartDataByChurch.church_id}`">
+        <v-window-item :value="`chart-${chartDataByChurch.church_id}`" class="chart-wrapper">
           <template #default>
             <AttendanceChart :data="chartDataByChurch.attendanceData" :title="titleAttendance" />
 
@@ -183,16 +196,13 @@ watch(listChartDataByChurch, (newVal) => {
         </v-window-item>
       </template>
     </v-window>
-
-
-    <!-- 👇 Đây là slot header (tùy chọn) -->
-    <template #header>
-      <div class="d-flex align-center justify-end" style="min-width: 180px;">
-        <SelectInput v-model="periodModel" :items="periodOptions" @change="onChangePeriod" density="compact"
-          hide-details style="max-width: 160px;" :clearable="false" />
-      </div>
-    </template>
   </CardHeader>
 </template>
 
-<style scoped></style>
+<style scoped>
+.chart-wrapper {
+  touch-action: pan-y;
+}
+
+
+</style>

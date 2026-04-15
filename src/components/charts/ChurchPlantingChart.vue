@@ -6,6 +6,7 @@ import { churchService } from "@/services/churchService";
 import { getWeekRange } from "@/helpers/dateTimeHelper";
 import { graphService } from '@/services/graphService';
 import { formatNumber, formatCurrency } from "@/helpers/appHelper";
+import { getISOWeekRange, formatDate } from "@/helpers/dateTimeHelper";
 
 const { t } = useI18n();
 const selectedChurchId = ref(null);
@@ -108,8 +109,8 @@ function renderGraph(json: any) {
       domElement.onmouseover = (event: MouseEvent) => {
         const data = node.data || {};
         tooltipContent = `
-          <b>${node.name}</b><br/>
-          ${t("chart.averageAttendance")}: ${data.avg_attendance ?? "N/A"}<br/>
+          <b>${data.full_name}</b><br/>
+          ${t("chart.averageAttendance")}: <b>${data.avg_attendance ?? "N/A"}</b><br/>
         `;
         tooltip.show(tooltipContent, event);
       };
@@ -165,13 +166,13 @@ function renderGraph(json: any) {
 // });
 
 const buckets = [
-  { max: 50, dim: 6, color: "#C93C47" },        // đỏ nhạt
-  { max: 150, dim: 6.5, color: "#58AC45" },       // xanh lá
-  { max: 300, dim: 7, color: "#8FCAF0" },      // xanh da trời nhạt
-  { max: 500, dim: 7.5, color: "#4687C1" },      // xanh da trời đậm
-  { max: 1000, dim: 8, color: "#756CB7" },     // tím
-  { max: 3000, dim: 8.5, color: "#D171B8" },     // hồng
-  { max: Infinity, dim: 9, color: "#D1E015" }, // vàng
+  { max: 50, dim: 3, color: "#C93C47" },        // đỏ nhạt
+  { max: 150, dim: 3.8, color: "#58AC45" },       // xanh lá
+  { max: 300, dim: 4.6, color: "#8FCAF0" },      // xanh da trời nhạt
+  { max: 500, dim: 5.4, color: "#4687C1" },      // xanh da trời đậm
+  { max: 1000, dim: 6.2, color: "#756CB7" },     // tím
+  { max: 3000, dim: 7, color: "#D171B8" },     // hồng
+  { max: Infinity, dim: 7.8, color: "#D1E015" }, // vàng
 ];
 
 function buildDataForNode(node) {
@@ -190,10 +191,15 @@ function buildDataForNode(node) {
   }
     
   node.data = {
+    full_name: node.name,
+    short_name: node.short_name,
     avg_attendance: node.avg_attendance,
     color: dataColor,
     dim: dataDim
   }
+
+  node.backup_name = node.name
+  node.name = node.short_name
 
   if (Array.isArray(node.children) && node.children.length > 0) {
     node.children.forEach(child => buildDataForNode(child));
@@ -240,51 +246,67 @@ const rows = [
   },
   {
     "label": "report.numberCellGroups",
-    "fn": (r) => r?.weekly_church_events?.cell_group_count || '-'
+    "fn": (r) => r?.church_metrics?.number_of_cell_groups || '-'
   },
   {
     "label": "report.totalCellAttendance",
-    "fn": (r) => r?.weekly_church_events?.cell_group_weekly_attendance || '-',
+    "fn": (r) => r?.church_metrics?.cell_group_weekly_attendance || '-',
     "classes": ['summary-class']
   },
   {
     "label": "report.newDecisions",
-    "fn": (r) => r?.weekly_spiritual_growth?.new_decisions || '-'
+    "fn": (r) => r?.church_metrics?.weekly_decisions_made || '-'
   },
   {
     "label": "report.activelyDiscipled",
-    "fn": (r) => r?.weekly_spiritual_growth?.active_disciples || '-'
+    "fn": (r) => r?.church_metrics?.being_actively_discipled || '-'
   },
   {
     "label": "report.waterBaptised",
-    "fn": (r) => r?.weekly_spiritual_growth?.water_baptisms || '-'
+    "fn": (r) => r?.church_metrics?.weekly_water_baptism || '-'
   },
   {
     "label": "report.liwClasses",
-    "fn": (r) => r?.weekly_church_events?.liw_class_count || '-'
+    "fn": (r) => r?.church_metrics?.number_of_liw_classes || '-'
   },
   {
     "label": "report.liwStudents",
-    "fn": (r) => r?.weekly_church_events?.liw_class_total_students || '-'
+    "fn": (r) => r?.church_metrics?.liw_total_students || '-'
   },
   {
     "label": "report.numberLeaders",
-    "fn": (r) => r?.weekly_spiritual_growth?.number_of_leaders_in_training_for_cpm || '-'
+    "fn": (r) => r?.church_metrics?.number_of_leaders_in_training_for_cpm || '-'
   },
   {
-    "label": "report.localGivingLocal",
-    "fn": (r) => r?.givings?.in_local_currency ? formatNumber(r?.givings?.in_local_currency) : '-'
+    "label": "report.tithesOfferings",
+    "fn": (r) => {
+      if(!r?.church_metrics?.giving_in_local_currency && !r?.church_metrics?.giving_in_usd) return '-'
+
+      const localFomatted = formatCurrency(r?.church_metrics?.giving_in_local_currency, selectedChurch.value?.currency_name)
+      const usdFormatted = formatCurrency(r?.church_metrics?.giving_in_usd, 'USD')
+
+      return `${localFomatted} (${usdFormatted})`;
+    }
   },
   {
-    "label": "report.localGivingUsd",
-    "fn": (r) => r?.givings?.in_usd ? formatNumber(r?.givings?.in_usd) : '-'
+    "label": "report.missionMfpGiving",
+    "fn": (r) => {
+      if(!r?.church_metrics?.mfp_in_local_currency && !r?.church_metrics?.mfp_in_usd) return '-'
+
+      const localFomatted = formatCurrency(r?.church_metrics?.mfp_in_local_currency, selectedChurch.value?.currency_name)
+      const usdFormatted = formatCurrency(r?.church_metrics?.mfp_in_usd, 'USD')
+
+      return `${localFomatted} (${usdFormatted})`;
+    }
   },
 ]
 
-const showWeekRange = (year, weekNumber) => {
-  const [start, end] = getWeekRange(year, weekNumber, 'DD MMM')
+const showWeekRange = (year, week) => {
+  const [startDate, endDate] = getISOWeekRange(year, week)
 
-  return t('report.rangeDateOfWeek', { start, end, weekNumber, year })
+  const formattedStartDate = formatDate(startDate, 'DD MMM')
+  const formattedEndDate = formatDate(endDate, 'DD MMM ’YY')
+  return t('report.rangeDateOfWeek', { start: formattedStartDate, end: formattedEndDate })
 }
 const fetchChurchReport = async (churchId) => {
   data4Weeks.value = await reportService.getLast4WeeksOfChurch(churchId)
@@ -302,20 +324,93 @@ watch(
   },
   { immediate: true }
 );
+
+function formatRange(bucket: any, index: number) {
+  if (bucket.max === Infinity) return "3,000+"
+  const min = index === 0 ? 0 : buckets[index - 1].max
+  return `${min + 1} – ${bucket.max}`
+}
+
 </script>
 
 <template>
   <v-container>
+    <!-- Legend -->
+    <!-- Quote + Legend row -->
+<v-row dense class="mb-4 align-center">
+  <!-- Scripture quote -->
+  <v-col cols="12" md="8">
+    <blockquote class="scripture-quote">
+      <p class="scripture-text">
+        “{{ $t('chart.bibleVerse') }}”
+      </p>
+      <footer class="scripture-ref">
+        — {{ $t('chart.bibleReference') }}
+      </footer>
+    </blockquote>
+  </v-col>
+
+  <!-- Legend -->
+  <v-col
+    cols="12"
+    md="4"
+    class="d-flex justify-end"
+  >
+    <div class="chart-legend">
+      <div
+        v-for="(bucket, index) in buckets"
+        :key="index"
+        class="legend-item"
+      >
+        <span
+          class="legend-dot"
+          :style="{
+            backgroundColor: bucket.color,
+            width: `${bucket.dim * 2}px`,
+            height: `${bucket.dim * 2}px`,
+          }"
+        />
+        <span class="legend-label">
+          {{ formatRange(bucket, index) }}
+        </span>
+      </div>
+    </div>
+  </v-col>
+</v-row>
+
+     <!-- #Legend -->
     <div
       id="infovis"
       class="jit-chart"
       style="width: 100%; height: 600px; position: relative;"
     ></div>
 
-    <p class="mt-5">{{ $t('chart.selectedChurch') }}: {{ selectedChurch?.name }}</p>
-    <p>{{ $t('chart.selectedPastorLeader') }}: {{ selectedChurch?.pastor_name }}</p>
-    <p>{{ $t('chart.maturity') }}: {{ selectedChurch?.church_type_name }}</p>
-    <v-table class="elevation-1 striped-table">
+    <h3 class="mt-5 text-h4">{{ $t('chart.last4WeeksDetail') }}</h3>
+    <p class="text-title-small"><b>{{ $t('chart.selectedChurch') }}</b>: 
+      <router-link
+         v-if="selectedChurchId"
+         color="primary"
+              variant="text"
+              :to="{name: 'ChurchDetail',  params: { id: selectedChurchId }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          >
+          {{ selectedChurch?.name }}
+        </router-link>
+      </p>
+    <p class="mb-5 text-title-small"><b>{{ $t('chart.selectedPastorLeader') }}</b>: 
+      <router-link
+         v-if="selectedChurch?.pastor_id"
+         color="primary"
+              variant="text"
+              :to="{name: 'UserDetail',  params: { id: selectedChurch?.pastor_id }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          >
+          {{ selectedChurch?.pastor_name }}
+        </router-link>
+      </p>
+    <v-table class="striped-table" density="compact">
       <thead>
         <tr>
           <th class="font-weight-bold text-center">{{ $t('chart.weekYear') }}</th>
@@ -337,17 +432,107 @@ watch(
 </template>
 
 <style scoped lang="scss">
+.jit-chart {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+// .striped-table {
+//   line-height: 1.1;
+// }
+//   .striped-table tbody tr:nth-child(odd) {
+//   background-color: #fafafa;
+// }
+// .striped-table tbody tr:nth-child(even) {
+//   background-color: #f0f0f0;
+// }
+
+// .striped-table :deep(.v-data-table__td),
+// .striped-table :deep(.v-data-table__th) {
+//   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+// }
+
+/* wrapper + border ngoài */
 .striped-table {
   line-height: 1.1;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  overflow: hidden; /* rất quan trọng */
 }
-  .striped-table tbody tr:nth-child(odd) {
+
+/* header background + line */
+.striped-table :deep(thead th) {
+  background-color: #e9ecef; /* đậm hơn chút */
+  font-weight: 600;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.35);
+  padding: 6px 8px;
+}
+
+/* body cells + kẻ ngang */
+.striped-table :deep(tbody td) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 4px 8px;
+}
+
+/* zebra rows */
+.striped-table :deep(tbody tr:nth-child(odd)) {
   background-color: #fafafa;
 }
-.striped-table tbody tr:nth-child(even) {
+
+.striped-table :deep(tbody tr:nth-child(even)) {
   background-color: #f0f0f0;
 }
 
+/* bỏ line hàng cuối cho gọn */
+.striped-table :deep(tbody tr:last-child td) {
+  border-bottom: none;
+}
+
 .summary-class {
-  background-color: #DEE9F7 !important;
+  font-weight: bold;
+  color: rgb(var(--v-theme-primary));
+}
+
+.scripture-quote {
+  margin: 0;
+  padding-left: 16px;
+  border-left: 3px solid rgba(0, 0, 0, 0.12);
+}
+
+.scripture-text {
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.78);
+  margin: 0;
+}
+
+.scripture-ref {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 16px;
+  max-width: 360px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-size: 12px;
+  white-space: nowrap;
 }
 </style>

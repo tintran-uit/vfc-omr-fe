@@ -16,7 +16,18 @@ const props = defineProps({ item: Object, level: Number });
       <v-list-item v-bind="props" :value="item.title" rounded class="mb-1" color="primary">
         <!---Icon  -->
         <template v-slot:prepend>
-          <component :is="item.icon" class="iconClass" :level="level"></component>
+          <img v-if="item?.iconType === 'image'"
+            :src="item.icon"
+            :width="16"
+            aspect-ratio="1"
+            cover
+          />
+          <component
+            v-else
+            :is="item.icon"
+            class="iconClass"
+            :level="level"
+          ></component>
         </template>
         <!---Title  -->
         <v-list-item-title class="me-auto">{{ $t(item.title) }}</v-list-item-title>

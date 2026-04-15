@@ -45,7 +45,7 @@ watch(
       <tbody>
         <tr>
           <th :class="headingClass">{{ $t('user.fullName') }}</th>
-          <td>{{ resolvedDetail?.name }}</td>
+          <td>{{ resolvedDetail?.prefix }} {{ resolvedDetail?.name }}</td>
         </tr>
         <tr>
           <th :class="headingClass">{{ $t('user.labelTitle') }}</th>
@@ -73,7 +73,10 @@ watch(
         </tr>
         <tr>
           <th :class="headingClass">{{ $t('user.sensitiveNation') }}</th>
-          <td>{{ resolvedDetail?.sensitive_nation ? 'Yes' : 'No' }}</td>
+          <td>
+            <v-icon v-if="resolvedDetail?.sensitive_nation" color="success">$checkboxMarkedOutline</v-icon>
+            <v-icon v-else class="text-disabled">$checkboxBlankOutline</v-icon>
+          </td>
         </tr>
         <tr>
           <th :class="headingClass">{{ $t('user.labelEmailAddress') }}</th>

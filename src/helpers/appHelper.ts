@@ -1,5 +1,7 @@
+import { formatDate } from '@/helpers/datetimeHelper'
+
 export function getLocale(): string {
-  return localStorage.getItem('language') || 'en'
+  return localStorage.getItem('language') || 'en-GB'
 }
 
 /**
@@ -62,4 +64,24 @@ export function formatCompactNumber(value: number) {
     compactDisplay: "short",
     maximumFractionDigits: 1,
   }).format(value);
+}
+
+export function appFormatDate(date: unknown): string {
+  if (date === null || date === undefined || date === '') {
+    return ''
+  }
+
+  const d = new Date(date as any)
+
+  // invalid date
+  if (isNaN(d.getTime())) {
+    return ''
+  }
+
+
+  return new Intl.DateTimeFormat(getLocale(), {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  }).format(d)
 }

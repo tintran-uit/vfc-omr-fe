@@ -6,7 +6,9 @@ import { churchService } from '@/services/churchService';
 import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/churchTableSchema';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper';
+import { useAuthStore } from '@/stores/authStore';
 
+const authStore = useAuthStore();
 const props = withDefaults(
   defineProps<{
     churchId: number,
@@ -23,6 +25,14 @@ const search = ref({})
 const sortBy = ref([
   { key: 'id', order: 'desc' }
 ])
+
+const actions = computed(() => {
+  return [
+  ...(authStore.can('church.update') ? ['edit'] : []),
+   ...(authStore.can('church.clone') ? ['clone'] : []),
+    ...(authStore.can('church.disable') ? ['disable'] : []),
+  ];
+})
 
 const fetchData = async function (options = {}) {
   const data = await churchService.getListDaughter(
@@ -75,7 +85,7 @@ watch(
       :headers="tableSchema.headers"
       :searches-config="tableSchema.searches"
       :items="items"
-      :enabled-actions="['edit', 'disable']"
+      :enabled-actions="actions"
       @action:edit="onEdit"
       @action:disable="onDisable"
       @update:options="onUpdateOptions"

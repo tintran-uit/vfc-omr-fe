@@ -33,12 +33,15 @@
   "last12Months": "Last 12 months",
   "last24Months": "Last 24 months",
   "reasonIsRequired": "Reason is required",
-  "searchByName": "Search by name",
+  "searchByName": "Search",
   "cropImage": "Crop Image",
   "confirm": "Confirm",
   "omrSupport": "OMR Support",
   "more": "More",
   "ormId": "OMR #",
+  "yearOld": "{date} [{year} Yrs old]",
+  "localGivingCurrency": "Local Giving {currency}",
+  "mfpGivingCurrency": "MFP Giving {currency}",
   "column": {
     "name": "Name",
     "email": "Email",
@@ -86,12 +89,12 @@
     "forgotPassword": "Forgot your Password?"
   },
   "dashboardMenu": {
-    "monthlyData": "Monthly Data",
+    "monthlyData": "Add Monthly Reports",
     "editChurch": "Edit Church",
     "worshipServices": "Worship Services",
-    "newPastorAndNewChurch": "Add New Church & New Pastor",
-    "newPastor": "New Pastor",
-    "newChurch": "New Church"
+    "newPastorAndNewChurch": "Add New Church & Pastor",
+    "newPastor": "Add New Pastor",
+    "newChurch": "Add New Church"
   },
   "mainMenu": {
     "myDashboard": "My Dashboard",
@@ -138,13 +141,21 @@
   },
   "dashboard": {
     "people": "People",
+    "peopleText": "Av. attendance last 3 months",
     "growth": "Growth",
+    "growthText": "% growth over last year",
     "givingTithes": "Giving Tithes",
+    "givingTithesText": "Av. monthly giving",
     "churchPlants": "Church Plants",
+    "churchPlantsText": "Over last 3 years",
     "givingMFP": "Giving MFP",
+    "givingMFPText": "Av. monthly MFP giving",
     "peopleInCG": "People in CG's",
+    "peopleInCGText": "Av. attendance last 3 months",
     "peopleInGTAndLIW": "People in GT & LIW",
-    "newDecisions": "New Decisions"
+    "peopleInGTAndLIWText": "Av. attendance last 3 months",
+    "newDecisions": "New Decisions",
+    "newDecisionsText": "In last 3 months"
   },
   "user": {
     "listTitle": "List of Users",
@@ -159,14 +170,15 @@
     "ormId": "OMR #",
     "username": "Username",
     "avatar": "Avatar",
-    "relatedUsers": "Related Users",
+    "relatedUsers": "List of Associated Pastor / Leaders",
     "fullName": "Full Name",
     "pastorLeaderDetails": "Pastor Leader Details",
     "language": "Language",
     "nation": "Nation",
-    "sensitiveNation": "Sensitive Nation",
+    "sensitiveNation": "Sensitive Nation?",
     "changePassword": "Change password",
     "accountDetails": "Account Details",
+    "labelName": "Name",
     "labelUsername": "Username",
     "labelPassword": "Password",
     "labelEmailAddress": "E-mail Address",
@@ -196,11 +208,19 @@
     "infoChurch": "The Church that the Pastor Leader belongs to, or leads.",
     "infoSensitiveNation": "Is this nation generally opposed to Christian activities?",
     "infoLanguage": "The Language OMR will use.",
-    "currentAssignments": "Current Assigments"
+    "currentAssignments": "Current Assigments",
+    "addNewUserBtn": "Add New User",
+    "geographicalRegion": "Geographical Region",
+    "languageRegion": "Language Region",
+    "churchApostolicRegions": "Church Apostolic Regions",
+    "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
+    "churchNetwork": "Church Network"
   },
   "church": {
-    "listTitle": "List churches",
+    "listTitle": "List of churches",
     "addTitle": "Add new church",
+    "addNewChurchBtn": "Add New Church",
+    "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "editTitle": "Edit church #{id}",
     "cloneTitle": "Clone church #{id}",
     "addWithNewUserTitle": "Add with new pastor",
@@ -267,7 +287,11 @@
     "infoInstagram": "The Church's Instagram account link.",
     "infoDateOfBirth": "The date of the first Service.",
     "phShortName": "i.e. VFC-NewLyn",
-    "phName": "i.e Victory Family Centre – New Lynn"
+    "phName": "i.e Victory Family Centre – New Lynn",
+    "sensitiveNation": "Sensitive Nation?",
+    "switchAnotherChurches": "Switch to another of your churches",
+    "needsVisit": "Needs a visit.",
+    "visitedBy": "Visited {date} by {name}"
   },
   "message": {
     "errorTitle": "An error occurred"
@@ -311,7 +335,7 @@
     "worshipService": "Worship Service",
     "cellGroup": "Cell Group",
     "prayerMeeting": "Prayer Meeting",
-    "liwClasses": "LIW Classes",
+    "liwClasses": "GT & LIW Classes",
     "attendanceLastNumberMonth": "Attendance – Last {number} Months",
     "givingLastNumberMonth": "Giving - Last {number} Months",
     "visitLastNumberMonth": "Visit - Last {number} Months",
@@ -321,19 +345,23 @@
     "givingLocalCurrency": "Giving (Local Currency)",
     "week": "Week",
     "averageAttendance": "Average Attendance",
-    "churchPlantingTitle": "Generational Church Planting by {churchName}",
+    "churchPlantingTitle": "Generational Church Planting & Attendance Details - {churchName}",
     "legendTithesAndOfferings": "Tithes & Offerings",
     "legendMissionsMFPGiving": "Missions MFP Giving",
     "noData": "No Data",
     "visits": "Visits",
-    "attendanceGraph": "Attendance Graph",
+    "attendanceGraph": "Attendance Giving & Pastoral Visit Graphs",
     "selectedChurch": "Selected Church",
     "selectedPastorLeader": "Selected Pastor/Leader",
     "maturity": "Maturity",
-    "weekYear": "Week, Year"
+    "weekYear": "Week, Year",
+    "weekEnding": "Week Ending",
+    "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
+    "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
+    "bibleReference": "Acts 1:8b"
   },
   "report": {
-    "rangeDateOfWeek": "{start} - {end}<br />W{weekNumber}-{year}",
+    "rangeDateOfWeek": "{start} - {end}",
     "adult": "Adult",
     "youth": "Youth [13-18]",
     "children": "Children [0-12]",
@@ -343,11 +371,11 @@
     "newDecisions": "New Decisions",
     "activelyDiscipled": "Actively Discipled",
     "waterBaptised": "Water Baptised",
-    "liwClasses": "LIW Classes",
-    "liwStudents": "LIW Students",
-    "numberLeaders": "No. of Leaders",
-    "localGiving": "Local Giving {localCurrencyCode}",
-    "localGivingUsd": "Local Giving USD"
+    "liwClasses": "GT/LIW classes",
+    "liwStudents": "GT/LIW Attendance",
+    "numberLeaders": "No of Leaders in Training",
+    "tithesOfferings": " Tithes & Offerings",
+    "missionMfpGiving": "Mission MFP Giving"
   },
   "monthlyData": {
     "labelAdult": "Adult",
@@ -371,7 +399,7 @@
   },
   "attachment": {
     "dashboardTitle": "Attachments",
-    "labelFile": "Upload file to this Church [Max 2MB]",
+    "labelFile": "Upload file [Max 2MB]",
     "labelName": "Name"
   },
   "worshipService": {

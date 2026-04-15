@@ -205,7 +205,12 @@ const MainRoutes = {
       name: 'ChurchRegionsEdit',
       path: 'church-regions/:id/edit',
       component: () => import('@/views/church-regions/Edit.vue')
-    }
+    },
+    // {
+    //   name: 'MonthlyDataAdd',
+    //   path: 'monthly-data/add',
+    //   component: () => import('@/views/monthly-data/Add.vue')
+    // }
   ]
 };
 

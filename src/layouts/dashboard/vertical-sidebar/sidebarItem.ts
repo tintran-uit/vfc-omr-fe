@@ -1,58 +1,17 @@
 // icons
 import {
   DashboardOutlined,
-  IdcardOutlined,
-  DatabaseOutlined,
-  LineChartOutlined,
-  MessageOutlined,
-  CalendarOutlined,
-  BuildOutlined,
-  CustomerServiceOutlined,
-  MailOutlined,
-  ShoppingCartOutlined,
   UserOutlined,
-  FileTextOutlined,
-  PhoneOutlined,
-  GoldOutlined,
-  CloudUploadOutlined,
-  FormOutlined,
-  TableOutlined,
-  PieChartOutlined,
-  FileDoneOutlined,
-  LoginOutlined,
-  DollarOutlined,
-  RocketOutlined,
-  BellOutlined,
-  QuestionOutlined,
-  LockOutlined,
-  CrownOutlined,
-  MenuUnfoldOutlined,
-  StopOutlined,
-  BoxPlotOutlined,
-  ChromeOutlined,
-  DeploymentUnitOutlined,
-  BankOutlined,
-  PlusOutlined,
-  OrderedListOutlined,
   GlobalOutlined,
   FlagOutlined,
   ClusterOutlined,
   AppstoreOutlined,
   EnvironmentOutlined,
   CompassOutlined,
-  HomeOutlined
-} from '@ant-design/icons-vue';
-
-import {
-  mdiChurch,
-  mdiChurchOutline,
-  mdiAccountGroup,
-  mdiChartLine,
-  mdiLogout,
-  mdiPlusCircleOutline,
-  mdiSquareEditOutline,
-  mdiChartBar
-} from '@mdi/js';
+  HomeOutlined,
+} from "@ant-design/icons-vue";
+import churchIcon from "@/assets/images/icons/house.png";
+import peopleIcon from "@/assets/images/metrics/people.svg";
 
 export interface menu {
   id?: string;
@@ -76,10 +35,10 @@ export interface menu {
 const sidebarItem: menu[] = [
   // { header: 'Dashboard' },
   {
-    id: 'dashboard',
-    title: 'mainMenu.myDashboard',
+    id: "dashboard",
+    title: "mainMenu.myDashboard",
     icon: DashboardOutlined,
-    to: '/',
+    to: "/",
     // children: [
     //   {
     //     id: 'default',
@@ -100,226 +59,226 @@ const sidebarItem: menu[] = [
   //   to: '/test/report-form'
   // },
   {
-    title: 'mainMenu.users',
+    title: "mainMenu.users",
     icon: UserOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'users-list',
-        title: 'mainMenu.userList',
-        to: '/users',
-        permissions: ['user.read']
+        id: "users-list",
+        title: "mainMenu.userList",
+        to: "/users",
+        permissions: ["user.read"],
       },
       {
-        id: 'users-overseer-list',
-        title: 'mainMenu.overseers',
-        to: '/users/overseers',
-        permissions: ['user.read-overseer'],
+        id: "users-overseer-list",
+        title: "mainMenu.overseers",
+        to: "/users/overseers",
+        permissions: ["user.read-overseer"],
       },
       {
-        id: 'users-add',
-        title: 'mainMenu.userAdd',
-        to: '/users/add',
-        permissions: ['user.create'],
+        id: "users-add",
+        title: "mainMenu.userAdd",
+        to: "/users/add",
+        permissions: ["user.create"],
       },
       {
-        id: 'users-churches-add',
-        title: 'mainMenu.churchAddWithPastor',
-        to: '/churches/add-with-new-pastor',
-        permissions: ['user.create', 'church.create'],
-      }
-    ]
+        id: "users-churches-add",
+        title: "mainMenu.churchAddWithPastor",
+        to: "/churches/add-with-new-pastor",
+        permissions: ["user.create", "church.create"],
+      },
+    ],
   },
   {
-    title: 'mainMenu.churches',
+    title: "mainMenu.churches",
     icon: HomeOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'church-list',
-        title: 'mainMenu.churchList',
-        to: '/churches',
-        permissions: ['church.read']
+        id: "church-list",
+        title: "mainMenu.churchList",
+        to: "/churches",
+        permissions: ["church.read"],
       },
       {
-        id: 'church-add',
-        title: 'mainMenu.churchAdd',
-        to: '/churches/add',
-        permissions: ['church.create'],
+        id: "church-add",
+        title: "mainMenu.churchAdd",
+        to: "/churches/add",
+        permissions: ["church.create"],
       },
       {
-        id: 'church-add-with-pastor',
-        title: 'mainMenu.churchAddWithPastor',
-        to: '/churches/add-with-new-pastor',
-        permissions: ['user.create', 'church.create'],
+        id: "church-add-with-pastor",
+        title: "mainMenu.churchAddWithPastor",
+        to: "/churches/add-with-new-pastor",
+        permissions: ["user.create", "church.create"],
       },
       {
-        id: 'church-disabeded-list',
-        title: 'mainMenu.disabledChurches',
-        to: '/churches/disabled-list',
-        permissions: ['church.enable'],
+        id: "church-disabeded-list",
+        title: "mainMenu.disabledChurches",
+        to: "/churches/disabled-list",
+        permissions: ["church.enable"],
       },
-    ]
+    ],
   },
   {
-    title: 'mainMenu.churchNetworks',
+    title: "mainMenu.churchNetworks",
     icon: ClusterOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'church-networks-list',
-        title: 'mainMenu.churchNetworksList',
-        to: '/church-networks',
-        permissions: ['church-networks.read']
+        id: "church-networks-list",
+        title: "mainMenu.churchNetworksList",
+        to: "/church-networks",
+        permissions: ["church-networks.read"],
       },
       {
-        id: 'church-networks-add',
-        title: 'mainMenu.churchNetworksAdd',
-        to: '/church-networks/add',
-        permissions: ['church-networks.create']
-      }
-    ]
+        id: "church-networks-add",
+        title: "mainMenu.churchNetworksAdd",
+        to: "/church-networks/add",
+        permissions: ["church-networks.create"],
+      },
+    ],
   },
   {
-    title: 'mainMenu.churchTypes',
+    title: "mainMenu.churchTypes",
     icon: AppstoreOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'church-types-list',
-        title: 'mainMenu.churchTypesList',
-        to: '/church-types',
-        permissions: ['church-types.read']
+        id: "church-types-list",
+        title: "mainMenu.churchTypesList",
+        to: "/church-types",
+        permissions: ["church-types.read"],
       },
       {
-        id: 'church-types-add',
-        title: 'mainMenu.churchTypesAdd',
-        to: '/church-types/add',
-        permissions: ['church-types.create']
-      }
-    ]
+        id: "church-types-add",
+        title: "mainMenu.churchTypesAdd",
+        to: "/church-types/add",
+        permissions: ["church-types.create"],
+      },
+    ],
   },
   {
-    title: 'mainMenu.churchRegions',
+    title: "mainMenu.churchRegions",
     icon: EnvironmentOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'church-regions-list',
-        title: 'mainMenu.list',
-        to: '/church-regions',
-        permissions: ['church-regions.read']
+        id: "church-regions-list",
+        title: "mainMenu.list",
+        to: "/church-regions",
+        permissions: ["church-regions.read"],
       },
       {
-        id: 'church-regions-add',
-        title: 'mainMenu.addNew',
-        to: '/church-regions/add',
-        permissions: ['church-regions.create']
-      }
-    ]
+        id: "church-regions-add",
+        title: "mainMenu.addNew",
+        to: "/church-regions/add",
+        permissions: ["church-regions.create"],
+      },
+    ],
   },
   {
-    title: 'mainMenu.geographicalRegions',
+    title: "mainMenu.geographicalRegions",
     icon: CompassOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'geographical-regions-list',
-        title: 'mainMenu.list',
-        to: '/geographical-regions',
-        permissions: ['geographical-regions.read']
+        id: "geographical-regions-list",
+        title: "mainMenu.list",
+        to: "/geographical-regions",
+        permissions: ["geographical-regions.read"],
       },
       {
-        id: 'geographical-regions-add',
-        title: 'mainMenu.addNew',
-        to: '/geographical-regions/add',
-        permissions: ['geographical-regions.create']
-      }
-    ]
+        id: "geographical-regions-add",
+        title: "mainMenu.addNew",
+        to: "/geographical-regions/add",
+        permissions: ["geographical-regions.create"],
+      },
+    ],
   },
   {
-    title: 'mainMenu.languageRegions',
+    title: "mainMenu.languageRegions",
     icon: GlobalOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'language-regions-list',
-        title: 'mainMenu.list',
-        to: '/language-regions',
-        permissions: ['language-regions.read']
+        id: "language-regions-list",
+        title: "mainMenu.list",
+        to: "/language-regions",
+        permissions: ["language-regions.read"],
       },
       {
-        id: 'language-regions-add',
-        title: 'mainMenu.addNew',
-        to: '/language-regions/add',
-        permissions: ['language-regions.create']
-      }
-    ]
+        id: "language-regions-add",
+        title: "mainMenu.addNew",
+        to: "/language-regions/add",
+        permissions: ["language-regions.create"],
+      },
+    ],
   },
   {
-    title: 'mainMenu.countries',
+    title: "mainMenu.countries",
     icon: FlagOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'countries-list',
-        title: 'mainMenu.list',
-        to: '/countries',
-        permissions: ['countries.read']
+        id: "countries-list",
+        title: "mainMenu.list",
+        to: "/countries",
+        permissions: ["countries.read"],
       },
       {
-        id: 'countries-add',
-        title: 'mainMenu.addNew',
-        to: '/countries/add',
-        permissions: ['countries.create']
-      }
-    ]
+        id: "countries-add",
+        title: "mainMenu.addNew",
+        to: "/countries/add",
+        permissions: ["countries.create"],
+      },
+    ],
   },
   {
-    title: 'mainMenu.languages',
+    title: "mainMenu.languages",
     icon: GlobalOutlined,
-    to: '#',
+    to: "#",
     getURL: true,
-    type: 'external',
-    chipVariant: 'tonal',
+    type: "external",
+    chipVariant: "tonal",
     children: [
       {
-        id: 'languages-list',
-        title: 'mainMenu.list',
-        to: '/languages',
-        permissions: ['languages.read']
+        id: "languages-list",
+        title: "mainMenu.list",
+        to: "/languages",
+        permissions: ["languages.read"],
       },
       {
-        id: 'languages-add',
-        title: 'mainMenu.addNew',
-        to: '/languages/add',
-        permissions: ['languages.create']
-      }
-    ]
+        id: "languages-add",
+        title: "mainMenu.addNew",
+        to: "/languages/add",
+        permissions: ["languages.create"],
+      },
+    ],
   },
   // {
   //   title: 'mainMenu.watchList',

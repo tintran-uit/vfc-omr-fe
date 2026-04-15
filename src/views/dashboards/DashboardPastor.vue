@@ -67,7 +67,7 @@ const switchToChurch = (churchId) => {
     <template v-slot:switch>
       <v-menu>
             <template #activator="{ props: menuProps }">
-              <v-tooltip text="Switch to another church" location="top">
+              <v-tooltip :text="$t('church.switchAnotherChurches')" location="top">
                 <template #activator="{ props: tooltipProps }">
                   <v-btn
                     v-bind="{ ...menuProps, ...tooltipProps }"

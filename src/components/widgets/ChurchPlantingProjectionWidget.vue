@@ -57,7 +57,7 @@ watch(
           <td>{{ projection.proposed_leader_name }}</td>
           <td v-for="step in steps" :key="step">
             <v-icon v-if="projection?.steps_completed?.[step-1]" color="success">$checkboxMarkedOutline</v-icon>
-            <v-icon v-else="projection?.steps_completed?.[step-1]" class="text-disabled">$checkboxBlankOutline</v-icon>
+            <v-icon v-else class="text-disabled">$checkboxBlankOutline</v-icon>
           </td>
         </tr>
         

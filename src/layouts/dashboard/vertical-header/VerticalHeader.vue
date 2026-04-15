@@ -2,7 +2,9 @@
 import { ref, watch, computed } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
 // icons
-import { MenuFoldOutlined, WindowsOutlined, TranslationOutlined, SettingOutlined, SearchOutlined } from '@ant-design/icons-vue';
+// import { MenuFoldOutlined, WindowsOutlined, TranslationOutlined, SettingOutlined, SearchOutlined, MenuOutlined } from '@ant-design/icons-vue';
+import { MenuOutlined } from '@ant-design/icons-vue';
+
 
 // dropdown imports
 import LanguageDD from './LanguageDD.vue';
@@ -61,11 +63,11 @@ const avatarUrl = computed(() => {
       size="small"
       @click.stop="customizer.SET_SIDEBAR_DRAWER"
     >
-      <MenuFoldOutlined :style="{ fontSize: '16px' }" />
+      <MenuOutlined :style="{ fontSize: '16px' }" />
     </v-btn>
 
     <!-- search mobile -->
-    <v-menu :close-on-content-click="false" class="hidden-lg-and-up" offset="10, 0">
+    <!-- <v-menu :close-on-content-click="false" class="hidden-lg-and-up" offset="10, 0">
       <template v-slot:activator="{ props }">
         <v-btn
           class="hidden-lg-and-up text-secondary ms-1"
@@ -86,7 +88,7 @@ const avatarUrl = computed(() => {
           </template>
         </v-text-field>
       </v-sheet>
-    </v-menu>
+    </v-menu> -->
 
     <!-- ---------------------------------------------- -->
     <!-- Search part -->
@@ -179,8 +181,8 @@ const avatarUrl = computed(() => {
               <img :src="avatarUrl" :alt="authStore.fullName" />
             </v-avatar>
             <h6 class="text-subtitle-1 mb-0 d-sm-block d-none">{{ authStore.fullName }}</h6>
-            <v-icon class="ms-2 d-sm-block d-none">$menuDown</v-icon>
           </div>
+          <v-icon class="ms-2 flex-shrink-0 d-sm-block">$menuDown</v-icon>
         </v-btn>
       </template>
       <v-sheet rounded="md" width="290">

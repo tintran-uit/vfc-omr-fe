@@ -13,7 +13,6 @@ const props = withDefaults(
 )
 const { t } = useI18n()
 const churchDetail = inject('churchDetail')
-
 </script>
 
 <template>

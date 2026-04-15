@@ -7,6 +7,5 @@ export default {
     { key: 'actions', title: 'churchPlantingProjection.stepProgressIndicator', sortable: false },// 6 Step Progress Indicator
   ],
   searches: [
-    // { name: 'name', label: 'userTable.searchName', type: 'TextInput' },
   ]
 }

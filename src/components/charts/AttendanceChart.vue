@@ -2,7 +2,7 @@
 import * as d3 from 'd3'
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useTheme } from 'vuetify'
-import { getWeekRange } from '@/helpers/dateTimeHelper'
+import { formatDate, getISOWeekRange } from '@/helpers/dateTimeHelper'
 import { useI18n } from 'vue-i18n'
 
 const theme = useTheme()
@@ -38,15 +38,13 @@ function updateBreakpoint() {
   isMobile.value = window.innerWidth < 768
 }
 
-const formatDomain = (d) => d.label
-
-const formatTooltipContent = (legend, d) => {console.log('d', d)
+const formatTooltipContent = (legend, d) => {
   const val = d.value ? d.value : 'No data'
   return `
     <div style="line-height: 1.5">
-      <b>${legend.label}</b><br>
-      <b>${t('chart.week')}</b>: W${d.week}.${d.year} (${d.startDate} - ${d.endDate})<br>
-      <b>${t('chart.attendance')}</b>: ${val}
+      <div class="mb-1"><b>${legend.label}</b></div>
+      ${t('chart.weekEnding')}: <b>${d.xLabel}</b><br>
+      ${t('chart.attendance')}: <b>${val}</b>
     </div>
   `
 }
@@ -94,6 +92,18 @@ function drawChart() {
   const container = chartContainer.value
   if (!container || !data?.length) return
 
+  const normalizedData = data.map(d => {
+    const [startDate, endDate] = getISOWeekRange(d.year, d.week)
+
+    return {
+      ...d,
+      xKey: `${d.year}-W${d.week}`,
+      xLabel: formatDate(endDate, 'DD MMM ’YY'),
+      startDate: startDate,
+      endDate: endDate,
+    }
+  })
+
   d3.select(container).selectAll('*').remove()
 
   const margin = { top: 20, right: 20, bottom: 60, left: 50 }
@@ -116,7 +126,7 @@ function drawChart() {
   /* ===== SCALE ===== */
   const x = d3
     .scalePoint()
-    .domain(data.map(formatDomain))
+    .domain(normalizedData.map(d => d.xKey))
     .range([0, width])
     .padding(0.5)
 
@@ -154,7 +164,14 @@ function drawChart() {
   svg
     .append('g')
     .attr('transform', `translate(0,${height})`)
-    .call(d3.axisBottom(x).tickValues(xTickValues))
+    .call(
+      d3.axisBottom(x)
+      .tickValues(xTickValues)
+      .tickFormat(key => {
+        const found = normalizedData.find(d => d.xKey === key)
+        return found ? found.xLabel : ''
+      })
+    )
     .selectAll('text')
     .attr('transform', 'rotate(-20)')
     .style('text-anchor', 'end')
@@ -192,17 +209,15 @@ function drawChart() {
   legends.forEach((legend) => {
     if (hiddenLines.value.has(legend.key)) return
 
-    const lineData = data.map((d) => {
-      const [start, end] = getWeekRange(d.year, d.week, 'DD MMM')
-      return {
-        key: formatDomain(d),
-        week: d.week,
-        year: d.year,
-        startDate: start,
-        endDate: end,
-        value: d[legend.key],
-      }
-    })
+    const lineData = normalizedData.map(d => ({
+      key: d.xKey,
+      week: d.week,
+      year: d.year,
+      startDate: d.startDate,
+      endDate: d.endDate,
+      xLabel: d.xLabel,
+      value: d[legend.key],
+    }))
 
     svg
       .append('path')
@@ -249,7 +264,7 @@ function drawChart() {
 
         return y(refValue)
       })
-      .attr('r', (d) => (d.value ? 4 : 3))
+      .attr('r', (d) => (d.value ? 2.5 : 2.5))
       .attr('fill', legend.color)
       .style('opacity', (d) => (d.value ? 1 : 0.3))
       .style('cursor', 'pointer')

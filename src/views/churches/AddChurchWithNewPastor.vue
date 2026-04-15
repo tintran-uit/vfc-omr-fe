@@ -37,29 +37,15 @@ onMounted(() => {
 </script>
 
 <template>
-
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('church.addWithNewUserTitle') }}</h1>
-          <!-- <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'ChurchList' })"
-          >
-            <v-icon>$arrowLeft</v-icon> {{$t('backToList')}}
-          </v-btn> -->
-        </v-col>
-      </v-row>
-    </v-sheet>
-
     <DynamicFormMultiple
-                :options="options"
-                :form-schema="multipleSchema"
-                :is-multi-part="true"
-                @submit="handleSubmit"
-              />
+      :options="options"
+      :form-schema="multipleSchema"
+      :is-multi-part="true"
+      :page-title="$t('church.addWithNewUserTitle')"
+      :back-url="{ name: 'ChurchList' }"
+      @submit="handleSubmit"
+    />
+      
 </template>
 
 <style scoped lang="scss">

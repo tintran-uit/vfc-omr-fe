@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import 'dayjs/locale/en'
+import type { WeekInfo } from '@/types/dateTimeType'
 
 /**
  * Chuyển chuỗi ISO sang định dạng YYYY-MM-DD
@@ -60,27 +61,73 @@ function getWeekRange(year, week, format = 'YY.MM.DD') {
 
  // Hàm format linh hoạt
  const formatDate = (d) => {
-   const YYYY = d.getFullYear()
-   const YY = String(YYYY).slice(2)
-   const MM = String(d.getMonth() + 1).padStart(2, '0')
-   const DD = String(d.getDate()).padStart(2, '0')
-   const MMM = monthsShort[d.getMonth()]
-   const MMMM = monthsFull[d.getMonth()]
+  const YYYY = d.getFullYear()
+  const YY = String(YYYY).slice(2)
+  const MM = String(d.getMonth() + 1).padStart(2, '0')
+  const DD = String(d.getDate()).padStart(2, '0')
+  const MMM = monthsShort[d.getMonth()]
+  const MMMM = monthsFull[d.getMonth()]
 
-   return format
-     .replace('YYYY', YYYY)
-     .replace('YY', YY)
-     .replace('MMMM', MMMM)
-     .replace('MMM', MMM)
-     .replace('MM', MM)
-     .replace('DD', DD)
- }
+  return format
+    // year
+    .replace(/YYYY/g, YYYY)
+    .replace(/YY/g, YY)
+    // month (long → short → numeric)
+    .replace(/MMMM/g, MMMM)
+    .replace(/MMM/g, MMM)
+    .replace(/MM/g, MM)
+    // day
+    .replace(/DD/g, DD)
+  }
 
  return [
   formatDate(monday),
   formatDate(sunday),
  ]
 }
+
+export function getISOWeekRange(year: number, week: number) {
+  // Jan 4 is always in ISO week 1
+  const jan4 = new Date(year, 0, 4)
+  const day = jan4.getDay() || 7
+
+  const mondayWeek1 = new Date(jan4)
+  mondayWeek1.setDate(jan4.getDate() - day + 1)
+
+  const monday = new Date(mondayWeek1)
+  monday.setDate(mondayWeek1.getDate() + (week - 1) * 7)
+
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+
+  return [ monday, sunday ]
+}
+
+// export function formatDate(
+//   date: Date,
+//   format = 'YY.MM.DD',
+// ) {
+//   const monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+//                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+//   const monthsFull = ['January', 'February', 'March', 'April', 'May', 'June',
+//                       'July', 'August', 'September', 'October', 'November', 'December']
+
+//   const YYYY = date.getFullYear()
+//   const YY = String(YYYY).slice(2)
+//   const MM = String(date.getMonth() + 1).padStart(2, '0')
+//   const DD = String(date.getDate()).padStart(2, '0')
+//   const MMM = monthsShort[date.getMonth()]
+//   const MMMM = monthsFull[date.getMonth()]
+
+//   return format
+//     .replace(/YYYY/g, String(YYYY))
+//     .replace(/YY/g, YY)
+//     .replace(/MMMM/g, MMMM)
+//     .replace(/MMM/g, MMM)
+//     .replace(/MM/g, MM)
+//     .replace(/DD/g, DD)
+// }
 
 export function formatDateTimeHumanReadable(dateStr) {
   let locale = 'en';
@@ -180,3 +227,88 @@ export function formatDateTimeHumanReadable(dateStr) {
 //     return `${hours > 0 ? `${hours} giờ ` : ''}${mins} phút`
 //   },
 // }
+
+
+function startOfDay(date: Date): Date {
+  const d = new Date(date)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+/**
+ * ISO week number (Thứ 2 → CN)
+ */
+function getISOWeekNumber(date: Date): number {
+  const d = new Date(Date.UTC(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  ))
+
+  const dayNum = d.getUTCDay() || 7
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+  return Math.ceil(
+    (((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7
+  )
+}
+
+/**
+ * Thứ 2 của tuần hiện tại
+ */
+function getStartOfISOWeek(date: Date): Date {
+  const d = startOfDay(date)
+  const day = d.getDay() || 7 // CN = 7
+  d.setDate(d.getDate() - (day - 1))
+  return d
+}
+
+/**
+ * Chủ nhật của tuần hiện tại
+ */
+function getEndOfISOWeek(date: Date): Date {
+  const start = getStartOfISOWeek(date)
+  const end = new Date(start)
+  end.setDate(start.getDate() + 6)
+  return end
+}
+
+export function getWeeksOfMonth(
+  year: number,
+  month: number // 1–12
+): WeekInfo[] {
+  const result: WeekInfo[] = []
+  const today = startOfDay(new Date())
+
+  const startOfMonth = new Date(year, month - 1, 1)
+  const endOfMonth = new Date(year, month, 0)
+
+  // 👉 tìm Monday đầu tiên liên quan
+  let current = getStartOfISOWeek(startOfMonth)
+
+  while (current <= endOfMonth) {
+    const startDate = getStartOfISOWeek(current)
+    const endDate = getEndOfISOWeek(current)
+
+    // ❗ RULE QUAN TRỌNG: chỉ lấy week nếu Chủ Nhật nằm trong tháng
+    if (
+      endDate.getFullYear() === year &&
+      endDate.getMonth() === month - 1
+    ) {
+      // ❗ optional: bỏ week tương lai
+      if (endDate <= today) {
+        result.push({
+          weekNumber: getISOWeekNumber(endDate),
+          startDate,
+          endDate,
+        })
+      }
+    }
+
+    // 👉 nhảy sang tuần tiếp theo
+    current.setDate(current.getDate() + 7)
+  }
+
+  return result
+}

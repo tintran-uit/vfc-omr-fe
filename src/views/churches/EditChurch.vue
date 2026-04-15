@@ -33,8 +33,6 @@ const handleSubmit = async (formData) => {
 onMounted(() => {
   fetchEditData(id);
 });
-
-const churchId = ref();
 </script>
 
 <template>

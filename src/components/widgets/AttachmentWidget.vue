@@ -19,10 +19,6 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  
-}>()
-
 const authStore = useAuthStore()
 const churchDetail = inject('churchDetail')
 
@@ -36,8 +32,7 @@ const itemsPerPage = ref(50)
 const actions = computed(() => {
   const actions = [];
   if (
-    churchDetail.value?.pastor_id === authStore.user?.id
-    || authStore.isRoleAdmin
+    authStore.isRoleAdmin
     || authStore.isRoleSuperAdmin
   ) {
     actions.push('delete')
@@ -83,7 +78,12 @@ watch(
 )
 
 watch([page, itemsPerPage, sortBy, search], () => {
-  fetchData()
+  fetchData({
+    page: page.value,
+    itemsPerPage: itemsPerPage.value,
+    sortBy: sortBy.value,
+    search: search.value
+  })
 })
 </script>
 
@@ -94,6 +94,7 @@ watch([page, itemsPerPage, sortBy, search], () => {
       <DynamicFormDefault
         :form-schema="formSchema"
         @submit="handleSubmit"
+        :form-only="true"
       />
     </div>
     </template>

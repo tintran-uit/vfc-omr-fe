@@ -7,6 +7,8 @@ import peopleIcon from '@/assets/images/metrics/people.svg'
 import givingIcon from '@/assets/images/metrics/giving.svg'
 import plantIcon from '@/assets/images/metrics/plant.svg'
 import growthIcon from '@/assets/images/metrics/growth.svg'
+import worldwideIcon from '@/assets/images/metrics/worldwide.svg'
+import educationIcon from '@/assets/images/metrics/education.svg'
 import groupPeopleIcon from '@/assets/images/metrics/group-people.svg'
 import ChurchDetailWidget from '@/components/widgets/ChurchDetailWidget.vue';
 import PastorLeaderWidget from '@/components/widgets/PastorLeaderWidget.vue';
@@ -46,7 +48,8 @@ const actions = computed(() => {
         params: {
           id: churchDetail.value?.id
         }
-      }
+      },
+      color: 'warning'
     },
     {
       title: 'dashboardMenu.editChurch',
@@ -96,6 +99,7 @@ const actions = computed(() => {
 const metrics = shallowRef([
   {
     name: 'dashboard.people',
+    text: 'dashboard.peopleText',
     earnKey: 'avg_attendance',
     percentKey: null,
     color: 'primary',
@@ -103,6 +107,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.growth',
+    text: 'dashboard.growthText',
     earnKey: null,
     percentKey: 'growth',
     color: 'primary',
@@ -110,11 +115,18 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.givingTithes',
+    text: 'dashboard.givingTithesText',
     // earnKey: ,
     earnFn: (item) => {
       if (!currencyCodeLocal) return 0; 
 
-      return formatCompactCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
+      if (currencyCodeLocal === 'USD') {
+        return formatCompactCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
+      }
+
+      const localFormat = formatCompactCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
+      const usdFormat = formatCompactCurrency(item['avg_monthly_giving_in_usd'], 'USD')
+      return `${localFormat} (${usdFormat})`
     },
     percentKey: null,
     color: 'primary',
@@ -122,6 +134,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.churchPlants',
+    text: 'dashboard.churchPlantsText',
     earnKey: 'total_church_plants',
     percentKey: null,
     color: 'primary',
@@ -129,17 +142,25 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.givingMFP',
+    text: 'dashboard.givingMFPText',
     earnFn: (item) => {
-      if (!currencyCodeLocal) return 0; 
+      if (!currencyCodeLocal) return 0
 
-      return formatCompactCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
+      if (currencyCodeLocal === 'USD') {
+        return formatCompactCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
+      }
+
+      const localFormat = formatCompactCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
+      const usdFormat = formatCompactCurrency(item['avg_monthly_mfp_giving_in_usd'], 'USD')
+      return `${localFormat} (${usdFormat})`
     },
     percentKey: null,
     color: 'primary',
-    icon: givingIcon,
+    icon: worldwideIcon,
   },
   {
     name: 'dashboard.peopleInCG',
+    text: 'dashboard.peopleInCGText',
     earnKey: null,
     percentKey: 'percent_cell_group_attendance',
     color: 'primary',
@@ -147,13 +168,15 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.peopleInGTAndLIW',
+    text: 'dashboard.peopleInGTAndLIWText',
     earnKey: null,
     percentKey: 'percent_liw_students',
     color: 'primary',
-    icon: groupPeopleIcon,
+    icon: educationIcon,
   },
   {
     name: 'dashboard.newDecisions',
+    text: 'dashboard.newDecisionsText',
     earnKey: 'total_new_decisions',
     percentKey: null,
     color: 'primary',
@@ -196,7 +219,7 @@ const metrics = shallowRef([
             <div class="text-h4">
               {{ churchDetail?.name }}
 
-              <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
+              <!-- <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
                 <v-tooltip>
                   <template #activator="{ props: tooltipProps }">
                     <v-icon v-bind="{ ...menuProps, ...tooltipProps }" class="text-success" size="20">$checkDecagramOutline</v-icon>
@@ -207,13 +230,23 @@ const metrics = shallowRef([
                       date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
                     })"></span>
                 </v-tooltip>
-              </template>
+              </template> -->
             
               <slot name="switch" />
             </div>
             
             {{ churchDetail?.city_name }}, {{ churchDetail?.country_name }}<br />
-            {{ $t('church.lastMonthlyRecord') }}: {{ formatDate(dashboardData?.dashboard_info?.last_report_date, 'MMMM YYYY') || 'N/A' }}
+            <span class="text-primary">{{ $t('church.lastMonthlyRecord') }}: {{ formatDate(dashboardData?.dashboard_info?.last_report_date, 'MMMM YYYY') || 'N/A' }}</span>
+            <template v-if="dashboardData?.dashboard_info?.verified_by_user_id && false">
+              <v-icon class="text-success" size="20">$checkDecagramOutline</v-icon>
+              <span class="text-success" v-html="$t('church.visitedBy', {
+                name: dashboardData?.dashboard_info?.verified_by_user_name,
+                date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
+              })"></span>
+              </template>
+            <span v-else class="text-warning">
+              <v-icon >$exclamation</v-icon> {{ $t('church.needsVisit') }}
+            </span>
           </v-col>
           <v-col cols="12" md="4" class="text-center text-md-right text-medium-emphasis text-body-1">
             <v-img
@@ -238,8 +271,8 @@ const metrics = shallowRef([
       v-for="item in actions"
       :key="item.title"
       :to="item.to"
-      variant="outlined"
-      color="primary"
+      variant="elevated"
+      :color="item?.color || 'primary'"
       class="d-inline-flex align-center w-100 w-sm-auto"
     >
       <v-icon :icon="item.icon" size="20" class="mr-2" />
@@ -261,20 +294,23 @@ const metrics = shallowRef([
                   </v-col>
 
                   <v-col cols="9" class="pb-0">
-                    <h4 class="text-h4 d-flex align-center mb-0" v-if="metric.earnKey">
+                    <h4 class="text-h4 d-flex align-center mb-0 indicator-value" v-if="metric.earnKey">
                       {{ dashboardData?.dashboard_indicators?.[metric.earnKey] || 0 }}
                     </h4>
-                    <h4 class="text-h4 d-flex align-center mb-0" v-else-if="metric.percentKey">
+                    <h4 class="text-h4 d-flex align-center mb-0 indicator-value" v-else-if="metric.percentKey">
                       {{ dashboardData?.dashboard_indicators?.[metric.percentKey] || 0 }}%
                     </h4>
-                    <h4 class="text-h4 d-flex align-center mb-0" v-else-if="metric.earnFn && typeof(metric.earnFn) === 'function'">
+                    <h4 class="text-h4 d-flex align-center mb-0 indicator-value" v-else-if="metric.earnFn && typeof(metric.earnFn) === 'function'">
                       <!-- <v-badge location="top right" color="error" content="9999"> -->
                         {{ metric.earnFn(dashboardData?.dashboard_indicators || 0) }}
                       <!-- </v-badge> -->
                     </h4>
-                    <h6 class="text-h6 text-lightText mb-1">
+                    <div class="text-body-1 font-weight-medium text-high-emphasis">
                       {{ $t(metric.name) }}
-                    </h6>
+                    </div>
+                    <div class="text-body-2 text-medium-emphasis">
+                      {{ $t(metric.text) }}
+                    </div>
                   </v-col>
                 </v-row>
               </div>
@@ -332,7 +368,7 @@ const metrics = shallowRef([
     <!-- Related user -->
     <v-row>
       <v-col cols="12">
-          <RelatedUserWidget :church-id="churchDetail?.id" />
+        <RelatedUserWidget :church-id="churchDetail?.id" />
       </v-col>
     </v-row>
     <!-- #Related user -->
@@ -340,7 +376,7 @@ const metrics = shallowRef([
     <!-- Daugter church -->
     <v-row>
       <v-col cols="12">
-          <DaugterChurchWidget :church-id="churchDetail?.id" />
+        <DaugterChurchWidget :church-id="churchDetail?.id" />
       </v-col>
     </v-row>
     <!-- #Daugter church -->

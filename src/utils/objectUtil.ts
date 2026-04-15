@@ -26,35 +26,48 @@
 // }
 
 export const getNestedValue = (obj, path, defaultValue = null) => {
-  const keys = path.split('.');
+  const keys = path.split(".");
   let target = obj;
 
   keys.forEach((key, index) => {
-    if (target[key] === undefined) {
-      // Khởi tạo field nếu chưa tồn tại
-      target[key] = (typeof defaultValue === 'function' && index === keys.length - 1) 
-        ? defaultValue() 
-        : defaultValue;
+    const isLast = index === keys.length - 1;
+
+    if (
+      target[key] === undefined ||
+      target[key] === null ||
+      (typeof target[key] !== "object" && !isLast)
+    ) {
+      target[key] = isLast
+        ? typeof defaultValue === "function"
+          ? defaultValue()
+          : defaultValue
+        : {};
     }
+
     target = target[key];
   });
 
   return target;
-}
+};
 
 export const setNestedValue = (obj, path, value, defaultValue = null) => {
-  const keys = path.split('.');
+  const keys = path.split(".");
   const lastKey = keys.pop();
+
   const target = keys.reduce((o, k) => {
-    if (!o[k]) o[k] = {}; // khởi tạo các nested object
+    if (o[k] === undefined || o[k] === null) {
+      o[k] = {};
+    }
     return o[k];
   }, obj);
 
-  // Gán giá trị, nếu value undefined thì dùng defaultValue
-  target[lastKey] = value !== undefined 
-    ? value 
-    : (typeof defaultValue === 'function' ? defaultValue() : defaultValue);
-}
+  target[lastKey] =
+    value !== undefined
+      ? value
+      : typeof defaultValue === "function"
+        ? defaultValue()
+        : defaultValue;
+};
 
 // const castValue = (value: any, type?: string) => {
 //   if (value == null) return null; // null hoặc undefined → empty string
@@ -68,19 +81,19 @@ export const setNestedValue = (obj, path, value, defaultValue = null) => {
 // }
 
 // export const getNestedValue = (obj: any, path: string, defaultValue: any = '', type?: string) => {
-  
+
 //   const keys = path.split('.');
 //   let target = obj;
 
 //   keys.forEach((key, index) => {
 //     if (target[key] == null) {
-//       target[key] = (typeof defaultValue === 'function' && index === keys.length - 1) 
-//         ? defaultValue() 
+//       target[key] = (typeof defaultValue === 'function' && index === keys.length - 1)
+//         ? defaultValue()
 //         : defaultValue;
 //     }
 //     target = target[key];
 //   });
-  
+
 //   return castValue(target, type);
 // }
 
@@ -109,43 +122,43 @@ export const setNestedValue = (obj, path, value, defaultValue = null) => {
 // }
 
 export const cloneDeep = (value) => {
-  return JSON.parse(JSON.stringify(value))
-}
+  return JSON.parse(JSON.stringify(value));
+};
 
 export const initFormData = (schema, initValue = {}) => {
-  const result = {}
+  const result = {};
 
-  schema.forEach(field => {
-    const defaultVal = field.default ?? ''
-    setNestedValue(result, field.name, defaultVal)
-  })
+  schema.forEach((field) => {
+    const defaultVal = field.default ?? "";
+    setNestedValue(result, field.name, defaultVal);
+  });
 
   // Gộp initValue (nếu có) → override
-  const copiedInit = cloneDeep(initValue)
+  const copiedInit = cloneDeep(initValue);
   Object.entries(flatObject(copiedInit)).forEach(([path, value]) => {
-    setNestedValue(result, path, value)
-  })
+    setNestedValue(result, path, value);
+  });
 
-  return result
-}
+  return result;
+};
 
 /**
  * @param {Object} obj
  * @param {String} prefix
  * @returns {Object}
  */
-export const flatObject = (obj, prefix = '') => {
-  const res = {}
+export const flatObject = (obj, prefix = "") => {
+  const res = {};
   for (const key in obj) {
-    const path = prefix ? `${prefix}.${key}` : key
-    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-      Object.assign(res, flatObject(obj[key], path))
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+      Object.assign(res, flatObject(obj[key], path));
     } else {
-      res[path] = obj[key]
+      res[path] = obj[key];
     }
   }
-  return res
-}
+  return res;
+};
 
 /**
  * Flatten a tree or a forest into an array using a callback.
@@ -167,9 +180,9 @@ export const flatten = (input, callback) => {
 
   if (Array.isArray(input)) {
     for (const node of input) walk(node, 0);
-  } else if (input && typeof input === 'object') {
+  } else if (input && typeof input === "object") {
     walk(input, 0);
   }
 
   return result;
-}
+};

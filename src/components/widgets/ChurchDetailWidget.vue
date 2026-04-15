@@ -4,6 +4,7 @@ import CardHeader from '../shared/CardHeader.vue';
 import { churchService } from '@/services/churchService';
 import { geographicalRegionService } from '@/services/geographicalRegionService';
 import { formatDate, getAge } from '@/helpers/dateTimeHelper';
+import { appFormatDate } from '@/helpers/appHelper';
 
 const props = withDefaults(
   defineProps<{
@@ -70,8 +71,19 @@ watch(
           <td>{{ detail?.country_name }}</td>
         </tr>
         <tr>
+          <th :class="headingClass">{{ $t('church.sensitiveNation') }}</th>
+          <td>
+            <v-icon v-if="detail?.sensitive_nation" color="success">$checkboxMarkedOutline</v-icon>
+            <v-icon v-else class="text-disabled">$checkboxBlankOutline</v-icon>
+          </td>
+        </tr>
+        <tr>
           <th :class="headingClass">{{ $t('church.labelDateOfBirth') }}</th>
-          <td>{{ formatDate(detail?.date_of_birth) }} [{{ getAge(detail?.date_of_birth) }} Yrs old]</td>
+          <td>
+            <template v-if="detail?.date_of_birth">
+              {{ $t('yearOld', {date: appFormatDate(detail?.date_of_birth), year: getAge(detail?.date_of_birth)}) }}
+            </template>
+          </td>
         </tr>
         <tr>
           <th :class="headingClass">{{ $t('church.labelEmailAddress') }}</th>

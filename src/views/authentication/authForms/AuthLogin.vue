@@ -81,24 +81,13 @@ function validate(values: any, { setErrors }: any) {
         </template>
       </v-text-field>
     </div>
-
-    <!-- <div class="d-flex align-center mt-4 mb-7 mb-sm-0">
-      <v-checkbox
-        v-model="checkbox"
-        :rules="[(v: any) => !!v || 'You must agree to continue!']"
-        label="Keep me sign in"
-        required
-        color="primary"
-        class="ms-n2"
-        hide-details
-      ></v-checkbox>
-    </div> -->
+    
     <v-btn color="primary" :loading="isSubmitting" block class="mt-5" variant="flat" size="large" :disabled="valid" type="submit">
-      {{ $t('login.signIn') }}</v-btn
-    >
+      {{ $t('login.signIn') }}
+    </v-btn>
     
     <div class="text-right mt-5">
-      <a href="#" class="forgot-link text-primary">
+      <a href="#" class="forgot-link">
         {{ $t('login.forgotPassword') }}
       </a>
     </div>

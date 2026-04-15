@@ -3,20 +3,23 @@ import {useTemplateRef, onMounted, computed, ref, watch, toRef, reactive } from 
 import {getNestedValue, setNestedValue, initFormData} from '@/utils/objectUtil.ts'
 import {createFormRules} from '@/helpers/formRulesFactory'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from "vue-router";
 import {mapModel} from '@/utils/mapperUtil'
-import CardHeader from '@/components/shared/CardHeader.vue';
-import UiChildCard from '../shared/UiChildCard.vue'
+import CardHeader from '@/components/shared/CardHeader.vue'
+import UiChildCard from '@/components/shared/UiChildCard.vue'
 
 const { t } = useI18n()
-
+const router = useRouter();
 const formRef = useTemplateRef('formRef');
 const {resolveRules} = createFormRules(t);
 const props = withDefaults(
   defineProps<{
+    pageTitle?: string
     formSchema: Record<string, any>
     initData?: Record<string, any> | null
     options?: Record<string, any>
     mapper?: (source: any, destination: any) => any
+    backUrl?: string | Record<string, any>
   }>(),
   {
     // initData: null,
@@ -161,6 +164,32 @@ watch(
 </script>
 
 <template>
+  <v-row class="my-2">
+    <!-- title -->
+    <v-col cols="12" md="6" class="d-flex align-center">
+      <div class="text-h4 font-weight-medium">
+        {{ pageTitle }}
+      </div>
+    </v-col>
+
+    <!-- back button -->
+    <v-col cols="12" md="6">
+      <div class="d-flex justify-md-end">
+        <slot name="header-right">
+          <template v-if="backUrl">
+            <v-btn 
+            color="primary" 
+            variant="outlined" 
+            @click="router.push(backUrl)"
+          >
+            <v-icon>$arrowLeft</v-icon> {{$t('backToList')}}
+          </v-btn>
+          </template>
+        </slot>
+      </div>
+    </v-col>
+  </v-row>
+
     <v-form ref="formRef" @submit.prevent="handleSubmit">
       <template v-for="(schemaDef, schemaKey) in formSchema" :key="schemaKey">
         <UiChildCard :title="$t(schemaDef.name)" class="mt-5">

@@ -57,84 +57,85 @@ const onUpdateOptions = (options) => {
 </script>
 
 <template>
-  <v-row class="page-breadcrumb mb-0 mt-n2">
-    <v-col cols="12" md="12">
-      <v-card elevation="0" variant="text">
-        <v-row no-gutters class="align-center">
-          <!-- Title -->
-          <v-col cols="12" md="6" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('church.listTitle') }}</h3>
-          </v-col>
-          <!-- #Title -->
+  <DynamicTableDefault
+    v-model:page="page"
+    v-model:items-per-page="itemsPerPage"
+    v-model:searches="searches"
+    v-model:sort-by="sortBy"
+    :total-items="totalItems"
+    :headers="tableSchema.headers"
+    :searches-config="tableSchema.searches"
+    :items="items"
+    :enabled-actions="actions"
+    :page-title="$t('church.listTitle')"
+    @action:edit="onEdit"
+    @action:clone="onClone"
+    @action:disable="onDisable"
+    @update:options="onUpdateOptions"
+  >
+    <template v-slot:header-right>
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            color="primary"
+            variant="outlined"
+          >
+            <v-icon>$plus</v-icon> {{ $t('addNew') }}
+            <v-icon end>$chevronDown</v-icon>
+          </v-btn>
+        </template>
 
-          <!-- Actions -->
-          <v-col cols="12" md="6" class="d-flex justify-end">
-            <v-btn 
-              color="primary" 
-              variant="outlined" 
-              @click="router.push({ name: 'ChurchAdd' })"
-            >
-              <v-icon>$plus</v-icon> {{ $t('addNew') }}
-            </v-btn>
-          </v-col>
-          <!-- #Actions -->
-        </v-row>
-      </v-card>
-    </v-col>
-  </v-row>
+        <v-list density="compact">
+          <v-list-item :to="{name: 'ChurchAdd'}">
+            <v-list-item-title>{{ $t('church.addNewChurchBtn') }}</v-list-item-title>
+          </v-list-item>
 
-  <v-row>
-    <v-col cols="12">
-      <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
-        <DynamicTableDefault
-                v-model:page="page"
-                v-model:items-per-page="itemsPerPage"
-                v-model:searches="searches"
-                v-model:sort-by="sortBy"
-                :total-items="totalItems"
-                :headers="tableSchema.headers"
-                :searches-config="tableSchema.searches"
-                :items="items"
-                :enabled-actions="actions"
-                @action:edit="onEdit"
-                @action:clone="onClone"
-                @action:disable="onDisable"
-                @update:options="onUpdateOptions"
-              >
-                          <template v-slot:item.attributes="{ item }">
-                  <div class="text-end text-no-wrap">
-                    <v-chip
-                      v-if="item?.is_msc"
-                      color="warning"
-                      :text="$t('church.msc')"
-                      class="mr-2"
-                      size="small"
-                      label
-                    ></v-chip>
-                    <v-chip
-                      v-if="item?.is_mother_church"
-                      color="success"
-                      :text="$t('church.mother')"
-                      class="mr-2"
-                      size="small"
-                      label
-                    ></v-chip>
-                  </div>
-                </template>
+          <v-list-item :to="{name: 'ChurchAddWithNewPastor'}">
+            <v-list-item-title>{{ $t('church.addNewChurchWithPastorBtn') }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </template>
+    <template v-slot:item.attributes="{ item }">
+      <div class="text-end text-no-wrap">
+        <v-chip
+          v-if="item?.is_mother_church"
+          color="success"
+          :text="$t('church.mother')"
+          class="mr-2"
+          size="small"
+          label
+        ></v-chip>
+        <v-chip
+          v-if="item?.is_msc"
+          color="warning"
+          :text="$t('church.msc')"
+          class="mr-2"
+          size="small"
+          label
+        ></v-chip>
+        <v-chip
+          v-if="item?.on_map"
+          color="primary"
+          :text="$t('church.onMap')"
+          class="mr-2"
+          size="small"
+          label
+        ></v-chip>
+      </div>
+    </template>
 
-                <template v-slot:item.name="{ item }">
-                  <v-btn
-                    color="primary"
-                    variant="text"
-                    :to="{ name: 'ChurchDetail', params: { id: item.id } }"
-                  >
-                  {{ item.name }}
-                  </v-btn>
-                </template>
-              </DynamicTableDefault>
-      </v-card>
-    </v-col>
-  </v-row>
+    <template v-slot:item.name="{ item }">
+      <v-btn
+        color="primary"
+        variant="text"
+        :to="{ name: 'ChurchDetail', params: { id: item.id } }"
+      >
+      {{ item.name }}
+      </v-btn>
+    </template>
+  </DynamicTableDefault>
 </template>
 
 <style scoped lang="scss">

@@ -54,7 +54,7 @@ const handleChangeLanguage = (lang) => {
   <!-- ---------------------------------------------- -->
   <v-menu location="bottom" offset="6, 80">
       <template v-slot:activator="{ props }">
-        <v-btn class="ms-sm-2 ms-1 px-4" rounded="sm" v-bind="props">
+        <v-btn variant="flat" class="ms-sm-2 ms-1 px-4" rounded="sm" v-bind="props">
           <v-img :src="flags[languageStore.currentLanguage]" width="24" height="24" contain class="mr-2" />
           {{ currentItem.title }}
           <v-icon end>$menuDown</v-icon>

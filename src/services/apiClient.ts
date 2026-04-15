@@ -145,7 +145,7 @@ instance.interceptors.response.use(
 
       if (error.response && error.response.status === 401) {
           router.push({
-              name: "login"
+              name: "Login"
           });
 
           return Promise.reject(error.response.data);

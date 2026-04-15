@@ -7,6 +7,8 @@ import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import tableSchema from '@/table-schemas/userTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 import { useAuthStore } from '@/stores/authStore';
+import Avatar from '@/components/ui/Avatar.vue'
+import defaultAvatar from '@/assets/images/users/avatar-default.svg';
 
 const router = useRouter()
 const dialogStore = useDialogStore()
@@ -66,62 +68,58 @@ const onUpdateOptions = (options) => {
 </script>
 
 <template>
-  <v-row class="page-breadcrumb mb-0 mt-n2">
-    <v-col cols="12" md="12">
-      <v-card elevation="0" variant="text">
-        <v-row no-gutters class="align-center">
-          <!-- Title -->
-          <v-col cols="12" md="6" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('user.listTitle') }}</h3>
-          </v-col>
-          <!-- #Title -->
+  <DynamicTableDefault
+    v-model:page="page"
+    v-model:items-per-page="itemsPerPage"
+    v-model:searches="searches"
+    v-model:sort-by="sortBy"
+    :pageTitle="$t('user.listTitle')"
+    :total-items="totalItems"
+    :headers="tableSchema.headers"
+    :searches-config="tableSchema.searches"
+    :items="items"
+    :enabled-actions="actions"
+    @action:delete="onDelete"
+    @action:edit="onEdit"
+    @update:options="onUpdateOptions"
+  >
+  <template v-slot:header-right>
+            <v-menu>
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  color="primary"
+                  variant="outlined"
+                >
+                  <v-icon>$plus</v-icon> {{ $t('addNew') }}
+                  <v-icon end>$chevronDown</v-icon>
+                </v-btn>
+              </template>
 
-          <!-- Actions -->
-          <v-col cols="12" md="6" class="d-flex justify-end">
-            <v-btn 
-              color="primary" 
-              variant="outlined" 
-              @click="router.push({ name: 'UserAdd' })"
+              <v-list density="compact">
+                <v-list-item :to="{name: 'UserAdd'}">
+                  <v-list-item-title>{{ $t('user.addNewUserBtn') }}</v-list-item-title>
+                </v-list-item>
+ 
+                <v-list-item :to="{name: 'ChurchAddWithNewPastor'}">
+                  <v-list-item-title>{{ $t('church.addNewChurchWithPastorBtn') }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
+  <template v-slot:item.name="{ item }">
+            <a
+              href="#"
+              variant="text"
             >
-              <v-icon>$plus</v-icon> {{ $t('addNew') }}
-            </v-btn>
-          </v-col>
-          <!-- #Actions -->
-        </v-row>
-      </v-card>
-    </v-col>
-  </v-row>
+              {{ item.name }}
+  </a>
+          </template>
 
-  <v-row>
-    <v-col cols="12">
-      <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
-        <DynamicTableDefault
-          v-model:page="page"
-          v-model:items-per-page="itemsPerPage"
-          v-model:searches="searches"
-          v-model:sort-by="sortBy"
-          :total-items="totalItems"
-          :headers="tableSchema.headers"
-          :searches-config="tableSchema.searches"
-          :items="items"
-          :enabled-actions="actions"
-          @action:delete="onDelete"
-          @action:edit="onEdit"
-          @update:options="onUpdateOptions"
-        >
-        <template v-slot:item.name="{ item }">
-                  <a
-                    href="#"
-                    variant="text"
-                    class="text-primary"
-                  >
-                    {{ item.name }}
-        </a>
-                </template>
-        </DynamicTableDefault>
-      </v-card>
-    </v-col>
-  </v-row>
+    <template v-slot:item.avatar="{ item }">
+      <Avatar class="py-2" :src="item?.photo_url || defaultAvatar" variant="avatar" size="50" />
+    </template>
+  </DynamicTableDefault>
 </template>
 
 <style scoped lang="scss">

@@ -13,33 +13,65 @@ export function createFormRules(t) {
     }
   };
 
+  const getLabel = (field: any) => {
+    const key = field.labelKey || field.label;
+  
+    if (typeof key !== 'string' || !key) {
+      return 'Field'; // fallback
+    }
+  
+    try {
+      return t(key);
+    } catch (e) {
+      console.warn('i18n error with key:', key);
+      return key; // fallback nếu key không tồn tại
+    }
+  };
+
   function resolveRules(field, formData = {}) {
-    const label = t(field.labelKey || field.label);
+    const label = getLabel(field);
     if (!field.rules) return [];
-
-    return field.rules.map(rule => {
-      // --- 1. Nếu là string, parse cú pháp name:value
-      if (typeof rule === 'string') {
-        const [ruleName, param] = rule.split(':');
-        if (ruleName === 'repeatPassword') {
-          return baseRules.repeatPassword(label, param, formData);
+  
+    return field.rules
+      .map(rule => {
+        let fn = null;
+  
+        // --- STRING RULE
+        if (typeof rule === 'string') {
+          const [ruleName, param] = rule.split(':');
+  
+          if (ruleName === 'repeatPassword') {
+            fn = baseRules.repeatPassword?.(label, param, formData);
+          } else {
+            fn = baseRules[ruleName]?.(label, param, formData);
+          }
         }
-        if (param !== undefined) {
-          return baseRules[ruleName]?.(label, param, formData);
+  
+        // --- OBJECT RULE
+        else if (typeof rule === 'object' && rule !== null) {
+          if (rule.name === 'repeatPassword') {
+            fn = baseRules.repeatPassword?.(
+              label,
+              rule.fieldToMatch,
+              formData
+            );
+          } else {
+            fn = baseRules[rule.name]?.(
+              label,
+              rule.value,
+              formData
+            );
+          }
         }
-        return baseRules[ruleName]?.(label, undefined, formData);
-      }
-
-      // --- 2. Nếu là object rule
-      if (typeof rule === 'object') {
-        if (rule.name === 'repeatPassword') {
-          return baseRules.repeatPassword(label, rule.fieldToMatch, formData);
+  
+        // 👉 fallback nếu rule không hợp lệ
+        if (typeof fn !== 'function') {
+          return null;
         }
-        return baseRules[rule.name]?.(label, rule.value, formData);
-      }
-
-      return () => true;
-    });
+  
+        return fn;
+      })
+      .filter(Boolean); // 🔥 cực kỳ quan trọng
   }
 
   return {
