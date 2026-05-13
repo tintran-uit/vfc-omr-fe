@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, watch, computed } from 'vue';
 import { useTheme } from 'vuetify';
-import { RouterView } from 'vue-router';
+import { RouterView, useRoute } from 'vue-router';
 import LoaderWrapper from './LoaderWrapper.vue';
 import VerticalSidebarVue from './vertical-sidebar/VerticalSidebar.vue';
 import VerticalHeaderVue from './vertical-header/VerticalHeader.vue';
@@ -13,6 +13,27 @@ import { useCustomizerStore } from '../../stores/customizer';
 import { DirAttrSet, HexToRgb } from '@/utils/utils';
 const customizer = useCustomizerStore();
 const theme = useTheme();
+const route = useRoute();
+
+/** In (Cmd+P): bỏ nav/header; gắn class + data-attr khi in trang church planting. */
+const CHURCH_PLANTING_ROUTE_NAMES = new Set<string>([
+  'PlantingProjectionRedirect',
+  'PlantingProjectionAddRedirect',
+  'PlantingProjectionPrintSimple',
+  'PlantingProjectionPrintPreview',
+  'PlantingProjectionList',
+  'PlantingProjectionAdd',
+  'PlantingProjectionEdit',
+  'PlantingProjectionEditSteps',
+]);
+
+const isChurchPlantingProjectionRoute = computed(() => {
+  const n = route.name;
+  if (typeof n === 'string' && CHURCH_PLANTING_ROUTE_NAMES.has(n)) {
+    return true;
+  }
+  return typeof route.path === 'string' && route.path.includes('planting-projections');
+});
 
 // Set the initial direction attribute when the component is mounted
 onMounted(() => {
@@ -48,12 +69,14 @@ const getStyleObject = () => {
     <v-app
       :style="getStyleObject()"
       :theme="customizer.actTheme"
+      :data-app-print-stripped="isChurchPlantingProjectionRoute ? 'true' : undefined"
       :class="[
         customizer.actTheme,
         customizer.fontTheme,
         customizer.mini_sidebar ? 'mini-sidebar' : '',
         customizer.setHorizontalLayout ? 'horizontalLayout' : 'verticalLayout',
-        customizer.inputBg ? 'inputWithbg' : ''
+        customizer.inputBg ? 'inputWithbg' : '',
+        isChurchPlantingProjectionRoute ? 'app-church-planting-route' : '',
       ]"
     >
       <Customizer />
@@ -71,7 +94,7 @@ const getStyleObject = () => {
             <RouterView />
           </div>
         </v-container>
-        <v-container fluid class="pt-0">
+        <v-container fluid class="pt-0 layout-dashboard-footer">
           <div :class="customizer.boxed ? 'maxWidth' : ''">
             <FooterPanel />
           </div>

@@ -46,6 +46,8 @@ import {
   mdiHandClap,
   mdiExclamation,
   mdiCheckCircleOutline,
+  mdiCalendarMonth,
+  mdiFlowerOutline,
 } from "@mdi/js";
 import { mdi } from "vuetify/iconsets/mdi-svg";
 
@@ -104,4 +106,7 @@ export const icons = {
   handClap: mdiHandClap,
   exclamation: mdiExclamation,
   checkCircleOutline: mdiCheckCircleOutline,
+
+  calendar: mdiCalendarMonth,
+  sprout: mdiFlowerOutline,
 };

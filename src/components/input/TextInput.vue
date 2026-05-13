@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import {watch} from 'vue';
+const modelValue = defineModel<string | number | null>();
 
-const modelValue = defineModel();
-
-const {name, label, type, placeholder, rules } = defineProps({
-  name: {type: String, default: ''},
-  label: {type: String, default: ''},
-  type: { type: String, default: 'text' },
-  placeholder: { type: String, default: '' },
-  rules: { type: [String, Object, Function], default: '' },
-})
+const props = defineProps({
+  name: { type: String, default: "" },
+  label: { type: String, default: "" },
+  type: { type: String, default: "text" },
+  placeholder: { type: String, default: "" },
+  rules: { type: [String, Object, Function, Array], default: "" },
+  readonly: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
+});
 </script>
 
 <template>
@@ -17,11 +17,13 @@ const {name, label, type, placeholder, rules } = defineProps({
     v-model="modelValue"
     :rules="rules"
     :placeholder="placeholder"
+    :readonly="props.readonly"
+    :disabled="props.disabled"
+    :class="{ 'input-field--readonly': props.readonly }"
     single-line
     variant="outlined"
+    v-bind="$attrs"
   ></v-text-field>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

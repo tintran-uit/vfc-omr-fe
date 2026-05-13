@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import {ref, watch, computed, onMounted} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useDialogStore } from '@/stores/dialogStore';
 import { useI18n } from 'vue-i18n';
 
 const dialogStore = useDialogStore()
 const { t } = useI18n();
-interface SearchField {
-  type: 'TextInput' | 'SelectInput';
-  label: string;
-  options?: { label: string; value: string }[];
-}
-
 const page = defineModel('page', { default: 1 })
 const itemsPerPage = defineModel('itemsPerPage', { default: 25 })
 const sortBy = defineModel('sortBy', { default: () => [] })
@@ -22,12 +16,12 @@ let disableCb = null
 
 const props = withDefaults(
   defineProps<{
-    items: any[],
-    headers: any[],
+    items: unknown[],
+    headers: Array<{ key: string; title: string; sortable?: boolean; removable?: boolean }>,
     // itemsPerPage?: number,
     // totalPages?: number,
     totalItems?: number,
-    searchesConfig?: any[],
+    searchesConfig?: Array<{ name: string; label: string }>,
     // total?: number,
     // loading: boolean,
     // options: any,
@@ -36,43 +30,65 @@ const props = withDefaults(
     enabledActions?:string[],
     actionTitles?: Record<string, string>,
     emptyPlaceholder?: string,
-    pageTitle?: string
+    pageTitle?: string,
+    hideTitle?: boolean,
+    hideHeader?: boolean
   }>(),
   {
     totalItems: 0,
     itemsPerPage: 25,
-    enabledActions: [],
-    actionTitles: {
+    searchesConfig: () => [],
+    enabledActions: () => [],
+    actionTitles: () => ({
       edit: "dataTable.buttonEditTitle",
       delete: "dataTable.buttonDeleteTitle",
       clone: "dataTable.buttonCloneTitle",
       assignOverseer: "dataTable.buttonAssignOverseerTitle",
       disable: "dataTable.buttonDisableTitle",
       enable: "dataTable.buttonEnableTitle",
-    },
-    emptyPlaceholder: '-'
+    }),
+    emptyPlaceholder: '-',
+    hideTitle: false,
+    hideHeader: false
   }
 )
 
 const totalPages = computed(() => Math.ceil(props.totalItems / itemsPerPage.value))
 
 const emit = defineEmits<{
-  (e: 'update:options', value: any): void
-  (e: 'action', payload: { action: string, item: any }): void
-  (e: 'filter-change', value: any): void
-  (e: 'action:edit', value: any): void
-  (e: 'action:delete', value: any): void
-  (e: 'action:assignOverseer', value: any): void
-  (e: 'action:clone', value: any): void
-  (e: 'action:disable', value: any): void
-  (e: 'action:enable', value: any): void
+  (e: 'update:options', value: unknown): void
+  (e: 'action', payload: { action: string, item: unknown }): void
+  (e: 'filter-change', value: unknown): void
+  (e: 'action:edit', value: unknown): void
+  (e: 'action:delete', value: unknown): void
+  (e: 'action:assignOverseer', value: unknown): void
+  (e: 'action:clone', value: unknown): void
+  (e: 'action:disable', value: unknown): void
+  (e: 'action:enable', value: unknown): void
 }>()
+
+const getColWidthPx = (key: string) => {
+  if (key === 'id') return '72px'
+  if (key === 'actions') return '120px'
+  return undefined
+}
+
+const getCellStyle = (key: string) => {
+  const w = getColWidthPx(key)
+  if (!w) return undefined
+  return {
+    width: w,
+    minWidth: w,
+    maxWidth: w,
+    overflow: 'hidden',
+  }
+}
 
 // Search
 let searchTimeout = null;
 const searchModel = ref({})
 const searchPayload = computed(() => {
-  return props.searchesConfig
+  return (props.searchesConfig ?? [])
     .filter(s => searchModel.value[s.name] !== '' && searchModel.value[s.name] !== null && searchModel.value[s.name] !== undefined)
     .map(s => ({
       key: s.name,
@@ -89,7 +105,7 @@ const handleSearch = () => {
   }, 500)
 }
 
-const handleUpdateOptions = (val: any) => {
+const handleUpdateOptions = () => {
   emit('update:options', buildOptions())
 }
 
@@ -103,24 +119,24 @@ const buildOptions = () => {
 }
 
 // Handle actions
-const handleActionEdit = (item) => {
+const handleActionEdit = (item: unknown) => {
   emit('action:edit', item)
 }
 
-const handleActionDelete = async (item) => {
+const handleActionDelete = async (item: unknown) => {
   if (!await dialogStore.confirm(t('areYouSureWantToDelete'))) return
   emit('action:delete', item)
 }
 
-const handleActionClone = (item) => {
+const handleActionClone = (item: unknown) => {
   emit('action:clone', item)
 }
 
-const handleAssignOverseerAction = (item) => {
+const handleAssignOverseerAction = (item: unknown) => {
   emit('action:assignOverseer', item)
 }
 
-const handleDisableAction = async (item) => {
+const handleDisableAction = async (item: unknown) => {
   disableDialog.value = true;
   disableItem.value = item;
 
@@ -144,7 +160,7 @@ const closeDisableDialog = () => {
   disableReason.value = '';
 }
 
-const handleEnableAction = async (item) => {
+const handleEnableAction = async (item: unknown) => {
   if (!await dialogStore.confirm(t('areYouSureWantToEnable'))) return
   emit('action:enable', item)
 }
@@ -155,16 +171,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-row class="mb-2 mt-2">
+  <v-row v-if="!hideHeader" class="mb-2 mt-2">
     <!-- title -->
-    <v-col cols="12" md="4" class="d-flex align-center">
+    <v-col
+      v-if="!hideTitle"
+      cols="12"
+      md="4"
+      class="d-flex align-center"
+    >
       <div class="text-h4 font-weight-medium">
         {{ pageTitle }}
       </div>
     </v-col>
 
     <!-- actions -->
-    <v-col cols="12" md="8">
+    <v-col cols="12" :md="hideTitle ? 12 : 8">
       <div class="d-flex flex-column flex-md-row align-stretch align-md-center justify-md-end ga-2">
 
         <!-- search wrapper -->
@@ -201,13 +222,30 @@ onMounted(() => {
     :headers="headers"
     :items="items"
     @update:options="handleUpdateOptions"
-    class="bordered-table rounded-0"
+    class="bordered-table rounded-0 dt-table"
     :no-data-text="$t('noData')"
   >
+    <template #colgroup>
+      <colgroup>
+        <col
+          v-for="h in headers"
+          :key="h.key"
+          :style="{
+            width: getColWidthPx(String(h.key)),
+            maxWidth: getColWidthPx(String(h.key)),
+          }"
+        />
+      </colgroup>
+    </template>
+
     <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
       <tr class="bg-containerBg">
         <template v-for="column in columns" :key="column.key">
-          <th class="text-start text-uppercase text-caption font-weight-bold">
+          <th
+            class="text-start text-uppercase text-caption font-weight-bold dt-col"
+            :class="`dt-col--${column.key}`"
+            :style="getCellStyle(String(column.key))"
+          >
             <div class="d-flex align-center">
               <template v-if="column?.sortable === true">
                 <span
@@ -237,13 +275,6 @@ onMounted(() => {
                 {{ $t(column.title) }}
               </span>
               </template>
-
-              <!--              <v-select-->
-              <!--                clearable-->
-              <!--                chips-->
-              <!--                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"-->
-              <!--                multiple-->
-              <!--              ></v-select>-->
             </div>
           </th>
         </template>
@@ -252,8 +283,12 @@ onMounted(() => {
 
     <template v-slot:item="{ item }">
       <tr>
-        <template v-for="(header, index) in headers" :key="item.id">
-          <td>
+        <template v-for="header in headers" :key="header.key">
+          <td
+            class="dt-col"
+            :class="`dt-col--${header.key}`"
+            :style="getCellStyle(String(header.key))"
+          >
             <div v-if="header.key === 'actions'" class="d-flex ga-2 text-no-wrap">
               <v-tooltip :text="$t('dataTable.buttonEditTitle')">
                 <template #activator="{ props }">
@@ -281,7 +316,7 @@ onMounted(() => {
               
               <v-tooltip :text="$t('dataTable.buttonDisableTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" icon="$cancel"  variant="plain" size="default" @click="handleDisableAction(item)" v-if="enabledActions.includes('disable')" />
+                  <v-btn v-bind="props" icon="$blockHelper" variant="plain" size="small" @click="handleDisableAction(item)" v-if="enabledActions.includes('disable')" />
                 </template>
               </v-tooltip>
 
@@ -321,41 +356,7 @@ onMounted(() => {
         </v-col>
       </v-row>
     </template>
-
-
-<!--      <template v-slot:tfoot>-->
-<!--        <tr>-->
-<!--          <td>-->
-<!--            <v-text-field v-model="search2.id" class="ma-2" density="compact" placeholder="Search name..." hide-details></v-text-field>-->
-<!--          </td>-->
-<!--          <td>-->
-<!--            <v-text-field v-model="search2.email" class="ma-2" density="compact" placeholder="Search Email..." hide-details></v-text-field>-->
-<!--          </td>-->
-<!--        </tr>-->
-<!--      </template>-->
   </v-data-table-server>
-
-
-  <!--  <div class="d-flex justify-space-between align-center py-2 px-4">-->
-  <!--    &lt;!&ndash; Select items per page &ndash;&gt;-->
-  <!--    <v-select-->
-  <!--      v-model="localItemsPerPage"-->
-  <!--      :items="perPageOptions"-->
-  <!--      label="Items per page"-->
-  <!--      dense-->
-  <!--      hide-details-->
-  <!--      style="max-width: 120px"-->
-  <!--      @update:modelValue="onChangeItemsPerPage"-->
-  <!--    ></v-select>-->
-
-  <!--    &lt;!&ndash; Pagination control &ndash;&gt;-->
-  <!--    <v-pagination-->
-  <!--      v-model="localPage"-->
-  <!--      :length="totalPages"-->
-  <!--      total-visible="5"-->
-  <!--      @update:modelValue="onChangePage"-->
-  <!--    ></v-pagination>-->
-  <!--  </div>-->
 
   <v-dialog v-model="disableDialog" max-width="480">
     <v-card rounded="lg">
@@ -390,5 +391,40 @@ onMounted(() => {
 </template>
 
 <style scoped>
-  
+.dt-col {
+  min-width: 0; /* prevent columns from expanding too much */
+}
+
+/* keep ID small + readable */
+.dt-col--id {
+  width: 72px;
+  max-width: 72px;
+  white-space: nowrap;
+}
+
+/* keep actions compact even when few columns */
+.dt-col--actions {
+  width: 120px;
+  max-width: 120px;
+  white-space: nowrap;
+}
+
+/* Force width constraints to be respected */
+.dt-table :deep(.v-table__wrapper > table) {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Nice UX when name gets long */
+.dt-col--name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Actions: never let content push the column wider */
+.dt-col--actions > div {
+  max-width: 100%;
+  overflow: hidden;
+}
 </style>

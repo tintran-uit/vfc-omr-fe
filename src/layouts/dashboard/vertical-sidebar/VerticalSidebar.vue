@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { shallowRef } from 'vue';
+import { computed } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
 import sidebarItems from './sidebarItem';
 
@@ -58,9 +58,11 @@ function filterNavigationByPermissions(items, canFn) {
 }
 
 const authStore = useAuthStore();
-const filteredSidebarItems = filterNavigationByPermissions(sidebarItems, authStore.can);
 const customizer = useCustomizerStore();
-const sidebarMenu = shallowRef(filteredSidebarItems);
+/* Re-compute when permissions change (e.g. after login or role-based sync from authStore). */
+const sidebarMenu = computed(() =>
+  filterNavigationByPermissions(sidebarItems, (p) => authStore.can(p))
+);
 </script>
 
 <template>

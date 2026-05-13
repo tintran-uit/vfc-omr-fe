@@ -8,6 +8,6 @@ export default {
     { key: 'actions', title: '', sortable: false },
   ],
   searches: [
-    
+    { name: 'name', label: 'searchByName', type: 'TextInput' },
   ]
 }

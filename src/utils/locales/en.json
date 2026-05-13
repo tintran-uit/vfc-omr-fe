@@ -42,6 +42,12 @@
   "yearOld": "{date} [{year} Yrs old]",
   "localGivingCurrency": "Local Giving {currency}",
   "mfpGivingCurrency": "MFP Giving {currency}",
+  "id": "ID",
+  "name": "Name",
+  "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
+  "currentYear": "Current Year",
+  "lastYear": "Last Year",
+  "yearBeforeLast": "Year Before Last",
   "column": {
     "name": "Name",
     "email": "Email",
@@ -77,6 +83,65 @@
     "11": "Nov",
     "12": "Dec"
   },
+  "visitsAdd": {
+    "title": "Enter Visits",
+    "fields": {
+      "nation": "Nation",
+      "city": "City",
+      "church": "Church"
+    },
+    "actions": {
+      "continue": "Continue",
+      "back": "Back",
+      "save": "Save"
+    },
+    "step1": {
+      "visitor": "Visitor",
+      "visitorTooltip": "If you are entering your own Visit, choose your own name. Other wise, choose the correct person you are entering Visits for.",
+      "numberOfChurchesVisited": "Number of Churches Visited",
+      "numberOfEventsOrganised": "Number of Events You Organised"
+    },
+    "step2": {
+      "title": "Step 2 - Visits & Events",
+      "context": {
+        "visitor": "Visitor"
+      },
+      "noVisitsInfo": "Number of Churches Visited is 0. Go back to Step 1 to increase it.",
+      "visits": {
+        "cardTitlePrefix": "My Visit to Church",
+        "weeklyRowLabel": "Enter the number of days you spent visiting this Church",
+        "weeklyRowTooltip": "Number of days you spent visiting this Church"
+      },
+      "events": {
+        "cardTitlePrefix": "My Visit to My Organised Event",
+        "fields": {
+          "eventType": "Event Type",
+          "eventName": "Name the Event",
+          "attendance": "Approx. Attendance at Event",
+          "meetingWith": "Meeting with"
+        },
+        "tooltips": {
+          "eventType": "Choose the option that ‘best’ describes the Event from the dropdown.",
+          "eventName": "Describe the Event. Like ‘Pastors / Leaders Meeting in Glasgow’ or ‘Victory in Africa Conference – Kampala 2017’"
+        },
+        "weeklyRowLabel": "Days Attended",
+        "weeklyRowTooltip": "Number of days you spent visiting this Event"
+      }
+    },
+    "validation": {
+      "visitRequiredFields": "Please complete Nation, City, and Church for each visit.",
+      "visitDaysInvalid": "Visit days must be an integer number >= 0.",
+      "eventRequiredFields": "Please complete Nation, Event Type, and Event Name for each event.",
+      "meetingWithRequired": "Please select Meeting with for 1-1 event types.",
+      "attendanceInvalid": "Attendance must be an integer number >= 0.",
+      "daysRange0to7": "Days must be an integer between 0 and 7.",
+      "eventDaysInvalid": "Event days must be an integer number >= 0.",
+      "atLeastOneWeek": "Please enter number of days for at least one week."
+    },
+    "notifications": {
+      "saved": "Visits have been saved."
+    }
+  },
   "itemsPerPage": "Items Per page",
   "pageText": "Showing {from}-{to} of {total}",
   "backToList": "Back to List",
@@ -94,7 +159,10 @@
     "worshipServices": "Worship Services",
     "newPastorAndNewChurch": "Add New Church & Pastor",
     "newPastor": "Add New Pastor",
-    "newChurch": "Add New Church"
+    "newChurch": "Add New Church",
+    "enterVisits": "Enter Visits",
+    "editProfile": "Edit Profile",
+    "plantingProjections": "Planting Projections"
   },
   "mainMenu": {
     "myDashboard": "My Dashboard",
@@ -106,6 +174,13 @@
     "churchAdd": "Add New Church",
     "churchAddWithPastor": "Add New Church & New Pastor",
     "disabledChurches": "Disabled Churches",
+    "plantingProjections": "Planting Projections",
+    "churchPlantingProjections": "Church Planting Projections",
+    "churchPlantingAddProjections": "Add Projections",
+    "churchPlantingViewProjections": "View Projections",
+    "churchPlantingPrintProjections": "Print Projections",
+    "churchPlantingPrintSimpleSub": "Simple spreadsheet",
+    "churchPlantingPrintPreviewProjections": "Print preview: steps & tasks",
     "overseers": "Overseers",
     "churchNetworks": "Church Networks",
     "churchNetworksList": "List",
@@ -291,7 +366,11 @@
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
     "needsVisit": "Needs a visit.",
-    "visitedBy": "Visited {date} by {name}"
+    "visitedBy": "Visited {date} by {name}",
+    "dataEntryStatus": "Data Entry Status",
+    "upToDateGoodWork": "Up to date, good work!",
+    "late": "Late",
+    "myChurches": "My Churches"
   },
   "message": {
     "errorTitle": "An error occurred"
@@ -358,7 +437,8 @@
     "weekEnding": "Week Ending",
     "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
     "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
-    "bibleReference": "Acts 1:8b"
+    "bibleReference": "Acts 1:8b",
+    "churchPlanted": "Church Planted"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}",
@@ -379,23 +459,91 @@
   },
   "monthlyData": {
     "labelAdult": "Adult",
-    "xxx": "xxx",
-    "xxx": "xxx",
-    "xxx": "xxx",
-    "xxx": "xxx",
-    "xxx": "xxx",
-    "xxx": "xxx",
-    "xxx": "xxx",
-    "xxx": "xxx",
-    "xxx": "xxx"
+    "labelAdults": "Adults"
   },
   "churchPlantingProjection": {
     "dashboardTitle": "Church Planting Projections",
+    "listTitle": "Planting Projections - {churchName}",
+    "addTitle": "Add Church Planting Projection",
+    "editTitle": "Edit Church Planting Projection #{id} - Core Information",
+    "editProjectionCoreTitle": "Edit Church Planting Projection – Core information",
+    "editStepsFor": "Edit Church Planting Projection Steps for",
+    "editStepsNumberRow": "6 Steps",
+    "labelTownCity": "Town / City",
+    "editLoadError": "Could not load this projection, or it does not belong to this church.",
+    "editSaveError": "Save failed. Please check the form and try again.",
+    "stepsSaveError": "Could not save step plan. Check required fields and try again.",
+    "retryLoad": "Retry",
     "proposedLaunchDate": "Proposed Launch Date",
     "targetTown": "Church Plant Target Town",
     "estPop": "Est. Pop.",
     "proposedLeader": "Proposed Leader",
-    "stepProgressIndicator": "6 Step Progress Indicator"
+    "proposedChurchName": "Proposed Church Name",
+    "step": "Step",
+    "labelTown": "Town / City",
+    "labelNation": "Nation",
+    "labelProposedChurchName": "Proposed Church Name",
+    "labelProposedLeaderName": "Proposed Leader",
+    "labelPopulation": "Town / City Population",
+    "labelStartDatePreparation": "Start Date Preparation",
+    "labelStartDatePreparationOriginal": "Start Date Preparation (Original)",
+    "labelStartDatePioneering": "Start Date Pioneering",
+    "labelStartDatePioneeringOriginal": "Start Date Pioneering (Original)",
+    "labelStartDateForActualPioneering": "Start Date for Actual Pioneering",
+    "pioneeringDateOptionSixMonthsAfterPreparation": "6 months after Start Date for Preparation",
+    "pioneeringDateOptionSpecificDate": "Specific Date",
+    "infoTownCity": "The village, town or city location that is selected for a Church Planting venture.",
+    "infoNation": "The Nation that the selected village, town, city location is in.",
+    "infoTownCityPopulation": "The approximate number of people in that location.",
+    "infoDistanceToTown": "The approximate distance from the Mother Church to that selected Church Planting location.",
+    "infoProposedChurchName": "Your best guess at the possible church name. Usually the Mother Church’s name followed by a ' - ' then the village / town etc.",
+    "infoProposedLeader": "The person you have in mind to lead the Church Planting venture, even if they have not been asked yet.",
+    "infoStartDatePreparation": "The date you plan on starting the planning for the Church Plant. Usually a minimum of 6 months before starting the pioneering.",
+    "infoStartDateActualPioneering": "The date you plan to start pioneering the church by sending in the Church Planters.",
+    "labelDistanceToTown": "Distance to Town",
+    "labelDistanceToTownUnit": "Distance Unit",
+    "addNewBtn": "Add Church Planting Projection",
+    "sectionProjection": "Projection",
+    "sectionSteps": "Steps",
+    "projectedChurchPlantHeading": "Projected Church Plant:",
+    "editProjectionBtn": "Edit Projection",
+    "editStepsBtn": "Edit Steps",
+    "labelProjectedTo": "Projected to",
+    "labelTownCityPopulation": "Town / City population",
+    "labelStartPreparations": "Start date for preparations",
+    "labelStartPioneering": "Start date for pioneering",
+    "summaryStepCompleted": "Step completed?",
+    "summaryDateCompleted": "Date completed",
+    "matrixDateProposed": "Date proposed",
+    "matrixDateProposedOriginalLine": "Original: {date}",
+    "stepProgressSummaryLabel": "Steps",
+    "toggleStepsChartShow": "Show 6 Steps Chart for this projection",
+    "toggleStepsChartHide": "Hide 6 Steps Chart for this projection",
+    "saving": "Saving…",
+    "stepsLoadError": "Could not load step details. Try again or use Edit steps.",
+    "markCompleted": "Mark as completed",
+    "stepsTitle": "Projection step plan",
+    "editStepsPageTitle": "Edit projection — Steps",
+    "saveSteps": "Save step plan",
+    "checklistTitles": "Checklist row titles",
+    "rowTitleLabel": "Row {index} title",
+    "globalTimeline": "Overall timeline",
+    "labelGlobalDateProposed": "Overall proposed date",
+    "labelGlobalDateCompleted": "Overall completed date",
+    "stepTitle": "Step {step}",
+    "labelStepDateProposed": "Proposed date",
+    "labelStepDateProposedOriginal": "Original proposed date",
+    "labelStepDateCompleted": "Completed date",
+    "rowPlaceholder": "Notes or action details",
+    "completed": "Completed",
+    "infoSaved": "Projection details saved.",
+    "stepsSaved": "Step plan saved.",
+    "editStubHint": "Projection editor (#{id}) is limited here. Return to the list to update projection and steps in context.",
+    "printNoChurch": "No church is linked to your account.",
+    "printLoadError": "Could not load projections for printing.",
+    "printTitleSimple": "Church Planting — simple spreadsheet",
+    "printTitlePreview": "Church Planting — print preview (steps & tasks)",
+    "printButton": "Print"
   },
   "attachment": {
     "dashboardTitle": "Attachments",
@@ -458,5 +606,14 @@
     "labelName": "Name",
     "labelLogo": "Logo",
     "labelParent": "Parent"
+  },
+  "support": {
+    "title": "OMR Support",
+    "intro": "Hi {name},\n\nWelcome to OMR, your monthly reporting tool designed to help you manage your church and church planting.\n\nHelp yourself and those you are leading by submitting your monthly reports regularly.\n\nIf you have any recommendations, please feel free to contact me.\nIf you are experiencing any difficulties, I will do my best to assist you.\n\nJust complete the form below.\n\nBlessings,\nShane Comiskey",
+    "labelName": "Name",
+    "labelSubject": "Subject",
+    "labelMessage": "Message",
+    "submit": "Send",
+    "submitSuccess": "Your support request was sent. Thank you."
   }
 }

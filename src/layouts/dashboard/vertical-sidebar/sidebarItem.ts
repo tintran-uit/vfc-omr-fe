@@ -9,6 +9,7 @@ import {
   EnvironmentOutlined,
   CompassOutlined,
   HomeOutlined,
+  CalendarOutlined
 } from "@ant-design/icons-vue";
 import churchIcon from "@/assets/images/icons/house.png";
 import peopleIcon from "@/assets/images/metrics/people.svg";
@@ -123,6 +124,41 @@ const sidebarItem: menu[] = [
         title: "mainMenu.disabledChurches",
         to: "/churches/disabled-list",
         permissions: ["church.enable"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.churchPlantingProjections",
+    icon: CalendarOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "church-planting-add",
+        title: "mainMenu.churchPlantingAddProjections",
+        to: "/planting-projections/add",
+        permissions: ["church-planting.create"],
+      },
+      {
+        id: "church-planting-view",
+        title: "mainMenu.churchPlantingViewProjections",
+        to: "/planting-projections",
+        permissions: ["church-planting.read"],
+      },
+      {
+        id: "church-planting-print",
+        title: "mainMenu.churchPlantingPrintProjections",
+        subCaption: "mainMenu.churchPlantingPrintSimpleSub",
+        to: "/planting-projections/print",
+        permissions: ["church-planting.print"],
+      },
+      {
+        id: "church-planting-print-preview",
+        title: "mainMenu.churchPlantingPrintPreviewProjections",
+        to: "/planting-projections/print/preview",
+        permissions: ["church-planting.print-preview"],
       },
     ],
   },

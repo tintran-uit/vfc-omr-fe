@@ -1,32 +1,65 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import NumberInput from "@/components/input/NumberInput.vue";
 
-const modelValue = defineModel<any[]>();
+const { t } = useI18n();
+
+/** Required; allows 0 (number or string "0") but not empty/null/whitespace */
+const adultRequiredRules = [
+  (v: unknown) =>
+    (v !== null && v !== undefined && String(v).trim() !== "") ||
+    t("validation.required", { field: t("monthlyData.labelAdults") }),
+];
+
+type WorshipServiceApi = {
+  id: number;
+  name: string;
+  time?: string;
+};
+
+type WorshipAttendanceModel = {
+  adult_attendance: number | string | null;
+  youth_attendance: number | string | null;
+  child_attendance: number | string | null;
+  number_of_service_for_children: number | string | null;
+};
+
+type WorshipServiceRowModel = {
+  id: number;
+  attendance: WorshipAttendanceModel;
+};
+
+const modelValue = defineModel<WorshipServiceRowModel[]>({ default: () => [] });
 
 const props = defineProps<{
-  services: any[];
+  services: WorshipServiceApi[];
   label?: string;
 }>();
 
 /**
  * Local state
  */
-const modelServices = ref<any[]>([]);
+const modelServices = ref<WorshipServiceRowModel[]>([]);
 
 /**
  * Map service để lấy name nhanh
  */
 const servicesMap = computed(() => {
-  if (!props.services?.length) return new Map();
+  if (!props.services?.length) return new Map<number, WorshipServiceApi>();
   return new Map(props.services.map((service) => [service.id, service]));
 });
 
 /**
  * Build data (dùng chung cho watch + mounted)
  */
-const buildModelServices = (services: any[], model: any[]) => {
-  const modelMap = model?.length ? new Map(model.map((i) => [i.id, i])) : new Map();
+const buildModelServices = (
+  services: WorshipServiceApi[],
+  model: WorshipServiceRowModel[] | undefined | null,
+): WorshipServiceRowModel[] => {
+  const modelMap = model?.length
+    ? new Map<number, WorshipServiceRowModel>(model.map((i) => [i.id, i]))
+    : new Map<number, WorshipServiceRowModel>();
 
   return services.map((service) => {
     const existing = modelMap.get(service.id);
@@ -67,7 +100,7 @@ watch(
   ([services, model]) => {
     if (!services?.length) return;
 
-    modelServices.value = buildModelServices(services, model);
+    modelServices.value = buildModelServices(services, model ?? []);
   },
   { immediate: true },
 );
@@ -107,56 +140,81 @@ const serviceTotals = computed(() => {
     v-for="(item, index) in modelServices"
     :key="item.id"
   >
-    <h3 class="text-h6 font-weight-bold">
+    <h3
+      class="text-subtitle-1 font-weight-bold mb-1"
+      :class="{ 'mt-3': index > 0 }"
+    >
       {{ servicesMap.get(item.id)?.name }} @ {{ servicesMap.get(item.id)?.time }}
     </h3>
 
-    <v-row>
+    <v-row
+      dense
+      class="ma-0"
+    >
       <v-col
         cols="12"
         md="6"
+        class="py-1"
       >
-        <v-label class="mb-1">Adults</v-label>
+        <v-label class="mb-1 d-flex align-center flex-wrap">
+          {{ t("monthlyData.labelAdults") }}
+          <span class="text-error">*</span>
+        </v-label>
         <NumberInput
           v-model="modelServices[index].attendance.adult_attendance"
-          required
+          :rules="adultRequiredRules"
+          hide-details="auto"
         />
       </v-col>
 
       <v-col
         cols="12"
         md="6"
+        class="py-1"
       >
         <v-label class="mb-1">Youth [13-18]</v-label>
-        <NumberInput v-model="modelServices[index].attendance.youth_attendance" />
+        <NumberInput
+          v-model="modelServices[index].attendance.youth_attendance"
+          hide-details
+        />
       </v-col>
 
       <v-col
         cols="12"
         md="6"
+        class="py-1"
       >
         <v-label class="mb-1">Children [0-12]</v-label>
-        <NumberInput v-model="modelServices[index].attendance.child_attendance" />
+        <NumberInput
+          v-model="modelServices[index].attendance.child_attendance"
+          hide-details
+        />
       </v-col>
 
       <v-col
         cols="12"
         md="6"
+        class="py-1"
       >
         <v-label class="mb-1">Total</v-label>
         <NumberInput
           :model-value="serviceTotals[index]"
           readonly
           disabled
+          hide-details
         />
       </v-col>
 
       <v-col
         cols="12"
         md="6"
+        class="py-1"
       >
         <v-label class="mb-1"> No of Classes / Services for Children </v-label>
-        <NumberInput v-model="modelServices[index].attendance.number_of_service_for_children" />
+        <NumberInput
+          v-model="modelServices[index].attendance.number_of_service_for_children"
+          hide-details
+        />
       </v-col>
     </v-row>
   </template>

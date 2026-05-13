@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router'
 import { createFormSchema } from '@/form-schemas/addGeographicalRegionFormSchema'
 import { geographicalRegionService } from '@/services/geographicalRegionService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
-import { useRouter, useRoute } from 'vue-router'
+import FormPageShell from "@/components/shared/FormPageShell.vue";
+
+defineOptions({ name: "GeographicalRegionsAdd" });
 
 const router = useRouter()
-const route = useRoute()
-const options = ref({})
 const formSchema = createFormSchema();
 
 const handleSubmit = async (formData) => {
@@ -22,35 +22,17 @@ const handleSubmit = async (formData) => {
 </script>
 
 <template>
-
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('geographicalRegions.addTitle') }}</h1>
-          <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'GeographicalRegionsList' })"
-          >
-            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row justify="center">
-        <v-col cols="12" md="10" lg="12">
-          <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
-            <slot name="form">
-              <DynamicFormDefault
-                :form-schema="formSchema"
-                @submit="handleSubmit"
-              />
-            </slot>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-sheet>
+  <FormPageShell
+    title-key="geographicalRegions.addTitle"
+    :back-url="{ name: 'GeographicalRegionsList' }"
+  >
+    <DynamicFormDefault
+      :form-schema="formSchema"
+      form-only
+      hide-form-header
+      @submit="handleSubmit"
+    />
+  </FormPageShell>
 </template>
 
 <style scoped lang="scss">

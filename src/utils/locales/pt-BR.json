@@ -23,6 +23,8 @@
   "year": "Ano",
   "month": "Mês",
   "day": "Dia",
+  "id": "ID",
+  "name": "Nome",
   "save": "Salvar",
   "areYouSureWantToDelete": "Tem certeza de que deseja excluir este item?",
   "areYouSureWantToDisable": "Tem certeza de que deseja desativar este item?",
@@ -32,6 +34,10 @@
   "no": "Não",
   "last12Months": "Últimos 12 meses",
   "last24Months": "Últimos 24 meses",
+  "currentYear": "Ano atual",
+  "lastYear": "Ano passado",
+  "yearBeforeLast": "Ano retrasado",
+  "yearOld": "{date} [{year} anos]",
   "reasonIsRequired": "O motivo é obrigatório",
   "searchByName": "Pesquisar por nome",
   "cropImage": "Recortar imagem",
@@ -74,6 +80,65 @@
     "11": "Nov",
     "12": "Dez"
   },
+  "visitsAdd": {
+    "title": "Registrar Visitas",
+    "fields": {
+      "nation": "Nação",
+      "city": "Cidade",
+      "church": "Igreja"
+    },
+    "actions": {
+      "continue": "Continuar",
+      "back": "Voltar",
+      "save": "Salvar"
+    },
+    "step1": {
+      "visitor": "Visitante",
+      "visitorTooltip": "Se você estiver registrando sua própria visita, escolha seu nome. Caso contrário, escolha a pessoa correta para a qual você está registrando as visitas.",
+      "numberOfChurchesVisited": "Número de igrejas visitadas",
+      "numberOfEventsOrganised": "Número de eventos organizados"
+    },
+    "step2": {
+      "title": "Etapa 2 - Visitas e eventos",
+      "context": {
+        "visitor": "Visitante"
+      },
+      "noVisitsInfo": "O número de igrejas visitadas é 0. Volte para a Etapa 1 para aumentar.",
+      "visits": {
+        "cardTitlePrefix": "Minha visita à igreja",
+        "weeklyRowLabel": "Informe o número de dias que você passou visitando esta igreja",
+        "weeklyRowTooltip": "Número de dias que você passou visitando esta igreja"
+      },
+      "events": {
+        "cardTitlePrefix": "Minha visita ao meu evento organizado",
+        "fields": {
+          "eventType": "Tipo de evento",
+          "eventName": "Nome do evento",
+          "attendance": "Participação aproximada no evento",
+          "meetingWith": "Reunião com"
+        },
+        "tooltips": {
+          "eventType": "Escolha a opção que melhor descreve o evento no menu suspenso.",
+          "eventName": "Descreva o evento. Ex.: «Reunião de Pastores/Líderes em Glasgow» ou «Conferência Victory in Africa – Kampala 2017»"
+        },
+        "weeklyRowLabel": "Dias de participação",
+        "weeklyRowTooltip": "Número de dias que você passou participando deste evento"
+      }
+    },
+    "validation": {
+      "visitRequiredFields": "Preencha Nação, Cidade e Igreja para cada visita.",
+      "visitDaysInvalid": "Os dias de visita devem ser um número inteiro >= 0.",
+      "eventRequiredFields": "Preencha Nação, Tipo de evento e Nome do evento para cada evento.",
+      "meetingWithRequired": "Selecione « Reunião com » para tipos de evento 1-1.",
+      "attendanceInvalid": "A participação deve ser um número inteiro >= 0.",
+      "daysRange0to7": "Os dias devem ser um número inteiro entre 0 e 7.",
+      "eventDaysInvalid": "Os dias do evento devem ser um número inteiro >= 0.",
+      "atLeastOneWeek": "Informe o número de dias para pelo menos uma semana."
+    },
+    "notifications": {
+      "saved": "As visitas foram salvas."
+    }
+  },
   "itemsPerPage": "Itens por página",
   "pageText": "Exibindo {from}-{to} de {total}",
   "backToList": "Voltar à lista",
@@ -91,7 +156,10 @@
     "worshipServices": "Cultos",
     "newPastorAndNewChurch": "Adicionar Nova Igreja e Novo Pastor",
     "newPastor": "Novo Pastor",
-    "newChurch": "Nova Igreja"
+    "newChurch": "Nova Igreja",
+    "plantingProjections": "Projeções de Plantação",
+    "enterVisits": "Enter Visits",
+    "editProfile": "Edit Profile"
   },
   "mainMenu": {
     "myDashboard": "Meu Painel",
@@ -103,6 +171,13 @@
     "churchAdd": "Adicionar Nova Igreja",
     "churchAddWithPastor": "Adicionar Igreja e Pastor",
     "disabledChurches": "Igrejas Desativadas",
+    "plantingProjections": "Projeções de Plantação",
+    "churchPlantingProjections": "Projeções de plantio de igrejas",
+    "churchPlantingAddProjections": "Adicionar projeções",
+    "churchPlantingViewProjections": "Ver projeções",
+    "churchPlantingPrintProjections": "Imprimir projeções",
+    "churchPlantingPrintSimpleSub": "Planilha simples",
+    "churchPlantingPrintPreviewProjections": "Pré-visualização: etapas e tarefas",
     "overseers": "Supervisores",
     "churchNetworks": "Redes de Igrejas",
     "churchNetworksList": "Lista",
@@ -144,7 +219,15 @@
     "givingMFP": "Ofertas MFP",
     "peopleInCG": "Pessoas em CGs",
     "peopleInGTAndLIW": "Pessoas em GT & LIW",
-    "newDecisions": "Novas Decisões"
+    "newDecisions": "Novas Decisões",
+    "peopleText": "Av. attendance last 3 months",
+    "growthText": "% growth over last year",
+    "givingTithesText": "Av. monthly giving",
+    "churchPlantsText": "Over last 3 years",
+    "givingMFPText": "Av. monthly MFP giving",
+    "peopleInCGText": "Av. attendance last 3 months",
+    "peopleInGTAndLIWText": "Av. attendance last 3 months",
+    "newDecisionsText": "In last 3 months"
   },
   "user": {
     "listTitle": "Lista de Usuários",
@@ -196,7 +279,14 @@
     "infoChurch": "Igreja à qual o Pastor / Líder pertence ou lidera.",
     "infoSensitiveNation": "Esta nação é geralmente contrária às atividades cristãs?",
     "infoLanguage": "Idioma que o OMR utilizará.",
-    "currentAssignments": "Designações Atuais"
+    "currentAssignments": "Designações Atuais",
+    "labelName": "Name",
+    "addNewUserBtn": "Add New User",
+    "geographicalRegion": "Geographical Region",
+    "languageRegion": "Language Region",
+    "churchApostolicRegions": "Church Apostolic Regions",
+    "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
+    "churchNetwork": "Church Network"
   },
   "church": {
     "listTitle": "Lista de Igrejas",
@@ -267,7 +357,17 @@
     "infoInstagram": "Link da conta do Instagram da igreja.",
     "infoDateOfBirth": "Data do primeiro culto.",
     "phShortName": "ex.: VFC-NewLyn",
-    "phName": "ex.: Victory Family Centre – New Lynn"
+    "phName": "ex.: Victory Family Centre – New Lynn",
+    "addNewChurchBtn": "Add New Church",
+    "addNewChurchWithPastorBtn": "Add New Church & Pastor",
+    "sensitiveNation": "Sensitive Nation?",
+    "switchAnotherChurches": "Switch to another of your churches",
+    "needsVisit": "Needs a visit.",
+    "visitedBy": "Visited {date} by {name}",
+    "dataEntryStatus": "Data Entry Status",
+    "upToDateGoodWork": "Up to date, good work!",
+    "late": "Late",
+    "myChurches": "My Churches"
   },
   "message": {
     "errorTitle": "Ocorreu um erro"
@@ -330,7 +430,12 @@
     "selectedChurch": "Igreja Selecionada",
     "selectedPastorLeader": "Pastor/Líder Selecionado",
     "maturity": "Maturidade",
-    "weekYear": "Semana, Ano"
+    "weekYear": "Semana, Ano",
+    "weekEnding": "Week Ending",
+    "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
+    "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
+    "bibleReference": "Acts 1:8b",
+    "churchPlanted": "Church Planted"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />S{weekNumber}-{year}",
@@ -347,11 +452,13 @@
     "liwStudents": "Alunos LIW",
     "numberLeaders": "Nº de Líderes",
     "localGiving": "Contribuições Locais {localCurrencyCode}",
-    "localGivingUsd": "Contribuições Locais em USD"
+    "localGivingUsd": "Contribuições Locais em USD",
+    "tithesOfferings": " Tithes & Offerings",
+    "missionMfpGiving": "Mission MFP Giving"
   },
   "monthlyData": {
     "labelAdult": "Adultos",
-    "xxx": "xxx"
+    "labelAdults": "Adultos"
   },
   "churchPlantingProjection": {
     "dashboardTitle": "Projeções de Plantação de Igrejas",
@@ -359,7 +466,83 @@
     "targetTown": "Cidade-Alvo da Plantação",
     "estPop": "Pop. Estimada",
     "proposedLeader": "Líder Proposto",
-    "stepProgressIndicator": "Indicador de Progresso em 6 Etapas"
+    "listTitle": "Projeções de Plantação - {churchName}",
+    "addTitle": "Adicionar Projeção de Plantação de Igreja",
+    "editTitle": "Editar Projeção de Plantação de Igreja #{id} - Informações principais",
+    "proposedChurchName": "Nome da Igreja Proposta",
+    "step": "Etapa",
+    "labelTown": "Cidade / Município",
+    "labelNation": "Nação",
+    "labelProposedChurchName": "Nome da Igreja Proposta",
+    "labelProposedLeaderName": "Líder Proposto",
+    "labelPopulation": "População da cidade / município",
+    "labelStartDatePreparation": "Data de Início da Preparação",
+    "labelStartDatePreparationOriginal": "Data de Início da Preparação (Original)",
+    "labelStartDatePioneering": "Data de Início do Pioneirismo",
+    "labelStartDatePioneeringOriginal": "Data de Início do Pioneirismo (Original)",
+    "labelStartDateForActualPioneering": "Data de Início do Pioneirismo Real",
+    "pioneeringDateOptionSixMonthsAfterPreparation": "6 meses após a data de início da preparação",
+    "pioneeringDateOptionSpecificDate": "Data específica",
+    "infoTownCity": "A vila, cidade ou localidade escolhida para o empreendimento de plantação de igreja.",
+    "infoNation": "A nação em que se situa a vila, cidade ou localidade selecionada.",
+    "infoTownCityPopulation": "O número aproximado de pessoas nesse local.",
+    "infoDistanceToTown": "A distância aproximada da igreja mãe até o local escolhido para a plantação.",
+    "infoProposedChurchName": "Seu melhor palpite para o nome da igreja. Geralmente o nome da igreja mãe seguido de « - » e a vila / cidade etc.",
+    "infoProposedLeader": "A pessoa que você tem em mente para liderar a plantação, mesmo que ainda não tenha sido convidada.",
+    "infoStartDatePreparation": "A data em que planeja iniciar o planejamento da plantação. Normalmente no mínimo 6 meses antes de iniciar o pioneirismo.",
+    "infoStartDateActualPioneering": "A data em que planeja iniciar o pioneirismo enviando os plantadores de igreja.",
+    "labelDistanceToTown": "Distância até a Cidade",
+    "labelDistanceToTownUnit": "Unidade de Distância",
+    "addNewBtn": "Adicionar Projeção de Plantação de Igreja",
+    "sectionProjection": "Projeção",
+    "sectionSteps": "Etapas",
+    "projectedChurchPlantHeading": "Plantação de igreja projetada:",
+    "editProjectionBtn": "Editar projeção",
+    "editStepsBtn": "Editar etapas",
+    "labelProjectedTo": "Projetado para",
+    "labelTownCityPopulation": "População cidade",
+    "labelStartPreparations": "Início das preparações",
+    "labelStartPioneering": "Início do pioneirismo",
+    "summaryStepCompleted": "Etapa concluída?",
+    "summaryDateCompleted": "Data concluída",
+    "matrixDateProposed": "Data proposta",
+    "matrixDateProposedOriginalLine": "Original: {date}",
+    "stepProgressSummaryLabel": "Etapas",
+    "toggleStepsChartShow": "Mostrar tabela de 6 etapas",
+    "toggleStepsChartHide": "Ocultar tabela de 6 etapas",
+    "saving": "Salvando…",
+    "stepsLoadError": "Não foi possível carregar as etapas. Tente novamente ou edite etapas.",
+    "markCompleted": "Marcar como concluído",
+    "stepsTitle": "Plano de etapas",
+    "saveSteps": "Salvar plano de etapas",
+    "checklistTitles": "Títulos das linhas",
+    "rowTitleLabel": "Título da linha {index}",
+    "globalTimeline": "Linha do tempo geral",
+    "labelGlobalDateProposed": "Data proposta geral",
+    "labelGlobalDateCompleted": "Data concluída geral",
+    "stepTitle": "Etapa {step}",
+    "labelStepDateProposed": "Data proposta",
+    "labelStepDateProposedOriginal": "Data proposta original",
+    "labelStepDateCompleted": "Data concluída",
+    "rowPlaceholder": "Notas ou ações",
+    "completed": "Concluído",
+    "infoSaved": "Projeção salva.",
+    "stepsSaved": "Plano de etapas salvo.",
+    "editStubHint": "A edição da projeção #{id} é limitada aqui. Volte à lista.",
+    "printNoChurch": "Nenhuma igreja vinculada à sua conta.",
+    "printLoadError": "Não foi possível carregar projeções para impressão.",
+    "printTitleSimple": "Plantação de igrejas — planilha simples",
+    "printTitlePreview": "Plantação de igrejas — visualização (etapas e tarefas)",
+    "printButton": "Imprimir",
+    "editProjectionCoreTitle": "Edit Church Planting Projection – Core information",
+    "editStepsFor": "Edit Church Planting Projection Steps for",
+    "editStepsNumberRow": "6 Steps",
+    "labelTownCity": "Town / City",
+    "editLoadError": "Could not load this projection, or it does not belong to this church.",
+    "editSaveError": "Save failed. Please check the form and try again.",
+    "stepsSaveError": "Could not save step plan. Check required fields and try again.",
+    "retryLoad": "Retry",
+    "editStepsPageTitle": "Edit projection — Steps"
   },
   "attachment": {
     "dashboardTitle": "Anexos",
@@ -422,5 +605,17 @@
     "labelName": "Nome",
     "labelLogo": "Logo",
     "labelParent": "Pai"
-  }
+  },
+  "support": {
+    "title": "Suporte OMR",
+    "intro": "Olá, {name},\n\nBem-vindo ao OMR, a ferramenta de relatórios mensais para ajudar a gerir a sua igreja e o plantio de igrejas.\n\nAjude a si e a quem lidera enviando os relatórios mensais regularmente.\n\nSe tiver sugestões, fale comigo.\nSe tiver dificuldades, farei o possível para ajudar.\n\nPreencha o formulário abaixo.\n\nAbençoado,\nShane Comiskey",
+    "labelName": "Nome",
+    "labelSubject": "Assunto",
+    "labelMessage": "Mensagem",
+    "submit": "Enviar",
+    "submitSuccess": "O seu pedido de suporte foi enviado. Obrigado."
+  },
+  "localGivingCurrency": "Local Giving {currency}",
+  "mfpGivingCurrency": "MFP Giving {currency}",
+  "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions"
 }

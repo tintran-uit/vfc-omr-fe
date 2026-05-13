@@ -1,0 +1,83 @@
+export const createFormSchema = () => ({
+  initData: () => ({
+    distance_to_town_unit: 'km',
+    population: null as number | null,
+    start_date_preparation_original: null as string | null,
+    start_date_pioneering_original: null as string | null,
+  }),
+  fields: [
+    {
+      label: 'churchPlantingProjection.labelTown',
+      name: 'town',
+      description: 'churchPlantingProjection.infoTownCity',
+      rules: ['required'],
+      type: 'TextInput',
+    },
+    {
+      label: 'churchPlantingProjection.labelNation',
+      name: 'country_id',
+      description: 'churchPlantingProjection.infoNation',
+      rules: ['required'],
+      type: 'CountrySelectInput',
+    },
+    {
+      label: 'churchPlantingProjection.labelPopulation',
+      name: 'population',
+      description: 'churchPlantingProjection.infoTownCityPopulation',
+      type: 'NumberFormattedInput',
+    },
+    {
+      label: 'churchPlantingProjection.labelDistanceToTown',
+      name: 'distance_to_town',
+      description: 'churchPlantingProjection.infoDistanceToTown',
+      cols: { cols: 6, md: 3 },
+      type: 'TextInput',
+    },
+    {
+      label: 'churchPlantingProjection.labelDistanceToTownUnit',
+      name: 'distance_to_town_unit',
+      type: 'SelectInput',
+      optionName: 'distanceUnits',
+      cols: { cols: 6, md: 3 },
+      attrs: {
+        itemTitle: 'title',
+        itemValue: 'value',
+      },
+    },
+    {
+      label: 'churchPlantingProjection.labelProposedChurchName',
+      name: 'proposed_church_name',
+      description: 'churchPlantingProjection.infoProposedChurchName',
+      rules: ['required'],
+      type: 'TextInput',
+    },
+    {
+      label: 'churchPlantingProjection.labelProposedLeaderName',
+      name: 'proposed_leader_name',
+      description: 'churchPlantingProjection.infoProposedLeader',
+      rules: ['required'],
+      type: 'TextInput',
+    },
+    {
+      label: 'churchPlantingProjection.labelStartDatePreparation',
+      name: 'start_date_preparation_original',
+      description: 'churchPlantingProjection.infoStartDatePreparation',
+      rules: ['required'],
+      type: 'YearMonthDayInput',
+      attrs: {
+        density: 'compact',
+        mode: 'range',
+        minYear: 1990,
+        maxYear: new Date().getFullYear() + 5,
+      },
+    },
+    {
+      label: 'churchPlantingProjection.labelStartDateForActualPioneering',
+      name: 'start_date_pioneering_original',
+      description: 'churchPlantingProjection.infoStartDateActualPioneering',
+      rules: ['required'],
+      type: 'PioneeringStartDateInput',
+      preparationDateField: 'start_date_preparation_original',
+    },
+  ],
+});

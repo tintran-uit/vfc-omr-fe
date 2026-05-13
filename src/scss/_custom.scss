@@ -64,6 +64,27 @@ a:hover {
   min-width: 0;
 }
 
+/* ------------------------------------------------------------ */
+/* Read-only outlined fields (computed USD, display-only text) */
+/* Applied from TextInput when readonly */
+/* ------------------------------------------------------------ */
+.v-text-field.input-field--readonly {
+  .v-field--variant-outlined {
+    --v-field-border-opacity: 0.42;
+    background-color: rgba(var(--v-theme-on-surface), 0.06);
+  }
+
+  .v-field__input {
+    cursor: default;
+    color: rgba(var(--v-theme-on-surface), 0.72);
+    caret-color: transparent;
+  }
+
+  &.v-input--focused .v-field--variant-outlined {
+    --v-field-border-opacity: 0.55;
+  }
+}
+
 /* tab */
 /* v-tabs container */
 .attendant-tab {
@@ -133,41 +154,56 @@ a:hover {
   gap: 12px;
 }
 
+/* Monthly step-2 week tabs: inactive = distinct surface; active = solid primary (original look) */
 .monthly-tabs .v-tab {
   min-width: 60px;
   height: 60px;
   border-radius: 8px;
 
-  padding: 6px 8px; /* 👈 thêm lại padding */
+  padding: 10px 18px;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
   text-transform: none;
-  white-space: nowrap; /* tránh xuống dòng */
+  white-space: nowrap;
 }
 
-/* default */
-.monthly-tabs .v-tab {
-  background: #eee;
+/* Not selected: readable chip on page background (not “invisible”) */
+.monthly-tabs .v-tab:not(.v-tab--selected) {
+  background-color: rgba(var(--v-theme-on-surface), 0.08);
+  color: rgba(var(--v-theme-on-surface), 0.82);
 }
 
-/* active */
-.monthly-tabs .tab-active {
-  background: rgb(var(--v-theme-primary));
-  color: white;
+.monthly-tabs .v-tab:not(.v-tab--selected):hover {
+  background-color: rgba(var(--v-theme-on-surface), 0.12);
 }
 
-/* special */
-.monthly-tabs .tab-has-data {
-  background: rgb(var(--v-theme-success));
-  color: white;
+/* “Has report” check: always success green (inactive tab inherits tab color and would wash it out) */
+.monthly-tabs .v-tab .monthly-tab-has-data-icon {
+  color: rgb(var(--v-theme-success)) !important;
+  opacity: 1 !important;
 }
 
-/* nếu vừa active vừa special → ưu tiên active */
-.monthly-tabs .tab-active.tab-has-data {
-  background: rgb(var(--v-theme-primary));
+/*
+ * Selected tab: VTab is a VBtn; v-tabs color="primary" made label text primary = invisible on blue bg.
+ * Do not set color on v-tabs — force white on root + .v-btn__content + inner spans.
+ */
+.monthly-tabs .v-tab.v-btn.v-tab--selected {
+  background-color: rgb(var(--v-theme-primary)) !important;
+  color: #ffffff !important;
+}
+
+/* Tab title when selected: white + bold (class avoids brittle v-btn DOM + keeps icon green) */
+.monthly-tabs .v-tab.v-btn.v-tab--selected .monthly-tab-title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.monthly-tabs .v-tab.v-btn.v-tab--selected .monthly-tab-has-data-icon {
+  color: rgb(var(--v-theme-success)) !important;
+  opacity: 1 !important;
 }
 
 .monthly-tabs .v-tab__content {
@@ -190,6 +226,137 @@ a:hover {
   transform: translateX(-10px);
 }
 
-.v-field__input {
-  font-size: 0.875rem;
+/* table */
+.bordered-table {
+  border: 1px solid #ddd;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.bordered-table th,
+.bordered-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 6px 12px !important;
+  vertical-align: middle;
+}
+
+.bordered-table th {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #333;
+}
+
+.bordered-table tr:last-child th,
+.bordered-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ------------------------------------------------------------ */
+/* Generic tables (utility classes)                              */
+/* ------------------------------------------------------------ */
+.table-bordered,
+.table-bordered--no-wrap {
+  width: 100%;
+  overflow-x: auto;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* bordered: has outer wrap border */
+.table-bordered {
+  /* Wrap border (theme-aware) */
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.12) !important;
+  border-radius: 0 !important;
+  overflow: visible;
+}
+
+/* no-wrap: no outer border, only cell borders */
+.table-bordered--no-wrap {
+  border: 0;
+  border-radius: 0;
+}
+
+.table-bordered > table,
+.table-bordered--no-wrap > table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: none !important;
+}
+
+/* Table itself should not draw an extra outer border */
+.table-bordered > table {
+  border: 0 !important;
+}
+
+.table-bordered th,
+.table-bordered td,
+.table-bordered--no-wrap th,
+.table-bordered--no-wrap td {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.12) !important;
+  padding: 10px 12px;
+  vertical-align: middle;
+}
+
+/* Hide native number input spinners (macOS/Chrome/Safari/Firefox) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* CHART */
+.chart-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.chart-inner {
+  height: 460px;
+  min-width: 100%;
+}
+
+.chart-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.chart-inner {
+  min-width: 100%;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+.chart-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+  font-size: 12px;
+  line-height: 1.4;
+  transition: opacity 0.1s;
+  z-index: 10;
+
+  min-width: 180px;
+  white-space: nowrap;
+}
+/* #CHART */
+
+/* Toàn app: input/textarea Vuetify thường ~16px — đồng bộ body-2 (0.875rem) + line-height */
+.v-application {
+  .v-field__input,
+  input.v-field__input,
+  textarea.v-field__input {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
 }

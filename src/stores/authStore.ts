@@ -1,8 +1,8 @@
 import { authService } from '@/services/authService';
 import { defineStore } from 'pinia';
 import { router } from '@/router';
-import { userService } from '@/services/userService';
 import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from '@/constants/roleConstant';
+import { clearSessionAndGoLogin } from '@/utils/session';
 const pastorLeaderPermissions = [
   'user.read',
   'user.create',
@@ -14,11 +14,25 @@ const pastorLeaderPermissions = [
   'report.church-status',
   'resource.read',
   'relating.update',
-  'faq.read'
+  'faq.read',
+  'church-planting.read',
+  'church-planting.create',
+  'church-planting.print',
+  'church-planting.print-preview',
 ];
 
 const overseerPermissions = [
-  ...pastorLeaderPermissions,
+  'user.read',
+  'user.create',
+  'user.update',
+  'church.read',
+  'church.update',
+  'church.create',
+  'report.church',
+  'report.church-status',
+  'resource.read',
+  'relating.update',
+  'faq.read',
   'watch-list.read',
   'watch-list.create',
   'watch-list.report',
@@ -53,17 +67,46 @@ const superAdminPermissions = [
   ...adminPermissions
 ]
 
+function permissionsForRole(roleId: number | undefined | null): string[] {
+  if (roleId === ROLE_PASTOR_LEADER) {
+    return [...pastorLeaderPermissions].map((p) => p.toLowerCase());
+  }
+  if (roleId === ROLE_OVERSEER) {
+    return [...overseerPermissions].map((p) => p.toLowerCase());
+  }
+  if (roleId === ROLE_ADMIN) {
+    return [...adminPermissions].map((p) => p.toLowerCase());
+  }
+  if (roleId === ROLE_SUPER_ADMIN) {
+    return [...superAdminPermissions].map((p) => p.toLowerCase());
+  }
+  const raw = JSON.parse(localStorage.getItem('permissions') || '[]') as string[];
+  return raw.map((p) => String(p).toLowerCase());
+}
+
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    // initialize state from local storage to enable user to stay logged in
-    /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-    // @ts-ignore
-    user: JSON.parse(localStorage.getItem('user')),
-    token: localStorage.getItem('token') || null,
-    returnUrl: null,
-    permissions: JSON.parse(localStorage.getItem('permissions') || '[]') as string[],
-    role: null
-  }),
+  state: () => {
+    const user = (() => {
+      try {
+        const raw = localStorage.getItem('user');
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    })() as Record<string, unknown> | null;
+    const roleId = user?.role?.id;
+    const permissions = permissionsForRole(roleId);
+    if (user && permissions.length) {
+      localStorage.setItem('permissions', JSON.stringify(permissions));
+    }
+    return {
+      user,
+      token: localStorage.getItem('token') || null,
+      returnUrl: null,
+      permissions,
+      role: null,
+    };
+  },
   actions: {
     async login(username: string, password: string) {
       const user = await authService.login(username, password);
@@ -77,16 +120,7 @@ export const useAuthStore = defineStore('auth', {
       localStorage.setItem('user', JSON.stringify(fullyUserData));
       this.user = fullyUserData;
 
-      // set permissions based on role
-      if (this.user?.role?.id === ROLE_PASTOR_LEADER) {
-        this.permissions = pastorLeaderPermissions;
-      } else if (this.user?.role?.id === ROLE_OVERSEER) {
-        this.permissions = overseerPermissions;
-      } else if (this.user?.role?.id === ROLE_ADMIN) {
-        this.permissions = adminPermissions
-      } else if (this.user?.role?.id === ROLE_SUPER_ADMIN) {
-        this.permissions = superAdminPermissions
-      }
+      this.permissions = permissionsForRole(this.user?.role?.id);
       localStorage.setItem('permissions', JSON.stringify(this.permissions));
 
       // redirect to previous url or default to home page
@@ -96,22 +130,17 @@ export const useAuthStore = defineStore('auth', {
       this.user = null;
       this.token = null;
       this.permissions = []
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      localStorage.removeItem('permissions')
-
-      router.push({
-        name: 'Login',
-      });
+      this.returnUrl = null;
+      clearSessionAndGoLogin();
     },
     can(permissions: string | string[]) {
       if (!this.permissions) return false;
     
       if (Array.isArray(permissions)) {
-        return permissions.some(p => this.permissions.includes(p.toLowerCase()));
+        return permissions.some(p => this.permissions.includes(String(p).toLowerCase()));
       }
     
-      return this.permissions.includes(permissions.toLowerCase());
+      return this.permissions.includes(String(permissions).toLowerCase());
     },
     // isRoleAdmin() {
     //   return this.user?.role?.id === ROLE_ADMIN;

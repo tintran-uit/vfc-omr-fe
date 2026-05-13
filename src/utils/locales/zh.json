@@ -74,6 +74,65 @@
     "11": "11月",
     "12": "12月"
   },
+  "visitsAdd": {
+    "title": "录入拜访",
+    "fields": {
+      "nation": "国家",
+      "city": "城市",
+      "church": "教会"
+    },
+    "actions": {
+      "continue": "继续",
+      "back": "返回",
+      "save": "保存"
+    },
+    "step1": {
+      "visitor": "拜访者",
+      "visitorTooltip": "如果你是在录入自己的拜访，请选择你自己的名字；否则请选择你正在为其录入拜访记录的正确人员。",
+      "numberOfChurchesVisited": "拜访的教会数量",
+      "numberOfEventsOrganised": "组织的活动数量"
+    },
+    "step2": {
+      "title": "第 2 步 - 拜访与活动",
+      "context": {
+        "visitor": "拜访者"
+      },
+      "noVisitsInfo": "拜访的教会数量为 0。请返回第 1 步并增加数量。",
+      "visits": {
+        "cardTitlePrefix": "我拜访的教会",
+        "weeklyRowLabel": "请输入你在本教会拜访的天数",
+        "weeklyRowTooltip": "你在本教会拜访的天数"
+      },
+      "events": {
+        "cardTitlePrefix": "我组织的活动拜访",
+        "fields": {
+          "eventType": "活动类型",
+          "eventName": "活动名称",
+          "attendance": "活动大约出席人数",
+          "meetingWith": "会见对象"
+        },
+        "tooltips": {
+          "eventType": "请从下拉列表中选择最能描述该活动的选项。",
+          "eventName": "请描述该活动，例如「格拉斯哥牧者/领袖会议」或「Victory in Africa Conference – Kampala 2017」。"
+        },
+        "weeklyRowLabel": "参加天数",
+        "weeklyRowTooltip": "你参加该活动的天数"
+      }
+    },
+    "validation": {
+      "visitRequiredFields": "请为每次拜访完善国家、城市和教会。",
+      "visitDaysInvalid": "拜访天数必须为不小于 0 的整数。",
+      "eventRequiredFields": "请为每个活动完善国家、活动类型和活动名称。",
+      "meetingWithRequired": "对于 1-1 类型活动，请选择会见对象。",
+      "attendanceInvalid": "出席人数必须为不小于 0 的整数。",
+      "daysRange0to7": "天数必须为 0 到 7 之间的整数。",
+      "eventDaysInvalid": "活动天数必须为不小于 0 的整数。",
+      "atLeastOneWeek": "请至少为一周填写天数。"
+    },
+    "notifications": {
+      "saved": "已保存。"
+    }
+  },
   "itemsPerPage": "每页项目数",
   "pageText": "显示第 {from}-{to} 项，共 {total} 项",
   "backToList": "返回列表",
@@ -91,7 +150,10 @@
     "worshipServices": "敬拜聚会",
     "newPastorAndNewChurch": "新增教会与牧者",
     "newPastor": "新增牧者",
-    "newChurch": "新增教会"
+    "newChurch": "新增教会",
+    "plantingProjections": "植堂预测",
+    "enterVisits": "Enter Visits",
+    "editProfile": "Edit Profile"
   },
   "mainMenu": {
     "myDashboard": "我的仪表板",
@@ -103,6 +165,13 @@
     "churchAdd": "新增教会",
     "churchAddWithPastor": "新增教会与牧者",
     "disabledChurches": "已停用的教会",
+    "plantingProjections": "植堂预测",
+    "churchPlantingProjections": "植堂项目预测",
+    "churchPlantingAddProjections": "添加预测",
+    "churchPlantingViewProjections": "查看预测",
+    "churchPlantingPrintProjections": "打印预测",
+    "churchPlantingPrintSimpleSub": "简单表格",
+    "churchPlantingPrintPreviewProjections": "打印预览：步骤与任务",
     "overseers": "监督",
     "churchNetworks": "教会网络",
     "churchNetworksList": "列表",
@@ -144,7 +213,15 @@
     "givingMFP": "MFP 奉献",
     "peopleInCG": "小组人数",
     "peopleInGTAndLIW": "GT 与 LIW 人数",
-    "newDecisions": "新决志人数"
+    "newDecisions": "新决志人数",
+    "peopleText": "Av. attendance last 3 months",
+    "growthText": "% growth over last year",
+    "givingTithesText": "Av. monthly giving",
+    "churchPlantsText": "Over last 3 years",
+    "givingMFPText": "Av. monthly MFP giving",
+    "peopleInCGText": "Av. attendance last 3 months",
+    "peopleInGTAndLIWText": "Av. attendance last 3 months",
+    "newDecisionsText": "In last 3 months"
   },
   "user": {
     "listTitle": "用户列表",
@@ -196,7 +273,14 @@
     "infoChurch": "该牧者 / 领袖所属或带领的教会",
     "infoSensitiveNation": "该国家是否普遍对基督教活动持反对态度？",
     "infoLanguage": "OMR 将使用的语言",
-    "currentAssignments": "当前事奉安排"
+    "currentAssignments": "当前事奉安排",
+    "labelName": "Name",
+    "addNewUserBtn": "Add New User",
+    "geographicalRegion": "Geographical Region",
+    "languageRegion": "Language Region",
+    "churchApostolicRegions": "Church Apostolic Regions",
+    "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
+    "churchNetwork": "Church Network"
   },
   "church": {
     "listTitle": "教会列表",
@@ -267,7 +351,17 @@
     "infoInstagram": "教会 Instagram 账号链接。",
     "infoDateOfBirth": "首次举行聚会的日期。",
     "phShortName": "例如：VFC-NewLyn",
-    "phName": "例如：Victory Family Centre – New Lynn"
+    "phName": "例如：Victory Family Centre – New Lynn",
+    "addNewChurchBtn": "Add New Church",
+    "addNewChurchWithPastorBtn": "Add New Church & Pastor",
+    "sensitiveNation": "Sensitive Nation?",
+    "switchAnotherChurches": "Switch to another of your churches",
+    "needsVisit": "Needs a visit.",
+    "visitedBy": "Visited {date} by {name}",
+    "dataEntryStatus": "Data Entry Status",
+    "upToDateGoodWork": "Up to date, good work!",
+    "late": "Late",
+    "myChurches": "My Churches"
   },
   "message": {
     "errorTitle": "发生错误"
@@ -330,7 +424,12 @@
     "selectedChurch": "已选教会",
     "selectedPastorLeader": "已选牧师 / 负责人",
     "maturity": "成熟度",
-    "weekYear": "周 / 年"
+    "weekYear": "周 / 年",
+    "weekEnding": "Week Ending",
+    "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
+    "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
+    "bibleReference": "Acts 1:8b",
+    "churchPlanted": "Church Planted"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />第 {weekNumber} 周 / {year} 年",
@@ -347,11 +446,13 @@
     "liwStudents": "LIW 学员",
     "numberLeaders": "领袖人数",
     "localGiving": "本地奉献 {localCurrencyCode}",
-    "localGivingUsd": "奉献（美元）"
+    "localGivingUsd": "奉献（美元）",
+    "tithesOfferings": " Tithes & Offerings",
+    "missionMfpGiving": "Mission MFP Giving"
   },
   "monthlyData": {
     "labelAdult": "成人",
-    "xxx": "xxx"
+    "labelAdults": "成人"
   },
   "churchPlantingProjection": {
     "dashboardTitle": "教会植堂预测",
@@ -359,7 +460,83 @@
     "targetTown": "植堂目标城镇",
     "estPop": "预计人口",
     "proposedLeader": "拟定负责人",
-    "stepProgressIndicator": "六步进度指示"
+    "listTitle": "植堂预测 - {churchName}",
+    "addTitle": "新增教会植堂预测",
+    "editTitle": "编辑植堂预测 #{id} - 核心信息",
+    "proposedChurchName": "拟定教会名称",
+    "step": "步骤",
+    "labelTown": "城镇 / 城市",
+    "labelNation": "国家",
+    "labelProposedChurchName": "拟定教会名称",
+    "labelProposedLeaderName": "拟定负责人",
+    "labelPopulation": "城镇 / 城市人口",
+    "labelStartDatePreparation": "准备开始日期",
+    "labelStartDatePreparationOriginal": "准备开始日期（原始）",
+    "labelStartDatePioneering": "先锋开始日期",
+    "labelStartDatePioneeringOriginal": "先锋开始日期（原始）",
+    "labelStartDateForActualPioneering": "实际先锋开始日期",
+    "pioneeringDateOptionSixMonthsAfterPreparation": "准备开始日期后 6 个月",
+    "pioneeringDateOptionSpecificDate": "指定日期",
+    "infoTownCity": "为教会植堂事工所选定的村、镇或城市位置。",
+    "infoNation": "所选村、镇或城市所在的国家。",
+    "infoTownCityPopulation": "该地点的大约人口数量。",
+    "infoDistanceToTown": "从母会到所选植堂地点的大约距离。",
+    "infoProposedChurchName": "您对教会名称的初步设想。通常是母会名称后加「-」再接村/镇等名称。",
+    "infoProposedLeader": "您心目中带领植堂的人选，即使尚未正式邀请对方。",
+    "infoStartDatePreparation": "您计划开始筹备植堂的日期。一般应至少在开始先锋工作前 6 个月。",
+    "infoStartDateActualPioneering": "您计划派遣植堂者并开始先锋工作的日期。",
+    "labelDistanceToTown": "距城镇距离",
+    "labelDistanceToTownUnit": "距离单位",
+    "addNewBtn": "新增教会植堂预测",
+    "sectionProjection": "预测信息",
+    "sectionSteps": "步骤",
+    "projectedChurchPlantHeading": "拟定植堂：",
+    "editProjectionBtn": "编辑预测",
+    "editStepsBtn": "编辑步骤",
+    "labelProjectedTo": "预测地点",
+    "labelTownCityPopulation": "城镇/市区人口",
+    "labelStartPreparations": "准备开始日期",
+    "labelStartPioneering": "先锋开始日期",
+    "summaryStepCompleted": "步骤已完成？",
+    "summaryDateCompleted": "完成日期",
+    "matrixDateProposed": "拟定日期",
+    "matrixDateProposedOriginalLine": "原始：{date}",
+    "stepProgressSummaryLabel": "步骤",
+    "toggleStepsChartShow": "显示本预测的六步表",
+    "toggleStepsChartHide": "隐藏六步表",
+    "saving": "保存中…",
+    "stepsLoadError": "无法加载步骤，请重试或使用编辑步骤。",
+    "markCompleted": "标记为已完成",
+    "stepsTitle": "预测步骤计划",
+    "saveSteps": "保存步骤计划",
+    "checklistTitles": "清单行标题",
+    "rowTitleLabel": "第 {index} 行标题",
+    "globalTimeline": "整体时间线",
+    "labelGlobalDateProposed": "整体拟定日期",
+    "labelGlobalDateCompleted": "整体完成日期",
+    "stepTitle": "第 {step} 步",
+    "labelStepDateProposed": "拟定日期",
+    "labelStepDateProposedOriginal": "原始拟定日期",
+    "labelStepDateCompleted": "完成日期",
+    "rowPlaceholder": "备注或行动说明",
+    "completed": "已完成",
+    "infoSaved": "预测详情已保存。",
+    "stepsSaved": "步骤计划已保存。",
+    "editStubHint": "在此编辑项目 #{id} 受限。请返回列表。",
+    "printNoChurch": "未关联教会。",
+    "printLoadError": "无法加载用于打印的预测。",
+    "printTitleSimple": "植堂 — 简易表",
+    "printTitlePreview": "植堂 — 打印预览（步骤与任务）",
+    "printButton": "打印",
+    "editProjectionCoreTitle": "Edit Church Planting Projection – Core information",
+    "editStepsFor": "Edit Church Planting Projection Steps for",
+    "editStepsNumberRow": "6 Steps",
+    "labelTownCity": "Town / City",
+    "editLoadError": "Could not load this projection, or it does not belong to this church.",
+    "editSaveError": "Save failed. Please check the form and try again.",
+    "stepsSaveError": "Could not save step plan. Check required fields and try again.",
+    "retryLoad": "Retry",
+    "editStepsPageTitle": "Edit projection — Steps"
   },
   "attachment": {
     "dashboardTitle": "附件",
@@ -422,5 +599,23 @@
     "labelName": "名称",
     "labelLogo": "标志",
     "labelParent": "上级区域"
-  }
+  },
+  "support": {
+    "title": "OMR 支持",
+    "intro": "您好，{name}，\n\n欢迎使用 OMR（Operation Mission Report）——您用于管理教会与植月的月度报告工具。\n\n请坚持按时提交报告，这对自己和您所带领的人都有帮助。\n\n若您有任何建议，欢迎与我联系。\n若遇到任何困难，我会尽力协助。\n\n请填写下方表格。\n\n祝平安，\nShane Comiskey",
+    "labelName": "姓名",
+    "labelSubject": "主题",
+    "labelMessage": "留言",
+    "submit": "发送",
+    "submitSuccess": "支持请求已发送。谢谢。"
+  },
+  "yearOld": "{date} [{year} Yrs old]",
+  "localGivingCurrency": "Local Giving {currency}",
+  "mfpGivingCurrency": "MFP Giving {currency}",
+  "id": "ID",
+  "name": "Name",
+  "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
+  "currentYear": "Current Year",
+  "lastYear": "Last Year",
+  "yearBeforeLast": "Year Before Last"
 }

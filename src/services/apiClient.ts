@@ -1,9 +1,10 @@
-import axios from "axios";
-import { useRouter } from 'vue-router'
-import { router } from '@/router'
+import axios, { type InternalAxiosRequestConfig } from "axios";
 import { jsonToFormData } from '@/utils/formUtil'
 import { useLoadingStore } from "@/stores/loadingStore"
 import { useMessageStore } from "@/stores/messageStore";
+import { clearSessionAndGoLogin } from '@/utils/session'
+
+type AxiosConfigWithLoading = InternalAxiosRequestConfig & { showLoading?: boolean }
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -90,7 +91,8 @@ const put = async (uri, data, showLoading = true) => {
   // try {
     const { data: respData} = await instance.put(
       uri,
-      data
+      data,
+      { showLoading }
     );
 
     return respData;
@@ -103,7 +105,8 @@ const patch = async (uri, data, showLoading = true) => {
   // try {
     const { data: respData} = await instance.patch(
       uri,
-      data
+      data,
+      { showLoading }
     );
 
     return respData;
@@ -114,7 +117,7 @@ const patch = async (uri, data, showLoading = true) => {
 
 instance.interceptors.request.use(
   (config) => {
-    if (config.showLoading) {
+    if ((config as AxiosConfigWithLoading).showLoading) {
       const loading = useLoadingStore();
       loading.show();
     }
@@ -130,7 +133,7 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
-    if ((response.config as any).showLoading) {
+    if ((response.config as AxiosConfigWithLoading).showLoading) {
       const loading = useLoadingStore();
       loading.hide();
     }
@@ -138,19 +141,36 @@ instance.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if ((error.config as any).showLoading) {
+    if ((error.config as AxiosConfigWithLoading | undefined)?.showLoading) {
       const loading = useLoadingStore();
       loading.hide();
     }
 
       if (error.response && error.response.status === 401) {
-          router.push({
-              name: "Login"
-          });
+          // Keep Pinia in sync with localStorage without static import cycles
+          // (apiClient is imported by authService which is imported by authStore).
+          import('@/stores/authStore')
+            .then(({ useAuthStore }) => {
+              try {
+                const authStore = useAuthStore();
+                authStore.user = null;
+                authStore.token = null;
+                authStore.permissions = [];
+                authStore.returnUrl = null;
+              } catch {
+                // ignore if pinia isn't ready for some reason
+              }
+            })
+            .finally(() => {
+              clearSessionAndGoLogin();
+            });
 
           return Promise.reject(error.response.data);
       } else if (error.response) {
-        error.response.data?.message && useMessageStore().error(error.response.data?.message)
+        const msg = error.response.data?.message;
+        if (msg) {
+          useMessageStore().error(msg);
+        }
         console.log('error.response', error);
       } else if (error.request) {
           return Promise.reject({ message: 'Can not connect to server.' });

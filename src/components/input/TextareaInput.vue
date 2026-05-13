@@ -1,12 +1,34 @@
 <script setup lang="ts">
-import {watch} from 'vue';
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n()
+const { t } = useI18n();
 
-const modelValue = defineModel();
+const modelValue = defineModel<string | number | null>();
 
+const props = withDefaults(
+  defineProps<{
+    label?: string;
+    placeholder?: string;
+    rules?: (string | ((v: unknown) => boolean | string))[];
+    readonly?: boolean;
+    disabled?: boolean;
+    hideDetails?: boolean | "auto";
+    rows?: number | string;
+  }>(),
+  {
+    rules: () => [],
+    readonly: false,
+    disabled: false,
+    hideDetails: true,
+    rows: 4,
+  },
+);
+
+const translatedLabel = computed(() => (props.label ? t(props.label) : ""));
+const translatedPlaceholder = computed(() =>
+  props.placeholder ? t(props.placeholder) : "",
+);
 </script>
 
 <template>
@@ -14,14 +36,16 @@ const modelValue = defineModel();
     v-model="modelValue"
     :placeholder="translatedPlaceholder"
     :label="translatedLabel"
-    :rules="rules"
+    :rules="props.rules"
+    :readonly="props.readonly"
+    :disabled="props.disabled"
+    :hide-details="props.hideDetails"
+    :rows="props.rows"
     color="primary"
     variant="outlined"
-    hide-details
     density="compact"
-  ></v-textarea>
+    v-bind="$attrs"
+  />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped lang="scss"></style>

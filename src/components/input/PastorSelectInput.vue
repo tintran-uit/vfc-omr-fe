@@ -6,40 +6,62 @@ const { t } = useI18n()
 
 import { computed } from 'vue'
 
-const modelValue = defineModel<any>()
+type PastorId = string | number
+type PastorOption = {
+  id: PastorId
+  name: string
+}
+
+const modelValue = defineModel<PastorId | null>()
 
 const props = withDefaults(defineProps<{
   label?: string
   placeholder?: string
-  itemTitle?: string | ((item: any) => string)
+  itemTitle?: string | ((item: PastorOption) => string)
   itemValue?: string
   returnObject?: boolean
   noDataText?: string,
   clearable?: boolean
+  rules?: (string | ((v: any) => boolean | string))[]
 }>(), {
-  clearable: true
+  clearable: true,
+  rules: () => []
 })
 
 const translatedLabel = computed(() => props.label ? t(props.label) : '')
 const translatedPlaceholder = computed(() => props.placeholder ? t(props.placeholder) : '')
 const translatedNoDataText = computed(() => props.noDataText ? t(props.noDataText) : t('noData'))
 
-const items = ref<any[]>([])
+const items = ref<PastorOption[]>([])
 const loading = ref(false)
 const loadingMore = ref(false)
 const page = ref(1)
 const itemsPerPage = 25
 const searchQuery = ref('')
+const activeSearchQuery = ref('')
 const noMoreItems = ref(false)
-let searchTimeout = null
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
 let isSelecting = false
-let selectedItem = null
+let selectedItem: PastorOption | null = null
+let ignoreSelectedNameSearch = false
+
+const getItemKey = (item: PastorOption) => String(item.id)
+
+const mergeItems = (newItems: PastorOption[]) => {
+  const merged = new Map(items.value.map(item => [getItemKey(item), item]))
+
+  newItems.forEach(item => {
+    merged.set(getItemKey(item), item)
+  })
+
+  items.value = Array.from(merged.values())
+}
 
 
 const fetchItems = async (reset = false) => {
   if (reset) {
     page.value = 1
-    items.value = []
+    items.value = selectedItem ? [selectedItem] : []
     noMoreItems.value = false
   }
   
@@ -56,8 +78,8 @@ const fetchItems = async (reset = false) => {
       page: page.value
     }
     
-    if (searchQuery.value) {
-        params.name = searchQuery.value;
+    if (activeSearchQuery.value) {
+        params.name = activeSearchQuery.value;
     }
     
     const data = await userService.getPastorList(params, false);
@@ -68,15 +90,14 @@ const fetchItems = async (reset = false) => {
         noMoreItems.value = true
       }
 
-      items.value = [
-        ...items.value,
-        ...(data.items || []).map(item => {
-          return {
-            id: item.id,
-            name: item.name,
-          }
-        })
-      ]
+      const newItems = (data.items || []).map(item => {
+        return {
+          id: item.id,
+          name: item.name,
+        }
+      })
+
+      mergeItems(newItems)
     page.value++
   } catch (error) {
     console.error('Error fetching items:', error)
@@ -86,15 +107,13 @@ const fetchItems = async (reset = false) => {
   }
 }
 
-const fetchItem = async (id) => {
+const fetchItem = async (id: PastorId) => {
   try {
     const data = await userService.get(id, false)
     if (data) {
       selectedItem = { id: data.id, name: data.name }
       
-      if (!items.value.find(i => i.id === selectedItem.id)) {
-        items.value.push(selectedItem)
-      }
+      mergeItems([selectedItem])
     }
   } catch (err) {
     console.error('Error fetching item by id:', err)
@@ -102,33 +121,56 @@ const fetchItem = async (id) => {
 }
 
 const onFocus = () => {
-  if (items.value.length === 0) {
-    fetchItems()
+  const isShowingSelectedName =
+    selectedItem && searchQuery.value.trim() === selectedItem.name
+
+  if (isShowingSelectedName) {
+    activeSearchQuery.value = ''
+    ignoreSelectedNameSearch = true
+  }
+
+  if (items.value.length === 0 || isShowingSelectedName) {
+    fetchItems(Boolean(isShowingSelectedName))
   }
 }
 
-function onSearch(query) {
+function onSearch(query: string) {
   if (isSelecting) return
 
-  clearTimeout(searchTimeout)
+  const normalizedQuery = (query || '').trim()
+
+  if (searchTimeout) clearTimeout(searchTimeout)
+
+  if (
+    ignoreSelectedNameSearch &&
+    selectedItem &&
+    normalizedQuery === selectedItem.name
+  ) {
+    activeSearchQuery.value = ''
+    ignoreSelectedNameSearch = false
+    return
+  }
+
+  ignoreSelectedNameSearch = false
+  activeSearchQuery.value = normalizedQuery
 
   searchTimeout = setTimeout(() => {
     fetchItems(true)
   }, 400)
 }
 
-function onUpdateModelValue(val) {
+function onUpdateModelValue(val: PastorId | null) {
   isSelecting = true
+  selectedItem = items.value.find(item => String(item.id) === String(val)) || null
+  activeSearchQuery.value = ''
+  ignoreSelectedNameSearch = true
+
   setTimeout(() => {
     isSelecting = false;
   }, 0);
 }
 
-function onIntersect(
-  isIntersecting: boolean,
-  entries: IntersectionObserverEntry[],
-  observer: IntersectionObserver
-) {
+function onIntersect(isIntersecting: boolean) {
   if (!isIntersecting) return
   if (loadingMore.value || noMoreItems.value) return
   
@@ -144,6 +186,10 @@ watch(
   (id) => {
     if (id) {
       fetchItem(id)
+    } else {
+      selectedItem = null
+      activeSearchQuery.value = ''
+      ignoreSelectedNameSearch = false
     }
   },
   { immediate: true }
@@ -151,7 +197,7 @@ watch(
 </script>
 
 <template>
-    <v-label class="text-wrap">{{label}}</v-label>
+    <v-label class="text-wrap">{{ translatedLabel }}</v-label>
     <v-autocomplete
       v-model="modelValue"
       v-model:search="searchQuery"
@@ -159,12 +205,15 @@ watch(
       role="link"
       color="primary"
       variant="outlined"
-      hide-details
       density="compact"
       item-title="name"
       item-value="id"
+      :placeholder="translatedPlaceholder"
       :loading="loading"
       :hide-no-data="loading"
+      :no-data-text="translatedNoDataText"
+      :clearable="clearable"
+      :rules="rules"
       no-filter
       @focus="onFocus"
       @update:search="onSearch"

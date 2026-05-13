@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { createFormSchema } from '@/form-schemas/addChurchTypeFormSchema';
 import { churchTypeService } from '@/services/churchTypeService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
+import FormPageShell from "@/components/shared/FormPageShell.vue";
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
@@ -43,36 +44,18 @@ watch(
 </script>
 
 <template>
-
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('churchType.editTitle', {id: id}) }}</h1>
-          <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'ChurchTypeList' })"
-          >
-            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row justify="center">
-        <v-col cols="12" md="10" lg="12">
-          <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
-            <slot name="form">
-              <DynamicFormDefault
-                :form-schema="formSchema"
-                :init-data="editData"
-                @submit="handleSubmit"
-              />
-            </slot>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-sheet>
+  <FormPageShell
+    :title="$t('churchType.editTitle', { id: id })"
+    :back-url="{ name: 'ChurchTypeList' }"
+  >
+    <DynamicFormDefault
+      :form-schema="formSchema"
+      :init-data="editData"
+      form-only
+      hide-form-header
+      @submit="handleSubmit"
+    />
+  </FormPageShell>
 </template>
 
 <style scoped lang="scss">

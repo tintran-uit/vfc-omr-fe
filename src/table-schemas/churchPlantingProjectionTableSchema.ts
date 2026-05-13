@@ -1,11 +1,12 @@
 export default {
   headers: [
-    { key: 'mobile_phone', title: 'churchPlantingProjection.proposedLaunchDate', sortable: false, filterable: false },//Proposed Launch Date
-    { key: 'email', title: 'churchPlantingProjection.targetTown', sortable: true, filterable: true },//Church Plant Target Town
-    { key: 'role_name', title: 'churchPlantingProjection.estPop', sortable: false, filterable: true },// Est. Pop.
-    { key: 'country_name', title: 'churchPlantingProjection.proposedLeader', sortable: false, filterable: true },//Proposed Leader
-    { key: 'actions', title: 'churchPlantingProjection.stepProgressIndicator', sortable: false },// 6 Step Progress Indicator
+    { key: 'start_date_pioneering', title: 'churchPlantingProjection.proposedLaunchDate', sortable: false },
+    { key: 'town', title: 'churchPlantingProjection.targetTown', sortable: false },
+    { key: 'proposed_church_name', title: 'churchPlantingProjection.proposedChurchName', sortable: false },
+    { key: 'proposed_leader_name', title: 'churchPlantingProjection.proposedLeader', sortable: false },
+    { key: 'population', title: 'churchPlantingProjection.estPop', sortable: false },
+    { key: 'steps_completed', title: 'churchPlantingProjection.stepProgressSummaryLabel', sortable: false },
+    { key: 'actions', title: '' },
   ],
-  searches: [
-  ]
+  searches: [],
 }

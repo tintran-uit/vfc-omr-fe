@@ -1,74 +1,71 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from "vue-router";
+import { ref, onMounted } from 'vue';
+import { useRouter } from "vue-router";
 import { churchTypeService } from '@/services/churchTypeService';
 import DataTable from '@/components/tables/DataTable.vue';
 import tableSchema from '@/table-schemas/churchTypeTableSchema';
-import { useI18n } from 'vue-i18n';
+import TablePageShell from "@/components/shared/TablePageShell.vue";
+import TableSearchBox from "@/components/tables/TableSearchBox.vue";
 
 const router = useRouter()
-const route = useRoute()
-const {t} = useI18n()
 const items = ref([])
+const searches = ref([])
+const page = ref(1)
+const itemsPerPage = ref(25)
+const sortBy = ref([{ key: 'id', order: 'desc' }])
 
 const fetchData = async () => {
   items.value = await churchTypeService.getAll()
 }
 
-const onEdit = (item: any) => {
-  router.push({ name: 'ChurchTypeEdit', params: { id: item.id } })
+const onEdit = (item: unknown) => {
+  const it = item as { id: number | string }
+  router.push({ name: 'ChurchTypeEdit', params: { id: it.id } })
 }
 
-const onDelete = async (item: any) => {
-  await churchTypeService.del(item.id)
+const onDelete = async (item: unknown) => {
+  const it = item as { id: number | string }
+  await churchTypeService.del(it.id)
 }
 
 onMounted(() => {
   fetchData()
 })
+
+const onSearch = () => {
+  page.value = 1
+}
 </script>
 
 <template>
-  <v-row class="page-breadcrumb mb-0 mt-n2">
-    <v-col cols="12" md="12">
-      <v-card elevation="0" variant="text">
-        <v-row no-gutters class="align-center">
-          <!-- Title -->
-          <v-col cols="12" md="8" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('churchType.listTitle') }}</h3>
-          </v-col>
-          <!-- #Title -->
+  <TablePageShell title-key="churchType.listTitle">
+    <template #header-right>
+      <TableSearchBox
+        v-model:searches="searches"
+        :searches-config="tableSchema.searches"
+        @search="onSearch"
+      />
+      <v-btn
+        color="primary"
+        variant="outlined"
+        @click="router.push({ name: 'ChurchTypeAdd' })"
+      >
+        <v-icon>$plus</v-icon> {{ $t('addNew') }}
+      </v-btn>
+    </template>
 
-          <!-- Actions -->
-          <v-col cols="12" md="4" class="d-flex justify-end">
-            <v-btn 
-              color="primary" 
-              variant="outlined" 
-              @click="router.push({ name: 'ChurchTypeAdd' })"
-            >
-              <v-icon>$plus</v-icon> {{ $t('addNew') }}
-            </v-btn>
-          </v-col>
-          <!-- #Actions -->
-        </v-row>
-      </v-card>
-    </v-col>
-  </v-row>
-
-  <v-row>
-    <v-col cols="12">
-      <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
-        <DataTable
-          :headers="tableSchema.headers"
-          :items="items"
-          :enabled-actions="['edit', 'delete']"
-          @action:delete="onDelete"
-          @action:edit="onEdit"
-        >
-        </DataTable>
-      </v-card>
-    </v-col>
-  </v-row>
+    <DataTable
+      v-model:page="page"
+      v-model:items-per-page="itemsPerPage"
+      v-model:sort-by="sortBy"
+      v-model:searches="searches"
+      :headers="tableSchema.headers"
+      :items="items"
+      :enabled-actions="['edit', 'delete']"
+      @action:delete="onDelete"
+      @action:edit="onEdit"
+    />
+  </TablePageShell>
 </template>
 
 <style scoped lang="scss">

@@ -92,6 +92,20 @@ const actions = computed(() => {
         name: 'ChurchAdd'
       }
     },
+    ...(authStore.can('church-planting.read')
+      ? [
+          {
+            title: 'dashboardMenu.plantingProjections',
+            icon: '$sprout',
+            to: {
+              name: 'PlantingProjectionList',
+              params: {
+                churchId: churchDetail.value?.id
+              }
+            }
+          },
+        ]
+      : []),
   ]
 })
 
@@ -381,8 +395,8 @@ const metrics = shallowRef([
     </v-row>
     <!-- #Daugter church -->
 
-    <!-- Church planting projection -->
-    <v-row>
+    <!-- Church planting projection (pastor-only permission) -->
+    <v-row v-if="authStore.can('church-planting.read')">
       <v-col cols="12">
           <ChurchPlantingProjectionWidget :church-id="churchDetail?.id" />
       </v-col>

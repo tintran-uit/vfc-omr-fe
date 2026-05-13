@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router'
-import {useDialogStore} from '@/stores/dialogStore'
 import {userService} from '@/services/userService.ts';
 import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
+import TablePageShell from "@/components/shared/TablePageShell.vue";
+import TableSearchBox from "@/components/tables/TableSearchBox.vue";
 import tableSchema from '@/table-schemas/userTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 import { useAuthStore } from '@/stores/authStore';
@@ -11,7 +12,6 @@ import Avatar from '@/components/ui/Avatar.vue'
 import defaultAvatar from '@/assets/images/users/avatar-default.svg';
 
 const router = useRouter()
-const dialogStore = useDialogStore()
 const items = ref([])
 const page = ref(1)
 const itemsPerPage = ref(25)
@@ -52,12 +52,14 @@ const buildOptions = () => {
   }
 }
 
-const onEdit = (item: any) => {
-  router.push({ name: 'UserEdit', params: { id: item.id } })
+const onEdit = (item: unknown) => {
+  const it = item as { id: number | string }
+  router.push({ name: 'UserEdit', params: { id: it.id } })
 }
 
-const onDelete = async (item: any) => {
-  await userService.del(item.id)
+const onDelete = async (item: unknown) => {
+  const it = item as { id: number | string }
+  await userService.del(it.id)
   
   fetchData(buildOptions())
 }
@@ -65,49 +67,60 @@ const onDelete = async (item: any) => {
 const onUpdateOptions = (options) => {
   fetchData(options);
 }
+
+const onSearch = () => {
+  fetchData(buildOptions())
+}
 </script>
 
 <template>
-  <DynamicTableDefault
-    v-model:page="page"
-    v-model:items-per-page="itemsPerPage"
-    v-model:searches="searches"
-    v-model:sort-by="sortBy"
-    :pageTitle="$t('user.listTitle')"
-    :total-items="totalItems"
-    :headers="tableSchema.headers"
-    :searches-config="tableSchema.searches"
-    :items="items"
-    :enabled-actions="actions"
-    @action:delete="onDelete"
-    @action:edit="onEdit"
-    @update:options="onUpdateOptions"
-  >
-  <template v-slot:header-right>
-            <v-menu>
-              <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  color="primary"
-                  variant="outlined"
-                >
-                  <v-icon>$plus</v-icon> {{ $t('addNew') }}
-                  <v-icon end>$chevronDown</v-icon>
-                </v-btn>
-              </template>
+  <TablePageShell title-key="user.listTitle">
+    <template #header-right>
+      <TableSearchBox
+        v-model:searches="searches"
+        :searches-config="tableSchema.searches"
+        @search="onSearch"
+      />
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            color="primary"
+            variant="outlined"
+          >
+            <v-icon>$plus</v-icon> {{ $t('addNew') }}
+            <v-icon end>$chevronDown</v-icon>
+          </v-btn>
+        </template>
 
-              <v-list density="compact">
-                <v-list-item :to="{name: 'UserAdd'}">
-                  <v-list-item-title>{{ $t('user.addNewUserBtn') }}</v-list-item-title>
-                </v-list-item>
- 
-                <v-list-item :to="{name: 'ChurchAddWithNewPastor'}">
-                  <v-list-item-title>{{ $t('church.addNewChurchWithPastorBtn') }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </template>
-  <template v-slot:item.name="{ item }">
+        <v-list density="compact">
+          <v-list-item :to="{name: 'UserAdd'}">
+            <v-list-item-title>{{ $t('user.addNewUserBtn') }}</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item :to="{name: 'ChurchAddWithNewPastor'}">
+            <v-list-item-title>{{ $t('church.addNewChurchWithPastorBtn') }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </template>
+
+    <DynamicTableDefault
+      v-model:page="page"
+      v-model:items-per-page="itemsPerPage"
+      v-model:searches="searches"
+      v-model:sort-by="sortBy"
+      :hide-title="true"
+      :hide-header="true"
+      :total-items="totalItems"
+      :headers="tableSchema.headers"
+      :items="items"
+      :enabled-actions="actions"
+      @action:delete="onDelete"
+      @action:edit="onEdit"
+      @update:options="onUpdateOptions"
+    >
+  <template v-slot:[`item.name`]="{ item }">
             <a
               href="#"
               variant="text"
@@ -116,10 +129,11 @@ const onUpdateOptions = (options) => {
   </a>
           </template>
 
-    <template v-slot:item.avatar="{ item }">
+    <template v-slot:[`item.avatar`]="{ item }">
       <Avatar class="py-2" :src="item?.photo_url || defaultAvatar" variant="avatar" size="50" />
     </template>
   </DynamicTableDefault>
+  </TablePageShell>
 </template>
 
 <style scoped lang="scss">

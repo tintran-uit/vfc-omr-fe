@@ -103,13 +103,27 @@ const selectedWeeks = computed(() =>
   modelWeeks.value.map((val) => weekMap.value.get(val)).filter(Boolean),
 );
 
-const committedWeeks = ref([]);
+const committedWeeks = ref<{ value: number; title: string }[]>([]);
 
-const getTabClass = (item) => {
-  return {
-    "tab-active": currentTab.value === item.value,
-    "tab-special": [],
-  };
+/** Weeks successfully saved in this visit (unlock the next tab in order) */
+const weekSavedThisSession = ref<Record<number, boolean>>({});
+
+const resetWeekSaveProgress = () => {
+  weekSavedThisSession.value = {};
+};
+
+/** Tab enabled: already reported, or every prior selected week is reported or saved this session */
+const isTabUnlocked = (week: { value: number }, index: number) => {
+  if (mapWeekReportStatuses.value[week.value]) return true;
+
+  for (let j = 0; j < index; j++) {
+    const prev = committedWeeks.value[j];
+    if (!prev) return false;
+    if (mapWeekReportStatuses.value[prev.value]) continue;
+    if (!weekSavedThisSession.value[prev.value]) return false;
+  }
+
+  return true;
 };
 
 const onBack = () => {
@@ -123,9 +137,11 @@ const onBack = () => {
   currentStep.value = 1;
   currentTab.value = null;
   committedWeeks.value = [];
+  resetWeekSaveProgress();
 };
 
 const goToStep2 = () => {
+  resetWeekSaveProgress();
   // 👇 chốt dữ liệu tại thời điểm click
   committedWeeks.value = selectedWeeks.value;
 
@@ -145,6 +161,16 @@ const onNext = () => {
   }
 
   router.push({ name: "ChurchDetail", params: { id: id.value } });
+};
+
+/** After a successful week save: mark current week, refresh flags, then advance */
+const onSaveSuccessNext = async () => {
+  const w = currentTab.value;
+  if (w != null) {
+    weekSavedThisSession.value = { ...weekSavedThisSession.value, [w]: true };
+  }
+  await fetchWeekReportStatuses();
+  onNext();
 };
 
 const handleSubmit = async (formData) => {
@@ -283,6 +309,8 @@ watch(
               <v-btn
                 color="primary"
                 variant="flat"
+                size="large"
+                class="px-8"
                 :disabled="modelWeeks.length === 0"
                 @click="goToStep2"
               >
@@ -303,18 +331,26 @@ watch(
       hide-slider
     >
       <v-tab
-        v-for="week in committedWeeks"
+        v-for="(week, weekIndex) in committedWeeks"
         :key="week.value"
         :value="week.value"
-        :class="getTabClass(week)"
+        :disabled="!isTabUnlocked(week, weekIndex)"
       >
-        {{ week.title }}
+        <span class="d-inline-flex align-center ga-1 text-truncate">
+          <span class="text-truncate monthly-tab-title">{{ week.title }}</span>
+          <v-icon
+            v-if="mapWeekReportStatuses[week.value]"
+            icon="$checkCircleOutline"
+            size="18"
+            class="flex-shrink-0 monthly-tab-has-data-icon"
+          />
+        </span>
       </v-tab>
     </v-tabs>
 
     <v-window v-model="currentTab">
       <v-window-item
-        v-for="week in committedWeeks"
+        v-for="(week, weekIndex) in committedWeeks"
         :key="week.value"
         :value="week.value"
       >
@@ -327,8 +363,10 @@ watch(
               :church-id="id"
               :week-number="week.value"
               :year="modelYear"
+              :is-first-tab="weekIndex === 0"
+              :is-last-tab="weekIndex === committedWeeks.length - 1"
               @back="onBack"
-              @next="onNext"
+              @next="onSaveSuccessNext"
               :has-report-data="mapWeekReportStatuses[week.value]"
             />
           </div>

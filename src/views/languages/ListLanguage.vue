@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from "vue-router";
+import { ref } from 'vue';
+import { useRouter } from "vue-router";
 import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue';
 import { languageService } from '@/services/languageService';
+import TablePageShell from "@/components/shared/TablePageShell.vue";
+import TableSearchBox from "@/components/tables/TableSearchBox.vue";
 import tableSchema from '@/table-schemas/languageTableSchema';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper';
-import { useI18n } from 'vue-i18n';
 
 const router = useRouter()
-const route = useRoute()
-const {t} = useI18n()
 const items = ref([])
 
 // Data table options
@@ -38,68 +37,59 @@ const fetchData = async function (options = {}) {
   totalItems.value = data.total;
 }
 
-const onEdit = (item: any) => {
-  router.push({ name: 'LanguageEdit', params: { id: item.id } })
+const onEdit = (item: unknown) => {
+  const it = item as { id: number | string }
+  router.push({ name: 'LanguageEdit', params: { id: it.id } })
 }
 
-const onDelete = async (item: any) => {
-  await languageService.del(item.id)
+const onDelete = async (item: unknown) => {
+  const it = item as { id: number | string }
+  await languageService.del(it.id)
   fetchData(buildOptions())
 }
 
 const onUpdateOptions = (options) => {
   fetchData(options);
 }
+
+const onSearch = () => {
+  fetchData(buildOptions())
+}
 </script>
 
 <template>
-  <v-row class="page-breadcrumb mb-0 mt-n2">
-    <v-col cols="12" md="12">
-      <v-card elevation="0" variant="text">
-        <v-row no-gutters class="align-center">
-          <!-- Title -->
-          <v-col cols="12" md="8" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('language.listTitle') }}</h3>
-          </v-col>
-          <!-- #Title -->
+  <TablePageShell title-key="language.listTitle">
+    <template #header-right>
+      <TableSearchBox
+        v-model:searches="searches"
+        :searches-config="tableSchema.searches"
+        @search="onSearch"
+      />
+      <v-btn
+        color="primary"
+        variant="outlined"
+        @click="router.push({ name: 'LanguageAdd' })"
+      >
+        <v-icon>$plus</v-icon> {{ $t('addNew') }}
+      </v-btn>
+    </template>
 
-          <!-- Actions -->
-          <v-col cols="12" md="4" class="d-flex justify-end">
-            <v-btn 
-              color="primary" 
-              variant="outlined" 
-              @click="router.push({ name: 'LanguageAdd' })"
-            >
-              <v-icon>$plus</v-icon> {{ $t('addNew') }}
-            </v-btn>
-          </v-col>
-          <!-- #Actions -->
-        </v-row>
-      </v-card>
-    </v-col>
-  </v-row>
-
-  <v-row>
-    <v-col cols="12">
-      <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
-        <DynamicTableDefault
-                v-model:page="page"
-                v-model:items-per-page="itemsPerPage"
-                v-model:searches="searches"
-                v-model:sort-by="sortBy"
-                :total-items="totalItems"
-                :headers="tableSchema.headers"
-                :searches-config="tableSchema.searches"
-                :items="items"
-                :enabled-actions="['edit', 'delete']"
-                @action:edit="onEdit"
-                @action:delete="onDelete"
-                @update:options="onUpdateOptions"
-              >
-              </DynamicTableDefault>
-      </v-card>
-    </v-col>
-  </v-row>
+    <DynamicTableDefault
+      v-model:page="page"
+      v-model:items-per-page="itemsPerPage"
+      v-model:searches="searches"
+      v-model:sort-by="sortBy"
+      :hide-title="true"
+      :hide-header="true"
+      :total-items="totalItems"
+      :headers="tableSchema.headers"
+      :items="items"
+      :enabled-actions="['edit', 'delete']"
+      @action:edit="onEdit"
+      @action:delete="onDelete"
+      @update:options="onUpdateOptions"
+    />
+  </TablePageShell>
 </template>
 
 <style scoped lang="scss">

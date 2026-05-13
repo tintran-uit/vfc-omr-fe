@@ -18,10 +18,21 @@ const props = withDefaults(
     mode?: 'past' | 'future' | 'range'
     minYear?: Number
     maxYear?: Number
+    /** default: Year-Month-Day in one row; monthTop: Month on first row, Day+Year on second row */
+    layout?: 'default' | 'monthTop'
+    density?: 'default' | 'comfortable' | 'compact'
+    /** When true, render only the Y/M/D fields (no outer v-input). Parent supplies validation wrapper. */
+    embedded?: boolean
+    /** When true (default layout), stack Year / Month / Day vertically full width */
+    stacked?: boolean
   }>(),
   {
     rules: () => [],
     mode: 'past',
+    layout: 'default',
+    density: 'comfortable',
+    embedded: false,
+    stacked: false,
   }
 )
 
@@ -51,7 +62,8 @@ const listYears = computed(() => {
     case 'range':
       minYear = props.minYear ?? currentYear - 120
       maxYear = props.maxYear ?? currentYear + 120
-      years = range(minYear, maxYear)
+      // Newest / highest year first (e.g. church planting projection date fields)
+      years = range(minYear, maxYear).reverse()
       break
     case 'past':
     default:
@@ -129,35 +141,158 @@ watch([modelYear, modelMonth, modelDay], ([newYear, newMonth, newDay]) => {
 
 <template>
   <v-input
+    v-if="!props.embedded"
     :label="label"
     :rules="rules"
     v-model="modelValue"
     hide-details="auto"
   >
-    <div class="d-flex ga-2 w-100">
+    <div v-if="props.layout === 'monthTop'" class="w-100 ymd-monthTop">
+      <div class="ymd-monthTop__month">
+        <v-autocomplete
+          v-model="modelMonth"
+          :placeholder="$t('month')"
+          variant="outlined"
+          :items="listMonths"
+          :return-object="false"
+          :density="props.density"
+          hide-details
+        />
+      </div>
+      <div class="d-flex ga-2 ymd-monthTop__dayYear">
+        <v-autocomplete
+          v-model="modelDay"
+          :placeholder="$t('day')"
+          variant="outlined"
+          :items="listDays"
+          :density="props.density"
+          hide-details
+        />
+        <v-autocomplete
+          v-model="modelYear"
+          :placeholder="$t('year')"
+          :items="listYears"
+          variant="outlined"
+          :density="props.density"
+          hide-details
+        />
+      </div>
+    </div>
+    <div
+      v-else
+      :class="props.stacked ? 'd-flex flex-column ga-2 w-100' : 'd-flex ga-2 w-100'"
+    >
       <v-autocomplete
         v-model="modelYear"
+        :class="props.stacked ? 'w-100' : undefined"
         :placeholder="$t('year')"
         :items="listYears"
         variant="outlined"
+        :density="props.density"
+        hide-details
       />
+      <v-autocomplete
+        v-model="modelMonth"
+        :class="props.stacked ? 'w-100' : undefined"
+        :placeholder="$t('month')"
+        variant="outlined"
+        :items="listMonths"
+        :return-object="false"
+        :density="props.density"
+        hide-details
+      />
+      <v-autocomplete
+        v-model="modelDay"
+        :class="props.stacked ? 'w-100' : undefined"
+        :placeholder="$t('day')"
+        variant="outlined"
+        :items="listDays"
+        :density="props.density"
+        hide-details
+      />
+    </div>
+  </v-input>
+  <div v-else-if="props.layout === 'monthTop'" class="w-100 ymd-monthTop">
+    <div class="ymd-monthTop__month">
       <v-autocomplete
         v-model="modelMonth"
         :placeholder="$t('month')"
         variant="outlined"
         :items="listMonths"
         :return-object="false"
+        :density="props.density"
+        hide-details
       />
+    </div>
+    <div class="d-flex ga-2 ymd-monthTop__dayYear">
       <v-autocomplete
         v-model="modelDay"
         :placeholder="$t('day')"
         variant="outlined"
         :items="listDays"
+        :density="props.density"
+        hide-details
+      />
+      <v-autocomplete
+        v-model="modelYear"
+        :placeholder="$t('year')"
+        :items="listYears"
+        variant="outlined"
+        :density="props.density"
+        hide-details
       />
     </div>
-  </v-input>
+  </div>
+  <div
+    v-else
+    :class="props.stacked ? 'd-flex flex-column ga-2 w-100' : 'd-flex ga-2 w-100'"
+  >
+    <v-autocomplete
+      v-model="modelYear"
+      :class="props.stacked ? 'w-100' : undefined"
+      :placeholder="$t('year')"
+      :items="listYears"
+      variant="outlined"
+      :density="props.density"
+      hide-details
+    />
+    <v-autocomplete
+      v-model="modelMonth"
+      :class="props.stacked ? 'w-100' : undefined"
+      :placeholder="$t('month')"
+      variant="outlined"
+      :items="listMonths"
+      :return-object="false"
+      :density="props.density"
+      hide-details
+    />
+    <v-autocomplete
+      v-model="modelDay"
+      :class="props.stacked ? 'w-100' : undefined"
+      :placeholder="$t('day')"
+      variant="outlined"
+      :items="listDays"
+      :density="props.density"
+      hide-details
+    />
+  </div>
 </template>
 
 <style scoped>
+.ymd-monthTop__month {
+  margin-bottom: 4px;
+}
 
+/* Fix vertical alignment in outlined fields */
+:deep(.v-field__input) {
+  align-items: center;
+  display: flex;
+}
+
+/* Vuetify outlined fields may keep extra top padding for floating labels.
+   This component uses placeholders, so remove the padding to keep text centered. */
+:deep(.v-field--variant-outlined .v-field__input) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 </style>

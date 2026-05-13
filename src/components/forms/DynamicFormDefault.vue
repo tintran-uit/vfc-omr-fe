@@ -5,6 +5,7 @@ import { createFormRules } from "@/helpers/formRulesFactory";
 import { useI18n } from "vue-i18n";
 import { mapModel } from "@/utils/mapperUtil";
 import { getColProps } from "@/helpers/formHelper";
+import PioneeringStartDateInput from "@/components/input/PioneeringStartDateInput.vue";
 
 const { t } = useI18n();
 
@@ -22,6 +23,8 @@ const props = withDefaults(
     showCancel?: boolean;
     backUrl?: string | Record<string, any>;
     formOnly?: boolean;
+    /** Khi true: ẩn hàng tiêu đề + back mặc định; parent tự dựng header (vd. edit có icon). */
+    hideFormHeader?: boolean;
   }>(),
   {
     // initData: null,
@@ -30,6 +33,7 @@ const props = withDefaults(
     breakLine: false,
     showCancel: false,
     formOnly: false,
+    hideFormHeader: false,
   },
 );
 
@@ -72,7 +76,7 @@ const fields = computed(() =>
 
     return {
       ...field,
-      readonly: isComputed,
+      readonly: isComputed || Boolean(field.readonly),
       modelValue: computed({
         get: () =>
           getNestedValue(formData.value, field.name, field.default || (isText ? "" : null)),
@@ -227,7 +231,7 @@ watch(
 </script>
 
 <template>
-  <v-row class="my-2">
+  <v-row v-if="!hideFormHeader" class="my-2">
     <!-- title -->
     <v-col
       cols="12"
@@ -357,6 +361,16 @@ watch(
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
                   :id="`field-${field.name}-${index}`"
+                />
+                <PioneeringStartDateInput
+                  v-else-if="field.type === 'PioneeringStartDateInput'"
+                  :rules="resolveRules(field, formData)"
+                  v-model="field.modelValue.value"
+                  :preparation-date="
+                    formData[field.preparationDateField || 'start_date_preparation']
+                  "
+                  :id="`field-${field.name}-${index}`"
+                  v-bind="field?.attrs || {}"
                 />
                 <YearMonthDayInput
                   v-else-if="field.type === 'YearMonthDayInput'"
@@ -523,6 +537,7 @@ watch(
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
                   v-bind="field?.attrs || {}"
+                  :readonly="!!field.readonly"
                   :placeholder="field?.placeholder ? $t(field.placeholder) : ''"
                   :id="`field-${field.name}-${index}`"
                 ></TextInput>

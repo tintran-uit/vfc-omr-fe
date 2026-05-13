@@ -1,24 +1,15 @@
 <script setup lang="ts">
-import { watch } from "vue";
-
 const modelValue = defineModel();
 
-const props = defineProps({
+defineProps({
   name: { type: String, default: "" },
   label: { type: String, default: "" },
   type: { type: String, default: "text" },
   placeholder: { type: String, default: "" },
   rules: { type: [String, Object, Function], default: "" },
+  /** Vuetify: true | "auto" | false */
+  hideDetails: { type: [Boolean, String], default: false },
 });
-
-const onInput = (e) => {
-  const val = e.target.value;
-
-  // chỉ giữ lại số
-  const cleaned = val.replace(/\D/g, "");
-
-  modelValue.value = cleaned;
-};
 </script>
 
 <template>
@@ -27,6 +18,7 @@ const onInput = (e) => {
     type="text"
     :rules="rules"
     :placeholder="placeholder"
+    :hide-details="hideDetails"
     single-line
     variant="outlined"
   ></v-text-field>

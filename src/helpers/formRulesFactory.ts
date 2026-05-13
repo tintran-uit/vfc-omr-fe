@@ -1,6 +1,9 @@
 export function createFormRules(t) {
   const baseRules = {
-    required: (label) => v => !!v || t('validation.required', { field: label }),
+    /** Allows numeric 0; rejects null, undefined, blank string */
+    required: (label) => (v) =>
+      (v !== null && v !== undefined && String(v).trim() !== "") ||
+      t("validation.required", { field: label }),
     email: (label) => v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t('validation.email'),
     min: (label, length) => v => !v || v.length >= Number(length) || t('validation.minLength', { field: label, length }),
     max: (label, length) => v => !v || v.length <= Number(length) || t('validation.maxLength', { field: label, length }),

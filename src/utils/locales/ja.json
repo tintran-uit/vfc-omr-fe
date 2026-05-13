@@ -74,6 +74,65 @@
     "11": "11月",
     "12": "12月"
   },
+  "visitsAdd": {
+    "title": "訪問の入力",
+    "fields": {
+      "nation": "国",
+      "city": "都市",
+      "church": "教会"
+    },
+    "actions": {
+      "continue": "続行",
+      "back": "戻る",
+      "save": "保存"
+    },
+    "step1": {
+      "visitor": "訪問者",
+      "visitorTooltip": "ご自身の訪問を入力する場合はご自身の名前を選択してください。別の方の訪問を入力する場合は、対象の方を選択してください。",
+      "numberOfChurchesVisited": "訪問した教会数",
+      "numberOfEventsOrganised": "主催したイベント数"
+    },
+    "step2": {
+      "title": "ステップ2 - 訪問とイベント",
+      "context": {
+        "visitor": "訪問者"
+      },
+      "noVisitsInfo": "訪問した教会数が 0 です。ステップ1に戻って増やしてください。",
+      "visits": {
+        "cardTitlePrefix": "教会への訪問",
+        "weeklyRowLabel": "この教会を訪問した日数を入力してください",
+        "weeklyRowTooltip": "この教会を訪問した日数"
+      },
+      "events": {
+        "cardTitlePrefix": "主催イベントへの訪問",
+        "fields": {
+          "eventType": "イベント種別",
+          "eventName": "イベント名",
+          "attendance": "概算参加人数",
+          "meetingWith": "面会相手"
+        },
+        "tooltips": {
+          "eventType": "ドロップダウンから、イベントを最もよく表す選択肢を選んでください。",
+          "eventName": "イベントを説明してください。例：「グラスゴーでの牧師／リーダー会議」や「Victory in Africa Conference – Kampala 2017」"
+        },
+        "weeklyRowLabel": "参加日数",
+        "weeklyRowTooltip": "このイベントに参加した日数"
+      }
+    },
+    "validation": {
+      "visitRequiredFields": "各訪問について「国 / 都市 / 教会」を入力してください。",
+      "visitDaysInvalid": "訪問日数は 0 以上の整数で入力してください。",
+      "eventRequiredFields": "各イベントについて「国 / イベント種別 / イベント名」を入力してください。",
+      "meetingWithRequired": "1-1 のイベント種別では「面会相手」を選択してください。",
+      "attendanceInvalid": "参加人数は 0 以上の整数で入力してください。",
+      "daysRange0to7": "日数は 0〜7 の整数で入力してください。",
+      "eventDaysInvalid": "イベント日数は 0 以上の整数で入力してください。",
+      "atLeastOneWeek": "少なくとも1週間分の「日数」を入力してください。"
+    },
+    "notifications": {
+      "saved": "保存しました。"
+    }
+  },
   "itemsPerPage": "ページあたりの件数",
   "pageText": "{total} 件中 {from}〜{to} 件を表示",
   "backToList": "一覧へ戻る",
@@ -91,7 +150,10 @@
     "worshipServices": "礼拝集会",
     "newPastorAndNewChurch": "新しい教会と牧師を追加",
     "newPastor": "新しい牧師を追加",
-    "newChurch": "新しい教会を追加"
+    "newChurch": "新しい教会を追加",
+    "plantingProjections": "開拓予測",
+    "enterVisits": "Enter Visits",
+    "editProfile": "Edit Profile"
   },
   "mainMenu": {
     "myDashboard": "マイダッシュボード",
@@ -103,6 +165,13 @@
     "churchAdd": "新しい教会を追加",
     "churchAddWithPastor": "教会と牧師を追加",
     "disabledChurches": "無効な教会",
+    "plantingProjections": "開拓予測",
+    "churchPlantingProjections": "教会開拓予測",
+    "churchPlantingAddProjections": "予測を追加",
+    "churchPlantingViewProjections": "予測を表示",
+    "churchPlantingPrintProjections": "印刷",
+    "churchPlantingPrintSimpleSub": "簡易スプレッドシート",
+    "churchPlantingPrintPreviewProjections": "印刷プレビュー（ステップ・タスク）",
     "overseers": "監督者",
     "churchNetworks": "教会ネットワーク",
     "churchNetworksList": "一覧",
@@ -144,7 +213,15 @@
     "givingMFP": "MFP献金",
     "peopleInCG": "CGの参加者数",
     "peopleInGTAndLIW": "GT・LIWの参加者数",
-    "newDecisions": "新しい決心"
+    "newDecisions": "新しい決心",
+    "peopleText": "Av. attendance last 3 months",
+    "growthText": "% growth over last year",
+    "givingTithesText": "Av. monthly giving",
+    "churchPlantsText": "Over last 3 years",
+    "givingMFPText": "Av. monthly MFP giving",
+    "peopleInCGText": "Av. attendance last 3 months",
+    "peopleInGTAndLIWText": "Av. attendance last 3 months",
+    "newDecisionsText": "In last 3 months"
   },
   "user": {
     "listTitle": "ユーザー一覧",
@@ -196,7 +273,14 @@
     "infoChurch": "牧師／リーダーが所属または導いている教会",
     "infoSensitiveNation": "この国は一般的にキリスト教活動に反対していますか？",
     "infoLanguage": "OMRで使用される言語",
-    "currentAssignments": "現在の任命"
+    "currentAssignments": "現在の任命",
+    "labelName": "Name",
+    "addNewUserBtn": "Add New User",
+    "geographicalRegion": "Geographical Region",
+    "languageRegion": "Language Region",
+    "churchApostolicRegions": "Church Apostolic Regions",
+    "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
+    "churchNetwork": "Church Network"
   },
   "church": {
     "listTitle": "教会一覧",
@@ -267,7 +351,17 @@
     "infoInstagram": "教会のInstagramアカウントリンク",
     "infoDateOfBirth": "最初の礼拝日",
     "phShortName": "例：VFC-NewLyn",
-    "phName": "例：Victory Family Centre – New Lynn"
+    "phName": "例：Victory Family Centre – New Lynn",
+    "addNewChurchBtn": "Add New Church",
+    "addNewChurchWithPastorBtn": "Add New Church & Pastor",
+    "sensitiveNation": "Sensitive Nation?",
+    "switchAnotherChurches": "Switch to another of your churches",
+    "needsVisit": "Needs a visit.",
+    "visitedBy": "Visited {date} by {name}",
+    "dataEntryStatus": "Data Entry Status",
+    "upToDateGoodWork": "Up to date, good work!",
+    "late": "Late",
+    "myChurches": "My Churches"
   },
   "message": {
     "errorTitle": "エラーが発生しました"
@@ -330,7 +424,12 @@
     "selectedChurch": "選択された教会",
     "selectedPastorLeader": "選択された牧師／リーダー",
     "maturity": "成熟度",
-    "weekYear": "週・年"
+    "weekYear": "週・年",
+    "weekEnding": "Week Ending",
+    "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
+    "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
+    "bibleReference": "Acts 1:8b",
+    "churchPlanted": "Church Planted"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />W{weekNumber}-{year}",
@@ -347,11 +446,13 @@
     "liwStudents": "LIW受講者",
     "numberLeaders": "リーダー数",
     "localGiving": "現地献金 {localCurrencyCode}",
-    "localGivingUsd": "現地献金 USD"
+    "localGivingUsd": "現地献金 USD",
+    "tithesOfferings": " Tithes & Offerings",
+    "missionMfpGiving": "Mission MFP Giving"
   },
   "monthlyData": {
     "labelAdult": "成人",
-    "xxx": "xxx"
+    "labelAdults": "成人"
   },
   "churchPlantingProjection": {
     "dashboardTitle": "教会開拓予測",
@@ -359,7 +460,83 @@
     "targetTown": "教会開拓対象都市",
     "estPop": "推定人口",
     "proposedLeader": "予定リーダー",
-    "stepProgressIndicator": "6段階進捗指標"
+    "listTitle": "開拓予測 - {churchName}",
+    "addTitle": "教会開拓予測を追加",
+    "editTitle": "教会開拓予測を編集 #{id} - コア情報",
+    "proposedChurchName": "予定教会名",
+    "step": "ステップ",
+    "labelTown": "町 / 市",
+    "labelNation": "国",
+    "labelProposedChurchName": "予定教会名",
+    "labelProposedLeaderName": "予定リーダー",
+    "labelPopulation": "町 / 市の人口",
+    "labelStartDatePreparation": "準備開始日",
+    "labelStartDatePreparationOriginal": "準備開始日（元）",
+    "labelStartDatePioneering": "開拓開始日",
+    "labelStartDatePioneeringOriginal": "開拓開始日（元）",
+    "labelStartDateForActualPioneering": "実際の開拓開始日",
+    "pioneeringDateOptionSixMonthsAfterPreparation": "準備開始日から6か月後",
+    "pioneeringDateOptionSpecificDate": "日付を指定",
+    "infoTownCity": "教会開拓のために選ばれた村・町・都市の所在地。",
+    "infoNation": "選ばれた村・町・都市が属する国。",
+    "infoTownCityPopulation": "その地域のおおよその人口。",
+    "infoDistanceToTown": "母教会から選ばれた開拓地までのおおよその距離。",
+    "infoProposedChurchName": "想定される教会名の案。通常は母教会名に「-」を挟み、その後に村・町などを続けます。",
+    "infoProposedLeader": "開拓を率いる予定の人物。まだ打診していなくても構いません。",
+    "infoStartDatePreparation": "開拓の計画を始める予定日。先駆けを始める少なくとも 6 か月前が目安です。",
+    "infoStartDateActualPioneering": "開拓者を派遣して先駆けを始める予定日。",
+    "labelDistanceToTown": "町までの距離",
+    "labelDistanceToTownUnit": "距離の単位",
+    "addNewBtn": "教会開拓予測を追加",
+    "sectionProjection": "予測情報",
+    "sectionSteps": "ステップ",
+    "projectedChurchPlantHeading": "予定されている教会開拓：",
+    "editProjectionBtn": "予測を編集",
+    "editStepsBtn": "ステップを編集",
+    "labelProjectedTo": "対象",
+    "labelTownCityPopulation": "町・市の人口",
+    "labelStartPreparations": "準備開始日",
+    "labelStartPioneering": "開拓開始日",
+    "summaryStepCompleted": "ステップ完了？",
+    "summaryDateCompleted": "完了日",
+    "matrixDateProposed": "提案日",
+    "matrixDateProposedOriginalLine": "オリジナル：{date}",
+    "stepProgressSummaryLabel": "ステップ",
+    "toggleStepsChartShow": "6ステップ表を表示",
+    "toggleStepsChartHide": "6ステップ表を隠す",
+    "saving": "保存中…",
+    "stepsLoadError": "ステップを読み込めません。再試行か編集へ。",
+    "markCompleted": "完了にする",
+    "stepsTitle": "ステップ計画",
+    "saveSteps": "ステップ計画を保存",
+    "checklistTitles": "行タイトル",
+    "rowTitleLabel": "行{index}のタイトル",
+    "globalTimeline": "全体スケジュール",
+    "labelGlobalDateProposed": "全体の提案日",
+    "labelGlobalDateCompleted": "全体の完了日",
+    "stepTitle": "ステップ{step}",
+    "labelStepDateProposed": "提案日",
+    "labelStepDateProposedOriginal": "元の提案日",
+    "labelStepDateCompleted": "完了日",
+    "rowPlaceholder": "メモやアクション",
+    "completed": "完了",
+    "infoSaved": "予測を保存しました。",
+    "stepsSaved": "ステップ計画を保存しました。",
+    "editStubHint": "投影#{id}の編集はここでは制限されています。一覧に戻って更新してください。",
+    "printNoChurch": "アカウントに教会が紐づいていません。",
+    "printLoadError": "印刷用に予測を読み込めませんでした。",
+    "printTitleSimple": "教会開拓 — 簡易表",
+    "printTitlePreview": "教会開拓 — 印刷プレビュー（ステップとタスク）",
+    "printButton": "印刷",
+    "editProjectionCoreTitle": "Edit Church Planting Projection – Core information",
+    "editStepsFor": "Edit Church Planting Projection Steps for",
+    "editStepsNumberRow": "6 Steps",
+    "labelTownCity": "Town / City",
+    "editLoadError": "Could not load this projection, or it does not belong to this church.",
+    "editSaveError": "Save failed. Please check the form and try again.",
+    "stepsSaveError": "Could not save step plan. Check required fields and try again.",
+    "retryLoad": "Retry",
+    "editStepsPageTitle": "Edit projection — Steps"
   },
   "attachment": {
     "dashboardTitle": "添付ファイル",
@@ -422,5 +599,23 @@
     "labelName": "名称",
     "labelLogo": "ロゴ",
     "labelParent": "親"
-  }
+  },
+  "support": {
+    "title": "OMR サポート",
+    "intro": "{name} さん、こんにちは。\n\nOMR（Operation Mission Report）へようこそ。月次報告を通じて教会と教会植えを支えるためのツールです。\n\n月次レポートを定期的に提出し、ご自身と導いている方々の助けになってください。\n\nご提案があればお聞かせください。\nご不便があれば、できる限りお手伝いします。\n\n下のフォームにご記入ください。\n\n祝福を、\nShane Comiskey",
+    "labelName": "氏名",
+    "labelSubject": "件名",
+    "labelMessage": "メッセージ",
+    "submit": "送信",
+    "submitSuccess": "サポート依頼を送信しました。ありがとうございます。"
+  },
+  "yearOld": "{date} [{year} Yrs old]",
+  "localGivingCurrency": "Local Giving {currency}",
+  "mfpGivingCurrency": "MFP Giving {currency}",
+  "id": "ID",
+  "name": "Name",
+  "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
+  "currentYear": "Current Year",
+  "lastYear": "Last Year",
+  "yearBeforeLast": "Year Before Last"
 }

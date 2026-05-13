@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch, computed, onMounted} from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDialogStore } from '@/stores/dialogStore'
 
@@ -7,92 +7,109 @@ const {t} = useI18n()
 const page = defineModel('page', { default: 1 })
 const itemsPerPage = defineModel('itemsPerPage', { default: 25 })
 const sortBy = defineModel('sortBy', { default: () => [] })
+const searches = defineModel<Array<{ key: string; value: unknown }>>('searches', { default: () => [] })
 const dialogStore = useDialogStore()
 
 const props = withDefaults(
   defineProps<{
-    items: any[],
-    headers: any[],
+    items: unknown[],
+    headers: Array<{ key: string; title: string; sortable?: boolean; removable?: boolean }>,
     enabledActions?:string[],
     actionTitles?: Record<string, string>,
     emptyPlaceholder?: string,
+    hideFooter?: boolean,
   }>(),
   {
-    totalItems: 0,
     itemsPerPage: 25,
-    enabledActions: [],
-    actionTitles: {
+    enabledActions: () => [],
+    actionTitles: () => ({
       edit: "dataTable.buttonEditTitle",
       delete: "dataTable.buttonDeleteTitle",
       clone: "dataTable.buttonCloneTitle",
       assignOverseer: "dataTable.buttonAssignOverseerTitle",
       disable: "dataTable.buttonDisableTitle",
       enable: "dataTable.buttonEnableTitle",
-    },
-    emptyPlaceholder: '-'
+    }),
+    emptyPlaceholder: '-',
+    hideFooter: false,
   }
 )
 
+const getItemValueAsString = (item: unknown, key: string) => {
+  const v = (item as Record<string, unknown>)?.[key]
+  if (v == null) return ''
+  if (Array.isArray(v)) return v.map(x => String(x ?? '')).join(' ')
+  return String(v)
+}
+
+const filteredItems = computed(() => {
+  const active = (searches.value ?? []).filter(s => {
+    const v = s?.value
+    return v !== '' && v !== null && v !== undefined
+  })
+  if (active.length === 0) return props.items
+
+  return props.items.filter(it => {
+    return active.every(s => {
+      const hay = getItemValueAsString(it, String(s.key)).toLowerCase()
+      const needle = String(s.value).toLowerCase()
+      return hay.includes(needle)
+    })
+  })
+})
+
+const totalItems = computed(() => filteredItems.value.length)
+const totalPages = computed(() => Math.max(1, Math.ceil(totalItems.value / itemsPerPage.value)))
+
+watch([filteredItems, itemsPerPage], () => {
+  if (page.value > totalPages.value) page.value = totalPages.value
+  if (page.value < 1) page.value = 1
+})
+
 const emit = defineEmits<{
-  (e: 'filter-change', value: any): void
-  (e: 'action:edit', value: any): void
-  (e: 'action:delete', value: any): void
-  (e: 'action:assignOverseer', value: any): void
-  (e: 'action:clone', value: any): void
-  (e: 'action:disable', value: any): void
-  (e: 'action:enable', value: any): void
+  (e: 'filter-change', value: unknown): void
+  (e: 'action:edit', value: unknown): void
+  (e: 'action:delete', value: unknown): void
+  (e: 'action:assignOverseer', value: unknown): void
+  (e: 'action:clone', value: unknown): void
+  (e: 'action:disable', value: unknown): void
+  (e: 'action:enable', value: unknown): void
 }>()
 
 // Handle actions
-const handleActionEdit = (item) => {
+const handleActionEdit = (item: unknown) => {
   emit('action:edit', item)
 }
 
-const handleActionDelete = async (item) => {
+const handleActionDelete = async (item: unknown) => {
   if (!await dialogStore.confirm(t('areYouSureWantToDelete'))) return
   emit('action:delete', item)
 }
 
-const handleActionClone = (item) => {
+const handleActionClone = (item: unknown) => {
   emit('action:clone', item)
 }
 
-const handleAssignOverseerAction = (item) => {
+const handleAssignOverseerAction = (item: unknown) => {
   emit('action:assignOverseer', item)
 }
 
-const handleDisableAction = async (item) => {
+const handleDisableAction = async (item: unknown) => {
   emit('action:disable', item)
 }
 
-const handleEnableAction = async (item) => {
+const handleEnableAction = async (item: unknown) => {
   emit('action:enable', item)
 }
 </script>
 
 <template>
-   <v-row class="mb-2 pt-2 px-2" dense>
-     <template v-for="(item, key) in searchesConfig" :key="key">
-      <v-col cols="6" md="3">
-        <v-text-field
-              v-model="searchModel[item.name]"
-              :placeholder="$t(item.label)"
-              single-line
-              variant="outlined"
-              class="mb-3"
-              @input="handleSearch"
-              hide-details
-            ></v-text-field>
-        </v-col>
-     </template>
-    </v-row>
-
     <v-data-table
       v-model:page="page"
       v-model:items-per-page="itemsPerPage"
       v-model:sort-by="sortBy"
       :headers="headers"
-      :items="items"
+      :items="filteredItems"
       class="bordered-table rounded-0"
       :no-data-text="$t('noData')"
     >
@@ -129,7 +146,7 @@ const handleEnableAction = async (item) => {
       </template>
     <template v-slot:item="{ item }">
         <tr>
-          <template v-for="(header, index) in headers" :key="item.id">
+          <template v-for="header in headers" :key="header.key">
             <td>
               <div v-if="header.key === 'actions'" class="d-flex ga-2 text-no-wrap">
                 <v-tooltip :text="$t('dataTable.buttonEditTitle')">
@@ -158,7 +175,7 @@ const handleEnableAction = async (item) => {
                 
                <v-tooltip :text="$t('dataTable.buttonDisableTitle')">
                   <template #activator="{ props }">
-                    <v-btn v-bind="props" icon="$cancel" size="x-small" @click="handleDisableAction(item)" v-if="enabledActions.includes('disable')" />
+                    <v-btn v-bind="props" icon="$blockHelper" size="x-small" @click="handleDisableAction(item)" v-if="enabledActions.includes('disable')" />
                   </template>
                </v-tooltip>
 
@@ -172,11 +189,33 @@ const handleEnableAction = async (item) => {
                 {{ item.disabled ? $t('yes') : $t('no') }}
               </div>
               <slot v-else :name="`item.${header.key}`" :item="item" :value="item[header.key]">
-                {{ item[header.key] }}
+                {{ item[header.key] || emptyPlaceholder }}
               </slot>
             </td>
         </template>
         </tr>
+      </template>
+
+      <template v-if="!hideFooter" #bottom>
+        <v-row class="pa-4 align-center">
+          <v-col cols="12" md="6" class="d-flex align-center">
+            <span>
+              {{ $t('pageText', {
+                from: (page - 1) * itemsPerPage + 1,
+                to: Math.min(page * itemsPerPage, totalItems),
+                total: totalItems
+              }) }}
+            </span>
+          </v-col>
+          <v-col cols="12" md="6" class="d-flex justify-end">
+            <v-pagination
+              v-model="page"
+              :length="totalPages"
+              :total-visible="5"
+              density="comfortable"
+            />
+          </v-col>
+        </v-row>
       </template>
     </v-data-table>
 </template>

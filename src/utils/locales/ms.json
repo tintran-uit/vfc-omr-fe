@@ -74,6 +74,65 @@
     "11": "Nov",
     "12": "Dis"
   },
+  "visitsAdd": {
+    "title": "Masukkan Lawatan",
+    "fields": {
+      "nation": "Negara",
+      "city": "Bandar",
+      "church": "Gereja"
+    },
+    "actions": {
+      "continue": "Teruskan",
+      "back": "Kembali",
+      "save": "Simpan"
+    },
+    "step1": {
+      "visitor": "Pelawat",
+      "visitorTooltip": "Jika anda memasukkan lawatan anda sendiri, pilih nama anda. Jika tidak, pilih orang yang betul untuk anda masukkan lawatan bagi pihaknya.",
+      "numberOfChurchesVisited": "Bilangan gereja yang dilawati",
+      "numberOfEventsOrganised": "Bilangan acara yang dianjurkan"
+    },
+    "step2": {
+      "title": "Langkah 2 - Lawatan & acara",
+      "context": {
+        "visitor": "Pelawat"
+      },
+      "noVisitsInfo": "Bilangan gereja yang dilawati ialah 0. Kembali ke Langkah 1 untuk menambahkannya.",
+      "visits": {
+        "cardTitlePrefix": "Lawatan saya ke gereja",
+        "weeklyRowLabel": "Masukkan bilangan hari anda melawat gereja ini",
+        "weeklyRowTooltip": "Bilangan hari anda melawat gereja ini"
+      },
+      "events": {
+        "cardTitlePrefix": "Lawatan saya ke acara yang dianjurkan",
+        "fields": {
+          "eventType": "Jenis acara",
+          "eventName": "Nama acara",
+          "attendance": "Anggaran kehadiran acara",
+          "meetingWith": "Bertemu dengan"
+        },
+        "tooltips": {
+          "eventType": "Pilih pilihan yang paling sesuai untuk menerangkan acara daripada senarai.",
+          "eventName": "Huraikan acara. Contoh: «Mesyuarat Pastor/Pemimpin di Glasgow» atau «Victory in Africa Conference – Kampala 2017»"
+        },
+        "weeklyRowLabel": "Hari menghadiri",
+        "weeklyRowTooltip": "Bilangan hari anda menghadiri acara ini"
+      }
+    },
+    "validation": {
+      "visitRequiredFields": "Sila lengkapkan Negara, Bandar, dan Gereja untuk setiap lawatan.",
+      "visitDaysInvalid": "Hari lawatan mesti nombor bulat >= 0.",
+      "eventRequiredFields": "Sila lengkapkan Negara, Jenis acara, dan Nama acara untuk setiap acara.",
+      "meetingWithRequired": "Sila pilih \"Bertemu dengan\" untuk jenis acara 1-1.",
+      "attendanceInvalid": "Kehadiran mesti nombor bulat >= 0.",
+      "daysRange0to7": "Hari mesti nombor bulat antara 0 hingga 7.",
+      "eventDaysInvalid": "Hari acara mesti nombor bulat >= 0.",
+      "atLeastOneWeek": "Sila masukkan bilangan hari untuk sekurang-kurangnya satu minggu."
+    },
+    "notifications": {
+      "saved": "Lawatan telah disimpan."
+    }
+  },
   "itemsPerPage": "Item setiap halaman",
   "pageText": "Menunjukkan {from}-{to} daripada {total}",
   "backToList": "Kembali ke Senarai",
@@ -91,7 +150,10 @@
     "worshipServices": "Ibadah",
     "newPastorAndNewChurch": "Tambah Gereja & Pastor Baharu",
     "newPastor": "Pastor Baharu",
-    "newChurch": "Gereja Baharu"
+    "newChurch": "Gereja Baharu",
+    "plantingProjections": "Unjuran Penanaman",
+    "enterVisits": "Enter Visits",
+    "editProfile": "Edit Profile"
   },
   "mainMenu": {
     "myDashboard": "Papan Pemuka Saya",
@@ -103,6 +165,13 @@
     "churchAdd": "Tambah Gereja Baharu",
     "churchAddWithPastor": "Tambah Gereja & Pastor Baharu",
     "disabledChurches": "Gereja Tidak Aktif",
+    "plantingProjections": "Unjuran Penanaman",
+    "churchPlantingProjections": "Unjuran Penanaman Gereja",
+    "churchPlantingAddProjections": "Tambah unjuran",
+    "churchPlantingViewProjections": "Lihat unjuran",
+    "churchPlantingPrintProjections": "Cetak unjuran",
+    "churchPlantingPrintSimpleSub": "Hamparan ringkas",
+    "churchPlantingPrintPreviewProjections": "Pratonton cetak: langkah & tugas",
     "overseers": "Penyelia",
     "churchNetworks": "Rangkaian Gereja",
     "churchNetworksList": "Senarai",
@@ -144,7 +213,15 @@
     "givingMFP": "Persembahan MFP",
     "peopleInCG": "Jemaat dalam CG",
     "peopleInGTAndLIW": "Jemaat dalam GT & LIW",
-    "newDecisions": "Keputusan Baharu"
+    "newDecisions": "Keputusan Baharu",
+    "peopleText": "Av. attendance last 3 months",
+    "growthText": "% growth over last year",
+    "givingTithesText": "Av. monthly giving",
+    "churchPlantsText": "Over last 3 years",
+    "givingMFPText": "Av. monthly MFP giving",
+    "peopleInCGText": "Av. attendance last 3 months",
+    "peopleInGTAndLIWText": "Av. attendance last 3 months",
+    "newDecisionsText": "In last 3 months"
   },
   "user": {
     "listTitle": "Senarai Pengguna",
@@ -196,9 +273,15 @@
     "infoChurch": "Gereja tempat Pastor atau Pemimpin berkhidmat atau memimpin",
     "infoSensitiveNation": "Adakah negara ini umumnya menentang aktiviti Kristian?",
     "infoLanguage": "Bahasa yang akan digunakan oleh OMR",
-    "currentAssignments": "Tugasan Semasa"
+    "currentAssignments": "Tugasan Semasa",
+    "labelName": "Name",
+    "addNewUserBtn": "Add New User",
+    "geographicalRegion": "Geographical Region",
+    "languageRegion": "Language Region",
+    "churchApostolicRegions": "Church Apostolic Regions",
+    "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
+    "churchNetwork": "Church Network"
   },
-
   "church": {
     "listTitle": "Senarai Gereja",
     "addTitle": "Tambah Gereja Baharu",
@@ -268,7 +351,17 @@
     "infoInstagram": "Pautan akaun Instagram gereja.",
     "infoDateOfBirth": "Tarikh ibadah pertama.",
     "phShortName": "cth. VFC-NewLyn",
-    "phName": "cth. Victory Family Centre – New Lynn"
+    "phName": "cth. Victory Family Centre – New Lynn",
+    "addNewChurchBtn": "Add New Church",
+    "addNewChurchWithPastorBtn": "Add New Church & Pastor",
+    "sensitiveNation": "Sensitive Nation?",
+    "switchAnotherChurches": "Switch to another of your churches",
+    "needsVisit": "Needs a visit.",
+    "visitedBy": "Visited {date} by {name}",
+    "dataEntryStatus": "Data Entry Status",
+    "upToDateGoodWork": "Up to date, good work!",
+    "late": "Late",
+    "myChurches": "My Churches"
   },
   "message": {
     "errorTitle": "Ralat telah berlaku"
@@ -331,7 +424,12 @@
     "selectedChurch": "Gereja Dipilih",
     "selectedPastorLeader": "Pastor / Pemimpin Dipilih",
     "maturity": "Kematangan",
-    "weekYear": "Minggu, Tahun"
+    "weekYear": "Minggu, Tahun",
+    "weekEnding": "Week Ending",
+    "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
+    "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
+    "bibleReference": "Acts 1:8b",
+    "churchPlanted": "Church Planted"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />M{weekNumber}-{year}",
@@ -348,11 +446,13 @@
     "liwStudents": "Pelajar LIW",
     "numberLeaders": "Bil. Pemimpin",
     "localGiving": "Persembahan Tempatan {localCurrencyCode}",
-    "localGivingUsd": "Persembahan Tempatan USD"
+    "localGivingUsd": "Persembahan Tempatan USD",
+    "tithesOfferings": " Tithes & Offerings",
+    "missionMfpGiving": "Mission MFP Giving"
   },
   "monthlyData": {
     "labelAdult": "Dewasa",
-    "xxx": "xxx"
+    "labelAdults": "Dewasa"
   },
   "churchPlantingProjection": {
     "dashboardTitle": "Unjuran Penanaman Gereja",
@@ -360,7 +460,83 @@
     "targetTown": "Bandar Sasaran Penanaman Gereja",
     "estPop": "Anggaran Populasi",
     "proposedLeader": "Pemimpin Dicadangkan",
-    "stepProgressIndicator": "Penunjuk Kemajuan 6 Langkah"
+    "listTitle": "Unjuran Penanaman - {churchName}",
+    "addTitle": "Tambah Unjuran Penanaman Gereja",
+    "editTitle": "Sunting Unjuran Penanaman Gereja #{id} - Maklumat Teras",
+    "proposedChurchName": "Nama Gereja Dicadangkan",
+    "step": "Langkah",
+    "labelTown": "Bandar / Kota",
+    "labelNation": "Negara",
+    "labelProposedChurchName": "Nama Gereja Dicadangkan",
+    "labelProposedLeaderName": "Pemimpin Dicadangkan",
+    "labelPopulation": "Populasi bandar / kota",
+    "labelStartDatePreparation": "Tarikh Mula Persediaan",
+    "labelStartDatePreparationOriginal": "Tarikh Mula Persediaan (Asal)",
+    "labelStartDatePioneering": "Tarikh Mula Perintisan",
+    "labelStartDatePioneeringOriginal": "Tarikh Mula Perintisan (Asal)",
+    "labelStartDateForActualPioneering": "Tarikh Mula Perintisan Sebenar",
+    "pioneeringDateOptionSixMonthsAfterPreparation": "6 bulan selepas Tarikh Mula Persediaan",
+    "pioneeringDateOptionSpecificDate": "Tarikh Tertentu",
+    "infoTownCity": "Kampung, bandar atau lokasi bandar raya yang dipilih untuk usaha penanaman gereja.",
+    "infoNation": "Negara tempat kampung, bandar atau lokasi bandar raya yang dipilih berada.",
+    "infoTownCityPopulation": "Anggaran bilangan penduduk di lokasi tersebut.",
+    "infoDistanceToTown": "Anggaran jarak dari gereja induk ke lokasi penanaman gereja yang dipilih.",
+    "infoProposedChurchName": "Anggaran terbaik anda untuk nama gereja. Biasanya nama gereja induk diikuti dengan « - » dan kampung / bandar dan sebagainya.",
+    "infoProposedLeader": "Orang yang anda fikirkan untuk memimpin penanaman gereja, walaupun belum ditanya lagi.",
+    "infoStartDatePreparation": "Tarikh anda merancang untuk memulakan perancangan penanaman gereja. Biasanya sekurang-kurangnya 6 bulan sebelum memulakan perintisan.",
+    "infoStartDateActualPioneering": "Tarikh anda merancang untuk memulakan perintisan dengan menghantar penanam gereja.",
+    "labelDistanceToTown": "Jarak ke Bandar",
+    "labelDistanceToTownUnit": "Unit Jarak",
+    "addNewBtn": "Tambah Unjuran Penanaman Gereja",
+    "sectionProjection": "Unjuran",
+    "sectionSteps": "Langkah",
+    "projectedChurchPlantHeading": "Penanaman gereja diunjurkan:",
+    "editProjectionBtn": "Sunting unjuran",
+    "editStepsBtn": "Sunting langkah",
+    "labelProjectedTo": "Diunjurkan ke",
+    "labelTownCityPopulation": "Populasi bandar",
+    "labelStartPreparations": "Tarikh mula persediaan",
+    "labelStartPioneering": "Tarikh mula perintisan",
+    "summaryStepCompleted": "Langkah selesai?",
+    "summaryDateCompleted": "Tarikh selesai",
+    "matrixDateProposed": "Tarikh dicadangkan",
+    "matrixDateProposedOriginalLine": "Asal: {date}",
+    "stepProgressSummaryLabel": "Langkah",
+    "toggleStepsChartShow": "Tunjuk carta 6 langkah",
+    "toggleStepsChartHide": "Sembunyikan carta 6 langkah",
+    "saving": "Menyimpan…",
+    "stepsLoadError": "Tidak dapat memuatkan langkah. Cuba lagi atau Sunting langkah.",
+    "markCompleted": "Tandakan selesai",
+    "stepsTitle": "Pelan langkah unjuran",
+    "saveSteps": "Simpan pelan langkah",
+    "checklistTitles": "Tajuk baris senarai",
+    "rowTitleLabel": "Tajuk baris {index}",
+    "globalTimeline": "Garis masa keseluruhan",
+    "labelGlobalDateProposed": "Tarikh dicadangkan (keseluruhan)",
+    "labelGlobalDateCompleted": "Tarikh selesai (keseluruhan)",
+    "stepTitle": "Langkah {step}",
+    "labelStepDateProposed": "Tarikh dicadangkan",
+    "labelStepDateProposedOriginal": "Tarikh asal dicadangkan",
+    "labelStepDateCompleted": "Tarikh selesai",
+    "rowPlaceholder": "Nota atau tindakan",
+    "completed": "Selesai",
+    "infoSaved": "Butiran unjuran disimpan.",
+    "stepsSaved": "Pelan langkah disimpan.",
+    "editStubHint": "Pengeditan unjuran #{id} dihad di sini. Kembali ke senarai.",
+    "printNoChurch": "Tiada gereja dipautkan ke akaun anda.",
+    "printLoadError": "Tidak dapat memuat unjuran untuk dicetak.",
+    "printTitleSimple": "Penanaman — hamparan ringkas",
+    "printTitlePreview": "Penanaman — pratonton cetak (langkah & tugas)",
+    "printButton": "Cetak",
+    "editProjectionCoreTitle": "Edit Church Planting Projection – Core information",
+    "editStepsFor": "Edit Church Planting Projection Steps for",
+    "editStepsNumberRow": "6 Steps",
+    "labelTownCity": "Town / City",
+    "editLoadError": "Could not load this projection, or it does not belong to this church.",
+    "editSaveError": "Save failed. Please check the form and try again.",
+    "stepsSaveError": "Could not save step plan. Check required fields and try again.",
+    "retryLoad": "Retry",
+    "editStepsPageTitle": "Edit projection — Steps"
   },
   "attachment": {
     "dashboardTitle": "Lampiran",
@@ -423,5 +599,23 @@
     "labelName": "Nama",
     "labelLogo": "Logo",
     "labelParent": "Induk"
-  }
+  },
+  "support": {
+    "title": "Sokongan OMR",
+    "intro": "Hi {name},\n\nSelamat datang ke OMR, alat laporan bulanan anda untuk membantu mengurus gereja dan penanaman gereja.\n\nBantu diri sendiri dan mereka yang anda bimbing dengan menghantar laporan bulanan dengan konsisten.\n\nJika anda mempunyai cadangan, hubungi saya.\nJika menghadapi kesulitan, saya akan cuba membantu.\n\nIsi borang di bawah.\n\nBerlimpah berkat,\nShane Comiskey",
+    "labelName": "Nama",
+    "labelSubject": "Perkara",
+    "labelMessage": "Mesej",
+    "submit": "Hantar",
+    "submitSuccess": "Permintaan sokongan anda telah dihantar. Terima kasih."
+  },
+  "yearOld": "{date} [{year} Yrs old]",
+  "localGivingCurrency": "Local Giving {currency}",
+  "mfpGivingCurrency": "MFP Giving {currency}",
+  "id": "ID",
+  "name": "Name",
+  "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
+  "currentYear": "Current Year",
+  "lastYear": "Last Year",
+  "yearBeforeLast": "Year Before Last"
 }

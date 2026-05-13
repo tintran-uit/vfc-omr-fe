@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router'
-import {useDialogStore} from '@/stores/dialogStore'
+import { ref } from 'vue';
 import {userService} from '@/services/userService.ts';
 import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
+import TablePageShell from "@/components/shared/TablePageShell.vue";
+import TableSearchBox from "@/components/tables/TableSearchBox.vue";
 import tableSchema from '@/table-schemas/overseerTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 
-const router = useRouter()
-const dialogStore = useDialogStore()
 const items = ref([])
 const page = ref(1)
 const itemsPerPage = ref(25)
@@ -26,6 +24,14 @@ const fetchData = async function (options = {}) {
   totalItems.value = data.total_pages;
 }
 
+const onAssignOverseer = () => {
+  alert('This function is in building.')
+}
+
+const onUpdateOptions = (options) => {
+  fetchData(options);
+}
+
 const buildOptions = () => {
   return {
     page: page.value,
@@ -35,61 +41,46 @@ const buildOptions = () => {
   }
 }
 
-const onAssignOverseer = (item: any) => {
-  alert('This function is in building.')
-}
-
-const onUpdateOptions = (options) => {
-  fetchData(options);
+const onSearch = () => {
+  fetchData(buildOptions())
 }
 </script>
 
 <template>
-  <v-row class="page-breadcrumb mb-0 mt-n2">
-    <v-col cols="12" md="12">
-      <v-card elevation="0" variant="text">
-        <v-row no-gutters class="align-center">
-          <!-- Title -->
-          <v-col cols="12" md="6" class="d-flex align-center">
-            <h3 class="text-h3 mt-5 mb-5">{{ $t('user.listOverseerTitle') }}</h3>
-          </v-col>
-          <!-- #Title -->
+  <TablePageShell title-key="user.listOverseerTitle">
+    <template #header-right>
+      <TableSearchBox
+        v-model:searches="searches"
+        :searches-config="tableSchema.searches"
+        @search="onSearch"
+      />
+    </template>
 
-          
-        </v-row>
-      </v-card>
-    </v-col>
-  </v-row>
-
-  <v-row>
-    <v-col cols="12">
-      <v-card variant="outlined" elevation="0" class="bg-surface overflow-hidden">
-        <DynamicTableDefault
-          v-model:page="page"
-          v-model:items-per-page="itemsPerPage"
-          v-model:searches="searches"
-          v-model:sort-by="sortBy"
-          :total-items="totalItems"
-          :headers="tableSchema.headers"
-          :searches-config="tableSchema.searches"
-          :items="items"
-          :enabled-actions="['assignOverseer']"
-          @action:assign-overseer="onAssignOverseer"
-          @update:options="onUpdateOptions"
+    <DynamicTableDefault
+      v-model:page="page"
+      v-model:items-per-page="itemsPerPage"
+      v-model:searches="searches"
+      v-model:sort-by="sortBy"
+      :hide-title="true"
+      :hide-header="true"
+      :total-items="totalItems"
+      :headers="tableSchema.headers"
+      :items="items"
+      :enabled-actions="['assignOverseer']"
+      @action:assign-overseer="onAssignOverseer"
+      @update:options="onUpdateOptions"
+    >
+      <template v-slot:[`item.name`]="{ item }">
+        <a
+          href="#"
+          variant="text"
+          class="text-primary"
         >
-        <template v-slot:item.name="{ item }">
-                  <a
-                    href="#"
-                    variant="text"
-                    class="text-primary"
-                  >
-                    {{ item.name }}
+          {{ item.name }}
         </a>
-                </template>
-        </DynamicTableDefault>
-      </v-card>
-    </v-col>
-  </v-row>
+      </template>
+    </DynamicTableDefault>
+  </TablePageShell>
 </template>
 
 <style scoped lang="scss">

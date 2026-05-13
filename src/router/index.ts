@@ -60,6 +60,18 @@ router.beforeEach((to, from, next) => {
     return next('/dashboard');
   }
 
+  const withRoutePermissions = to.matched
+    .slice()
+    .reverse()
+    .find((r) => (r.meta as { permissions?: string[] })?.permissions);
+  const routePerms = (withRoutePermissions?.meta as { permissions?: string[] })?.permissions;
+  if (routePerms?.length && authStore.user) {
+    const allowed = routePerms.every((p) => authStore.can(p));
+    if (!allowed) {
+      return next({ name: 'Dashboard' });
+    }
+  }
+
   next();
 });
 

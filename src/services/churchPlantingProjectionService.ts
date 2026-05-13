@@ -18,8 +18,22 @@ export const churchPlantingProjectionService  = {
     async create(jsonData) {
         return await apiClient.post(`/church-planting-projections`, jsonData);
     },
-    async update(id, jsonData) {
-        return await apiClient.patch(`/church-planting-projections/${id}`, jsonData);
+    async update(id, jsonData, showLoading = true) {
+        return await apiClient.patch(`/church-planting-projections/${id}`, jsonData, showLoading);
+    },
+    async getSteps(projectionId, showLoading = true) {
+        return await apiClient.get(
+            `/church-planting-projections/${projectionId}/steps`,
+            {},
+            showLoading
+        );
+    },
+    async updateSteps(projectionId, jsonData, showLoading = true) {
+        return await apiClient.patch(
+            `/church-planting-projections/${projectionId}/steps`,
+            jsonData,
+            showLoading
+        );
     },
     async del(id) {
         return await apiClient.del(`/church-planting-projections/${id}`);

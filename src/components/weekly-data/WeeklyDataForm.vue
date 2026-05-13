@@ -99,6 +99,8 @@ onMounted(() => {
       <div class="d-flex justify-space-between">
         <v-btn
           variant="outlined"
+          size="large"
+          class="px-8"
           @click="$emit('back')"
           v-if="!isFirstTab"
         >
@@ -109,6 +111,8 @@ onMounted(() => {
 
         <v-btn
           color="primary"
+          size="large"
+          class="px-8"
           @click="submit"
         >
           {{ isLastTab ? "Finish" : "Save & Next" }}
