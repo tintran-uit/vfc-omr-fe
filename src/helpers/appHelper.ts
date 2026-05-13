@@ -1,4 +1,4 @@
-import { formatDate } from '@/helpers/datetimeHelper'
+import { formatDate } from '@/helpers/dateTimeHelper'
 
 export function getLocale(): string {
   return localStorage.getItem('language') || 'en-GB'

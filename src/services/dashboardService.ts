@@ -16,4 +16,10 @@ export const dashboardService = {
   async getOverseerIndicators() {
     return await apiClient.get(`dashboard/overseer-indicators`, {}, false);
   },
+  async getOverseerAssignmentsMyOverseers() {
+    return await apiClient.get(`dashboard/overseer-assignments/my-overseers`, {}, false);
+  },
+  async getOverseerAssignmentsMyOverseersNextLevel() {
+    return await apiClient.get(`dashboard/overseer-assignments/my-overseers-next-level`, {}, false);
+  }
 };
