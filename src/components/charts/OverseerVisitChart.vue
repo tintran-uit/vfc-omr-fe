@@ -7,7 +7,7 @@ import { formatDate } from "@/helpers/dateTimeHelper";
 
 /* ================== SETUP ================== */
 const theme = useTheme();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const props = withDefaults(
   defineProps<{
@@ -37,7 +37,7 @@ const formatTooltipContent = (d: any) => {
   return `
     <div style="line-height: 1.5">
       <div class="mb-1"><b>${t("chart.visits")}</b></div>
-      Week: <strong>${d.week} - ${d.year}</strong><br>
+      ${t("chart.week")}: <strong>${d.week} - ${d.year}</strong><br>
       ${t("chart.weekEnding")}: <strong>${d.xLabel}</strong><br>
       ${t("chart.visits")}: <b>${d.visits}</b>
     </div>
@@ -183,7 +183,7 @@ const drawChart = () => {
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("fill", "#2B6893")
-    .text("Weeks for year 2026");
+    .text(t("chart.weeksForYear"));
 
   /* ===== Y AXIS ===== */
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5));
@@ -208,6 +208,9 @@ watch(
   },
   { deep: true },
 );
+
+// Axis/tooltip text is drawn imperatively via D3, so redraw when the language changes.
+watch(locale, () => nextTick(drawChart));
 </script>
 <template>
   <div class="pa-4">

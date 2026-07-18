@@ -92,20 +92,6 @@ const actions = computed(() => {
         name: 'ChurchAdd'
       }
     },
-    ...(authStore.can('church-planting.read')
-      ? [
-          {
-            title: 'dashboardMenu.plantingProjections',
-            icon: '$sprout',
-            to: {
-              name: 'PlantingProjectionList',
-              params: {
-                churchId: churchDetail.value?.id
-              }
-            }
-          },
-        ]
-      : []),
   ]
 })
 

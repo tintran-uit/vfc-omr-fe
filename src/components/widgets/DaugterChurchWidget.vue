@@ -1,73 +1,97 @@
 <script setup lang="ts">
-import {ref, watch, computed, onMounted, defineAsyncComponent} from 'vue'
-import {useDialogStore} from '@/stores/dialogStore'
-import CardHeader from '../shared/CardHeader.vue';
-import { churchService } from '@/services/churchService';
-import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
-import tableSchema from '@/table-schemas/churchTableSchema';
-import { tableOptionsToParams } from '@/helpers/dataTableHelper';
-import { useAuthStore } from '@/stores/authStore';
+import { ref, watch, computed, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import CardHeader from '../shared/CardHeader.vue'
+import TableSearchBox from '@/components/tables/TableSearchBox.vue'
+import { churchService } from '@/services/churchService'
+import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue'
+import tableSchema from '@/table-schemas/churchTableSchema'
+import { tableOptionsToParams } from '@/helpers/dataTableHelper'
+import { useAuthStore } from '@/stores/authStore'
 
-const authStore = useAuthStore();
+const router = useRouter()
+const authStore = useAuthStore()
 const props = withDefaults(
   defineProps<{
-    churchId: number,
+    churchId: number
   }>(),
-  {
-  }
+  {}
 )
-const dialogStore = useDialogStore()
 const items = ref([])
 const page = ref(1)
 const itemsPerPage = ref(25)
 const totalItems = ref(0)
-const search = ref({})
-const sortBy = ref([
-  { key: 'id', order: 'desc' }
-])
+const searches = ref<Array<{ key: string; value: unknown }>>([])
+const sortBy = ref([{ key: 'id', order: 'desc' }])
+
+let fetchSeq = 0
 
 const actions = computed(() => {
   return [
-  ...(authStore.can('church.update') ? ['edit'] : []),
-   ...(authStore.can('church.clone') ? ['clone'] : []),
+    ...(authStore.can('church.update') ? ['edit'] : []),
+    ...(authStore.can('church.clone') ? ['clone'] : []),
     ...(authStore.can('church.disable') ? ['disable'] : []),
-  ];
+  ]
 })
 
-const fetchData = async function (options = {}) {
+const buildOptions = () => ({
+  page: page.value,
+  itemsPerPage: itemsPerPage.value,
+  sortBy: sortBy.value,
+  searches: searches.value,
+})
+
+const fetchData = async function (options: Record<string, unknown> = {}) {
+  if (!props.churchId) return
+
+  const seq = ++fetchSeq
   const data = await churchService.getListDaughter(
     props.churchId,
-    tableOptionsToParams(options),
+    tableOptionsToParams({
+      ...options,
+      searches: searches.value,
+    }),
     false
   )
 
-  items.value = data.items;
-  totalItems.value = data.total_pages;
+  if (seq !== fetchSeq) return
+
+  items.value = data.items
+  totalItems.value = data.total_pages
 }
 
 const onEdit = (item: any) => {
   router.push({ name: 'ChurchEdit', params: { id: item.id } })
 }
 
-const onClone = (item) => {
+const onClone = (item: any) => {
   router.push({ name: 'ChurchClone', params: { id: item.id } })
 }
 
 const onDisable = async (item: any) => {
   await churchService.disable(item.id)
-  
-  fetchData()
+  fetchData(buildOptions())
 }
 
-const onUpdateOptions = (options) => {
-  fetchData(options);
+const onUpdateOptions = (options: Record<string, unknown>) => {
+  fetchData(options)
+}
+
+const onSearch = async (payload: Array<{ key: string; value: unknown }> = []) => {
+  searches.value = payload
+  if (page.value !== 1) {
+    page.value = 1
+  }
+  await nextTick()
+  await fetchData(buildOptions())
 }
 
 watch(
-  () => props.userId,
+  () => props.churchId,
   async (newVal, oldVal) => {
     if (newVal && newVal !== oldVal) {
-      fetchData(newVal)
+      searches.value = []
+      await fetchData(buildOptions())
     }
   },
   { immediate: true }
@@ -76,17 +100,28 @@ watch(
 
 <template>
   <CardHeader :title="$t('church.dashboardDaugterChurchTitle')">
+    <template #header>
+      <TableSearchBox
+        v-model:searches="searches"
+        :searches-config="tableSchema.searches"
+        inline
+        @search="onSearch"
+      />
+    </template>
+
     <DynamicTableDefault
       v-model:page="page"
       v-model:items-per-page="itemsPerPage"
-      v-model:search="search"
+      v-model:searches="searches"
       v-model:sort-by="sortBy"
       :total-items="totalItems"
       :headers="tableSchema.headers"
-      :searches-config="tableSchema.searches"
       :items="items"
       :enabled-actions="actions"
+      :hide-header="true"
+      :hide-title="true"
       @action:edit="onEdit"
+      @action:clone="onClone"
       @action:disable="onDisable"
       @update:options="onUpdateOptions"
     >
@@ -117,7 +152,7 @@ watch(
           variant="text"
           :to="{ name: 'ChurchDetail', params: { id: item.id } }"
         >
-        {{ item.name }}
+          {{ item.name }}
         </v-btn>
       </template>
     </DynamicTableDefault>

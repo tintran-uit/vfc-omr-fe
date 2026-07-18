@@ -18,6 +18,8 @@ const props = withDefaults(
     actionTitles?: Record<string, string>,
     emptyPlaceholder?: string,
     hideFooter?: boolean,
+    /** When set, replaces default translated `noData` for empty table body. */
+    noDataMessage?: string | null,
   }>(),
   {
     itemsPerPage: 25,
@@ -32,6 +34,7 @@ const props = withDefaults(
     }),
     emptyPlaceholder: '-',
     hideFooter: false,
+    noDataMessage: null,
   }
 )
 
@@ -101,6 +104,13 @@ const handleDisableAction = async (item: unknown) => {
 const handleEnableAction = async (item: unknown) => {
   emit('action:enable', item)
 }
+
+const noDataTextResolved = computed(() => {
+  if (props.noDataMessage != null && String(props.noDataMessage).trim() !== "") {
+    return props.noDataMessage;
+  }
+  return t("noData");
+});
 </script>
 
 <template>
@@ -111,7 +121,7 @@ const handleEnableAction = async (item: unknown) => {
       :headers="headers"
       :items="filteredItems"
       class="bordered-table rounded-0"
-      :no-data-text="$t('noData')"
+      :no-data-text="noDataTextResolved"
     >
     <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
         <tr class="bg-containerBg">
@@ -123,7 +133,7 @@ const handleEnableAction = async (item: unknown) => {
                     class="me-2 cursor-pointer"
                     @click="toggleSort(column)"
                   >
-                {{ $t(column.title) }}
+                {{ column.title ? $t(column.title) : '' }}
                 </span>
 
                   <v-icon
@@ -136,7 +146,7 @@ const handleEnableAction = async (item: unknown) => {
                   <span
                     class="me-2 cursor-pointer"
                   >
-                  {{ $t(column.title) }}
+                  {{ column.title ? $t(column.title) : '' }}
                 </span>
                 </template>
               </div>
@@ -148,7 +158,9 @@ const handleEnableAction = async (item: unknown) => {
         <tr>
           <template v-for="header in headers" :key="header.key">
             <td>
-              <div v-if="header.key === 'actions'" class="d-flex ga-2 text-no-wrap">
+              <template v-if="header.key === 'actions'">
+                <slot name="item.actions" :item="item">
+                  <div class="d-flex ga-2 text-no-wrap">
                 <v-tooltip :text="$t('dataTable.buttonEditTitle')">
                   <template #activator="{ props }">
                     <v-btn v-bind="props" icon="$edit" size="x-small" @click="handleActionEdit(item)" v-if="enabledActions.includes('edit')" />
@@ -184,13 +196,17 @@ const handleEnableAction = async (item: unknown) => {
                     <v-btn v-bind="props" icon="$check" size="x-small" @click="handleEnableAction(item)" v-if="enabledActions.includes('enable')" />
                   </template>
                 </v-tooltip>
-              </div>
-              <div v-if="header.key === 'disabled'">
+                  </div>
+                </slot>
+              </template>
+              <template v-else-if="header.key === 'disabled'">
                 {{ item.disabled ? $t('yes') : $t('no') }}
-              </div>
-              <slot v-else :name="`item.${header.key}`" :item="item" :value="item[header.key]">
+              </template>
+              <template v-else>
+              <slot :name="`item.${header.key}`" :item="item" :value="item[header.key]">
                 {{ item[header.key] || emptyPlaceholder }}
               </slot>
+              </template>
             </td>
         </template>
         </tr>

@@ -44,6 +44,13 @@
   "confirm": "Confirmar",
   "omrSupport": "Soporte OMR",
   "more": "Más",
+  "less": "Menos",
+  "seeMore": "Ver más",
+  "goal": "Meta",
+  "actual": "Real",
+  "goalValue": "Meta: {value}",
+  "actualValue": "Real: {value}",
+  "myOversight": "Mi supervisión",
   "ormId": "OMR #",
   "column": {
     "name": "Nombre",
@@ -210,6 +217,7 @@
     "relatingMultiUserRestrictions": "Restricciones para múltiples usuarios",
     "faq": "Preguntas frecuentes",
     "faqList": "Lista de preguntas frecuentes",
+    "faqSearch": "Buscar preguntas frecuentes",
     "faqAdd": "Agregar pregunta frecuente",
     "list": "Lista",
     "addNew": "Agregar nuevo"
@@ -438,7 +446,11 @@
     "last4WeeksDetail": "Estos registros detallan las últimas 4 semanas reportadas",
     "churchPlanted": "Iglesia plantada",
     "bibleReference": "Hechos 1:8b",
-    "bibleVerse": "Y seréis mis testigos, hablando de mí en todas partes: en Jerusalén, por toda Judea, en Samaria y hasta los confines de la tierra."
+    "bibleVerse": "Y seréis mis testigos, hablando de mí en todas partes: en Jerusalén, por toda Judea, en Samaria y hasta los confines de la tierra.",
+    "years": "Años",
+    "weeksForYear": "Semanas del año",
+    "count": "Cantidad",
+    "pastoralVisitsGraph": "Visitas Pastorales en los Últimos 12 Meses"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />S{weekNumber}-{year}",
@@ -545,7 +557,10 @@
     "printLoadError": "No se pudieron cargar las proyecciones para imprimir.",
     "printTitleSimple": "Plantación de iglesias — hoja simple",
     "printTitlePreview": "Plantación de iglesias — vista previa (pasos y tareas)",
-    "printButton": "Imprimir"
+    "printButton": "Imprimir",
+    "editStepsHint": "Edita un paso a la vez. Los títulos de fila se comparten en los 6 pasos.",
+    "checklistTitlesHint": "Estas etiquetas aparecen en cada paso. Configúralas una vez y luego completa las notas por paso.",
+    "editStepsScrollHint": "Desplázate horizontalmente para ver los 6 pasos."
   },
   "attachment": {
     "dashboardTitle": "Archivos adjuntos",
@@ -617,5 +632,34 @@
     "labelMessage": "Mensaje",
     "submit": "Enviar",
     "submitSuccess": "Su solicitud de soporte se envió. Gracias."
+  },
+  "faq": {
+    "listTitle": "Preguntas frecuentes",
+    "searchTitle": "Buscar preguntas frecuentes",
+    "detailTitle": "Preguntas frecuentes",
+    "addTitle": "Agregar FAQ",
+    "editTitle": "Editar FAQ #{id}",
+    "search": "Buscar",
+    "language": "Idioma",
+    "country": "País",
+    "runSearch": "Buscar",
+    "searchEmptyHint": "Escriba texto de búsqueda y seleccione un idioma para cargar las FAQs.",
+    "questionHeader": "Pregunta",
+    "answer": "Respuesta",
+    "tags": "Etiquetas",
+    "tagHint": "Escriba una etiqueta y pulse Intro",
+    "tagCommaHint": "Separe varias etiquetas con comas.",
+    "view": "Ver",
+    "print": "Imprimir",
+    "loadError": "No se pudo cargar esta FAQ.",
+    "empty": "No se encontraron FAQs."
+  },
+  "pageTitle": {
+    "login": "Iniciar sesión",
+    "test": "Página de prueba",
+    "reportForm": "Formulario de informe",
+    "churchDetail": "Detalles de la iglesia",
+    "userDetail": "Detalles del usuario",
+    "notFound": "Página no encontrada"
   }
 }

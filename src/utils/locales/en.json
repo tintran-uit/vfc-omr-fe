@@ -38,6 +38,13 @@
   "confirm": "Confirm",
   "omrSupport": "OMR Support",
   "more": "More",
+  "less": "Less",
+  "seeMore": "See more",
+  "goal": "Goal",
+  "actual": "Actual",
+  "goalValue": "Goal: {value}",
+  "actualValue": "Actual: {value}",
+  "myOversight": "My Oversight",
   "ormId": "OMR #",
   "yearOld": "{date} [{year} Yrs old]",
   "localGivingCurrency": "Local Giving {currency}",
@@ -210,6 +217,7 @@
     "relatingMultiUserRestrictions": "Multi-User Restrictions",
     "faq": "FAQ",
     "faqList": "List FAQ",
+    "faqSearch": "Search FAQ",
     "faqAdd": "Add FAQ",
     "list": "List",
     "addNew": "Add New"
@@ -438,7 +446,11 @@
     "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
     "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
     "bibleReference": "Acts 1:8b",
-    "churchPlanted": "Church Planted"
+    "churchPlanted": "Church Planted",
+    "years": "Years",
+    "weeksForYear": "Weeks for year",
+    "count": "Count",
+    "pastoralVisitsGraph": "Pastoral Visits in the Last 12 Months"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}",
@@ -524,8 +536,10 @@
     "markCompleted": "Mark as completed",
     "stepsTitle": "Projection step plan",
     "editStepsPageTitle": "Edit projection — Steps",
+    "editStepsHint": "Edit one step at a time. Row titles are shared across all 6 steps.",
     "saveSteps": "Save step plan",
     "checklistTitles": "Checklist row titles",
+    "checklistTitlesHint": "These labels appear on every step. Set them once, then fill notes per step.",
     "rowTitleLabel": "Row {index} title",
     "globalTimeline": "Overall timeline",
     "labelGlobalDateProposed": "Overall proposed date",
@@ -543,7 +557,8 @@
     "printLoadError": "Could not load projections for printing.",
     "printTitleSimple": "Church Planting — simple spreadsheet",
     "printTitlePreview": "Church Planting — print preview (steps & tasks)",
-    "printButton": "Print"
+    "printButton": "Print",
+    "editStepsScrollHint": "Scroll horizontally to see all 6 steps."
   },
   "attachment": {
     "dashboardTitle": "Attachments",
@@ -615,5 +630,34 @@
     "labelMessage": "Message",
     "submit": "Send",
     "submitSuccess": "Your support request was sent. Thank you."
+  },
+  "faq": {
+    "listTitle": "FAQ",
+    "searchTitle": "Search FAQ",
+    "detailTitle": "FAQ",
+    "addTitle": "Add FAQ",
+    "editTitle": "Edit FAQ #{id}",
+    "search": "Search",
+    "language": "Language",
+    "country": "Country",
+    "runSearch": "Search",
+    "searchEmptyHint": "Enter search text and select a language to load FAQs.",
+    "questionHeader": "Question",
+    "answer": "Answer",
+    "tags": "Tags",
+    "tagHint": "Type a tag and press Enter",
+    "tagCommaHint": "Separate multiple tags with commas.",
+    "view": "View",
+    "print": "Print",
+    "loadError": "Could not load this FAQ.",
+    "empty": "No FAQs found."
+  },
+  "pageTitle": {
+    "login": "Login",
+    "test": "Test Page",
+    "reportForm": "Report Form",
+    "churchDetail": "Church Details",
+    "userDetail": "User Details",
+    "notFound": "Page Not Found"
   }
 }

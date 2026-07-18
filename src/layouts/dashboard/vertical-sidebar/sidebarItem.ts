@@ -9,7 +9,8 @@ import {
   EnvironmentOutlined,
   CompassOutlined,
   HomeOutlined,
-  CalendarOutlined
+  CalendarOutlined,
+  QuestionOutlined
 } from "@ant-design/icons-vue";
 import churchIcon from "@/assets/images/icons/house.png";
 import peopleIcon from "@/assets/images/metrics/people.svg";
@@ -31,6 +32,7 @@ export interface menu {
   type?: string;
   subCaption?: string;
   permissions?: string[];
+  exact?: boolean;
 }
 
 const sidebarItem: menu[] = [
@@ -40,6 +42,7 @@ const sidebarItem: menu[] = [
     title: "mainMenu.myDashboard",
     icon: DashboardOutlined,
     to: "/",
+    exact: true,
     // children: [
     //   {
     //     id: 'default',
@@ -313,6 +316,34 @@ const sidebarItem: menu[] = [
         title: "mainMenu.addNew",
         to: "/languages/add",
         permissions: ["languages.create"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.faq",
+    icon: QuestionOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "faq-list",
+        title: "mainMenu.faqList",
+        to: "/faqs",
+        permissions: ["faq.read"],
+      },
+      {
+        id: "faq-search",
+        title: "mainMenu.faqSearch",
+        to: "/faqs/search",
+        permissions: ["faq.read"],
+      },
+      {
+        id: "faq-add",
+        title: "mainMenu.faqAdd",
+        to: "/faqs/add",
+        permissions: ["faq.create"],
       },
     ],
   },

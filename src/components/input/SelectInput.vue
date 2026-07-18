@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
@@ -17,9 +16,12 @@ const props = withDefaults(
     returnObject?: boolean
     noDataText?: string
     rules?: (string | ((v: any) => boolean | string))[]
+    /** Show label on outlined field instead of separate v-label above */
+    labelOnField?: boolean
   }>(),
   {
     rules: () => [],
+    labelOnField: false,
   }
 )
 
@@ -27,13 +29,11 @@ const emit = defineEmits<{
   (e: 'change', value: any): void
 }>()
 
-const translatedLabel = computed(() => label ? t(label) : '')
-const translatedPlaceholder = computed(() => placeholder ? t(placeholder) : '')
-const translatedNoDataText = computed(() => noDataText ? t(noDataText) : t('noData'))
+const resolvedLabel = computed(() => (props.label ? t(props.label) : undefined))
 </script>
 
 <template>
-    <v-label class="text-wrap">{{label}}</v-label>
+    <v-label v-if="label && !labelOnField" class="text-wrap">{{ resolvedLabel }}</v-label>
 
     <v-autocomplete
       :items="items"
@@ -41,6 +41,7 @@ const translatedNoDataText = computed(() => noDataText ? t(noDataText) : t('noDa
       variant="outlined"
       density="compact"
       :rules="rules"
+      :label="labelOnField ? resolvedLabel : undefined"
       :item-title="itemTitle"
       :item-value="itemValue"
       v-model="modelValue"
@@ -50,8 +51,7 @@ const translatedNoDataText = computed(() => noDataText ? t(noDataText) : t('noDa
       scroll-strategy="close"
       @update:modelValue="emit('change', $event)"
       v-bind="$attrs"
-
-    ></v-autocomplete>
+    />
 </template>
 
 <style scoped lang="scss">

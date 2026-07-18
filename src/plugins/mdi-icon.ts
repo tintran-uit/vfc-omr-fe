@@ -48,6 +48,7 @@ import {
   mdiCheckCircleOutline,
   mdiCalendarMonth,
   mdiFlowerOutline,
+  mdiPrinter,
 } from "@mdi/js";
 import { mdi } from "vuetify/iconsets/mdi-svg";
 
@@ -109,4 +110,5 @@ export const icons = {
 
   calendar: mdiCalendarMonth,
   sprout: mdiFlowerOutline,
+  printer: mdiPrinter,
 };

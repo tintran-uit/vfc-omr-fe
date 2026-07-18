@@ -14,7 +14,7 @@ const props = withDefaults(
 </script>
 
 <template>
-  <CardHeader title="Churches Planted Annually Over the Last 10 Years">
+  <CardHeader :title="$t('chart.churchPlanted')">
     <OverseerChurchPlantedChart :data="data" />
   </CardHeader>
 </template>

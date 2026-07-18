@@ -60,7 +60,11 @@ const adminPermissions = [
   'countries.read',
   'countries.create',
   'languages.read',
-  'languages.create'
+  'languages.create',
+
+  'faq.create',
+  'faq.update',
+  'faq.delete'
 ];
 
 const superAdminPermissions = [

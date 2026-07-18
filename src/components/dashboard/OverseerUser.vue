@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { inject } from "vue";
 import CardHeader from "../shared/CardHeader.vue";
-import { userService } from "@/services/userService";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     userId: number;
     user: any;
@@ -19,9 +18,9 @@ const headingClass = "text-left font-weight-medium";
 <template>
   <CardHeader :title="user?.name">
     <v-table
-      class="text-no-wrap bordered-table"
+      v-if="user"
+      class="bordered-table table-in-card table-key-value"
       density="compact"
-      hover
     >
       <tbody>
         <tr>
@@ -74,7 +73,11 @@ const headingClass = "text-left font-weight-medium";
         </tr>
       </tbody>
     </v-table>
+    <div
+      v-else
+      class="pa-4 text-center text-medium-emphasis"
+    >
+      {{ $t("noData") }}
+    </div>
   </CardHeader>
 </template>
-
-<style scoped></style>

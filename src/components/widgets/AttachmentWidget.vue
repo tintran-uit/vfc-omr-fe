@@ -90,13 +90,27 @@ watch([page, itemsPerPage, sortBy, search], () => {
 <template>
   <CardHeader :title="$t('attachment.dashboardTitle')">
     <template v-if="enableAddForm">
-      <div class="mx-5">
-      <DynamicFormDefault
-        :form-schema="formSchema"
-        @submit="handleSubmit"
-        :form-only="true"
-      />
-    </div>
+      <div class="px-5 pt-4 pb-5">
+        <DynamicFormDefault
+          :form-schema="formSchema"
+          :form-only="true"
+          hide-form-header
+          @submit="handleSubmit"
+        >
+          <template #actions>
+            <div class="d-flex justify-end mt-2">
+              <v-btn
+                type="submit"
+                color="primary"
+                variant="flat"
+              >
+                {{ $t('save') }}
+              </v-btn>
+            </div>
+          </template>
+        </DynamicFormDefault>
+      </div>
+      <v-divider></v-divider>
     </template>
     <DynamicTableDefault
       v-model:page="page"
@@ -108,6 +122,8 @@ watch([page, itemsPerPage, sortBy, search], () => {
       :searches-config="tableSchema?.searches || []"
       :items="items"
       :enabled-actions="actions"
+      :hide-header="true"
+      :hide-title="true"
     >
     <template v-slot:item.fileDownload="{ item }">
       <a :href="item.path" target="_blank">{{ item.attachment }}</a>

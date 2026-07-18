@@ -1,16 +1,20 @@
+import { watch } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import MainRoutes from './MainRoutes';
 import PublicRoutes from './PublicRoutes';
 import { useAuthStore } from '@/stores/authStore';
 import ComponentRoutes from './ComponentRoutes';
 import { useUIStore } from '@/stores/ui';
+import { i18n } from '@/i18n';
+import { applyDocumentTitle } from '@/utils/pageTitle';
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/:pathMatch(.*)*',
-      component: () => import('@/views/pages/maintenance/error/Error404Page.vue')
+      component: () => import('@/views/pages/maintenance/error/Error404Page.vue'),
+      meta: { title: 'pageTitle.notFound' }
     },
     PublicRoutes,
     MainRoutes,
@@ -81,8 +85,16 @@ router.beforeEach((to, from, next) => {
 //   // uiStore.startAPICall();
 // });
 
-router.afterEach(() => {
+router.afterEach((to) => {
   const uiStore = useUIStore();
   uiStore.isLoading = false;
   // uiStore.endAPICall();
+
+  applyDocumentTitle(to);
 });
+
+// Keep the tab title translated when the user switches language without navigating.
+watch(
+  () => i18n.global.locale.value,
+  () => applyDocumentTitle(router.currentRoute.value)
+);

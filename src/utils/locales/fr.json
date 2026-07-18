@@ -44,6 +44,13 @@
   "confirm": "Confirmer",
   "omrSupport": "Support OMR",
   "more": "Plus",
+  "less": "Moins",
+  "seeMore": "Voir plus",
+  "goal": "Objectif",
+  "actual": "Réel",
+  "goalValue": "Objectif : {value}",
+  "actualValue": "Réel : {value}",
+  "myOversight": "Ma supervision",
   "ormId": "OMR n°",
   "column": {
     "name": "Nom",
@@ -210,6 +217,7 @@
     "relatingMultiUserRestrictions": "Restrictions multi-utilisateurs",
     "faq": "FAQ",
     "faqList": "Liste FAQ",
+    "faqSearch": "Recherche FAQ",
     "faqAdd": "Ajouter une FAQ",
     "list": "Liste",
     "addNew": "Ajouter"
@@ -438,7 +446,11 @@
     "last4WeeksDetail": "Ces présences détaillent les 4 dernières semaines rapportées",
     "churchPlanted": "Église implantée",
     "bibleReference": "Actes 1:8b",
-    "bibleVerse": "Et vous serez mes témoins, parlant de moi partout : à Jérusalem, dans toute la Judée, en Samarie, et jusqu’aux extrémités de la terre."
+    "bibleVerse": "Et vous serez mes témoins, parlant de moi partout : à Jérusalem, dans toute la Judée, en Samarie, et jusqu’aux extrémités de la terre.",
+    "years": "Années",
+    "weeksForYear": "Semaines de l'année",
+    "count": "Nombre",
+    "pastoralVisitsGraph": "Visites pastorales au cours des 12 derniers mois"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />S{weekNumber}-{year}",
@@ -545,7 +557,10 @@
     "printLoadError": "Impossible de charger les projections pour l’impression.",
     "printTitleSimple": "Implantation — tableur simple",
     "printTitlePreview": "Implantation — aperçu d’impression (étapes et tâches)",
-    "printButton": "Imprimer"
+    "printButton": "Imprimer",
+    "editStepsHint": "Modifiez une étape à la fois. Les titres de ligne sont partagés sur les 6 étapes.",
+    "checklistTitlesHint": "Ces libellés apparaissent à chaque étape. Définissez-les une fois, puis remplissez les notes par étape.",
+    "editStepsScrollHint": "Faites défiler horizontalement pour voir les 6 étapes."
   },
   "attachment": {
     "dashboardTitle": "Pièces jointes",
@@ -617,5 +632,34 @@
     "labelMessage": "Message",
     "submit": "Envoyer",
     "submitSuccess": "Votre demande d’assistance a été envoyée. Merci."
+  },
+  "faq": {
+    "listTitle": "FAQ",
+    "searchTitle": "Recherche FAQ",
+    "detailTitle": "FAQ",
+    "addTitle": "Ajouter une FAQ",
+    "editTitle": "Modifier la FAQ #{id}",
+    "search": "Rechercher",
+    "language": "Langue",
+    "country": "Pays",
+    "runSearch": "Rechercher",
+    "searchEmptyHint": "Saisissez du texte et choisissez une langue pour charger les FAQ.",
+    "questionHeader": "Question",
+    "answer": "Réponse",
+    "tags": "Étiquettes",
+    "tagHint": "Saisissez une étiquette puis Entrée",
+    "tagCommaHint": "Séparez plusieurs étiquettes par des virgules.",
+    "view": "Voir",
+    "print": "Imprimer",
+    "loadError": "Impossible de charger cette FAQ.",
+    "empty": "Aucune FAQ trouvée."
+  },
+  "pageTitle": {
+    "login": "Connexion",
+    "test": "Page de test",
+    "reportForm": "Formulaire de rapport",
+    "churchDetail": "Détails de l'église",
+    "userDetail": "Détails de l'utilisateur",
+    "notFound": "Page non trouvée"
   }
 }

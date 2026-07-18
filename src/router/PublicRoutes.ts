@@ -8,7 +8,8 @@ const PublicRoutes = {
     {
       name: 'Login',
       path: 'login',
-      component: () => import('@/views/authentication/LoginPage.vue')
+      component: () => import('@/views/authentication/LoginPage.vue'),
+      meta: { title: 'pageTitle.login' }
     },
     // {
     //   name: 'Forgot Password',

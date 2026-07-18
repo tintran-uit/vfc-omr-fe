@@ -6,7 +6,7 @@ import { useI18n } from "vue-i18n";
 
 /* ================== SETUP ================== */
 const theme = useTheme();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const props = withDefaults(
   defineProps<{
@@ -35,9 +35,9 @@ function updateBreakpoint() {
 const formatTooltipContent = (d: any) => {
   return `
     <div style="line-height: 1.5">
-      <div class="mb-1"><b>${t("chart.count") || "Count"}</b></div>
-      Year: <strong>${d.year}</strong><br>
-      ${t("chart.count") || "Count"}: <b>${d.count}</b>
+      <div class="mb-1"><b>${t("chart.count")}</b></div>
+      ${t("year")}: <strong>${d.year}</strong><br>
+      ${t("chart.count")}: <b>${d.count}</b>
     </div>
   `;
 };
@@ -166,7 +166,7 @@ const drawChart = () => {
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("fill", "#2B6893")
-    .text("Years");
+    .text(t("chart.years"));
 
   /* ===== Y AXIS ===== */
   svg.append("g").attr("transform", `translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(5));
@@ -191,6 +191,9 @@ watch(
   },
   { deep: true },
 );
+
+// Axis/tooltip text is drawn imperatively via D3, so redraw when the language changes.
+watch(locale, () => nextTick(drawChart));
 </script>
 
 <template>

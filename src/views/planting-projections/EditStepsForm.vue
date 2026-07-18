@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { churchPlantingProjectionService } from '@/services/churchPlantingProjectionService';
 import { useMessageStore } from '@/stores/messageStore';
+import YearMonthDayInput from '@/components/input/YearMonthDayInput.vue';
 import {
   mergeStepsFromApi,
   buildStepsPatchBody,
@@ -19,7 +20,6 @@ const messageStore = useMessageStore();
 const props = withDefaults(
   defineProps<{
     projectionId: number;
-    subheading: string;
   }>(),
   {}
 );
@@ -94,22 +94,6 @@ async function onSave() {
     class="edit-steps"
     @submit.prevent="onSave"
   >
-    <v-row
-      v-if="!loading && !loadError"
-      no-gutters
-      class="align-center mb-4"
-    >
-      <v-col cols="12" class="d-flex flex-wrap align-center ga-2">
-        <v-icon color="error" size="22">$calendar</v-icon>
-        <span class="text-body-2 text-medium-emphasis">
-          {{ t('churchPlantingProjection.editStepsFor') }}
-        </span>
-        <span class="text-h6 font-weight-bold text-primary text-wrap">
-          {{ subheading || '—' }}
-        </span>
-      </v-col>
-    </v-row>
-
     <v-skeleton-loader
       v-if="loading"
       type="table-heading, table-tbody"
@@ -123,14 +107,24 @@ async function onSave() {
       class="mb-0"
     >
       {{ t('churchPlantingProjection.stepsLoadError') }}
-      <v-btn class="ms-2" size="small" variant="tonal" @click="load">
+      <v-btn
+        class="ms-2"
+        size="small"
+        variant="tonal"
+        @click="load"
+      >
         {{ t('churchPlantingProjection.retryLoad') }}
       </v-btn>
     </v-alert>
 
     <template v-else>
-      <div class="text-overline text-medium-emphasis mb-2">
-        {{ t('churchPlantingProjection.sectionSteps') }}
+      <div class="d-flex flex-wrap align-center justify-space-between ga-2 mb-3">
+        <div class="text-overline text-medium-emphasis mb-0">
+          {{ t('churchPlantingProjection.sectionSteps') }}
+        </div>
+        <div class="text-caption text-medium-emphasis">
+          {{ t('churchPlantingProjection.editStepsScrollHint') }}
+        </div>
       </div>
 
       <div class="matrix-scroll">
@@ -141,6 +135,27 @@ async function onSave() {
             hover
           >
             <thead>
+              <!-- Step numbers as clear column headers -->
+              <tr class="matrix-h-row matrix-h-row--steps">
+                <th
+                  class="text-caption font-weight-bold matrix-grid-cell matrix-corner"
+                  scope="col"
+                >
+                  {{ t('churchPlantingProjection.editStepsNumberRow') }}
+                </th>
+                <th
+                  v-for="s in stepIndices"
+                  :key="`n-${s}`"
+                  class="text-center matrix-grid-cell edit-steps__step-col"
+                  scope="col"
+                >
+                  <span class="edit-steps__step-badge">{{ s }}</span>
+                  <span class="d-block text-caption font-weight-medium mt-1">
+                    {{ t('churchPlantingProjection.stepTitle', { step: s }) }}
+                  </span>
+                </th>
+              </tr>
+
               <tr class="matrix-h-row">
                 <th
                   class="text-caption text-medium-emphasis matrix-grid-cell matrix-corner"
@@ -152,15 +167,17 @@ async function onSave() {
                   v-for="s in stepIndices"
                   :key="`p-${s}`"
                   scope="col"
-                  class="edit-steps__date matrix-grid-cell"
+                  class="edit-steps__date matrix-grid-cell edit-steps__step-col"
                 >
                   <YearMonthDayInput
                     v-model="form[stepField(s, 'date_proposed')]"
                     layout="monthTop"
                     density="compact"
+                    mode="range"
                   />
                 </th>
               </tr>
+
               <tr class="matrix-h-row">
                 <th
                   class="text-caption text-medium-emphasis matrix-grid-cell matrix-corner"
@@ -172,37 +189,24 @@ async function onSave() {
                   v-for="s in stepIndices"
                   :key="`c-${s}`"
                   scope="col"
-                  class="edit-steps__date matrix-grid-cell"
+                  class="edit-steps__date matrix-grid-cell edit-steps__step-col"
                 >
                   <YearMonthDayInput
                     v-model="form[stepField(s, 'date_completed')]"
                     layout="monthTop"
                     density="compact"
+                    mode="range"
                   />
                 </th>
               </tr>
-              <tr class="matrix-h-row">
-                <th
-                  class="text-caption font-weight-bold matrix-grid-cell matrix-corner"
-                  scope="row"
-                >
-                  {{ t('churchPlantingProjection.editStepsNumberRow') }}
-                </th>
-                <th
-                  v-for="s in stepIndices"
-                  :key="`n-${s}`"
-                  class="text-center text-body-2 font-weight-bold matrix-grid-cell"
-                  scope="col"
-                >
-                  {{ s }}
-                </th>
-              </tr>
             </thead>
+
             <tbody>
               <tr
                 v-for="r in rowIndices"
                 :key="`row-${r}`"
                 class="matrix-data-row"
+                :class="r % 2 === 1 ? 'matrix-data-row--odd' : 'matrix-data-row--even'"
               >
                 <th
                   scope="row"
@@ -210,7 +214,7 @@ async function onSave() {
                 >
                   <v-label
                     :for="`row-title-${r}`"
-                    class="mb-1 d-block text-caption"
+                    class="mb-1 d-block text-caption text-medium-emphasis"
                   >
                     {{ t('churchPlantingProjection.rowTitleLabel', { index: r }) }}
                   </v-label>
@@ -226,12 +230,13 @@ async function onSave() {
                 <td
                   v-for="s in stepIndices"
                   :key="`v-${r}-${s}`"
-                  class="matrix-grid-cell"
+                  class="matrix-grid-cell edit-steps__step-col"
                 >
                   <v-textarea
                     :id="`cell-${r}-${s}`"
                     v-model="form[cellValueKey(s, r)]"
-                    :rows="3"
+                    :placeholder="t('churchPlantingProjection.rowPlaceholder')"
+                    :rows="2"
                     auto-grow
                     variant="outlined"
                     hide-details
@@ -250,11 +255,8 @@ async function onSave() {
         </div>
       </div>
 
-      <v-row class="mt-4">
-        <v-col
-          cols="12"
-          class="text-end"
-        >
+      <div class="edit-steps__actions">
+        <div class="d-flex justify-end">
           <v-btn
             type="submit"
             color="primary"
@@ -263,16 +265,15 @@ async function onSave() {
             :loading="saving"
             :disabled="saving"
           >
-            {{ t('save') }}
+            {{ t('churchPlantingProjection.saveSteps') }}
           </v-btn>
-        </v-col>
-      </v-row>
+        </div>
+      </div>
     </template>
   </v-form>
 </template>
 
 <style scoped lang="scss">
-/* Giống List.vue matrix: panel + bảng lưới toàn cục từ .table-grid-vtable */
 .matrix-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -290,26 +291,32 @@ async function onSave() {
 }
 
 .edit-steps-vtable {
-  min-width: 1000px;
+  min-width: 1180px;
 }
 
 .edit-steps-vtable.matrix-style :deep(.v-table__wrapper > table) {
-  min-width: 1000px;
+  min-width: 1180px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-/* Padding ô giống List matrix */
 .edit-steps-vtable :deep(.v-table__wrapper > table th.matrix-grid-cell),
 .edit-steps-vtable :deep(.v-table__wrapper > table td.matrix-grid-cell) {
-  padding: 8px 10px;
+  padding: 10px 12px;
+  vertical-align: top;
 }
 
-/* Sticky cột đầu (cuộn ngang) */
+/* Sticky first column */
 .edit-steps-vtable :deep(thead th.matrix-corner),
 .edit-steps-vtable :deep(tbody th.matrix-row-title) {
   position: sticky;
   left: 0;
   z-index: 2;
-  box-shadow: 3px 0 8px -4px rgba(0, 0, 0, 0.1);
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  box-shadow: 3px 0 8px -4px rgba(0, 0, 0, 0.12);
   background-clip: padding-box;
 }
 
@@ -318,50 +325,97 @@ async function onSave() {
   background: rgba(var(--v-theme-primary), 0.1) !important;
 }
 
-/* Hàng header date */
+.edit-steps__step-col {
+  width: 160px;
+  min-width: 160px;
+}
+
+.edit-steps__step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-on-primary));
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .edit-steps-vtable :deep(tr.matrix-h-row) {
   th.matrix-grid-cell {
-    vertical-align: top;
     background: rgba(var(--v-theme-primary), 0.06);
   }
 }
 
-/* Zebra dữ liệu */
-.edit-steps-vtable
-  :deep(
-    tbody tr.matrix-data-row:nth-child(odd) th.matrix-grid-cell,
-    tbody tr.matrix-data-row:nth-child(odd) td.matrix-grid-cell
-  ) {
-  background: rgb(var(--v-theme-surface));
-}
-.edit-steps-vtable
-  :deep(
-    tbody tr.matrix-data-row:nth-child(even) th.matrix-grid-cell,
-    tbody tr.matrix-data-row:nth-child(even) td.matrix-grid-cell
-  ) {
-  background: rgba(var(--v-theme-on-surface), 0.05);
-}
-.edit-steps-vtable :deep(tbody tr.matrix-data-row:nth-child(odd) th.matrix-row-title) {
-  background: rgb(var(--v-theme-surface)) !important;
-}
-.edit-steps-vtable :deep(tbody tr.matrix-data-row:nth-child(even) th.matrix-row-title) {
-  background: rgba(var(--v-theme-on-surface), 0.05) !important;
+.edit-steps-vtable :deep(tr.matrix-h-row--steps) {
+  th.matrix-grid-cell {
+    background: rgba(var(--v-theme-primary), 0.1);
+    text-align: center;
+  }
 }
 
-/* Ô chọn ngày: hàng đầu cột đã mô tả; ẩn label lặp của YearMonthDayInput */
+/* Zebra: class-based so sticky title + value cells stay in sync */
+.edit-steps-vtable :deep(tbody tr.matrix-data-row--odd > .matrix-grid-cell) {
+  background: rgb(var(--v-theme-surface)) !important;
+}
+
+.edit-steps-vtable :deep(tbody tr.matrix-data-row--even > .matrix-grid-cell) {
+  background: rgba(var(--v-theme-on-surface), 0.04) !important;
+}
+
 .edit-steps__date {
   :deep(.v-input) {
     margin-top: 0;
   }
+
   :deep(.v-input .v-input__control) {
     min-width: 0;
   }
+
   :deep(.v-label) {
     display: none;
   }
-  /* Fix: khoảng cách giữa Month và Day+Year */
+
   :deep(.ymd-monthTop__month) {
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
+
+  :deep(.v-field),
+  :deep(.v-field__input),
+  :deep(input) {
+    font-size: 0.8125rem;
+    font-weight: 400;
+  }
+}
+
+/* Inputs inherit bold from table headers — keep body text regular */
+.edit-steps-vtable :deep(.matrix-row-title .v-field),
+.edit-steps-vtable :deep(.matrix-row-title .v-field__input),
+.edit-steps-vtable :deep(.matrix-row-title input),
+.edit-steps-vtable :deep(td.matrix-grid-cell .v-field),
+.edit-steps-vtable :deep(td.matrix-grid-cell .v-field__input),
+.edit-steps-vtable :deep(td.matrix-grid-cell textarea) {
+  font-weight: 400;
+}
+
+/* Inputs keep a solid surface background so editable areas stand out on zebra rows */
+.edit-steps-vtable :deep(.matrix-grid-cell .v-field) {
+  background: rgb(var(--v-theme-surface));
+}
+
+.edit-steps__actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  margin-top: 16px;
+  margin-left: -8px;
+  margin-right: -8px;
+  padding: 12px 8px;
+  background: rgba(var(--v-theme-surface), 0.94);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 </style>

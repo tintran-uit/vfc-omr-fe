@@ -1,11 +1,11 @@
 <script setup>
 import * as d3 from "d3";
-import { ref, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
 import { useTheme } from "vuetify";
 import { useI18n } from "vue-i18n";
 
 const theme = useTheme();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 /* ================== PROPS ================== */
 const props = defineProps({
@@ -19,16 +19,17 @@ const props = defineProps({
   },
 });
 
-/* ================== LEGENDS (FIX CỨNG – KHÔNG DÙNG year) ================== */
-const legends = [
-  { key: "currentYear", label: "Current Year", color: theme.current.value.colors.chartCurrentYear },
-  { key: "lastYear", label: "Last Year", color: theme.current.value.colors.chartLastYear },
+/* ================== LEGENDS ==================
+   computed so labels re-translate when the user switches language */
+const legends = computed(() => [
+  { key: "currentYear", label: t("currentYear"), color: theme.current.value.colors.chartCurrentYear },
+  { key: "lastYear", label: t("lastYear"), color: theme.current.value.colors.chartLastYear },
   {
     key: "yearBeforeLast",
-    label: "Year Before Last",
+    label: t("yearBeforeLast"),
     color: theme.current.value.colors.chartYearBeforeLast,
   },
-];
+]);
 
 /* ================== STATE ================== */
 const chartContainer = ref(null);
@@ -42,12 +43,12 @@ function updateBreakpoint() {
 
 /* ================== TOOLTIP ================== */
 const formatTooltipContent = (legend, d) => {
-  const val = d.value != null ? d.value : "No data";
+  const val = d.value != null ? d.value : t("chart.noData");
   return `
     <div style="line-height: 1.5">
       <div class="mb-1"><b>${legend.label}</b></div>
-      Week: <b>${d.xLabel}</b><br>
-      Attendance: <b>${val}</b>
+      ${t("chart.week")}: <b>${d.xLabel}</b><br>
+      ${t("chart.attendance")}: <b>${val}</b>
     </div>
   `;
 };
@@ -69,6 +70,9 @@ watch(
 );
 
 watch(hiddenLines, () => nextTick(drawChart), { deep: true });
+
+// Axis/tooltip text is drawn imperatively via D3, so redraw when the language changes.
+watch(locale, () => nextTick(drawChart));
 
 /* ================== RESIZE ================== */
 onMounted(() => {
@@ -123,7 +127,7 @@ function drawChart() {
     .range([0, width])
     .padding(0.5);
 
-  const maxY = d3.max(normalizedData, (d) => d3.max(legends.map((l) => d[l.key] ?? 0))) || 1;
+  const maxY = d3.max(normalizedData, (d) => d3.max(legends.value.map((l) => d[l.key] ?? 0))) || 1;
 
   const y = d3.scaleLinear().domain([0, maxY]).nice().range([height, 0]);
 
@@ -173,7 +177,7 @@ function drawChart() {
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("fill", "#666")
-    .text("Weeks for year");
+    .text(t("chart.weeksForYear"));
 
   /* ===== TOOLTIP ===== */
   let tooltip = d3.select("body").select(".d3-tooltip-global");
@@ -201,7 +205,7 @@ function drawChart() {
     .curve(d3.curveMonotoneX);
 
   /* ===== DRAW ===== */
-  legends.forEach((legend) => {
+  legends.value.forEach((legend) => {
     if (hiddenLines.value.has(legend.key)) return;
 
     const lineData = normalizedData.map((d) => ({

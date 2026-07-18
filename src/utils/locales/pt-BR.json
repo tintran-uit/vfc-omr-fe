@@ -44,6 +44,13 @@
   "confirm": "Confirmar",
   "omrSupport": "Suporte OMR",
   "more": "Mais",
+  "less": "Menos",
+  "seeMore": "Ver mais",
+  "goal": "Meta",
+  "actual": "Real",
+  "goalValue": "Meta: {value}",
+  "actualValue": "Real: {value}",
+  "myOversight": "Minha supervisão",
   "ormId": "OMR nº",
   "column": {
     "name": "Nome",
@@ -207,6 +214,7 @@
     "relatingMultiUserRestrictions": "Restrições para Múltiplos Usuários",
     "faq": "Perguntas Frequentes",
     "faqList": "Lista de Perguntas",
+    "faqSearch": "Pesquisar FAQ",
     "faqAdd": "Adicionar Pergunta",
     "list": "Lista",
     "addNew": "Adicionar Novo"
@@ -435,7 +443,11 @@
     "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
     "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
     "bibleReference": "Acts 1:8b",
-    "churchPlanted": "Church Planted"
+    "churchPlanted": "Church Planted",
+    "years": "Anos",
+    "weeksForYear": "Semanas do ano",
+    "count": "Contagem",
+    "pastoralVisitsGraph": "Visitas Pastorais nos Últimos 12 Meses"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />S{weekNumber}-{year}",
@@ -542,7 +554,10 @@
     "editSaveError": "Save failed. Please check the form and try again.",
     "stepsSaveError": "Could not save step plan. Check required fields and try again.",
     "retryLoad": "Retry",
-    "editStepsPageTitle": "Edit projection — Steps"
+    "editStepsPageTitle": "Edit projection — Steps",
+    "editStepsHint": "Edite uma etapa por vez. Os títulos das linhas são compartilhados nos 6 passos.",
+    "checklistTitlesHint": "Esses rótulos aparecem em cada etapa. Defina-os uma vez e depois preencha as notas por etapa.",
+    "editStepsScrollHint": "Role horizontalmente para ver todas as 6 etapas."
   },
   "attachment": {
     "dashboardTitle": "Anexos",
@@ -615,7 +630,36 @@
     "submit": "Enviar",
     "submitSuccess": "O seu pedido de suporte foi enviado. Obrigado."
   },
+  "faq": {
+    "listTitle": "Perguntas frequentes",
+    "searchTitle": "Pesquisar FAQ",
+    "detailTitle": "Perguntas frequentes",
+    "addTitle": "Adicionar FAQ",
+    "editTitle": "Editar FAQ #{id}",
+    "search": "Pesquisar",
+    "language": "Idioma",
+    "country": "País",
+    "runSearch": "Pesquisar",
+    "searchEmptyHint": "Digite o texto de pesquisa e selecione um idioma para carregar as FAQs.",
+    "questionHeader": "Pergunta",
+    "answer": "Resposta",
+    "tags": "Etiquetas",
+    "tagHint": "Digite uma etiqueta e pressione Enter",
+    "tagCommaHint": "Separe várias etiquetas por vírgulas.",
+    "view": "Ver",
+    "print": "Imprimir",
+    "loadError": "Não foi possível carregar esta FAQ.",
+    "empty": "Nenhuma FAQ encontrada."
+  },
   "localGivingCurrency": "Local Giving {currency}",
   "mfpGivingCurrency": "MFP Giving {currency}",
-  "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions"
+  "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
+  "pageTitle": {
+    "login": "Login",
+    "test": "Página de Teste",
+    "reportForm": "Formulário de Relatório",
+    "churchDetail": "Detalhes da Igreja",
+    "userDetail": "Detalhes do Usuário",
+    "notFound": "Página Não Encontrada"
+  }
 }

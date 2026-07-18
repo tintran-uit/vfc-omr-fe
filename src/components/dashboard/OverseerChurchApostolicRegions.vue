@@ -1,27 +1,32 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, defineAsyncComponent } from "vue";
+import { computed } from "vue";
 import CardHeader from "../shared/CardHeader.vue";
 
 const props = withDefaults(
   defineProps<{
     data: any;
   }>(),
-  {},
+  {
+    data: () => [],
+  },
 );
+
+const hasData = computed(() => Array.isArray(props.data) && props.data.length > 0);
 </script>
 
 <template>
   <CardHeader title="Church Apostolic Regions">
     <v-table
-      class="text-no-wrap bordered-table"
+      v-if="hasData"
+      class="text-no-wrap bordered-table table-in-card"
       density="compact"
       hover
     >
       <thead>
         <tr>
-          <th rowspan="2">{{ $t("id") }}</th>
-          <th rowspan="2">{{ $t("name") }}</th>
-          <th rowspan="2">{{ $t("numberChurchesInRegionAndSubRegions") }}</th>
+          <th>{{ $t("id") }}</th>
+          <th>{{ $t("name") }}</th>
+          <th>{{ $t("numberChurchesInRegionAndSubRegions") }}</th>
         </tr>
       </thead>
       <tbody>
@@ -37,7 +42,11 @@ const props = withDefaults(
         </tr>
       </tbody>
     </v-table>
+    <div
+      v-else
+      class="pa-4 text-center text-medium-emphasis"
+    >
+      {{ $t("noData") }}
+    </div>
   </CardHeader>
 </template>
-
-<style scoped></style>

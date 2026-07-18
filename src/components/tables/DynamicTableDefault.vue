@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useDialogStore } from '@/stores/dialogStore';
 import { useI18n } from 'vue-i18n';
 
@@ -114,9 +114,19 @@ const buildOptions = () => {
     page: page.value,
     itemsPerPage: itemsPerPage.value,
     sortBy: sortBy.value,
-    searches: searchPayload.value
+    searches: searches.value ?? [],
   }
 }
+
+// When search is driven from outside (hide-header + TableSearchBox), keep options in sync.
+watch(
+  searches,
+  () => {
+    if (!props.hideHeader) return
+    emit('update:options', buildOptions())
+  },
+  { deep: true },
+)
 
 // Handle actions
 const handleActionEdit = (item: unknown) => {

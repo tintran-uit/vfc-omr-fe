@@ -38,6 +38,13 @@
   "confirm": "确认",
   "omrSupport": "OMR 支持",
   "more": "更多",
+  "less": "收起",
+  "seeMore": "查看更多",
+  "goal": "目标",
+  "actual": "实际",
+  "goalValue": "目标: {value}",
+  "actualValue": "实际: {value}",
+  "myOversight": "我的监督范围",
   "ormId": "OMR 编号",
   "column": {
     "name": "姓名",
@@ -201,6 +208,7 @@
     "relatingMultiUserRestrictions": "多用户限制",
     "faq": "常见问题",
     "faqList": "常见问题列表",
+    "faqSearch": "搜索常见问题",
     "faqAdd": "新增常见问题",
     "list": "列表",
     "addNew": "新增"
@@ -429,7 +437,11 @@
     "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
     "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
     "bibleReference": "Acts 1:8b",
-    "churchPlanted": "Church Planted"
+    "churchPlanted": "Church Planted",
+    "years": "年",
+    "weeksForYear": "年度周数",
+    "count": "数量",
+    "pastoralVisitsGraph": "过去12个月的牧养探访"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />第 {weekNumber} 周 / {year} 年",
@@ -536,7 +548,10 @@
     "editSaveError": "Save failed. Please check the form and try again.",
     "stepsSaveError": "Could not save step plan. Check required fields and try again.",
     "retryLoad": "Retry",
-    "editStepsPageTitle": "Edit projection — Steps"
+    "editStepsPageTitle": "Edit projection — Steps",
+    "editStepsHint": "一次编辑一个步骤。行标题在全部 6 个步骤中共享。",
+    "checklistTitlesHint": "这些标签会出现在每个步骤中。先设置一次，再为各步骤填写备注。",
+    "editStepsScrollHint": "横向滚动可查看全部 6 个步骤。"
   },
   "attachment": {
     "dashboardTitle": "附件",
@@ -609,6 +624,27 @@
     "submit": "发送",
     "submitSuccess": "支持请求已发送。谢谢。"
   },
+  "faq": {
+    "listTitle": "常见问题",
+    "searchTitle": "搜索常见问题",
+    "detailTitle": "常见问题",
+    "addTitle": "添加常见问题",
+    "editTitle": "编辑常见问题 #{id}",
+    "search": "搜索",
+    "language": "语言",
+    "country": "国家/地区",
+    "runSearch": "搜索",
+    "searchEmptyHint": "请输入搜索内容并选择语言以加载常见问题。",
+    "questionHeader": "问题",
+    "answer": "回答",
+    "tags": "标签",
+    "tagHint": "输入标签后按 Enter",
+    "tagCommaHint": "多个标签请用英文逗号分隔。",
+    "view": "查看",
+    "print": "打印",
+    "loadError": "无法加载此常见问题。",
+    "empty": "未找到常见问题。"
+  },
   "yearOld": "{date} [{year} Yrs old]",
   "localGivingCurrency": "Local Giving {currency}",
   "mfpGivingCurrency": "MFP Giving {currency}",
@@ -617,5 +653,13 @@
   "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
   "currentYear": "Current Year",
   "lastYear": "Last Year",
-  "yearBeforeLast": "Year Before Last"
+  "yearBeforeLast": "Year Before Last",
+  "pageTitle": {
+    "login": "登录",
+    "test": "测试页面",
+    "reportForm": "报告表单",
+    "churchDetail": "教会详情",
+    "userDetail": "用户详情",
+    "notFound": "页面未找到"
+  }
 }

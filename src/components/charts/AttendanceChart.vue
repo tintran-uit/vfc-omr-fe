@@ -1,12 +1,12 @@
 <script setup>
 import * as d3 from 'd3'
-import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useTheme } from 'vuetify'
 import { formatDate, getISOWeekRange } from '@/helpers/dateTimeHelper'
 import { useI18n } from 'vue-i18n'
 
 const theme = useTheme()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 /* ================== PROPS ================== */
 const props = defineProps({
@@ -20,13 +20,14 @@ const props = defineProps({
   },
 })
 
-/* ================== LEGEND ================== */
-const legends = [
+/* ================== LEGEND ==================
+   computed so labels re-translate when the user switches language */
+const legends = computed(() => [
   { key: 'attendance', label: t('chart.worshipService'), color: theme.current.value.colors.chartAttendance },
   { key: 'cellGroup', label: t('chart.cellGroup'), color: theme.current.value.colors.chartCellGroup },
   { key: 'prayerMeeting', label: t('chart.prayerMeeting'), color: theme.current.value.colors.chartPrayerMeeting },
   { key: 'liwClass', label: t('chart.liwClasses'), color: theme.current.value.colors.chartLiwClass },
-]
+])
 
 const chartContainer = ref(null)
 const hiddenLines = ref(new Set())
@@ -69,6 +70,9 @@ watch(
 )
 
 watch(hiddenLines, () => nextTick(drawChart), { deep: true })
+
+// Axis/tooltip text is drawn imperatively via D3, so redraw when the language changes.
+watch(locale, () => nextTick(drawChart))
 
 /* ================== RESIZE ================== */
 onMounted(() => {
@@ -131,7 +135,7 @@ function drawChart() {
     .padding(0.5)
 
   const maxY = d3.max(data, (d) =>
-    d3.max(legends.map((l) => d[l.key] || 0))
+    d3.max(legends.value.map((l) => d[l.key] || 0))
   )
 
   const y = d3.scaleLinear().domain([0, maxY]).nice().range([height, 0])
@@ -206,7 +210,7 @@ function drawChart() {
     .curve(d3.curveMonotoneX)
 
   /* ===== DRAW LINES ===== */
-  legends.forEach((legend) => {
+  legends.value.forEach((legend) => {
     if (hiddenLines.value.has(legend.key)) return
 
     const lineData = normalizedData.map(d => ({

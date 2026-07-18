@@ -241,14 +241,93 @@ a:hover {
 }
 
 .bordered-table th {
-  background-color: #f8f8f8;
+  background-color: rgb(var(--v-theme-gray100)) !important;
   font-weight: 600;
-  color: #333;
+  color: rgb(var(--v-theme-darkText)) !important;
+}
+
+.bordered-table thead th {
+  background-color: rgb(var(--v-theme-gray100)) !important;
+  color: rgb(var(--v-theme-darkText)) !important;
+  border-bottom: 1px solid rgb(var(--v-theme-borderLight)) !important;
 }
 
 .bordered-table tr:last-child th,
 .bordered-table tr:last-child td {
   border-bottom: none;
+}
+
+/* Inside outlined CardHeader: remove outer wrapper border only (keep cell borders) */
+.bordered-table.table-in-card,
+.v-table.bordered-table.table-in-card {
+  border-width: 0 !important;
+  border-style: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.v-table.bordered-table.table-in-card .v-table__wrapper {
+  border: 0 !important;
+}
+
+.v-table.bordered-table.table-in-card .v-table__wrapper > table {
+  border-width: 0 !important;
+  border-style: none !important;
+}
+
+/* Explicitly keep row/cell borders from .bordered-table */
+.bordered-table.table-in-card th,
+.bordered-table.table-in-card td,
+.v-table.bordered-table.table-in-card th,
+.v-table.bordered-table.table-in-card td {
+  border-bottom: 1px solid #ddd;
+}
+
+/* Alternating row colors — better for data grids (many columns), not key-value profiles */
+.table-striped tbody tr:nth-child(odd) > th,
+.table-striped tbody tr:nth-child(odd) > td,
+.v-table.table-striped .v-table__wrapper > table > tbody > tr:nth-child(odd) > th,
+.v-table.table-striped .v-table__wrapper > table > tbody > tr:nth-child(odd) > td {
+  background-color: rgb(var(--v-theme-surface)) !important;
+}
+
+.table-striped tbody tr:nth-child(even) > th,
+.table-striped tbody tr:nth-child(even) > td,
+.v-table.table-striped .v-table__wrapper > table > tbody > tr:nth-child(even) > th,
+.v-table.table-striped .v-table__wrapper > table > tbody > tr:nth-child(even) > td {
+  background-color: rgb(var(--v-theme-gray100)) !important;
+}
+
+/*
+ * Key-value / profile rows (label | value).
+ * Prefer this over table-striped for OverseerUser-style tables:
+ * - stable label column width (avoids huge empty mid-gap on wide screens)
+ * - tint only labels, keep values on white
+ */
+.v-table.table-key-value .v-table__wrapper > table,
+.table-key-value {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-key-value tbody th,
+.v-table.table-key-value .v-table__wrapper > table > tbody > tr > th {
+  width: 28%;
+  max-width: 260px;
+  background-color: rgb(var(--v-theme-gray100)) !important;
+  color: rgb(var(--v-theme-darkText)) !important;
+  font-weight: 600;
+  vertical-align: middle;
+  white-space: normal;
+}
+
+.table-key-value tbody td,
+.v-table.table-key-value .v-table__wrapper > table > tbody > tr > td {
+  background-color: rgb(var(--v-theme-surface)) !important;
+  color: rgb(var(--v-theme-darkText));
+  vertical-align: middle;
+  white-space: normal;
+  word-break: break-word;
 }
 
 /* ------------------------------------------------------------ */
@@ -350,6 +429,34 @@ input[type="number"] {
   white-space: nowrap;
 }
 /* #CHART */
+
+/* Dashboard Overseer */
+.dashboard-overseer-actions {
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.my-oversight__header {
+  gap: 12px;
+}
+
+.my-oversight__title {
+  position: relative;
+  padding-left: 12px;
+  color: rgb(var(--v-theme-primary));
+  letter-spacing: 0.02em;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    bottom: 0.15em;
+    width: 4px;
+    border-radius: 2px;
+    background: rgb(var(--v-theme-primary));
+  }
+}
 
 /* Toàn app: input/textarea Vuetify thường ~16px — đồng bộ body-2 (0.875rem) + line-height */
 .v-application {

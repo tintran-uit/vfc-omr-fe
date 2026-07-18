@@ -66,6 +66,8 @@ watch(
       :headers="tableSchema.headers"
       :searches-config="tableSchema.searches"
       :items="items"
+      :hide-header="true"
+      :hide-title="true"
     >
       <template v-slot:item.avatar="{ item }">
         <v-img :src="item?.photo_url || defaultAvatar" alt=""

@@ -38,6 +38,13 @@
   "confirm": "確認",
   "omrSupport": "OMRサポート",
   "more": "詳細",
+  "less": "閉じる",
+  "seeMore": "もっと見る",
+  "goal": "目標",
+  "actual": "実績",
+  "goalValue": "目標: {value}",
+  "actualValue": "実績: {value}",
+  "myOversight": "私の監督範囲",
   "ormId": "OMR #",
   "column": {
     "name": "名前",
@@ -201,6 +208,7 @@
     "relatingMultiUserRestrictions": "複数ユーザー制限",
     "faq": "よくある質問",
     "faqList": "FAQ一覧",
+    "faqSearch": "FAQを検索",
     "faqAdd": "FAQを追加",
     "list": "一覧",
     "addNew": "新規追加"
@@ -429,7 +437,11 @@
     "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
     "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
     "bibleReference": "Acts 1:8b",
-    "churchPlanted": "Church Planted"
+    "churchPlanted": "Church Planted",
+    "years": "年",
+    "weeksForYear": "年間の週",
+    "count": "件数",
+    "pastoralVisitsGraph": "過去12か月間の牧会訪問"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />W{weekNumber}-{year}",
@@ -536,7 +548,10 @@
     "editSaveError": "Save failed. Please check the form and try again.",
     "stepsSaveError": "Could not save step plan. Check required fields and try again.",
     "retryLoad": "Retry",
-    "editStepsPageTitle": "Edit projection — Steps"
+    "editStepsPageTitle": "Edit projection — Steps",
+    "editStepsHint": "一度に1つのステップを編集します。行タイトルは6ステップで共通です。",
+    "checklistTitlesHint": "これらのラベルはすべてのステップに表示されます。一度設定してから、各ステップのメモを入力してください。",
+    "editStepsScrollHint": "6つのステップすべてを見るには横にスクロールしてください。"
   },
   "attachment": {
     "dashboardTitle": "添付ファイル",
@@ -609,6 +624,27 @@
     "submit": "送信",
     "submitSuccess": "サポート依頼を送信しました。ありがとうございます。"
   },
+  "faq": {
+    "listTitle": "よくある質問",
+    "searchTitle": "FAQを検索",
+    "detailTitle": "よくある質問",
+    "addTitle": "FAQ を追加",
+    "editTitle": "FAQ を編集 #{id}",
+    "search": "検索",
+    "language": "言語",
+    "country": "国",
+    "runSearch": "検索",
+    "searchEmptyHint": "検索テキストと言語の両方を指定すると FAQ が表示されます。",
+    "questionHeader": "質問",
+    "answer": "回答",
+    "tags": "タグ",
+    "tagHint": "タグを入力して Enter",
+    "tagCommaHint": "複数のタグはカンマで区切ってください。",
+    "view": "表示",
+    "print": "印刷",
+    "loadError": "この FAQ を読み込めませんでした。",
+    "empty": "FAQ が見つかりません。"
+  },
   "yearOld": "{date} [{year} Yrs old]",
   "localGivingCurrency": "Local Giving {currency}",
   "mfpGivingCurrency": "MFP Giving {currency}",
@@ -617,5 +653,13 @@
   "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
   "currentYear": "Current Year",
   "lastYear": "Last Year",
-  "yearBeforeLast": "Year Before Last"
+  "yearBeforeLast": "Year Before Last",
+  "pageTitle": {
+    "login": "ログイン",
+    "test": "テストページ",
+    "reportForm": "レポートフォーム",
+    "churchDetail": "教会の詳細",
+    "userDetail": "ユーザー詳細",
+    "notFound": "ページが見つかりません"
+  }
 }

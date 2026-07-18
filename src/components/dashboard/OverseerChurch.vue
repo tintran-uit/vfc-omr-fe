@@ -1,44 +1,79 @@
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { nextTick, ref } from "vue";
 import CardHeader from "../shared/CardHeader.vue";
+import TableSearchBox from "@/components/tables/TableSearchBox.vue";
 import tableSchema from "@/table-schemas/overseerChurchTableSchema";
 import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
 import { tableOptionsToParams } from "@/helpers/dataTableHelper";
 import { dashboardService } from "@/services/dashboardService";
 
-// const props = withDefaults(defineProps<{}>(), {});
-
 const items = ref([]);
 const page = ref(1);
 const itemsPerPage = ref(25);
 const totalItems = ref(0);
-const searches = ref([]);
+const searches = ref<Array<{ key: string; value: unknown }>>([]);
 const sortBy = ref([{ key: "id", order: "desc" }]);
 
-const dashboardData = inject("dashboardData");
+let fetchSeq = 0;
 
-const fetchData = async function (options = {}) {
-  const data = await dashboardService.getOverseerChurches(tableOptionsToParams(options), false);
+const buildOptions = () => ({
+  page: page.value,
+  itemsPerPage: itemsPerPage.value,
+  sortBy: sortBy.value,
+  searches: searches.value,
+});
+
+const fetchData = async function (options: Record<string, unknown> = {}) {
+  const seq = ++fetchSeq;
+  const data = await dashboardService.getOverseerChurches(
+    tableOptionsToParams({
+      ...options,
+      // always prefer parent searches so table update:options cannot wipe the filter
+      searches: searches.value,
+    }),
+    false,
+  );
+
+  if (seq !== fetchSeq) return;
 
   items.value = data.items;
   totalItems.value = data.total_pages;
 };
 
-const onUpdateOptions = (options) => {
+const onUpdateOptions = (options: Record<string, unknown>) => {
   fetchData(options);
+};
+
+const onSearch = async (payload: Array<{ key: string; value: unknown }> = []) => {
+  searches.value = payload;
+  if (page.value !== 1) {
+    page.value = 1;
+  }
+  await nextTick();
+  await fetchData(buildOptions());
 };
 </script>
 
 <template>
   <CardHeader :title="$t('church.myChurches')">
+    <template #header>
+      <TableSearchBox
+        v-model:searches="searches"
+        :searches-config="tableSchema.searches"
+        inline
+        @search="onSearch"
+      />
+    </template>
+
     <DynamicTableDefault
       v-model:page="page"
       v-model:items-per-page="itemsPerPage"
       v-model:searches="searches"
       v-model:sort-by="sortBy"
+      :hide-title="true"
+      :hide-header="true"
       :total-items="totalItems"
       :headers="tableSchema.headers"
-      :searches-config="tableSchema.searches"
       :items="items"
       @update:options="onUpdateOptions"
     >
@@ -64,5 +99,3 @@ const onUpdateOptions = (options) => {
     </DynamicTableDefault>
   </CardHeader>
 </template>
-
-<style scoped></style>

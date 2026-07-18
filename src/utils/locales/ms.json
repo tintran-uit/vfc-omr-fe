@@ -38,6 +38,13 @@
   "confirm": "Sahkan",
   "omrSupport": "Sokongan OMR",
   "more": "Lagi",
+  "less": "Kurang",
+  "seeMore": "Lihat lagi",
+  "goal": "Sasaran",
+  "actual": "Sebenar",
+  "goalValue": "Sasaran: {value}",
+  "actualValue": "Sebenar: {value}",
+  "myOversight": "Pengawasan Saya",
   "ormId": "OMR #",
   "column": {
     "name": "Nama",
@@ -201,6 +208,7 @@
     "relatingMultiUserRestrictions": "Sekatan Pelbagai Pengguna",
     "faq": "Soalan Lazim",
     "faqList": "Senarai Soalan Lazim",
+    "faqSearch": "Cari Soalan Lazim",
     "faqAdd": "Tambah Soalan Lazim",
     "list": "Senarai",
     "addNew": "Tambah Baharu"
@@ -429,7 +437,11 @@
     "last4WeeksDetail": "These Attendances Detail the Last Reported 4 Weeks",
     "bibleVerse": "And you will be my witnesses, telling people about me everywhere, in Jerusalem, throughout Judea, in Samaria, and to the ends of the earth.",
     "bibleReference": "Acts 1:8b",
-    "churchPlanted": "Church Planted"
+    "churchPlanted": "Church Planted",
+    "years": "Tahun",
+    "weeksForYear": "Minggu bagi tahun",
+    "count": "Bilangan",
+    "pastoralVisitsGraph": "Lawatan Pastoral dalam 12 Bulan Terakhir"
   },
   "report": {
     "rangeDateOfWeek": "{start} - {end}<br />M{weekNumber}-{year}",
@@ -536,7 +548,10 @@
     "editSaveError": "Save failed. Please check the form and try again.",
     "stepsSaveError": "Could not save step plan. Check required fields and try again.",
     "retryLoad": "Retry",
-    "editStepsPageTitle": "Edit projection — Steps"
+    "editStepsPageTitle": "Edit projection — Steps",
+    "editStepsHint": "Edit satu langkah pada satu masa. Tajuk baris dikongsi merentasi semua 6 langkah.",
+    "checklistTitlesHint": "Label ini muncul pada setiap langkah. Tetapkan sekali, kemudian isi nota bagi setiap langkah.",
+    "editStepsScrollHint": "Tatal mendatar untuk melihat semua 6 langkah."
   },
   "attachment": {
     "dashboardTitle": "Lampiran",
@@ -609,6 +624,27 @@
     "submit": "Hantar",
     "submitSuccess": "Permintaan sokongan anda telah dihantar. Terima kasih."
   },
+  "faq": {
+    "listTitle": "Soalan Lazim",
+    "searchTitle": "Cari Soalan Lazim",
+    "detailTitle": "Soalan Lazim",
+    "addTitle": "Tambah Soalan Lazim",
+    "editTitle": "Sunting Soalan Lazim #{id}",
+    "search": "Cari",
+    "language": "Bahasa",
+    "country": "Negara",
+    "runSearch": "Cari",
+    "searchEmptyHint": "Masukkan teks carian dan pilih bahasa untuk memuatkan soalan lazim.",
+    "questionHeader": "Soalan",
+    "answer": "Jawapan",
+    "tags": "Tag",
+    "tagHint": "Taip tag dan tekan Enter",
+    "tagCommaHint": "Asingkan beberapa tag dengan koma.",
+    "view": "Lihat",
+    "print": "Cetak",
+    "loadError": "Tidak dapat memuatkan soalan lazim ini.",
+    "empty": "Tiada soalan lazim dijumpai."
+  },
   "yearOld": "{date} [{year} Yrs old]",
   "localGivingCurrency": "Local Giving {currency}",
   "mfpGivingCurrency": "MFP Giving {currency}",
@@ -617,5 +653,13 @@
   "numberChurchesInRegionAndSubRegions": "No. Churches in this Region & sub Regions",
   "currentYear": "Current Year",
   "lastYear": "Last Year",
-  "yearBeforeLast": "Year Before Last"
+  "yearBeforeLast": "Year Before Last",
+  "pageTitle": {
+    "login": "Log Masuk",
+    "test": "Halaman Ujian",
+    "reportForm": "Borang Laporan",
+    "churchDetail": "Butiran Gereja",
+    "userDetail": "Butiran Pengguna",
+    "notFound": "Halaman Tidak Dijumpai"
+  }
 }

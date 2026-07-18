@@ -10,10 +10,13 @@ const props = withDefaults(
   defineProps<{
     searchesConfig?: SearchConfigItem[];
     debounceMs?: number;
+    /** Compact inline search for tight headers (e.g. CardHeader) */
+    inline?: boolean;
   }>(),
   {
     searchesConfig: () => [],
     debounceMs: 500,
+    inline: false,
   },
 );
 
@@ -51,12 +54,16 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <div class="table-search d-flex flex-column flex-md-row flex-md-wrap align-stretch align-md-center ga-2">
+  <div
+    class="table-search"
+    :class="inline ? 'table-search--inline d-flex align-center' : 'd-flex flex-column flex-md-row flex-md-wrap align-stretch align-md-center ga-2'"
+  >
     <template v-for="(item, idx) in searchesConfig" :key="`${item.name}-${idx}`">
       <v-text-field
         v-model="searchModel[item.name]"
         :placeholder="$t(item.label)"
         single-line
+        density="compact"
         variant="outlined"
         class="table-search__field"
         hide-details
@@ -73,13 +80,36 @@ const handleSearch = () => {
 
 <style scoped>
 .table-search {
-  flex: 1 1 360px; /* don't shrink to tiny width */
+  flex: 1 1 360px;
   min-width: 260px;
 }
 
 .table-search__field {
   flex: 1 1 320px;
   min-width: 260px;
+}
+
+.table-search--inline {
+  flex: 0 0 auto;
+  min-width: 0;
+  width: 220px;
+  max-width: 100%;
+}
+
+.table-search--inline .table-search__field {
+  flex: none;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.table-search--inline :deep(.v-input) {
+  align-items: center;
+}
+
+.table-search--inline :deep(.v-input__control),
+.table-search--inline :deep(.v-field) {
+  margin-block: 0;
 }
 </style>
 

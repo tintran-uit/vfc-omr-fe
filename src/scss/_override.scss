@@ -112,6 +112,8 @@ header {
       > thead {
         > tr {
           > th {
+            background-color: rgb(var(--v-theme-gray100)) !important;
+            color: rgb(var(--v-theme-darkText)) !important;
             border-bottom: 1px solid rgb(var(--v-theme-borderLight));
           }
         }

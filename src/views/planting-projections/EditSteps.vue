@@ -23,11 +23,6 @@ const listRoute = computed(() => ({
   params: { churchId: String(churchId.value) },
 }));
 
-const editProjectionRoute = computed(() => ({
-  name: 'PlantingProjectionEdit' as const,
-  params: { churchId: String(churchId.value), id: String(projectionId.value) },
-}));
-
 const stepsSubheading = computed(() => {
   const p = editData.value;
   if (!p) return '';
@@ -97,55 +92,81 @@ function onStepsSaved() {
 </script>
 
 <template>
-  <v-container class="py-4 py-md-6" :fluid="true">
-    <v-row v-if="loading" justify="center" class="py-12">
-      <v-progress-circular indeterminate color="primary" size="48" />
+  <v-row
+    v-if="loading"
+    justify="center"
+    class="py-12"
+  >
+    <v-progress-circular
+      indeterminate
+      color="primary"
+      size="48"
+    />
+  </v-row>
+
+  <v-alert
+    v-else-if="loadError"
+    type="error"
+    variant="tonal"
+    class="mb-4"
+  >
+    {{ t('churchPlantingProjection.editLoadError') }}
+    <v-btn
+      class="ms-2"
+      size="small"
+      variant="tonal"
+      @click="goList"
+    >
+      {{ t('backToList') }}
+    </v-btn>
+  </v-alert>
+
+  <template v-else-if="editData">
+    <v-row class="my-2">
+      <v-col
+        cols="12"
+        md="6"
+        class="d-flex align-center"
+      >
+        <div class="text-h4 font-weight-medium">
+          {{ t('churchPlantingProjection.editStepsPageTitle') }}
+          <span
+            v-if="stepsSubheading"
+            class="text-body-1 text-medium-emphasis d-block mt-1 text-wrap"
+          >
+            {{ stepsSubheading }}
+          </span>
+        </div>
+      </v-col>
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <div class="d-flex justify-md-end">
+          <v-btn
+            color="primary"
+            variant="outlined"
+            @click="goList"
+          >
+            <v-icon>$arrowLeft</v-icon> {{ t('backToList') }}
+          </v-btn>
+        </div>
+      </v-col>
     </v-row>
 
-    <v-alert
-      v-else-if="loadError"
-      type="error"
-      variant="tonal"
-      class="mb-4"
+    <v-card
+      variant="outlined"
+      class="bg-surface"
     >
-      {{ t('churchPlantingProjection.editLoadError') }}
-      <v-btn class="ms-2" size="small" variant="tonal" @click="goList">
-        {{ t('backToList') }}
-      </v-btn>
-    </v-alert>
-
-    <template v-else-if="editData">
-      <v-row class="mb-2" align="center" justify="space-between">
-        <v-col cols="12" class="d-flex flex-wrap align-center ga-2">
-          <v-icon color="error" size="32">$calendar</v-icon>
-          <h1 class="text-h4 font-weight-medium text-primary">
-            {{ t('churchPlantingProjection.editStepsPageTitle') }}
-          </h1>
-        </v-col>
-        <v-col cols="12" class="d-flex flex-wrap justify-end ga-2">
-          <v-btn color="primary" variant="outlined" :to="editProjectionRoute">
-            <v-icon start size="18">$edit</v-icon>
-            {{ t('churchPlantingProjection.editProjectionBtn') }}
-          </v-btn>
-          <v-btn color="primary" variant="outlined" @click="goList">
-            <v-icon start>$arrowLeft</v-icon>
-            {{ t('backToList') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-card variant="flat" class="mt-2 bg-transparent elevation-0">
-        <v-card-text class="pa-0">
-          <EditStepsForm
-            :key="`cpp-steps-${projectionId}`"
-            :projection-id="projectionId"
-            :subheading="stepsSubheading"
-            @saved="onStepsSaved"
-          />
-        </v-card-text>
-      </v-card>
-    </template>
-  </v-container>
+      <v-card-text>
+        <EditStepsForm
+          :key="`cpp-steps-${projectionId}`"
+          :projection-id="projectionId"
+          @saved="onStepsSaved"
+        />
+      </v-card-text>
+    </v-card>
+  </template>
 </template>
 
 <style scoped lang="scss"></style>

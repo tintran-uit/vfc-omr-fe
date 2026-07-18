@@ -20,6 +20,7 @@ onMounted(async () => {
     v-if="props.item.getURL === true"
     :to="item.type === 'external' ? '' : item.to"
     :href="`${relativeURL}${item.to}`"
+    :exact="item.exact === true || item.to === '/'"
     rounded
     class="mb-1"
     color="primary"
@@ -53,6 +54,7 @@ onMounted(async () => {
     v-else
     :to="item.type === 'external' ? '' : item.to"
     :href="item.type === 'external' ? item.to : ''"
+    :exact="item.exact === true || item.to === '/'"
     rounded
     class="mb-1"
     color="primary"
