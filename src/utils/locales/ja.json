@@ -259,17 +259,7 @@
     "churchesVisited": "訪問された教会",
     "churchesVisitedText": "2年以内に訪問された教会の割合",
     "goalGrowing": "成長",
-    "goalGrowingText": "成長している教会",
-    "goalCellGroups": "セルグループ",
-    "goalCellGroupsText": "セルグループがある教会",
-    "goalLiw": "LIW",
-    "goalLiwText": "LIWクラスがある教会",
-    "goalMfp": "MFP",
-    "goalMfpText": "MFP献金がある教会",
-    "goalReporting": "報告",
-    "goalReportingText": "報告が最新の教会",
-    "goalPlantingChurches": "教会植え",
-    "goalPlantingChurchesText": "教会を植えている教会"
+    "goalGrowingText": "成長している教会"
   },
   "user": {
     "listTitle": "ユーザー一覧",

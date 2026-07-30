@@ -259,17 +259,7 @@
     "churchesVisited": "已访问教会",
     "churchesVisitedText": "2 年内被访问教会的百分比",
     "goalGrowing": "增长",
-    "goalGrowingText": "增长的教会",
-    "goalCellGroups": "小组",
-    "goalCellGroupsText": "有小组的教会",
-    "goalLiw": "LIW",
-    "goalLiwText": "有 LIW 课程的教会",
-    "goalMfp": "MFP",
-    "goalMfpText": "有 MFP 奉献的教会",
-    "goalReporting": "报告",
-    "goalReportingText": "报告最新的教会",
-    "goalPlantingChurches": "植堂",
-    "goalPlantingChurchesText": "正在植堂的教会"
+    "goalGrowingText": "增长的教会"
   },
   "user": {
     "listTitle": "用户列表",

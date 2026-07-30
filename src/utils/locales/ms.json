@@ -259,17 +259,7 @@
     "churchesVisited": "Gereja Dilawati",
     "churchesVisitedText": "Peratus Gereja Dilawati dalam 2 Tahun",
     "goalGrowing": "Berkembang",
-    "goalGrowingText": "Gereja Berkembang",
-    "goalCellGroups": "Kumpulan Sel",
-    "goalCellGroupsText": "Gereja dengan Kumpulan Sel",
-    "goalLiw": "LIW",
-    "goalLiwText": "Gereja dengan Kelas LIW",
-    "goalMfp": "MFP",
-    "goalMfpText": "Gereja dengan Persembahan MFP",
-    "goalReporting": "Pelaporan",
-    "goalReportingText": "Gereja dengan Pelaporan Terkini",
-    "goalPlantingChurches": "Penanaman gereja",
-    "goalPlantingChurchesText": "Gereja Menanam Gereja"
+    "goalGrowingText": "Gereja Berkembang"
   },
   "user": {
     "listTitle": "Senarai Pengguna",

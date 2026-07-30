@@ -268,17 +268,7 @@
     "churchesVisited": "Churches Visited",
     "churchesVisitedText": "Percent of Churches Visited in 2 Years",
     "goalGrowing": "Growing",
-    "goalGrowingText": "Churches Growing",
-    "goalCellGroups": "Cell Groups",
-    "goalCellGroupsText": "Churches with Cell Groups",
-    "goalLiw": "LIW",
-    "goalLiwText": "Churches with LIW Classes",
-    "goalMfp": "MFP",
-    "goalMfpText": "Churches with MFP Giving",
-    "goalReporting": "Reporting",
-    "goalReportingText": "Churches up-to-date Reporting",
-    "goalPlantingChurches": "Planting churches",
-    "goalPlantingChurchesText": "Churches Planting Churches"
+    "goalGrowingText": "Churches Growing"
   },
   "user": {
     "listTitle": "List of Users",

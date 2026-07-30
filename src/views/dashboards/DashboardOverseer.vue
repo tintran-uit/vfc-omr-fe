@@ -8,6 +8,7 @@ import type {
 } from "@/types/overseerAssignmentsStream";
 import { churchService } from "@/services/churchService";
 import { userService } from "@/services/userService";
+import OverseerProfileHeader from "@/components/dashboard/OverseerProfileHeader.vue";
 import OverseerUser from "@/components/dashboard/OverseerUser.vue";
 import OverseerNetwork from "@/components/dashboard/OverseerNetwork.vue";
 import OverseerChurchApostolicRegions from "@/components/dashboard/OverseerChurchApostolicRegions.vue";
@@ -16,6 +17,17 @@ import OverseerGeographicalRegion from "@/components/dashboard/OverseerGeographi
 import OverseerMyOverseerItem from "@/components/dashboard/OverseerMyOverseerItem.vue";
 import OverseerMetricBlock from "@/components/dashboard/OverseerMetricBlock.vue";
 import OverseerChurch from "@/components/dashboard/OverseerChurch.vue";
+
+// Charts
+import OverseerAttendanceChartWidget from "@/components/dashboard/OverseerAttendanceChartWidget.vue";
+import OverseerChurchPlantedChartWidget from "@/components/dashboard/OverseerChurchPlantedChartWidget.vue";
+import OverseerVisitChartWidget from "@/components/dashboard/OverseerVisitChartWidget.vue";
+
+import carIcon from "@/assets/images/icons/car.png";
+import editIcon from "@/assets/images/icons/edit.png";
+import homeUserIcon from "@/assets/images/icons/house-user.png";
+import userIcon from "@/assets/images/icons/user.png";
+import homeIcon from "@/assets/images/icons/home.png";
 
 const authStore = useAuthStore();
 const dashboardData = ref({});
@@ -50,14 +62,14 @@ const actions = computed(() => {
   return [
     {
       title: "dashboardMenu.enterVisits",
-      icon: "$chartBar",
+      iconSrc: carIcon,
       to: {
         name: "VisitsAdd",
       },
     },
     {
       title: "dashboardMenu.editProfile",
-      icon: "$edit",
+      iconSrc: editIcon,
       to: {
         name: "UserEdit",
         params: {
@@ -67,21 +79,21 @@ const actions = computed(() => {
     },
     {
       title: "dashboardMenu.newPastorAndNewChurch",
-      icon: "$plusCircleOutline",
+      iconSrc: homeUserIcon,
       to: {
         name: "ChurchAddWithNewPastor",
       },
     },
     {
       title: "dashboardMenu.newPastor",
-      icon: "$plusCircleOutline",
+      iconSrc: userIcon,
       to: {
         name: "UserAdd",
       },
     },
     {
       title: "dashboardMenu.newChurch",
-      icon: "$plusCircleOutline",
+      iconSrc: homeIcon,
       to: {
         name: "ChurchAdd",
       },
@@ -132,6 +144,10 @@ onMounted(async () => {
 </script>
 
 <template>
+  <OverseerProfileHeader
+    v-if="dashboardData?.overseer_profile"
+    :user="dashboardData.overseer_profile"
+  />
 
   <v-card
     class="pa-4 mt-4"
@@ -146,7 +162,16 @@ onMounted(async () => {
         :color="item?.color || 'primary'"
         class="d-inline-flex align-center w-100 w-sm-auto"
       >
+        <v-img
+          v-if="item.iconSrc"
+          :src="item.iconSrc"
+          width="20"
+          height="20"
+          class="mr-2 flex-shrink-0 dashboard-overseer-action-icon"
+          alt=""
+        />
         <v-icon
+          v-else
           :icon="item.icon"
           size="20"
           class="mr-2"
