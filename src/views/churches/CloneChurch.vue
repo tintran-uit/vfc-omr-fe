@@ -5,12 +5,18 @@ import {churchService} from '@/services/churchService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import ChurchSelectInput from '@/components/input/ChurchSelectInput.vue';
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from 'vue-i18n';
+import { useMessageStore } from '@/stores/messageStore';
+import { extractApiError } from '@/utils/formErrors';
 
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
+const messageStore = useMessageStore();
 const id = route.params.id as string;
 const editData = ref(null);
 const formSchema = createFormSchema();
+const formRef = ref();
 
 const fetchEditData = async function (id) {
   if (!id) return;
@@ -31,7 +37,12 @@ const handleSubmit = async (formData) => {
 
     router.push({ name: 'ChurchList' });
   } catch (e) {
-    console.log('error', e);
+    const { errors } = extractApiError(e);
+    if (Object.keys(errors).length) {
+      formRef.value?.setServerErrors(errors);
+    } else {
+      messageStore.error(t('genericSaveError'));
+    }
   }
 }
 
@@ -66,6 +77,7 @@ const churchId = ref();
             <!-- Slot để bỏ form -->
             <slot name="form">
               <DynamicFormDefault
+                ref="formRef"
                 :form-schema="formSchema"
                 @submit="handleSubmit"
                 :init-data="editData"

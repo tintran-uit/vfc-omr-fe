@@ -4,11 +4,18 @@ import { createFormSchema } from '@/form-schemas/addGeographicalRegionFormSchema
 import { geographicalRegionService } from '@/services/geographicalRegionService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import FormPageShell from "@/components/shared/FormPageShell.vue";
+import { useI18n } from 'vue-i18n';
+import { useMessageStore } from '@/stores/messageStore';
+import { extractApiError } from '@/utils/formErrors';
+import { ref } from 'vue'
 
 defineOptions({ name: "GeographicalRegionsAdd" });
 
 const router = useRouter()
+const { t } = useI18n();
+const messageStore = useMessageStore();
 const formSchema = createFormSchema();
+const formRef = ref();
 
 const handleSubmit = async (formData) => {
   try {
@@ -16,7 +23,12 @@ const handleSubmit = async (formData) => {
 
     router.push({ name: 'GeographicalRegionsList' });
   } catch (e) {
-    console.log('error', e);
+    const { errors } = extractApiError(e);
+    if (Object.keys(errors).length) {
+      formRef.value?.setServerErrors(errors);
+    } else {
+      messageStore.error(t('genericSaveError'));
+    }
   }
 }
 </script>
@@ -27,6 +39,7 @@ const handleSubmit = async (formData) => {
     :back-url="{ name: 'GeographicalRegionsList' }"
   >
     <DynamicFormDefault
+      ref="formRef"
       :form-schema="formSchema"
       form-only
       hide-form-header

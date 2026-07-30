@@ -54,6 +54,7 @@ watch(
     :placeholder="placeholder"
     single-line
     variant="outlined"
+    v-bind="$attrs"
   ></v-text-field>
 </template>
 

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {useTemplateRef, onMounted, computed, ref, watch, toRef, reactive } from 'vue'
+import {useTemplateRef, onMounted, computed, ref, watch, toRef, reactive, nextTick } from 'vue'
 import {getNestedValue, setNestedValue, initFormData} from '@/utils/objectUtil.ts'
 import {createFormRules} from '@/helpers/formRulesFactory'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from "vue-router";
 import {mapModel} from '@/utils/mapperUtil'
+import { unwrapErrorMap, normalizeFieldErrors, flattenErrorKeys, mapErrorsToAccessKeys } from '@/utils/formErrors'
 import CardHeader from '@/components/shared/CardHeader.vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 
@@ -70,6 +71,31 @@ for (const [key, schema] of Object.entries(props.formSchema)) {
 
 const virtualModelValue = reactive({})
 
+/** Field-level errors returned by the API, keyed by `accessKey` (`schemaKey.fieldName`). */
+const serverErrors = ref<Record<string, string[]>>({})
+
+function clearServerError(accessKey: string) {
+  if (!(accessKey in serverErrors.value)) return
+  const next = { ...serverErrors.value }
+  delete next[accessKey]
+  serverErrors.value = next
+}
+
+/** Merge schema `attrs` with any server-side error messages for this field. */
+function fieldAttrs(field: Record<string, any>) {
+  const messages = serverErrors.value[field.accessKey]
+  return messages?.length
+    ? { ...(field?.attrs || {}), 'error-messages': messages }
+    : field?.attrs || {}
+}
+
+/** Resolve a related field path for multi-schema forms (`schemaKey.fieldName`). */
+function relatedFieldPath(field: Record<string, any>, relatedName: string) {
+  if (relatedName.includes('.')) return relatedName
+  const schemaKey = field.accessKey?.split('.')?.[0]
+  return schemaKey ? `${schemaKey}.${relatedName}` : relatedName
+}
+
 const fields: any[] = []
 
 
@@ -80,11 +106,16 @@ for (const [schemaKey, schemaDef] of Object.entries(props.formSchema)) {
 
     const accessKey = `${schemaKey}.${field.name}`;
     field.accessKey = accessKey;
+    // Matches the local (per-schema) index used to build `field-${name}-${index}` DOM ids below.
+    field.localIndex = index;
     virtualModelValue[accessKey] = computed({
       get: () =>
         getNestedValue(formData.value, accessKey, field.default || (isText ? '' : null)),
-      set: (val) =>
+      set: (val) => {
         setNestedValue(formData.value, accessKey, val, field.default || (isText ? '' : null))
+        // The user is fixing this field — drop the stale server-side error.
+        clearServerError(accessKey)
+      }
     })
 
     fields.push(field)
@@ -134,19 +165,75 @@ const handleSubmit = async (e) => {
   const {valid} = await formRef.value.validate()
 
   if (valid) {
+    clearServerErrors()
     emit('submit', formData.value)
     return
   }
 
+  await nextTick()
+  scrollToFirstError()
+}
+
+function scrollToFirstError() {
   const firstErrorEl = document.querySelector(
     '.v-input.error, .v-field--error'
   ) as HTMLElement | null
 
   if (firstErrorEl) {
     firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    firstErrorEl.focus()
+    const focusable = firstErrorEl.querySelector('input, textarea, select') as HTMLElement | null
+    ;(focusable || firstErrorEl).focus?.()
   }
 }
+
+/**
+ * Apply field-level errors returned by an API call to the matching fields
+ * (matched by `accessKey`, i.e. `schemaKey.fieldName`, or plain `fieldName`
+ * as a fallback), then scroll/focus the first one.
+ *
+ * Accepts either flat (`{ "user.username": "..." }` / `{ username: "..." }`)
+ * or one-level-nested (`{ user: { username: "..." } }`) error shapes.
+ */
+async function setServerErrors(errors: Record<string, unknown> | null | undefined) {
+  const normalized = mapErrorsToAccessKeys(
+    normalizeFieldErrors(flattenErrorKeys(unwrapErrorMap(errors))),
+    fields.map((f: any) => ({ name: f.name, accessKey: f.accessKey })),
+  )
+  serverErrors.value = normalized
+
+  if (!Object.keys(normalized).length) return
+
+  await nextTick()
+  await nextTick()
+
+  const firstField = fields.find((f: any) => normalized[f.accessKey])
+
+  const target = firstField
+    ? (document.getElementById(`field-${firstField.name}-${firstField.localIndex}`) as HTMLElement | null)
+    : null
+
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const focusable = target.matches?.('input, textarea, select')
+      ? target
+      : (target.querySelector('input, textarea, select') as HTMLElement | null)
+    focusable?.focus?.()
+  } else {
+    scrollToFirstError()
+  }
+}
+
+function clearServerErrors() {
+  serverErrors.value = {}
+}
+
+defineExpose({
+  validate,
+  reset,
+  resetValidation,
+  setServerErrors,
+  clearServerErrors,
+})
 
 watch(
   () => props.initData,
@@ -213,13 +300,14 @@ watch(
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
                   :items="options[field.optionName]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PasswordInput
                   v-else-if="field.type === 'PasswordInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchSelectInput
@@ -227,12 +315,14 @@ watch(
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
                   :items="options[field.optionName]"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <MultiTextInput
                   v-else-if="field.type === 'MultiTextInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <YearMonthDayInput
@@ -240,20 +330,21 @@ watch(
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
                   :items="options[field.optionName]"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <YesNoInput
                   v-else-if="field.type === 'YesNoInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PhotoUploadInput
                   v-else-if="field.type === 'PhotoUploadInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :initial-image="field?.initialImageKey ? initData?.[field.initialImageKey] : null"
                   :id="`field-${field.name}-${index}`"
                 />
@@ -261,112 +352,118 @@ watch(
                   v-else-if="field.type === 'CurrencySelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ServiceVenueSelectInput
                   v-else-if="field.type === 'ServiceVenueSelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <GeographicalRegionSelectInput
                   v-else-if="field.type === 'GeographicalRegionSelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <CitySelectInput
                   v-else-if="field.type === 'CitySelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  :country-id="
+                    getNestedValue(
+                      formData,
+                      relatedFieldPath(field, field.countryField || 'country_id'),
+                    )
+                  "
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PastorSelectInput
                   v-else-if="field.type === 'PastorSelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchTypeSelectInput
                   v-else-if="field.type === 'ChurchTypeSelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchNetworkSelectInput
                   v-else-if="field.type === 'ChurchNetworkSelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchRegionSelectInput
                   v-else-if="field.type === 'ChurchRegionSelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <CountrySelectInput
                   v-else-if="field.type === 'CountrySelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <LanguageSelectInput
                   v-else-if="field.type === 'LanguageSelectInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <TimeInput
                 v-else-if="field.type === 'TimeInput'"
                 :rules="resolveRules(field, formData)"
                 v-model="virtualModelValue[field.accessKey]"
-                v-bind="field?.attrs || {}"
+                v-bind="fieldAttrs(field)"
                 :id="`field-${field.name}-${index}`"
               />
               <LanguageRegionSelectInput
                 v-else-if="field.type === 'LanguageRegionSelectInput'"
                 :rules="resolveRules(field, formData)"
                 v-model="virtualModelValue[field.accessKey]"
-                v-bind="field?.attrs || {}"
+                v-bind="fieldAttrs(field)"
                 :id="`field-${field.name}-${index}`"
               />
               <FileUploadInput
                 v-else-if="field.type === 'FileUploadInput'"
                 :rules="resolveRules(field, formData)"
                 v-model="virtualModelValue[field.accessKey]"
-                v-bind="field?.attrs || {}"
+                v-bind="fieldAttrs(field)"
                 :id="`field-${field.name}-${index}`"
               />
               <PhotoCropperInput
                 v-else-if="field.type === 'PhotoCropperInput'"
                 :rules="resolveRules(field, formData)"
                 v-model="virtualModelValue[field.accessKey]"
-                v-bind="field?.attrs || {}"
+                v-bind="fieldAttrs(field)"
                 :id="`field-${field.name}-${index}`"
               />
                 <TextareaInput
                   v-else-if="field.type === 'TextareaInput'"
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                   />
                 <TextInput
                   v-else
                   :rules="resolveRules(field)"
                   v-model="virtualModelValue[field.accessKey]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 ></TextInput>
               </v-col>

@@ -18,10 +18,12 @@ const props = withDefaults(
     rules?: (string | ((v: any) => boolean | string))[]
     /** Show label on outlined field instead of separate v-label above */
     labelOnField?: boolean
+    disabled?: boolean
   }>(),
   {
     rules: () => [],
     labelOnField: false,
+    disabled: false,
   }
 )
 
@@ -42,10 +44,12 @@ const resolvedLabel = computed(() => (props.label ? t(props.label) : undefined))
       density="compact"
       :rules="rules"
       :label="labelOnField ? resolvedLabel : undefined"
+      :placeholder="placeholder"
       :item-title="itemTitle"
       :item-value="itemValue"
       v-model="modelValue"
       :clearable="true"
+      :disabled="disabled"
       location="bottom"
       position-strategy="connected"
       scroll-strategy="close"

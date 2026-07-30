@@ -2,8 +2,18 @@
 import { computed, ref, shallowRef } from "vue";
 import { useDisplay } from "vuetify";
 
-import peopleIcon from "@/assets/images/metrics/people.svg";
+import houseIcon from "@/assets/images/metrics/house.png";
+import earthIcon from "@/assets/images/metrics/earth.png";
+import peopleIcon from "@/assets/images/metrics/group.png";
+import moreIcon from "@/assets/images/metrics/more.png";
+import reportingIcon from "@/assets/images/metrics/reporting.png";
+import plantIcon from "@/assets/images/metrics/plant.png";
+import cellGroupIcon from "@/assets/images/metrics/cell-group.png";
+import educationIcon from "@/assets/images/metrics/education.png";
+import worldwideCurrencyIcon from "@/assets/images/metrics/worldwide-currency.png";
+import worldWideIcon from "@/assets/images/metrics/worldwide.png";
 import growthIcon from "@/assets/images/metrics/growth.svg";
+import { formatNumber } from "@/helpers/appHelper";
 
 const METRICS_COLLAPSED_DESKTOP = 4;
 const METRICS_COLLAPSED_MOBILE = 6;
@@ -21,150 +31,151 @@ const goalsExpanded = ref(false);
 
 const metrics = shallowRef([
   {
-    name: "No. of Churches",
+    name: "overseerMetric.churches",
+    text: "overseerMetric.churchesText",
     earnKey: "total_churches",
+    percentKey: null,
+    color: "primary",
+    icon: houseIcon,
+  },
+  {
+    name: "overseerMetric.people",
+    text: "overseerMetric.peopleText",
+    earnKey: "avg_people_3_months",
     percentKey: null,
     color: "primary",
     icon: peopleIcon,
   },
   {
-    name: "People",
-    text: "Average people in 3 months",
-    earnKey: "avg_people_3_months",
-    percentKey: null,
-    color: "primary",
-    icon: growthIcon,
-  },
-  {
-    name: "Churches Reporting",
-    text: "Percent of Churches Reporting",
-    earnKey: null,
-    percentKey: "percent_churches_reporting",
-    color: "primary",
-    icon: growthIcon,
-  },
-  {
-    name: "Growing",
-    text: "Percent Growth in Churches Number",
-    earnKey: null,
-    percentKey: "percent_growth_churches_number",
-    color: "primary",
-    icon: growthIcon,
-  },
-  {
-    name: "Churches Growing",
-    text: "Percent of Churches Growing",
+    name: "overseerMetric.churchesGrowing",
+    text: "overseerMetric.churchesGrowingText",
     earnKey: null,
     percentKey: "percent_churches_growing",
     color: "primary",
     icon: growthIcon,
   },
   {
-    name: "Countries",
-    text: "Number of Countries",
+    name: "overseerMetric.churchesReporting",
+    text: "overseerMetric.churchesReportingText",
+    earnKey: null,
+    percentKey: "percent_churches_reporting",
+    color: "primary",
+    icon: reportingIcon,
+  },
+  {
+    name: "overseerMetric.nations",
+    text: "overseerMetric.nationsText",
     earnKey: "countries_count",
     percentKey: null,
     color: "primary",
-    icon: growthIcon,
+    icon: earthIcon,
   },
   {
-    name: "Church Planted",
-    text: "Percent of Churches Planted",
+    name: "overseerMetric.churchesPlanting",
+    text: "overseerMetric.churchesPlantingText",
     earnKey: null,
     percentKey: "percent_churches_planted",
     color: "primary",
-    icon: growthIcon,
+    icon: plantIcon,
   },
   {
-    name: "Cell Groups",
-    text: "Percent of Churches with Cell Groups",
+    name: "overseerMetric.churchesWithCgs",
+    text: "overseerMetric.churchesWithCgsText",
     earnKey: null,
     percentKey: "percent_churches_with_cg",
     color: "primary",
-    icon: growthIcon,
+    icon: cellGroupIcon,
   },
   {
-    name: "LIW",
-    text: "Percent of Churches with LIW",
+    name: "overseerMetric.churchesWithGtLiw",
+    text: "overseerMetric.churchesWithGtLiwText",
     earnKey: null,
     percentKey: "percent_churches_with_gt_liw",
     color: "primary",
-    icon: growthIcon,
+    icon: educationIcon,
   },
   {
-    name: "Giving",
-    text: "Percent of Churches with Giving",
+    name: "overseerMetric.churchesWithTithesOfferings",
+    text: "overseerMetric.churchesWithTithesOfferingsText",
     earnKey: null,
     percentKey: "percent_churches_with_giving",
     color: "primary",
-    icon: growthIcon,
+    icon: worldwideCurrencyIcon,
   },
   {
-    name: "MFP",
-    text: "Percent of Churches with MFP",
+    name: "overseerMetric.churchesWithMfp",
+    text: "overseerMetric.churchesWithMfpText",
     earnKey: null,
     percentKey: "percent_churches_with_mfp",
     color: "primary",
-    icon: growthIcon,
+    icon: worldwideCurrencyIcon,
   },
   {
-    name: "Visited",
-    text: "Percent of Churches Visited in 2 Years",
+    name: "overseerMetric.moreChurches",
+    text: "overseerMetric.growingText",
+    earnKey: null,
+    percentKey: "percent_growth_churches_number",
+    color: "primary",
+    icon: moreIcon,
+  },
+  {
+    name: "overseerMetric.churchesVisited",
+    text: "overseerMetric.churchesVisitedText",
     earnKey: null,
     percentKey: "percent_churches_visited_2_years",
     color: "primary",
-    icon: growthIcon,
+    icon: worldWideIcon,
   },
 ]);
 
 const goalActualMetrics = shallowRef([
   {
-    name: "Growing",
-    text: "Churches Growing",
+    name: "overseerMetric.goalGrowing",
+    text: "overseerMetric.goalGrowingText",
     earnKey: null,
     percentKey: "percent_of_churches_growing",
     color: "primary",
     icon: growthIcon,
   },
   {
-    name: "Cell Groups",
-    text: "Churches with Cell Groups",
+    name: "overseerMetric.goalCellGroups",
+    text: "overseerMetric.goalCellGroupsText",
     earnKey: null,
     percentKey: "percent_of_churches_cell_groups",
     color: "primary",
-    icon: growthIcon,
+    icon: cellGroupIcon,
   },
   {
-    name: "LIW",
-    text: "Churches with LIW Classes",
+    name: "overseerMetric.goalLiw",
+    text: "overseerMetric.goalLiwText",
     earnKey: null,
     percentKey: "percent_of_churches_liw_classes",
     color: "primary",
-    icon: growthIcon,
+    icon: educationIcon,
   },
   {
-    name: "MFP",
-    text: "Churches with MFP Giving",
+    name: "overseerMetric.goalMfp",
+    text: "overseerMetric.goalMfpText",
     earnKey: null,
     percentKey: "percent_of_churches_mfp",
     color: "primary",
-    icon: growthIcon,
+    icon: worldwideCurrencyIcon,
   },
   {
-    name: "Reporting",
-    text: "Churches up-to-date Reporting",
+    name: "overseerMetric.goalReporting",
+    text: "overseerMetric.goalReportingText",
     earnKey: null,
     percentKey: "percent_of_churches_reporting_on_omr",
     color: "primary",
-    icon: growthIcon,
+    icon: reportingIcon,
   },
   {
-    name: "Planting churches",
-    text: "Churches Planting Churches",
+    name: "overseerMetric.goalPlantingChurches",
+    text: "overseerMetric.goalPlantingChurchesText",
     earnKey: null,
     percentKey: "percent_of_churches_doing_church_planting",
     color: "primary",
-    icon: growthIcon,
+    icon: plantIcon,
   },
 ]);
 
@@ -211,6 +222,11 @@ function getActualChipColor(percentKey: string | null) {
 
   return actual >= goal ? "success" : "error";
 }
+
+function getEarnValue(earnKey: string) {
+  const value = Number(props.indicators?.[earnKey] ?? 0);
+  return formatNumber(value) || "0";
+}
 </script>
 
 <template>
@@ -232,47 +248,36 @@ function getActualChipColor(percentKey: string | null) {
             class="h-100"
           >
             <v-card-text class="h-100">
-              <div class="d-flex align-items-center justify-space-between">
-                <v-row class="mb-0">
-                  <v-col
-                    cols="3"
-                    class="d-flex align-center justify-center pb-0"
-                  >
-                    <v-img
-                      :src="metric.icon"
-                      alt="icon"
-                      width="40"
-                      height="40"
-                    />
-                  </v-col>
+              <div class="metric-card-body">
+                <div class="metric-card-body__icon">
+                  <v-img
+                    :src="metric.icon"
+                    :alt="$t('overseerMetric.iconAlt')"
+                    width="40"
+                    height="40"
+                  />
+                </div>
 
-                  <v-col
-                    cols="9"
-                    class="pb-0"
+                <div class="metric-card-body__content">
+                  <h4
+                    v-if="metric.earnKey"
+                    class="text-h4 d-flex align-center mb-0 indicator-value"
                   >
-                    <h4
-                      v-if="metric.earnKey"
-                      class="text-h4 d-flex align-center mb-0 indicator-value"
-                    >
-                      {{ props.indicators?.[metric.earnKey] || 0 }}
-                    </h4>
-                    <h4
-                      v-else-if="metric.percentKey"
-                      class="text-h4 d-flex align-center mb-0 indicator-value"
-                    >
-                      {{ props.indicators?.[metric.percentKey] || 0 }}%
-                    </h4>
-                    <div class="text-body-1 font-weight-medium text-high-emphasis">
-                      {{ $t(metric.name) }}
-                    </div>
-                    <div
-                      v-if="metric?.text"
-                      class="text-body-2 text-medium-emphasis"
-                    >
-                      {{ $t(metric.text) }}
-                    </div>
-                  </v-col>
-                </v-row>
+                    {{ getEarnValue(metric.earnKey) }}
+                  </h4>
+                  <h4
+                    v-else-if="metric.percentKey"
+                    class="text-h4 d-flex align-center mb-0 indicator-value"
+                  >
+                    {{ props.indicators?.[metric.percentKey] || 0 }}%
+                  </h4>
+                  <div class="text-body-1 font-weight-medium text-high-emphasis">
+                    {{ $t(metric.name) }}
+                  </div>
+                  <div class="text-body-2 text-medium-emphasis metric-card-body__description">
+                    {{ metric?.text ? $t(metric.text) : "\u00A0" }}
+                  </div>
+                </div>
               </div>
             </v-card-text>
           </v-card>
@@ -299,47 +304,36 @@ function getActualChipColor(percentKey: string | null) {
                 class="h-100"
               >
                 <v-card-text class="h-100">
-                  <div class="d-flex align-items-center justify-space-between">
-                    <v-row class="mb-0">
-                      <v-col
-                        cols="3"
-                        class="d-flex align-center justify-center pb-0"
-                      >
-                        <v-img
-                          :src="metric.icon"
-                          alt="icon"
-                          width="40"
-                          height="40"
-                        />
-                      </v-col>
+                  <div class="metric-card-body">
+                    <div class="metric-card-body__icon">
+                      <v-img
+                        :src="metric.icon"
+                        :alt="$t('overseerMetric.iconAlt')"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
 
-                      <v-col
-                        cols="9"
-                        class="pb-0"
+                    <div class="metric-card-body__content">
+                      <h4
+                        v-if="metric.earnKey"
+                        class="text-h4 d-flex align-center mb-0 indicator-value"
                       >
-                        <h4
-                          v-if="metric.earnKey"
-                          class="text-h4 d-flex align-center mb-0 indicator-value"
-                        >
-                          {{ props.indicators?.[metric.earnKey] || 0 }}
-                        </h4>
-                        <h4
-                          v-else-if="metric.percentKey"
-                          class="text-h4 d-flex align-center mb-0 indicator-value"
-                        >
-                          {{ props.indicators?.[metric.percentKey] || 0 }}%
-                        </h4>
-                        <div class="text-body-1 font-weight-medium text-high-emphasis">
-                          {{ $t(metric.name) }}
-                        </div>
-                        <div
-                          v-if="metric?.text"
-                          class="text-body-2 text-medium-emphasis"
-                        >
-                          {{ $t(metric.text) }}
-                        </div>
-                      </v-col>
-                    </v-row>
+                        {{ getEarnValue(metric.earnKey) }}
+                      </h4>
+                      <h4
+                        v-else-if="metric.percentKey"
+                        class="text-h4 d-flex align-center mb-0 indicator-value"
+                      >
+                        {{ props.indicators?.[metric.percentKey] || 0 }}%
+                      </h4>
+                      <div class="text-body-1 font-weight-medium text-high-emphasis">
+                        {{ $t(metric.name) }}
+                      </div>
+                      <div class="text-body-2 text-medium-emphasis metric-card-body__description">
+                        {{ metric?.text ? $t(metric.text) : "\u00A0" }}
+                      </div>
+                    </div>
                   </div>
                 </v-card-text>
               </v-card>
@@ -367,7 +361,7 @@ function getActualChipColor(percentKey: string | null) {
     </div>
 
     <div class="text-h3 mt-4">
-      Goals & Actual %'s for 6 months period {{ props.indicators?.goals_actuals?.period }}
+      {{ $t("overseerMetric.goalsActualTitle", { period: props.indicators?.goals_actuals?.period }) }}
     </div>
 
     <v-row class="my-0">
@@ -387,73 +381,62 @@ function getActualChipColor(percentKey: string | null) {
             class="h-100"
           >
             <v-card-text class="h-100">
-              <div class="d-flex align-items-center justify-space-between">
-                <v-row class="mb-0">
-                  <v-col
-                    cols="3"
-                    class="d-flex align-center justify-center pb-0"
-                  >
-                    <v-img
-                      :src="metric.icon"
-                      alt="icon"
-                      width="40"
-                      height="40"
-                    />
-                  </v-col>
+              <div class="metric-card-body">
+                <div class="metric-card-body__icon">
+                  <v-img
+                    :src="metric.icon"
+                    :alt="$t('overseerMetric.iconAlt')"
+                    width="40"
+                    height="40"
+                  />
+                </div>
 
-                  <v-col
-                    cols="9"
-                    class="pb-0"
-                  >
-                    <h4 class="text-h4 d-flex align-center mb-0 indicator-value">
-                      <v-tooltip
-                        :text="
-                          $t('goalValue', {
-                            value: `${getGoalValue(metric.percentKey)}%`,
-                          })
-                        "
-                      >
-                        <template #activator="{ props: tipProps }">
-                          <span
-                            v-bind="tipProps"
-                            class="cursor-default"
-                          >
-                            {{ getGoalValue(metric.percentKey) }}%
-                          </span>
-                        </template>
-                      </v-tooltip>
-
-                      <v-tooltip
-                        :text="
-                          $t('actualValue', {
-                            value: `${getActualValue(metric.percentKey)}%`,
-                          })
-                        "
-                      >
-                        <template #activator="{ props: tipProps }">
-                          <v-chip
-                            v-bind="tipProps"
-                            size="small"
-                            :color="getActualChipColor(metric.percentKey)"
-                            class="ml-2"
-                          >
-                            {{ getActualValue(metric.percentKey) }}%
-                          </v-chip>
-                        </template>
-                      </v-tooltip>
-                    </h4>
-
-                    <div class="text-body-1 font-weight-medium text-high-emphasis">
-                      {{ $t(metric.name) }}
-                    </div>
-                    <div
-                      v-if="metric?.text"
-                      class="text-body-2 text-medium-emphasis"
+                <div class="metric-card-body__content">
+                  <h4 class="text-h4 d-flex align-center mb-0 indicator-value">
+                    <v-tooltip
+                      :text="
+                        $t('goalValue', {
+                          value: `${getGoalValue(metric.percentKey)}%`,
+                        })
+                      "
                     >
-                      {{ $t(metric.text) }}
-                    </div>
-                  </v-col>
-                </v-row>
+                      <template #activator="{ props: tipProps }">
+                        <span
+                          v-bind="tipProps"
+                          class="cursor-default"
+                        >
+                          {{ getGoalValue(metric.percentKey) }}%
+                        </span>
+                      </template>
+                    </v-tooltip>
+
+                    <v-tooltip
+                      :text="
+                        $t('actualValue', {
+                          value: `${getActualValue(metric.percentKey)}%`,
+                        })
+                      "
+                    >
+                      <template #activator="{ props: tipProps }">
+                        <v-chip
+                          v-bind="tipProps"
+                          size="small"
+                          :color="getActualChipColor(metric.percentKey)"
+                          class="ml-2"
+                        >
+                          {{ getActualValue(metric.percentKey) }}%
+                        </v-chip>
+                      </template>
+                    </v-tooltip>
+                  </h4>
+
+                  <div class="text-body-1 font-weight-medium text-high-emphasis">
+                    {{ $t(metric.name) }}
+                  </div>
+                  <div class="text-body-2 text-medium-emphasis metric-card-body__description">
+                    {{ metric?.text ? $t(metric.text) : "\u00A0" }}
+                  </div>
+                </div>
               </div>
             </v-card-text>
           </v-card>
@@ -480,73 +463,62 @@ function getActualChipColor(percentKey: string | null) {
                 class="h-100"
               >
                 <v-card-text class="h-100">
-                  <div class="d-flex align-items-center justify-space-between">
-                    <v-row class="mb-0">
-                      <v-col
-                        cols="3"
-                        class="d-flex align-center justify-center pb-0"
-                      >
-                        <v-img
-                          :src="metric.icon"
-                          alt="icon"
-                          width="40"
-                          height="40"
-                        />
-                      </v-col>
+                  <div class="metric-card-body">
+                    <div class="metric-card-body__icon">
+                      <v-img
+                        :src="metric.icon"
+                        :alt="$t('overseerMetric.iconAlt')"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
 
-                      <v-col
-                        cols="9"
-                        class="pb-0"
-                      >
-                        <h4 class="text-h4 d-flex align-center mb-0 indicator-value">
-                          <v-tooltip
-                            :text="
-                              $t('goalValue', {
-                                value: `${getGoalValue(metric.percentKey)}%`,
-                              })
-                            "
-                          >
-                            <template #activator="{ props: tipProps }">
-                              <span
-                                v-bind="tipProps"
-                                class="cursor-default"
-                              >
-                                {{ getGoalValue(metric.percentKey) }}%
-                              </span>
-                            </template>
-                          </v-tooltip>
-
-                          <v-tooltip
-                            :text="
-                              $t('actualValue', {
-                                value: `${getActualValue(metric.percentKey)}%`,
-                              })
-                            "
-                          >
-                            <template #activator="{ props: tipProps }">
-                              <v-chip
-                                v-bind="tipProps"
-                                size="small"
-                                :color="getActualChipColor(metric.percentKey)"
-                                class="ml-2"
-                              >
-                                {{ getActualValue(metric.percentKey) }}%
-                              </v-chip>
-                            </template>
-                          </v-tooltip>
-                        </h4>
-
-                        <div class="text-body-1 font-weight-medium text-high-emphasis">
-                          {{ $t(metric.name) }}
-                        </div>
-                        <div
-                          v-if="metric?.text"
-                          class="text-body-2 text-medium-emphasis"
+                    <div class="metric-card-body__content">
+                      <h4 class="text-h4 d-flex align-center mb-0 indicator-value">
+                        <v-tooltip
+                          :text="
+                            $t('goalValue', {
+                              value: `${getGoalValue(metric.percentKey)}%`,
+                            })
+                          "
                         >
-                          {{ $t(metric.text) }}
-                        </div>
-                      </v-col>
-                    </v-row>
+                          <template #activator="{ props: tipProps }">
+                            <span
+                              v-bind="tipProps"
+                              class="cursor-default"
+                            >
+                              {{ getGoalValue(metric.percentKey) }}%
+                            </span>
+                          </template>
+                        </v-tooltip>
+
+                        <v-tooltip
+                          :text="
+                            $t('actualValue', {
+                              value: `${getActualValue(metric.percentKey)}%`,
+                            })
+                          "
+                        >
+                          <template #activator="{ props: tipProps }">
+                            <v-chip
+                              v-bind="tipProps"
+                              size="small"
+                              :color="getActualChipColor(metric.percentKey)"
+                              class="ml-2"
+                            >
+                              {{ getActualValue(metric.percentKey) }}%
+                            </v-chip>
+                          </template>
+                        </v-tooltip>
+                      </h4>
+
+                      <div class="text-body-1 font-weight-medium text-high-emphasis">
+                        {{ $t(metric.name) }}
+                      </div>
+                      <div class="text-body-2 text-medium-emphasis metric-card-body__description">
+                        {{ metric?.text ? $t(metric.text) : "\u00A0" }}
+                      </div>
+                    </div>
                   </div>
                 </v-card-text>
               </v-card>

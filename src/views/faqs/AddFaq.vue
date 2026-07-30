@@ -6,11 +6,17 @@ import DynamicFormDefault from "@/components/forms/DynamicFormDefault.vue";
 import FormPageShell from "@/components/shared/FormPageShell.vue";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useRouter } from "vue-router";
-import { onMounted } from "vue";
+import { useI18n } from "vue-i18n";
+import { useMessageStore } from "@/stores/messageStore";
+import { extractApiError } from "@/utils/formErrors";
+import { onMounted, ref } from "vue";
 
 const router = useRouter();
+const { t } = useI18n();
+const messageStore = useMessageStore();
 const languageStore = useLanguageStore();
 const formSchema = createFormSchema();
+const formRef = ref();
 
 onMounted(() => {
   void languageStore.fetchForOptions();
@@ -26,7 +32,12 @@ const handleSubmit = async (formData: Record<string, unknown>) => {
     });
     await router.push({ name: "FaqList" });
   } catch (e) {
-    console.log("error", e);
+    const { errors } = extractApiError(e);
+    if (Object.keys(errors).length) {
+      formRef.value?.setServerErrors(errors);
+    } else {
+      messageStore.error(t("genericSaveError"));
+    }
   }
 };
 </script>
@@ -37,6 +48,7 @@ const handleSubmit = async (formData: Record<string, unknown>) => {
     :back-url="{ name: 'FaqList' }"
   >
     <DynamicFormDefault
+      ref="formRef"
       :form-schema="formSchema"
       form-only
       hide-form-header

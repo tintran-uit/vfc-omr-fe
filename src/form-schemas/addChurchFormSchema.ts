@@ -87,16 +87,18 @@ export const createFormSchema = () => ({
             type: 'CountrySelectInput',
         },
         {
+            label: 'church.labelCity',
+            name: 'city_id',
+            type: 'CitySelectInput',
+            countryField: 'country_id',
+            description: 'church.infoCity',
+        },
+        {
             label: 'church.labelCurrency',
             name: 'currency_id',
             desciption: 'church.infoCurrency',
             rules: ['required'],
             type: 'CurrencySelectInput',
-        },
-        {
-            label: 'church.labelCity',
-            name: 'city_id',
-            type: 'CitySelectInput'
         },
         {
             label: 'church.labelPhoto',

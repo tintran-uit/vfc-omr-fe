@@ -167,11 +167,17 @@ instance.interceptors.response.use(
 
           return Promise.reject(error.response.data);
       } else if (error.response) {
-        const msg = error.response.data?.message;
-        if (msg) {
-          useMessageStore().error(msg);
+        const data = error.response.data;
+        const hasFieldErrors =
+          data && typeof data.errors === 'object' && data.errors !== null && Object.keys(data.errors).length > 0;
+
+        // When the API returns field-level validation errors, let the caller show them
+        // inline (e.g. DynamicFormDefault.setServerErrors) instead of a generic toast.
+        if (!hasFieldErrors && data?.message) {
+          useMessageStore().error(data.message);
         }
-        console.log('error.response', error);
+
+        return Promise.reject(data);
       } else if (error.request) {
           return Promise.reject({ message: 'Can not connect to server.' });
       } else {

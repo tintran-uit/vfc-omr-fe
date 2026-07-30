@@ -436,6 +436,30 @@ input[type="number"] {
   justify-content: flex-end;
 }
 
+.metric-card-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 100%;
+}
+
+.metric-card-body__icon {
+  flex: 0 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-card-body__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.metric-card-body__description {
+  min-height: 1.25rem;
+  line-height: 1.25rem;
+}
+
 .my-oversight__header {
   gap: 12px;
 }

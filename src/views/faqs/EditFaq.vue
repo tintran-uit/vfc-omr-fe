@@ -8,16 +8,20 @@ import { tagsRawToPayload } from "@/utils/faqPayload";
 import DynamicFormDefault from "@/components/forms/DynamicFormDefault.vue";
 import FormPageShell from "@/components/shared/FormPageShell.vue";
 import { useLanguageStore } from "@/stores/languageStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { extractApiError } from "@/utils/formErrors";
 
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const languageStore = useLanguageStore();
+const messageStore = useMessageStore();
 
 const id = computed(() => String(route.params.id ?? ""));
 const formSchema = createFormSchema();
 const editData = ref<Record<string, unknown> | null>(null);
 const loadError = ref(false);
+const formRef = ref();
 
 const tagsToRaw = (tags: { tag_name?: string }[] | undefined) =>
   (tags ?? []).map((x) => x.tag_name).filter(Boolean).join(", ");
@@ -55,7 +59,12 @@ const handleSubmit = async (formData: Record<string, unknown>) => {
     });
     await router.push({ name: "FaqList" });
   } catch (e) {
-    console.log("error", e);
+    const { errors } = extractApiError(e);
+    if (Object.keys(errors).length) {
+      formRef.value?.setServerErrors(errors);
+    } else {
+      messageStore.error(t("genericSaveError"));
+    }
   }
 };
 </script>
@@ -76,6 +85,7 @@ const handleSubmit = async (formData: Record<string, unknown>) => {
 
     <DynamicFormDefault
       v-if="editData"
+      ref="formRef"
       :form-schema="formSchema"
       :init-data="editData"
       form-only

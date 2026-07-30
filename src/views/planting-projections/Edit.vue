@@ -7,6 +7,7 @@ import { createEditChurchPlantingProjectionFormSchema } from '@/form-schemas/edi
 import { churchPlantingProjectionService } from '@/services/churchPlantingProjectionService';
 import { useAuthStore } from '@/stores/authStore';
 import { useMessageStore } from '@/stores/messageStore';
+import { extractApiError } from '@/utils/formErrors';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -18,6 +19,7 @@ const churchId = computed(() => Number(route.params.churchId));
 const projectionId = computed(() => Number(route.params.id));
 
 const formSchema = createEditChurchPlantingProjectionFormSchema();
+const formRef = ref();
 const options = ref({
   distanceUnits: [
     { title: 'km', value: 'km' },
@@ -126,8 +128,12 @@ const handleSubmit = async (formData: Record<string, any>) => {
     messageStore.info(t('churchPlantingProjection.infoSaved'));
     router.push(listRoute.value);
   } catch (e) {
-    console.error(e);
-    messageStore.error(t('churchPlantingProjection.editSaveError'));
+    const { errors } = extractApiError(e);
+    if (Object.keys(errors).length) {
+      formRef.value?.setServerErrors(errors);
+    } else {
+      messageStore.error(t('churchPlantingProjection.editSaveError'));
+    }
   }
 };
 
@@ -138,6 +144,7 @@ function goList() {
 
 <template>
     <DynamicFormDefault
+      ref="formRef"
       :form-schema="formSchema"
       :options="options"
       :init-data="editData"

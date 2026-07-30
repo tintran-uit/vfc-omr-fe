@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useTemplateRef, onMounted, computed, ref, watch, watchEffect } from "vue";
+import { useTemplateRef, onMounted, computed, ref, watch, watchEffect, nextTick } from "vue";
 import { getNestedValue, setNestedValue } from "@/utils/objectUtil.ts";
 import { createFormRules } from "@/helpers/formRulesFactory";
 import { useI18n } from "vue-i18n";
 import { mapModel } from "@/utils/mapperUtil";
 import { getColProps } from "@/helpers/formHelper";
+import { unwrapErrorMap, normalizeFieldErrors, flattenErrorKeys, mapErrorsToFieldNames } from "@/utils/formErrors";
 import PioneeringStartDateInput from "@/components/input/PioneeringStartDateInput.vue";
 
 const { t } = useI18n();
@@ -69,6 +70,16 @@ const resetValidation = function () {
 
 const formData = ref(props.formSchema.initData ? props.formSchema.initData() : {});
 
+/** Field-level errors returned by the API (e.g. `{ username: ["..."] }`), keyed by field name. */
+const serverErrors = ref<Record<string, string[]>>({});
+
+function clearServerError(name: string) {
+  if (!(name in serverErrors.value)) return;
+  const next = { ...serverErrors.value };
+  delete next[name];
+  serverErrors.value = next;
+}
+
 const fields = computed(() =>
   props.formSchema.fields.map((field) => {
     const isText = ["TextInput", "PasswordInput", "TextareaInput"].includes(field.type);
@@ -83,29 +94,102 @@ const fields = computed(() =>
         set: (val) => {
           if (isComputed) return;
           setNestedValue(formData.value, field.name, val, field.default || (isText ? "" : null));
+          // The user is fixing this field — drop the stale server-side error.
+          clearServerError(field.name);
         },
       }),
     };
   }),
 );
 
+/** Merge schema `attrs` with any server-side error messages for this field. */
+function fieldAttrs(field: Record<string, any>) {
+  const messages = serverErrors.value[field.name];
+  return messages?.length
+    ? { ...(field?.attrs || {}), "error-messages": messages }
+    : field?.attrs || {};
+}
+
 const handleSubmit = async (e) => {
   const { valid } = await formRef.value.validate();
 
   if (valid) {
+    clearServerErrors();
     emit("submit", formData.value);
     return;
   }
 
+  await nextTick();
+  scrollToFirstError();
+};
+
+function scrollToFirstError() {
   const firstErrorEl = document.querySelector(
     ".v-input.error, .v-field--error",
   ) as HTMLElement | null;
 
   if (firstErrorEl) {
     firstErrorEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    firstErrorEl.focus();
+    const focusable = firstErrorEl.querySelector("input, textarea, select") as HTMLElement | null;
+    (focusable || firstErrorEl).focus?.();
   }
-};
+}
+
+/**
+ * Apply field-level errors returned by an API call (e.g. `{ username: "...", password: "..." }`)
+ * to the matching fields, then scroll/focus the first one so the user notices it right away.
+ *
+ * Usage in a parent view's submit handler:
+ *   try {
+ *     await someService.create(formData);
+ *   } catch (e) {
+ *     formRef.value?.setServerErrors(extractApiError(e).errors);
+ *   }
+ */
+async function setServerErrors(errors: Record<string, unknown> | null | undefined) {
+  const schemaFields = props.formSchema?.fields || [];
+  const fieldNames = schemaFields.map((f: any) => f.name).filter(Boolean);
+  const normalized = mapErrorsToFieldNames(
+    normalizeFieldErrors(flattenErrorKeys(unwrapErrorMap(errors))),
+    fieldNames,
+  );
+  serverErrors.value = normalized;
+
+  if (!Object.keys(normalized).length) return;
+
+  await nextTick();
+  // Vuetify may need a second paint before error-messages are in the DOM.
+  await nextTick();
+
+  const firstIndex = schemaFields.findIndex((f: any) => normalized[f.name]);
+  const firstFieldName = firstIndex >= 0 ? schemaFields[firstIndex].name : null;
+
+  const target = firstFieldName
+    ? (document.getElementById(`field-${firstFieldName}-${firstIndex}`) as HTMLElement | null)
+    : null;
+
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    const focusable = target.matches?.("input, textarea, select")
+      ? target
+      : (target.querySelector("input, textarea, select") as HTMLElement | null);
+    focusable?.focus?.();
+  } else {
+    scrollToFirstError();
+  }
+}
+
+function clearServerErrors() {
+  serverErrors.value = {};
+}
+
+defineExpose({
+  validate,
+  reset,
+  resetValidation,
+  setServerErrors,
+  clearServerErrors,
+});
 
 const fullWidthTypes = [
   "TextareaInput",
@@ -340,13 +424,14 @@ watch(
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
                   :items="options[field.optionName]"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PasswordInput
                   v-else-if="field.type === 'PasswordInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchSelectInput
@@ -354,12 +439,14 @@ watch(
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
                   :items="options[field.optionName]"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <MultiTextInput
                   v-else-if="field.type === 'MultiTextInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PioneeringStartDateInput
@@ -370,7 +457,7 @@ watch(
                     formData[field.preparationDateField || 'start_date_preparation']
                   "
                   :id="`field-${field.name}-${index}`"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                 />
                 <YearMonthDayInput
                   v-else-if="field.type === 'YearMonthDayInput'"
@@ -378,20 +465,20 @@ watch(
                   v-model="field.modelValue.value"
                   :items="options[field.optionName]"
                   :id="`field-${field.name}-${index}`"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                 />
                 <YesNoInput
                   v-else-if="field.type === 'YesNoInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PhotoUploadInput
                   v-else-if="field.type === 'PhotoUploadInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :initial-image="field?.initialImageKey ? initData?.[field.initialImageKey] : null"
                   :id="`field-${field.name}-${index}`"
                 />
@@ -399,105 +486,111 @@ watch(
                   v-else-if="field.type === 'CurrencySelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ServiceVenueSelectInput
                   v-else-if="field.type === 'ServiceVenueSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <GeographicalRegionSelectInput
                   v-else-if="field.type === 'GeographicalRegionSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <CitySelectInput
                   v-else-if="field.type === 'CitySelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  :country-id="
+                    getNestedValue(
+                      formData,
+                      field.countryField || 'country_id',
+                    )
+                  "
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PastorSelectInput
                   v-else-if="field.type === 'PastorSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchTypeSelectInput
                   v-else-if="field.type === 'ChurchTypeSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchNetworkSelectInput
                   v-else-if="field.type === 'ChurchNetworkSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <ChurchRegionSelectInput
                   v-else-if="field.type === 'ChurchRegionSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <CountrySelectInput
                   v-else-if="field.type === 'CountrySelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <LanguageSelectInput
                   v-else-if="field.type === 'LanguageSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <WeekDayInput
                   v-else-if="field.type === 'WeekDayInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <TimeInput
                   v-else-if="field.type === 'TimeInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <LanguageRegionSelectInput
                   v-else-if="field.type === 'LanguageRegionSelectInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <FileUploadInput
                   v-else-if="field.type === 'FileUploadInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <PhotoCropperInput
                   v-else-if="field.type === 'PhotoCropperInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :initial-image="field?.initialImageKey ? initData?.[field.initialImageKey] : null"
                   :id="`field-${field.name}-${index}`"
                 />
@@ -505,7 +598,7 @@ watch(
                   v-else-if="field.type === 'WorshipServiceInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                   :services="options?.services || []"
                 />
@@ -513,7 +606,7 @@ watch(
                   v-else-if="field.type === 'NumberInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :placeholder="field?.placeholder ? $t(field.placeholder) : ''"
                   :id="`field-${field.name}-${index}`"
                 />
@@ -521,7 +614,7 @@ watch(
                   v-else-if="field.type === 'NumberFormattedInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :placeholder="field?.placeholder ? $t(field.placeholder) : ''"
                   :id="`field-${field.name}-${index}`"
                 />
@@ -529,14 +622,14 @@ watch(
                   v-else-if="field.type === 'TextareaInput'"
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 />
                 <TextInput
                   v-else
                   :rules="resolveRules(field, formData)"
                   v-model="field.modelValue.value"
-                  v-bind="field?.attrs || {}"
+                  v-bind="fieldAttrs(field)"
                   :readonly="!!field.readonly"
                   :placeholder="field?.placeholder ? $t(field.placeholder) : ''"
                   :id="`field-${field.name}-${index}`"

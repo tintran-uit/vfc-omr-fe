@@ -4,13 +4,19 @@ import { createFormSchema } from '@/form-schemas/editUserFormSchema';
 import {userService as service} from '@/services/userService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from 'vue-i18n';
+import { useMessageStore } from '@/stores/messageStore';
+import { extractApiError } from '@/utils/formErrors';
 
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
+const messageStore = useMessageStore();
 const options = ref({});
 const id = route.params.id as string;
 const editData = ref(null);
 const formSchema = createFormSchema();
+const formRef = ref();
 
 const loadOptions = async function () {
   options.value = await service.getFormData();
@@ -28,13 +34,17 @@ const fetchEditData = async function (id) {
 }
 
 const handleSubmit = async (formData) => {
-  console.log('formData', formData, formData.value);
   try {
     await service.update(id, formData)
 
     router.push({ name: 'UserList' });
   } catch (e) {
-    console.log('error', e);
+    const { errors } = extractApiError(e);
+    if (Object.keys(errors).length) {
+      formRef.value?.setServerErrors(errors);
+    } else {
+      messageStore.error(t('genericSaveError'));
+    }
   }
 }
 
@@ -72,6 +82,7 @@ onMounted(() => {
             <!-- Slot để bỏ form -->
             <slot name="form">
               <DynamicFormDefault
+                ref="formRef"
                 :options="options"
                 :form-schema="formSchema"
                 @submit="handleSubmit"

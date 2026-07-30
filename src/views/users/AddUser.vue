@@ -4,11 +4,16 @@ import { createFormSchema } from '@/form-schemas/addUserFormSchema';
 import {userService} from '@/services/userService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n';
 import { useMessageStore } from '@/stores/messageStore';
+import { extractApiError } from '@/utils/formErrors';
 
 const router = useRouter()
+const { t } = useI18n();
+const messageStore = useMessageStore();
 const options = ref({})
 const formSchema = createFormSchema();
+const formRef = ref();
 
 const loadOptions = async function () {
   options.value = await userService.getFormData();
@@ -20,7 +25,12 @@ const handleSubmit = async (formData) => {
 
     router.push({ name: 'UserList' });
   } catch (e) {
-    console.log('error', e);
+    const { errors } = extractApiError(e);
+    if (Object.keys(errors).length) {
+      formRef.value?.setServerErrors(errors);
+    } else {
+      messageStore.error(t('genericSaveError'));
+    }
   }
 }
 
@@ -31,6 +41,7 @@ onMounted(() => {
 
 <template>
     <DynamicFormDefault
+      ref="formRef"
       :options="options"
       :form-schema="formSchema"
       @submit="handleSubmit"
