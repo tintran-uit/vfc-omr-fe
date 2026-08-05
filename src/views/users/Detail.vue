@@ -1,65 +1,60 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
-import { createFormSchema } from '@/form-schemas/editUserFormSchema';
-import { userService } from '@/services/userService';
-import PastorLeaderWidget from '@/components/widgets/PastorLeaderWidget.vue';
-import ChurchDetailWidget from '@/components/widgets/ChurchDetailWidget.vue';
-import { useRoute, useRouter } from "vue-router";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
+
+import TablePageShell from "@/components/shared/TablePageShell.vue";
+import UserDetailWidget from "@/components/widgets/UserDetailWidget.vue";
+import ChurchInfoWidget from "@/components/widgets/ChurchInfoWidget.vue";
+import { ROLE_PASTOR_LEADER } from "@/constants/roleConstant";
 
 const route = useRoute();
-const router = useRouter();
-const options = ref({});
 const id = route.params.id as string;
-const editData = ref(null);
-const formSchema = createFormSchema();
+const user = ref<Record<string, any> | null>(null);
 
-const fetchData = async function (id) {
-  if (!id) return;
-  try {
-    const user = await userService.getById(id);
-    
-  } catch (e) {
-    console.log('error', e);
-  }
-}
+const isPastorLeader = computed(
+  () => Number(user.value?.role?.id) === ROLE_PASTOR_LEADER,
+);
 
-onMounted(() => {
-  fetchData(id);
+const fromChurches = computed(() => {
+  const churches = user.value?.from_churches;
+  return Array.isArray(churches) ? churches : [];
 });
+
+function onUserLoaded(detail: Record<string, any>) {
+  user.value = detail;
+}
 </script>
 
 <template>
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('user.editTitle', {id: id}) }}</h1>
-
-          <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'UserList' })"
-          >
-            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <!-- ChurchDetail & PastorLeader -->
+  <TablePageShell
+    title-key="pageTitle.userDetail"
+    :back-url="{ name: 'UserList' }"
+    :with-card="false"
+  >
     <v-row>
-      <v-col cols="12" md="6">
-        <PastorLeaderWidget :user="churchDetail?.pastor_id" :title="$t('user.accountDetails')" />
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <UserDetailWidget
+          :user-id="id"
+          @loaded="onUserLoaded"
+        />
       </v-col>
-      <v-col cols="12" md="6">
-        <!-- <template v-for="church in churches">
-          <ChurchDetailWidget :church-id="churchDetail?.id" />
-        </template> -->
-      </v-col>  
+
+      <v-col
+        v-if="isPastorLeader && fromChurches.length"
+        cols="12"
+        md="6"
+      >
+        <div class="d-flex flex-column ga-4">
+          <ChurchInfoWidget
+            v-for="church in fromChurches"
+            :key="church.id"
+            :church="church"
+          />
+        </div>
+      </v-col>
     </v-row>
-    <!-- #ChurchDetail & PastorLeader -->
-    </v-sheet>
+  </TablePageShell>
 </template>
-
-<style scoped lang="scss">
-
-</style>

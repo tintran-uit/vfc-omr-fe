@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useImagePreviewStore } from '@/stores/imagePreviewStore'
+
+defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(
   defineProps<{
@@ -17,7 +20,7 @@ const props = withDefaults(
 
 const store = useImagePreviewStore()
 
-const cover = props.variant !== 'avatar'
+const cover = computed(() => props.variant !== 'avatar')
 
 function handleClick() {
   if (!props.preview) return
@@ -26,10 +29,10 @@ function handleClick() {
 </script>
 
 <template>
-    <v-hover v-slot="{ isHovering, props }">
+    <v-hover v-slot="{ isHovering, props: hoverProps }">
         <div
             class="image-preview-wrapper"
-            v-bind="props"
+            v-bind="{ ...hoverProps, ...$attrs }"
             @click="handleClick"
         >
             <v-img
@@ -41,9 +44,18 @@ function handleClick() {
             />
 
             <!-- Overlay -->
-            <div v-if="preview && isHovering" class="overlay">
-                <v-icon size="28">$magnifyPlusOutline</v-icon>
-            </div>
+            <Transition name="avatar-overlay">
+              <div
+                v-if="preview && isHovering"
+                class="avatar__overlay"
+              >
+                <v-icon
+                  color="white"
+                  size="28"
+                  icon="$magnifyPlusOutline"
+                />
+              </div>
+            </Transition>
             </div>
     </v-hover>
 </template>

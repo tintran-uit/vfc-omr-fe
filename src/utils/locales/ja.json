@@ -318,7 +318,16 @@
     "languageRegion": "Language Region",
     "churchApostolicRegions": "Church Apostolic Regions",
     "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
-    "churchNetwork": "Church Network"
+    "churchNetwork": "Church Network",
+    "pastorOf": "Pastor of",
+    "email": "e-mail",
+    "omrNumber": "OMR Number",
+    "ministerialCredentials": "Ministerial Credentials",
+    "oversightAssignment": "Oversight Assignment",
+    "excluding": "excluding",
+    "credentialsExpires": "Expires",
+    "pastorAssistAdminOf": "Pastor / Assist. Pastor / Admin. of:",
+    "enlargePhoto": "Enlarge Photo"
   },
   "church": {
     "listTitle": "教会一覧",
@@ -328,6 +337,7 @@
     "addWithNewUserTitle": "新しい牧師と共に追加",
     "listDisabledTitle": "無効化された教会",
     "churchData": "教会情報",
+    "churchDetails": "教会の詳細",
     "dashboardDaugterChurchTitle": "娘教会",
     "verifiedBy": "{name} により確認<br />{date}",
     "msc": "MSC",
@@ -359,6 +369,7 @@
     "labelLanguageRegion": "言語地域",
     "labelSensitiveNation": "制限国に所在",
     "labelCountry": "国",
+    "officePhone": "Office Phone",
     "labelCurrency": "現地通貨",
     "labelCity": "市／町／村",
     "infoCity": "国を選択してから都市を選んでください。リストは選択した国で絞り込まれます。",
@@ -401,7 +412,22 @@
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
     "late": "Late",
-    "myChurches": "My Churches"
+    "myChurches": "My Churches",
+    "overview": "Overview",
+    "contactDetails": "Contact Details",
+    "omrDetails": "OMR Details",
+    "cityTown": "City, Town",
+    "serviceAddressPostal": "Service Address & Postal Code",
+    "serviceTimeDay": "Service Time & Day",
+    "churchEmail": "Church e-mail",
+    "churchPhone": "Church Phone",
+    "socialMedia": "Social Media",
+    "mailingAddressPostal": "Mailing Address & Postal Code",
+    "omrNumber": "OMR Number",
+    "omrMapLocation": "OMR Map Location",
+    "onMap": "On Map",
+    "apostolicRegion": "Apostolic Region",
+    "currency": "Currency"
   },
   "message": {
     "errorTitle": "エラーが発生しました"

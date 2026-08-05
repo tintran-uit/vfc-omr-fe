@@ -36,9 +36,18 @@ function onClick() {
     >
       <v-img :src="src" cover />
 
-      <div v-if="isHovering" class="avatar__overlay">
-        <v-icon>$magnifyPlusOutline</v-icon>
-      </div>
+      <Transition name="avatar-overlay">
+        <div
+          v-if="isHovering"
+          class="avatar__overlay"
+        >
+          <v-icon
+            color="white"
+            size="28"
+            icon="$magnifyPlusOutline"
+          />
+        </div>
+      </Transition>
     </div>
   </v-hover>
 </template>

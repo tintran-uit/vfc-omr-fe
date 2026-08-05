@@ -7,6 +7,10 @@ export const userService  = {
     async get(id, showLoading = true) {
         return await apiClient.get(`/users/${id}`, null, showLoading);
     },
+    async getDetail(id, params: Record<string, unknown> = {}, showLoading = true) {
+        const response = await apiClient.get(`/users/${id}`, params, showLoading);
+        return response?.data ?? response;
+    },
     async getById(id, showLoading = true) {
         return await apiClient.get(`/users/${id}`, null, showLoading);
     },

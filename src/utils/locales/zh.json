@@ -318,7 +318,16 @@
     "languageRegion": "Language Region",
     "churchApostolicRegions": "Church Apostolic Regions",
     "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
-    "churchNetwork": "Church Network"
+    "churchNetwork": "Church Network",
+    "pastorOf": "Pastor of",
+    "email": "e-mail",
+    "omrNumber": "OMR Number",
+    "ministerialCredentials": "Ministerial Credentials",
+    "oversightAssignment": "Oversight Assignment",
+    "excluding": "excluding",
+    "credentialsExpires": "Expires",
+    "pastorAssistAdminOf": "Pastor / Assist. Pastor / Admin. of:",
+    "enlargePhoto": "Enlarge Photo"
   },
   "church": {
     "listTitle": "教会列表",
@@ -328,6 +337,7 @@
     "addWithNewUserTitle": "新增教会并创建新牧者",
     "listDisabledTitle": "已停用的教会",
     "churchData": "教会资料",
+    "churchDetails": "教会详情",
     "dashboardDaugterChurchTitle": "分堂教会",
     "verifiedBy": "由 {name} 核实<br />{date}",
     "msc": "多堂点教会",
@@ -359,6 +369,7 @@
     "labelLanguageRegion": "语言区域",
     "labelSensitiveNation": "是否为敏感国家",
     "labelCountry": "国家",
+    "officePhone": "Office Phone",
     "labelCurrency": "当地货币",
     "labelCity": "城市 / 城镇 / 村庄",
     "infoCity": "请先选择国家，城市列表将按所选国家筛选。",
@@ -401,7 +412,22 @@
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
     "late": "Late",
-    "myChurches": "My Churches"
+    "myChurches": "My Churches",
+    "overview": "Overview",
+    "contactDetails": "Contact Details",
+    "omrDetails": "OMR Details",
+    "cityTown": "City, Town",
+    "serviceAddressPostal": "Service Address & Postal Code",
+    "serviceTimeDay": "Service Time & Day",
+    "churchEmail": "Church e-mail",
+    "churchPhone": "Church Phone",
+    "socialMedia": "Social Media",
+    "mailingAddressPostal": "Mailing Address & Postal Code",
+    "omrNumber": "OMR Number",
+    "omrMapLocation": "OMR Map Location",
+    "onMap": "On Map",
+    "apostolicRegion": "Apostolic Region",
+    "currency": "Currency"
   },
   "message": {
     "errorTitle": "发生错误"

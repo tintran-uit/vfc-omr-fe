@@ -324,7 +324,16 @@
     "languageRegion": "Language Region",
     "churchApostolicRegions": "Church Apostolic Regions",
     "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
-    "churchNetwork": "Church Network"
+    "churchNetwork": "Church Network",
+    "pastorOf": "Pastor of",
+    "email": "e-mail",
+    "omrNumber": "Número OMR",
+    "ministerialCredentials": "Credenciais Ministeriais",
+    "oversightAssignment": "Atribuição de Supervisão",
+    "excluding": "exceto",
+    "credentialsExpires": "Expira",
+    "pastorAssistAdminOf": "Pastor / Pastor assist. / Admin. de:",
+    "enlargePhoto": "Ampliar foto"
   },
   "church": {
     "listTitle": "Lista de Igrejas",
@@ -334,6 +343,7 @@
     "addWithNewUserTitle": "Adicionar com Novo Pastor",
     "listDisabledTitle": "Igrejas Desativadas",
     "churchData": "Dados da Igreja",
+    "churchDetails": "Detalhes da Igreja",
     "dashboardDaugterChurchTitle": "Igrejas Filhas",
     "verifiedBy": "Verificado por {name}<br />{date}",
     "msc": "MSC",
@@ -365,6 +375,7 @@
     "labelLanguageRegion": "Região Linguística",
     "labelSensitiveNation": "Em uma Nação Sensível",
     "labelCountry": "Nação",
+    "officePhone": "Telefone do Escritório",
     "labelCurrency": "Moeda Local",
     "labelCity": "Cidade / Vila / Comunidade",
     "infoCity": "Selecione uma cidade depois de escolher a nação. A lista é filtrada pela nação selecionada.",
@@ -407,7 +418,22 @@
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
     "late": "Late",
-    "myChurches": "My Churches"
+    "myChurches": "My Churches",
+    "overview": "Visão geral",
+    "contactDetails": "Detalhes de contacto",
+    "omrDetails": "Detalhes OMR",
+    "cityTown": "Cidade, vila",
+    "serviceAddressPostal": "Morada de culto e código postal",
+    "serviceTimeDay": "Hora e dia do culto",
+    "churchEmail": "E-mail da igreja",
+    "churchPhone": "Telefone da igreja",
+    "socialMedia": "Redes sociais",
+    "mailingAddressPostal": "Morada postal e código postal",
+    "omrNumber": "Número OMR",
+    "omrMapLocation": "Localização no mapa OMR",
+    "onMap": "No mapa",
+    "apostolicRegion": "Região apostólica",
+    "currency": "Moeda"
   },
   "message": {
     "errorTitle": "Ocorreu um erro"

@@ -1,8 +1,17 @@
 import apiClient from '@/services/apiClient';
 
+function unwrapList(response) {
+  if (Array.isArray(response)) return response;
+  if (response && typeof response === 'object' && Array.isArray(response.data)) {
+    return response.data;
+  }
+  return [];
+}
+
 export const worshipServiceService = {
-    async getListByChurch(churchId, params = {}) {
-        return await apiClient.get(`/worship-services/churches/${churchId}`, params);
+    async getListByChurch(churchId, params = {}, showLoading = true) {
+        const response = await apiClient.get(`/worship-services/churches/${churchId}`, params, showLoading);
+        return unwrapList(response);
       },
       async getById(id) {
         return await apiClient.get(`/worship-services/${id}`);

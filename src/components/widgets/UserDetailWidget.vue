@@ -1,62 +1,54 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import type { RouteLocationRaw } from "vue-router";
-import { storeToRefs } from "pinia";
 
 import Avatar from "@/components/ui/Avatar.vue";
 import CardHeader from "@/components/shared/CardHeader.vue";
 import CardHeaderEditLink from "@/components/shared/CardHeaderEditLink.vue";
 import defaultAvatar from "@/assets/images/users/avatar-1.png";
-import { ROLE_OVERSEER } from "@/constants/roleConstant";
+import { ROLE_OVERSEER, ROLE_PASTOR_LEADER } from "@/constants/roleConstant";
 import { appFormatDate } from "@/helpers/appHelper";
 import { userService } from "@/services/userService";
-import { useAuthStore } from "@/stores/authStore";
 
 type RegionItem = { name: string };
-
-type DetailRow = {
-  key: string;
-  label: string;
-  value: string;
-  cellClass?: string;
-  multiline?: boolean;
-  href?: string;
-  to?: RouteLocationRaw;
-};
 
 const props = withDefaults(
   defineProps<{
     userId?: number | string | null;
     user?: Record<string, any> | null;
-    title?: string;
     editable?: boolean;
   }>(),
   {
     userId: null,
     user: null,
-    title: undefined,
     editable: true,
   },
 );
 
-const { t } = useI18n();
-const authStore = useAuthStore();
-const { isRolePastorLeader } = storeToRefs(authStore);
-const detail = ref<Record<string, any>>({});
-const headingClass = "text-left font-weight-bold";
+const emit = defineEmits<{
+  loaded: [detail: Record<string, any>];
+}>();
 
-const cardTitle = computed(() => props.title ?? t("user.pastorLeaderDetails"));
+const { t } = useI18n();
+const detail = ref<Record<string, any>>({});
+const headingClass = "text-left font-weight-medium";
 
 const resolvedDetail = computed(() => (props.user ? props.user : detail.value));
 
 const roleId = computed(() => Number(resolvedDetail.value?.role?.id));
 
-const isOverseer = computed(() => roleId.value === ROLE_OVERSEER);
-
 const avatarUrl = computed(
   () => resolvedDetail.value?.photo_url || defaultAvatar,
 );
+
+const isOverseer = computed(() => roleId.value === ROLE_OVERSEER);
+
+const isPastorLeader = computed(() => roleId.value === ROLE_PASTOR_LEADER);
+
+const showFromChurchBlocks = computed(() => {
+  const churches = resolvedDetail.value?.from_churches;
+  return isPastorLeader.value && Array.isArray(churches) && churches.length > 0;
+});
 
 const displayName = computed(() => {
   const user = resolvedDetail.value;
@@ -105,10 +97,6 @@ const ministerialCredentials = computed(() => {
   return lines.join("\n");
 });
 
-// TODO(api): Oversight Assignment — `overseer_permissions` chưa có trên GET /users/{id}.
-// Nguồn đã biết: GET /dashboard → overseer_permissions (OverseerUser.vue).
-// Cần backend xác nhận endpoint/param để lấy data khi xem user detail.
-
 function formatRegionsWithExclusions(
   allowed?: RegionItem[],
   excluded?: RegionItem[],
@@ -123,6 +111,10 @@ function formatRegionsWithExclusions(
   if (allowedNames) return allowedNames;
   return `${t("user.excluding")} ${excludedNames}`;
 }
+
+// TODO(api): Oversight Assignment — `overseer_permissions` chưa có trên GET /users/{id}.
+// Nguồn đã biết: GET /dashboard → overseer_permissions (OverseerUser.vue).
+// Cần backend xác nhận endpoint/param để lấy data khi xem user detail.
 
 const oversightAssignmentText = computed(() => {
   const permissions = resolvedDetail.value?.overseer_permissions;
@@ -150,32 +142,28 @@ const oversightAssignmentText = computed(() => {
   return parts.join("\n");
 });
 
-const showOversightAssignment = computed(
-  () =>
-    isOverseer.value &&
-    !isRolePastorLeader.value &&
-    Boolean(oversightAssignmentText.value),
-);
-
-const rows = computed((): DetailRow[] => {
+const rows = computed(() => {
   const user = resolvedDetail.value;
   if (!user) return [];
 
-  const items: DetailRow[] = [];
+  const items: Array<{
+    key: string;
+    label: string;
+    value: string;
+    cellClass?: string;
+    multiline?: boolean;
+    href?: string;
+  }> = [];
 
   if (user.church_name) {
     items.push({
       key: "pastorOf",
       label: "user.pastorOf",
       value: user.church_name,
-      cellClass: "font-weight-bold",
-      to: user.church_id
-        ? { name: "ChurchDetail", params: { id: user.church_id } }
-        : undefined,
     });
   }
 
-  if (fromChurchesText.value) {
+  if (fromChurchesText.value && !showFromChurchBlocks.value) {
     items.push({
       key: "from",
       label: "user.from",
@@ -188,7 +176,6 @@ const rows = computed((): DetailRow[] => {
       key: "nation",
       label: "user.nation",
       value: user.country_name,
-      cellClass: "font-weight-bold",
     });
   }
 
@@ -196,13 +183,13 @@ const rows = computed((): DetailRow[] => {
     key: "sensitiveNation",
     label: "user.sensitiveNation",
     value: user.sensitive_nation ? t("yes") : t("no"),
-    cellClass: user.sensitive_nation ? "text-error font-weight-bold" : undefined,
+    cellClass: user.sensitive_nation ? "text-error font-weight-medium" : undefined,
   });
 
   if (user.email_address) {
     items.push({
       key: "email",
-      label: "user.email",
+      label: "user.labelEmailAddress",
       value: user.email_address,
       href: `mailto:${user.email_address}`,
     });
@@ -241,7 +228,7 @@ const rows = computed((): DetailRow[] => {
     });
   }
 
-  if (showOversightAssignment.value) {
+  if (isOverseer.value && oversightAssignmentText.value) {
     items.push({
       key: "oversightAssignment",
       label: "user.oversightAssignment",
@@ -302,10 +289,20 @@ watch(
   },
   { immediate: true },
 );
+
+watch(
+  resolvedDetail,
+  (val) => {
+    if (val?.id) {
+      emit("loaded", val);
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
-  <CardHeader :title="cardTitle">
+  <CardHeader :title="$t('user.accountDetails')">
     <template
       v-if="editable && editRoute"
       #header
@@ -313,10 +310,7 @@ watch(
       <CardHeaderEditLink :to="editRoute" />
     </template>
 
-    <div
-      v-if="resolvedDetail?.id || resolvedDetail?.name"
-      class="pastor-leader-widget"
-    >
+    <template v-if="resolvedDetail?.id || resolvedDetail?.name">
       <div class="pa-4">
         <div class="d-flex align-start ga-4">
           <Avatar
@@ -326,12 +320,12 @@ watch(
           />
 
           <div class="flex-grow-1 min-w-0 pt-1">
-            <div class="text-h4 font-weight-bold text-primary">
+            <div class="text-h5 font-weight-medium">
               {{ displayName }}
             </div>
             <div
               v-if="resolvedDetail?.title"
-              class="text-body-1"
+              class="text-body-2 text-medium-emphasis"
             >
               {{ resolvedDetail.title }}
             </div>
@@ -339,9 +333,11 @@ watch(
         </div>
       </div>
 
+      <v-divider v-if="rows.length" />
+
       <v-table
         v-if="rows.length"
-        class="bordered-table table-in-card table-key-value table-border-top"
+        class="bordered-table table-in-card table-key-value"
         density="compact"
       >
         <tbody>
@@ -356,14 +352,8 @@ watch(
               :class="row.cellClass"
               :style="row.multiline ? { whiteSpace: 'pre-wrap' } : undefined"
             >
-              <router-link
-                v-if="row.to"
-                :to="row.to"
-              >
-                {{ row.value }}
-              </router-link>
               <a
-                v-else-if="row.href"
+                v-if="row.href"
                 :href="row.href"
               >
                 {{ row.value }}
@@ -375,7 +365,7 @@ watch(
           </tr>
         </tbody>
       </v-table>
-    </div>
+    </template>
 
     <div
       v-else

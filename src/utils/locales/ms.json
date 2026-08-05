@@ -318,7 +318,16 @@
     "languageRegion": "Language Region",
     "churchApostolicRegions": "Church Apostolic Regions",
     "churchApostolicRegionExclusions": "Church Apostolic Region Exclusions",
-    "churchNetwork": "Church Network"
+    "churchNetwork": "Church Network",
+    "pastorOf": "Pastor of",
+    "email": "e-mel",
+    "omrNumber": "OMR Number",
+    "ministerialCredentials": "Ministerial Credentials",
+    "oversightAssignment": "Oversight Assignment",
+    "excluding": "excluding",
+    "credentialsExpires": "Expires",
+    "pastorAssistAdminOf": "Pastor / Assist. Pastor / Admin. of:",
+    "enlargePhoto": "Enlarge Photo"
   },
   "church": {
     "listTitle": "Senarai Gereja",
@@ -328,6 +337,7 @@
     "addWithNewUserTitle": "Tambah Bersama Pastor Baharu",
     "listDisabledTitle": "Gereja Tidak Aktif",
     "churchData": "Maklumat Gereja",
+    "churchDetails": "Butiran Gereja",
     "dashboardDaugterChurchTitle": "Gereja Anak",
     "verifiedBy": "Disahkan oleh {name}<br />{date}",
     "msc": "MSC",
@@ -359,6 +369,7 @@
     "labelLanguageRegion": "Wilayah Bahasa",
     "labelSensitiveNation": "Di Negara Sensitif",
     "labelCountry": "Negara",
+    "officePhone": "Office Phone",
     "labelCurrency": "Mata Wang Tempatan",
     "labelCity": "Bandar / Pekan / Kampung",
     "infoCity": "Pilih bandar selepas memilih negara. Senarai ditapis mengikut negara yang dipilih.",
@@ -401,7 +412,22 @@
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
     "late": "Late",
-    "myChurches": "My Churches"
+    "myChurches": "My Churches",
+    "overview": "Overview",
+    "contactDetails": "Contact Details",
+    "omrDetails": "OMR Details",
+    "cityTown": "City, Town",
+    "serviceAddressPostal": "Service Address & Postal Code",
+    "serviceTimeDay": "Service Time & Day",
+    "churchEmail": "Church e-mail",
+    "churchPhone": "Church Phone",
+    "socialMedia": "Social Media",
+    "mailingAddressPostal": "Mailing Address & Postal Code",
+    "omrNumber": "OMR Number",
+    "omrMapLocation": "OMR Map Location",
+    "onMap": "On Map",
+    "apostolicRegion": "Apostolic Region",
+    "currency": "Currency"
   },
   "message": {
     "errorTitle": "Ralat telah berlaku"
