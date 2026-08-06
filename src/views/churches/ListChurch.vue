@@ -149,13 +149,12 @@ const buildOptions = () => {
     </template>
 
     <template v-slot:[`item.name`]="{ item }">
-      <v-btn
-        color="primary"
-        variant="text"
+      <router-link
+        class="dt-cell-link"
         :to="{ name: 'ChurchDetail', params: { id: item.id } }"
       >
-      {{ item.name }}
-      </v-btn>
+        {{ item.name }}
+      </router-link>
     </template>
     </DynamicTableDefault>
   </TablePageShell>

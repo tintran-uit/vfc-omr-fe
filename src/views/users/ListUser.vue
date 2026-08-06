@@ -121,13 +121,12 @@ const onSearch = () => {
       @update:options="onUpdateOptions"
     >
     <template v-slot:[`item.name`]="{ item }">
-      <v-btn
-        color="primary"
-        variant="text"
+      <router-link
+        class="dt-cell-link"
         :to="{ name: 'UserDetail', params: { id: item.id } }"
       >
         {{ item.name }}
-      </v-btn>
+      </router-link>
     </template>
 
     <template v-slot:[`item.avatar`]="{ item }">

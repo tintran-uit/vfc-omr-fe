@@ -113,13 +113,12 @@ const onSearch = () => {
       </template>
 
       <template v-slot:[`item.name`]="{ item }">
-        <a
-          href="#"
-          variant="text"
-          class="text-primary"
+        <router-link
+          class="dt-cell-link"
+          :to="{ name: 'ChurchDetail', params: { id: item.id } }"
         >
           {{ item.name }}
-        </a>
+        </router-link>
       </template>
     </DynamicTableDefault>
   </TablePageShell>
