@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
-import { createFormSchema } from '@/form-schemas/editUserFormSchema';
-import {userService as service} from '@/services/userService';
-import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
+import { ref, onMounted } from "vue";
+import { createFormSchema } from "@/form-schemas/editUserFormSchema";
+import { userService as service } from "@/services/userService";
+import DynamicFormDefault from "@/components/forms/DynamicFormDefault.vue";
 import { useRoute, useRouter } from "vue-router";
-import { useI18n } from 'vue-i18n';
-import { useMessageStore } from '@/stores/messageStore';
-import { extractApiError } from '@/utils/formErrors';
+import { useI18n } from "vue-i18n";
+import { useMessageStore } from "@/stores/messageStore";
+import { extractApiError } from "@/utils/formErrors";
 
 const route = useRoute();
 const router = useRouter();
@@ -18,38 +18,35 @@ const editData = ref(null);
 const formSchema = createFormSchema();
 const formRef = ref();
 
-const loadOptions = async function () {
+async function loadOptions() {
   options.value = await service.getFormData();
 }
 
-const fetchEditData = async function (id) {
-  if (!id) return;
+async function fetchEditData(userId: string) {
+  if (!userId) return;
   try {
-    const data = await service.get(id);
-    
-    editData.value = data;
+    editData.value = await service.get(userId);
   } catch (e) {
-    console.log('error', e);
+    console.log("error", e);
   }
 }
 
-const handleSubmit = async (formData) => {
+async function handleSubmit(formData: Record<string, unknown>) {
   try {
-    await service.update(id, formData)
-
-    router.push({ name: 'UserList' });
+    await service.update(id, formData);
+    router.push({ name: "UserList" });
   } catch (e) {
     const { errors } = extractApiError(e);
     if (Object.keys(errors).length) {
       formRef.value?.setServerErrors(errors);
     } else {
-      messageStore.error(t('genericSaveError'));
+      messageStore.error(t("genericSaveError"));
     }
   }
 }
 
-const mapperFn = function (source, destination) {
-  destination.role_id = source.role ? source.role.id : null;
+function mapperFn(source: Record<string, unknown>, destination: Record<string, unknown>) {
+  destination.role_id = source.role ? (source.role as { id: number }).id : null;
 }
 
 onMounted(() => {
@@ -59,44 +56,14 @@ onMounted(() => {
 </script>
 
 <template>
-
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('user.editTitle', {id: id}) }}</h1>
-
-          <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'UserList' })"
-          >
-            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row justify="center">
-        <v-col cols="12" md="12" lg="12">
-          <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
-            <!-- Slot để bỏ form -->
-            <slot name="form">
-              <DynamicFormDefault
-                ref="formRef"
-                :options="options"
-                :form-schema="formSchema"
-                @submit="handleSubmit"
-                :init-data="editData"
-                :mapper="mapperFn"
-              />
-              
-            </slot>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-sheet>
+  <DynamicFormDefault
+    ref="formRef"
+    :options="options"
+    :form-schema="formSchema"
+    :init-data="editData"
+    :mapper="mapperFn"
+    :page-title="$t('user.editTitle', { id })"
+    :back-url="{ name: 'UserList' }"
+    @submit="handleSubmit"
+  />
 </template>
-
-<style scoped lang="scss">
-
-</style>

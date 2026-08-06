@@ -125,12 +125,16 @@ export const cloneDeep = (value) => {
   return JSON.parse(JSON.stringify(value));
 };
 
+export function resolveFieldDefault(defaultVal: unknown) {
+  if (defaultVal === undefined || defaultVal === null) return "";
+  return typeof defaultVal === "function" ? defaultVal() : defaultVal;
+}
+
 export const initFormData = (schema, initValue = {}) => {
   const result = {};
 
   schema.forEach((field) => {
-    const defaultVal = field.default ?? "";
-    setNestedValue(result, field.name, defaultVal);
+    setNestedValue(result, field.name, resolveFieldDefault(field.default));
   });
 
   // Gộp initValue (nếu có) → override

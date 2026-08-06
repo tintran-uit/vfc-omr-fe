@@ -21,7 +21,18 @@ export const createFormSchema = () => ({
         {
             label: 'church.labelIsMsc',
             name: 'is_msc',
-            type: 'YesNoInput'
+            type: 'YesNoInput',
+            default: false,
+        },
+        {
+            label: 'church.labelIsFirstMsc',
+            name: 'is_first_msc',
+            type: 'YesNoInput',
+            default: false,
+            showWhen: {
+                field: 'is_msc',
+                equals: true,
+            },
         },
         {
             label: 'church.labelParent',
@@ -77,7 +88,7 @@ export const createFormSchema = () => ({
             name: 'sensitive_nation',
             desciption: 'church.infoSensitiveNation',
             type: 'YesNoInput',
-            default: () => false
+            default: false,
         },
 
         {

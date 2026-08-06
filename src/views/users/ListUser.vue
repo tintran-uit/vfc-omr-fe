@@ -120,17 +120,21 @@ const onSearch = () => {
       @action:edit="onEdit"
       @update:options="onUpdateOptions"
     >
-  <template v-slot:[`item.name`]="{ item }">
-            <a
-              href="#"
-              variant="text"
-            >
-              {{ item.name }}
-  </a>
-          </template>
+    <template v-slot:[`item.name`]="{ item }">
+      <v-btn
+        color="primary"
+        variant="text"
+        :to="{ name: 'UserDetail', params: { id: item.id } }"
+      >
+        {{ item.name }}
+      </v-btn>
+    </template>
 
     <template v-slot:[`item.avatar`]="{ item }">
-      <Avatar class="py-2" :src="item?.photo_url || defaultAvatar" variant="avatar" size="50" />
+      <Avatar
+        :src="item?.photo_url || defaultAvatar"
+        :size="50"
+      />
     </template>
   </DynamicTableDefault>
   </TablePageShell>

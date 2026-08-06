@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { useTemplateRef, onMounted, computed, ref, watch, watchEffect, nextTick } from "vue";
-import { getNestedValue, setNestedValue } from "@/utils/objectUtil.ts";
+import { getNestedValue, setNestedValue, initFormData, resolveFieldDefault } from "@/utils/objectUtil.ts";
 import { createFormRules } from "@/helpers/formRulesFactory";
 import { useI18n } from "vue-i18n";
-import { mapModel } from "@/utils/mapperUtil";
 import { getColProps } from "@/helpers/formHelper";
 import { unwrapErrorMap, normalizeFieldErrors, flattenErrorKeys, mapErrorsToFieldNames } from "@/utils/formErrors";
 import PioneeringStartDateInput from "@/components/input/PioneeringStartDateInput.vue";
@@ -84,16 +83,20 @@ const fields = computed(() =>
   props.formSchema.fields.map((field) => {
     const isText = ["TextInput", "PasswordInput", "TextareaInput"].includes(field.type);
     const isComputed = field.type === "computed";
+    const fieldDefault = resolveFieldDefault(field.default ?? (isText ? "" : null));
 
     return {
       ...field,
       readonly: isComputed || Boolean(field.readonly),
       modelValue: computed({
-        get: () =>
-          getNestedValue(formData.value, field.name, field.default || (isText ? "" : null)),
+        get: () => {
+          const value = getNestedValue(formData.value, field.name, undefined);
+          if (typeof value === "function") return value();
+          return value ?? fieldDefault;
+        },
         set: (val) => {
           if (isComputed) return;
-          setNestedValue(formData.value, field.name, val, field.default || (isText ? "" : null));
+          setNestedValue(formData.value, field.name, val, fieldDefault);
           // The user is fixing this field — drop the stale server-side error.
           clearServerError(field.name);
         },
@@ -108,6 +111,25 @@ function fieldAttrs(field: Record<string, any>) {
   return messages?.length
     ? { ...(field?.attrs || {}), "error-messages": messages }
     : field?.attrs || {};
+}
+
+function isFieldVisible(field: Record<string, any>) {
+  const showWhen = field.showWhen;
+  if (!showWhen) return true;
+
+  if (typeof showWhen === "function") {
+    return showWhen(formData.value, context.value);
+  }
+
+  const value = getNestedValue(formData.value, showWhen.field);
+  if ("equals" in showWhen) {
+    if (showWhen.equals === true) return value === true || value === 1;
+    if (showWhen.equals === false) return value === false || value === 0;
+    return value === showWhen.equals;
+  }
+  if (showWhen.truthy) return Boolean(value);
+
+  return true;
 }
 
 const handleSubmit = async (e) => {
@@ -302,12 +324,16 @@ const handleCancel = () => {
 watch(
   () => props.initData,
   (val) => {
-    if (val) {
-      mapModel(formData.value, val, {});
+    if (!val) return;
 
-      if (typeof props.mapper === "function") {
-        props.mapper(val, formData.value);
-      }
+    const payload = val?.data ?? val;
+    const merged = initFormData(props.formSchema?.fields || [], payload);
+    const baseInit = props.formSchema?.initData?.() ?? {};
+
+    formData.value = { ...baseInit, ...merged };
+
+    if (typeof props.mapper === "function") {
+      props.mapper(payload, formData.value);
     }
   },
   { immediate: true },
@@ -376,7 +402,7 @@ watch(
 
             <!-- Fields -->
             <v-col
-              v-else
+              v-else-if="isFieldVisible(field)"
               v-bind="getColProps(field)"
             >
               <v-label

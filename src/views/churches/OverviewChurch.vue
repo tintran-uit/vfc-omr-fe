@@ -271,7 +271,7 @@ const metrics = shallowRef([
       v-for="item in actions"
       :key="item.title"
       :to="item.to"
-      variant="elevated"
+      variant="outlined"
       :color="item?.color || 'primary'"
       class="d-inline-flex align-center w-100 w-sm-auto"
     >

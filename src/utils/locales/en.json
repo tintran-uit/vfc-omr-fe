@@ -341,7 +341,7 @@
   "church": {
     "listTitle": "List of churches",
     "addTitle": "Add new church",
-    "addNewChurchBtn": "Add New Church",
+    "addNewChurchBtn": "Add New Church [with existing Pastor]",
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "editTitle": "Edit church #{id}",
     "cloneTitle": "Clone church #{id}",
@@ -369,6 +369,7 @@
     "labelName": "Church Name",
     "labelShortName": "Short Name [only 10 characters]",
     "labelIsMsc": "Is it a Muli-Service Church?",
+    "labelIsFirstMsc": "Is this the first MSC?",
     "labelEnableCpm": "Enable House C.P.?",
     "labelParent": "The Mother Church is?",
     "labelLanguage": "The Language used in the Service",

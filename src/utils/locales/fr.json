@@ -341,7 +341,7 @@
   "church": {
     "listTitle": "Liste des églises",
     "addTitle": "Ajouter une nouvelle église",
-    "addNewChurchBtn": "Ajouter une nouvelle église",
+    "addNewChurchBtn": "Ajouter une nouvelle église [avec pasteur existant]",
     "addNewChurchWithPastorBtn": "Ajouter une nouvelle église et un pasteur",
     "editTitle": "Modifier l’église #{id}",
     "cloneTitle": "Cloner l’église #{id}",
@@ -369,6 +369,7 @@
     "labelName": "Nom de l’église",
     "labelShortName": "Nom abrégé [10 caractères maximum]",
     "labelIsMsc": "Est-ce une église multi-services ?",
+    "labelIsFirstMsc": "Est-ce la première MSC ?",
     "labelEnableCpm": "Activer les groupes de maison (C.P.) ?",
     "labelParent": "Quelle est l’église mère ?",
     "labelLanguage": "Langue utilisée lors du culte",
