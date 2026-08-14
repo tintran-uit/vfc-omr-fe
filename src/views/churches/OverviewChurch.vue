@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore';
-import { computed, onMounted, ref, shallowRef, inject } from 'vue';
+import { computed, inject, onUnmounted, shallowRef, watch } from 'vue';
+import { useNavLogoStore } from '@/stores/navLogoStore';
 import { useDisplay } from 'vuetify'
 import { formatDate } from '@/helpers/dateTimeHelper';
 import peopleIcon from '@/assets/images/metrics/people.svg'
-import givingIcon from '@/assets/images/metrics/giving.svg'
-import plantIcon from '@/assets/images/metrics/plant.svg'
 import growthIcon from '@/assets/images/metrics/growth.svg'
-import worldwideIcon from '@/assets/images/metrics/worldwide.svg'
-import educationIcon from '@/assets/images/metrics/education.svg'
 import groupPeopleIcon from '@/assets/images/metrics/group-people.svg'
+import accessIcon from '@/assets/images/metrics/access.png'
+import worldwideCurrencyIcon from '@/assets/images/metrics/worldwide-currency.png'
+import cellGroupIcon from '@/assets/images/metrics/cell-group.png'
+import educationMetricIcon from '@/assets/images/metrics/education.png'
+import houseIcon from '@/assets/images/metrics/house.png'
+import userIcon from '@/assets/images/metrics/user.png'
+import houseUserIcon from '@/assets/images/metrics/house-user.png'
+import chartIcon from '@/assets/images/metrics/chart.png'
+import editIcon from '@/assets/images/metrics/edit.png'
+import worshipIcon from '@/assets/images/metrics/worship.png'
 import ChurchDetailWidget from '@/components/widgets/ChurchDetailWidget.vue';
 import PastorLeaderWidget from '@/components/widgets/PastorLeaderWidget.vue';
 import RelatedUserWidget from '@/components/widgets/RelatedUserWidget.vue';
@@ -32,17 +39,37 @@ const props = withDefaults(
 const { smAndDown } = useDisplay()
 const isMobile = computed(() => smAndDown.value)
 const authStore = useAuthStore();
+const navLogoStore = useNavLogoStore();
 const churchDetail = inject('churchDetail')
 const dashboardData = inject('dashboardData')
 const pastor = inject('pastor')
 const currencyCodeLocal = computed(() => churchDetail.value?.currency_name)
+const regionLogoUrl = computed(
+  () => dashboardData.value?.dashboard_info?.church_region_logo_url as string | undefined
+);
+const regionLogoAlt = computed(
+  () => dashboardData.value?.dashboard_info?.church_region_name as string | undefined
+);
+
+watch(
+  [regionLogoUrl, regionLogoAlt],
+  ([url, alt]) => {
+    navLogoStore.setOverride(url, alt);
+  },
+  { immediate: true }
+);
+
+onUnmounted(() => {
+  navLogoStore.clearOverride();
+});
+
 const actions = computed(() => {
   if (!churchDetail.value?.id) return [];
 
   return [
     {
       title: 'dashboardMenu.monthlyData',
-      icon: '$chartBar',
+      iconSrc: chartIcon,
       to: {
         name: 'MonthlyDataAdd',
         params: {
@@ -53,7 +80,7 @@ const actions = computed(() => {
     },
     {
       title: 'dashboardMenu.editChurch',
-      icon: '$edit',
+      iconSrc: editIcon,
       to: {
         name: 'ChurchEdit',
         params: {
@@ -63,7 +90,7 @@ const actions = computed(() => {
     },
     {
       title: 'dashboardMenu.worshipServices',
-      icon: '$handClap',
+      iconSrc: worshipIcon,
       to: {
         name: 'WorshipServiceList',
         params: {
@@ -73,21 +100,21 @@ const actions = computed(() => {
     },
     {
       title: 'dashboardMenu.newPastorAndNewChurch',
-      icon: '$plusCircleOutline',
+      iconSrc: houseUserIcon,
       to: {
         name: 'ChurchAddWithNewPastor'
       }
     },
     {
       title: 'dashboardMenu.newPastor',
-      icon: '$plusCircleOutline',
+      iconSrc: userIcon,
       to: {
         name: 'UserAdd'
       }
     },
     {
       title: 'dashboardMenu.newChurch',
-      icon: '$plusCircleOutline',
+      iconSrc: houseIcon,
       to: {
         name: 'ChurchAdd'
       }
@@ -130,7 +157,7 @@ const metrics = shallowRef([
     },
     percentKey: null,
     color: 'primary',
-    icon: givingIcon,
+    icon: worldwideCurrencyIcon,
   },
   {
     name: 'dashboard.churchPlants',
@@ -138,7 +165,7 @@ const metrics = shallowRef([
     earnKey: 'total_church_plants',
     percentKey: null,
     color: 'primary',
-    icon: plantIcon,
+    icon: accessIcon,
   },
   {
     name: 'dashboard.givingMFP',
@@ -156,7 +183,7 @@ const metrics = shallowRef([
     },
     percentKey: null,
     color: 'primary',
-    icon: worldwideIcon,
+    icon: worldwideCurrencyIcon,
   },
   {
     name: 'dashboard.peopleInCG',
@@ -164,7 +191,7 @@ const metrics = shallowRef([
     earnKey: null,
     percentKey: 'percent_cell_group_attendance',
     color: 'primary',
-    icon: groupPeopleIcon,
+    icon: cellGroupIcon,
   },
   {
     name: 'dashboard.peopleInGTAndLIW',
@@ -172,7 +199,7 @@ const metrics = shallowRef([
     earnKey: null,
     percentKey: 'percent_liw_students',
     color: 'primary',
-    icon: educationIcon,
+    icon: educationMetricIcon,
   },
   {
     name: 'dashboard.newDecisions',
@@ -210,53 +237,43 @@ const metrics = shallowRef([
 
       <!-- User info ở giữa -->
       <v-col cols="12" sm="10" class="d-flex flex-column justify-center text-center text-sm-left">
-        <v-row class="align-center">
-          <v-col cols="12" md="8" class="text-medium-emphasis text-body-1">
-            <div class="text-h4 mb-1 text-medium-emphasis">
-              {{ pastor?.first_name }}  {{ pastor?.last_name }}
-            </div>
+        <div class="text-medium-emphasis text-body-1">
+          <div class="text-h4 mb-1 text-medium-emphasis">
+            {{ pastor?.first_name }}  {{ pastor?.last_name }}
+          </div>
 
-            <div class="text-h4">
-              {{ churchDetail?.name }}
+          <div class="text-h4">
+            {{ churchDetail?.name }}
 
-              <!-- <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
-                <v-tooltip>
-                  <template #activator="{ props: tooltipProps }">
-                    <v-icon v-bind="{ ...menuProps, ...tooltipProps }" class="text-success" size="20">$checkDecagramOutline</v-icon>
-                  </template>
+            <!-- <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
+              <v-tooltip>
+                <template #activator="{ props: tooltipProps }">
+                  <v-icon v-bind="{ ...menuProps, ...tooltipProps }" class="text-success" size="20">$checkDecagramOutline</v-icon>
+                </template>
 
-                  <span v-html="$t('church.verifiedBy', {
-                      name: dashboardData?.dashboard_info?.verified_by_user_name,
-                      date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
-                    })"></span>
-                </v-tooltip>
-              </template> -->
-            
-              <slot name="switch" />
-            </div>
-            
-            {{ churchDetail?.city_name }}, {{ churchDetail?.country_name }}<br />
-            <span class="text-primary">{{ $t('church.lastMonthlyRecord') }}: {{ formatDate(dashboardData?.dashboard_info?.last_report_date, 'MMMM YYYY') || 'N/A' }}</span>
-            <template v-if="dashboardData?.dashboard_info?.verified_by_user_id && false">
-              <v-icon class="text-success" size="20">$checkDecagramOutline</v-icon>
-              <span class="text-success" v-html="$t('church.visitedBy', {
-                name: dashboardData?.dashboard_info?.verified_by_user_name,
-                date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
-              })"></span>
-              </template>
-            <span v-else class="text-warning">
-              <v-icon >$exclamation</v-icon> {{ $t('church.needsVisit') }}
-            </span>
-          </v-col>
-          <v-col cols="12" md="4" class="text-center text-md-right text-medium-emphasis text-body-1">
-            <v-img
-             :src="dashboardData?.dashboard_info?.church_region_logo_url"
-             :alt="dashboardData?.dashboard_info?.church_region_name"
-             :width="100"
-             class="mx-auto mx-md-0"
-             />
-          </v-col>
-        </v-row>
+                <span v-html="$t('church.verifiedBy', {
+                    name: dashboardData?.dashboard_info?.verified_by_user_name,
+                    date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
+                  })"></span>
+              </v-tooltip>
+            </template> -->
+
+            <slot name="switch" />
+          </div>
+
+          {{ churchDetail?.city_name }}, {{ churchDetail?.country_name }}<br />
+          <span class="text-primary">{{ $t('church.lastMonthlyRecord') }}: {{ formatDate(dashboardData?.dashboard_info?.last_report_date, 'MMMM YYYY') || 'N/A' }}</span>
+          <template v-if="dashboardData?.dashboard_info?.verified_by_user_id && false">
+            <v-icon class="text-success" size="20">$checkDecagramOutline</v-icon>
+            <span class="text-success" v-html="$t('church.visitedBy', {
+              name: dashboardData?.dashboard_info?.verified_by_user_name,
+              date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
+            })"></span>
+          </template>
+          <span v-else class="text-warning">
+            <v-icon >$exclamation</v-icon> {{ $t('church.needsVisit') }}
+          </span>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -275,7 +292,17 @@ const metrics = shallowRef([
       :color="item?.color || 'primary'"
       class="d-inline-flex align-center w-100 w-sm-auto"
     >
-      <v-icon :icon="item.icon" size="20" class="mr-2" />
+      <v-img
+        v-if="item.iconSrc"
+        :src="item.iconSrc"
+        width="20"
+        height="20"
+        :class="[
+          'mr-2 flex-shrink-0',
+          item.color === 'warning' && 'overview-church-action-btn__icon--warning',
+        ]"
+      />
+      <v-icon v-else :icon="item.icon" size="20" class="mr-2" />
       <span class="text-body-2">{{ $t(item.title) }}</span>
     </v-btn>
   </div>

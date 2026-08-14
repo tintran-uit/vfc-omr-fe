@@ -2,6 +2,7 @@
 import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDialogStore } from '@/stores/dialogStore'
+import EllipsisTooltip from '@/components/ui/EllipsisTooltip.vue'
 
 const {t} = useI18n()
 const page = defineModel('page', { default: 1 })
@@ -111,6 +112,16 @@ const noDataTextResolved = computed(() => {
   }
   return t("noData");
 });
+
+const formatCellText = (value: unknown) => {
+  if (value == null || value === '') return ''
+  if (Array.isArray(value)) return value.map(x => String(x ?? '')).join(' ')
+  return String(value)
+}
+
+const isPlainCell = (key: string) => !['actions', 'attributes', 'avatar'].includes(key)
+
+const shouldAlwaysTooltip = (key: string) => ['name', 'full_name', 'question_header'].includes(key)
 </script>
 
 <template>
@@ -120,7 +131,7 @@ const noDataTextResolved = computed(() => {
       v-model:sort-by="sortBy"
       :headers="headers"
       :items="filteredItems"
-      class="bordered-table rounded-0"
+      class="bordered-table rounded-0 dt-table"
       :no-data-text="noDataTextResolved"
     >
     <template v-slot:headers="{ columns, isSorted, getSortIcon, toggleSort }">
@@ -202,11 +213,21 @@ const noDataTextResolved = computed(() => {
               <template v-else-if="header.key === 'disabled'">
                 {{ item.disabled ? $t('yes') : $t('no') }}
               </template>
-              <template v-else>
-              <slot :name="`item.${header.key}`" :item="item" :value="item[header.key]">
-                {{ item[header.key] || emptyPlaceholder }}
-              </slot>
-              </template>
+              <slot
+                v-else-if="!isPlainCell(header.key)"
+                :name="`item.${header.key}`"
+                :item="item"
+                :value="item[header.key]"
+              />
+              <EllipsisTooltip
+                v-else
+                :text="formatCellText(item[header.key])"
+                :always="shouldAlwaysTooltip(header.key)"
+              >
+                <slot :name="`item.${header.key}`" :item="item" :value="item[header.key]">
+                  {{ item[header.key] || emptyPlaceholder }}
+                </slot>
+              </EllipsisTooltip>
             </td>
         </template>
         </tr>

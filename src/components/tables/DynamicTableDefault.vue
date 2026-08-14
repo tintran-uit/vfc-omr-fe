@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useDialogStore } from '@/stores/dialogStore';
 import { useI18n } from 'vue-i18n';
+import EllipsisTooltip from '@/components/ui/EllipsisTooltip.vue';
 
 const dialogStore = useDialogStore()
 const { t } = useI18n();
@@ -70,6 +71,10 @@ const emit = defineEmits<{
 const getColWidthPx = (key: string) => {
   if (key === 'id') return '72px'
   if (key === 'actions') return '120px'
+  if (key === 'attributes') return '128px'
+  if (key === 'country_name') return '104px'
+  if (key === 'city') return '136px'
+  if (key === 'pastor_name') return '168px'
   return undefined
 }
 
@@ -83,6 +88,16 @@ const getCellStyle = (key: string) => {
     overflow: 'hidden',
   }
 }
+
+const formatCellText = (value: unknown) => {
+  if (value == null || value === '') return ''
+  if (Array.isArray(value)) return value.map(x => String(x ?? '')).join(' ')
+  return String(value)
+}
+
+const isPlainCell = (key: string) => !['actions', 'attributes', 'avatar'].includes(key)
+
+const shouldAlwaysTooltip = (key: string) => ['name', 'full_name', 'question_header'].includes(key)
 
 // Search
 let searchTimeout = null;
@@ -336,9 +351,21 @@ onMounted(() => {
                 </template>
               </v-tooltip>
             </div>
-            <slot v-else :name="`item.${header.key}`" :item="item" :value="item[header.key]">
-              {{ item[header.key] || emptyPlaceholder }}
-            </slot>
+            <slot
+              v-else-if="!isPlainCell(header.key)"
+              :name="`item.${header.key}`"
+              :item="item"
+              :value="item[header.key]"
+            />
+            <EllipsisTooltip
+              v-else
+              :text="formatCellText(item[header.key])"
+              :always="shouldAlwaysTooltip(header.key)"
+            >
+              <slot :name="`item.${header.key}`" :item="item" :value="item[header.key]">
+                {{ item[header.key] || emptyPlaceholder }}
+              </slot>
+            </EllipsisTooltip>
           </td>
       </template>
       </tr>
@@ -419,17 +446,41 @@ onMounted(() => {
   white-space: nowrap;
 }
 
+/* compact columns — leave remaining width to name */
+.dt-col--attributes {
+  width: 128px;
+  max-width: 128px;
+}
+
+.dt-col--country_name {
+  width: 104px;
+  max-width: 104px;
+}
+
+.dt-col--city {
+  width: 136px;
+  max-width: 136px;
+}
+
+.dt-col--pastor_name {
+  width: 168px;
+  max-width: 168px;
+}
+
 /* Force width constraints to be respected */
 .dt-table :deep(.v-table__wrapper > table) {
   table-layout: fixed;
   width: 100%;
 }
 
-/* Nice UX when name gets long */
+/* name absorbs all leftover table width */
 .dt-col--name {
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.dt-col--name :deep(.dt-cell-link) {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
 }
 
 /* Actions: never let content push the column wider */

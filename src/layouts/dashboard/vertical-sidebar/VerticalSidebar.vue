@@ -8,6 +8,8 @@ import NavItem from './NavItem/NavItem.vue';
 import NavCollapse from './NavCollapse/NavCollapse.vue';
 
 import { useAuthStore } from '@/stores/authStore';
+import { useNavLogoStore } from '@/stores/navLogoStore';
+import defaultLogo from '@/assets/images/logo/logo.png';
 
 function filterNavigationByPermissions(items, canFn) {
   return items
@@ -58,7 +60,15 @@ function filterNavigationByPermissions(items, canFn) {
 }
 
 const authStore = useAuthStore();
+const navLogoStore = useNavLogoStore();
 const customizer = useCustomizerStore();
+
+const sidebarLogoSrc = computed(() =>
+  navLogoStore.hasOverride ? navLogoStore.overrideUrl! : defaultLogo
+);
+const sidebarLogoAlt = computed(() =>
+  navLogoStore.hasOverride ? (navLogoStore.overrideAlt || 'Logo') : 'Logo'
+);
 /* Re-compute when permissions change (e.g. after login or role-based sync from authStore). */
 const sidebarMenu = computed(() =>
   filterNavigationByPermissions(sidebarItems, (p) => authStore.can(p))
@@ -82,7 +92,12 @@ const sidebarMenu = computed(() =>
     <div class="pa-5">
       <div class="logo">
           <RouterLink :to="{name: 'Dashboard'}" aria-label="logo">
-            <img src="@/assets/images/logo/logo.png" alt="Logo" height="50" />
+            <img
+              :src="sidebarLogoSrc"
+              :alt="sidebarLogoAlt"
+              height="50"
+              class="sidebar-logo"
+            />
           </RouterLink>
         </div>
     </div>
