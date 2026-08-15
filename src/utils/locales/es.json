@@ -225,20 +225,23 @@
   "dashboard": {
     "people": "Personas",
     "growth": "Crecimiento",
-    "givingTithes": "Ofrendas y diezmos",
+    "givingTithes": "Ofrendas",
     "churchPlants": "Plantaciones de iglesias",
     "givingMFP": "Ofrendas MFP",
     "peopleInCG": "Personas en CG",
     "peopleInGTAndLIW": "Personas en GT y LIW",
     "newDecisions": "Nuevas decisiones",
-    "peopleText": "Asistencia promedio en los últimos 3 meses",
-    "growthText": "% de crecimiento respecto al año pasado",
-    "givingTithesText": "Prom. ofrendas mensuales",
-    "churchPlantsText": "En los últimos 3 años",
-    "givingMFPText": "Prom. ofrendas MFP mensuales",
-    "peopleInCGText": "Asistencia promedio en los últimos 3 meses",
-    "peopleInGTAndLIWText": "Asistencia promedio en los últimos 3 meses",
-    "newDecisionsText": "En los últimos 3 meses"
+    "metricInfo": "Información de la métrica",
+    "peopleHelp": "El promedio de asistencia al servicio durante los últimos 3 meses",
+    "growthHelp": "El % de crecimiento, comparado con los mismos 3 meses del año pasado",
+    "givingHelp": "El promedio de diezmos y ofrendas durante los últimos 3 meses",
+    "churchPlantsHelp": "El número de nuevas iglesias plantadas por esta iglesia madre en los últimos 3 años",
+    "givingMFPHelpTitle": "Ofrendas misioneras",
+    "givingMFPHelp": "El promedio de Missions Faith Pledge y ofrendas misioneras durante los últimos 3 meses. Esto debe incluir cualquier ofrenda del fondo general de la iglesia. Muchas iglesias dan un % de sus ingresos a misiones",
+    "peopleInCGHelp": "El promedio de asistencia a grupos de conexión (células) durante los últimos 3 meses, como % de la asistencia promedio semanal de adultos y jóvenes",
+    "peopleInGTAndLIWHelpTitle": "Personas en GT/LIW",
+    "peopleInGTAndLIWHelp": "El promedio de asistencia a Growth Track y Life In the Word durante los últimos 3 meses, como % de la asistencia promedio semanal de adultos y jóvenes",
+    "newDecisionsHelp": "El número de nuevas decisiones por Cristo en los últimos 3 meses"
   },
   "overseerMetric": {
     "iconAlt": "Icono de métrica",
@@ -400,6 +403,9 @@
     "apostolicRegion": "Región apostólica",
     "currency": "Moneda",
     "needsVisit": "Necesita una visita.",
+    "churchPicture": "Foto de la iglesia",
+    "seeChurchPicture": "Ver foto de la iglesia",
+    "hideChurchPicture": "Ocultar foto de la iglesia",
     "switchAnotherChurches": "Cambiar a otra de tus iglesias",
     "upToDateGoodWork": "Al día, ¡buen trabajo!",
     "visitedBy": "Visitado {date} por {name}",
@@ -437,7 +443,9 @@
     "infoInstagram": "El enlace a la cuenta de Instagram de la iglesia.",
     "infoDateOfBirth": "La fecha del primer servicio.",
     "phShortName": "por ejemplo: VFC-NewLyn",
-    "phName": "por ejemplo: Victory Family Centre – New Lynn"
+    "phName": "por ejemplo: Victory Family Centre – New Lynn",
+    "lastReport": "Último informe",
+    "pastorName": "Ps. {name}"
   },
   "message": {
     "errorTitle": "Ocurrió un error"
@@ -721,5 +729,6 @@
     "userDetail": "Detalles del usuario",
     "notFound": "Página no encontrada"
   },
-  "genericSaveError": "Error al guardar. Revisa los campos resaltados e inténtalo de nuevo."
+  "genericSaveError": "Error al guardar. Revisa los campos resaltados e inténtalo de nuevo.",
+  "close": "Cerrar"
 }

@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore';
-import { computed, inject, onUnmounted, shallowRef, watch } from 'vue';
+import { computed, inject, onUnmounted, ref, shallowRef, watch } from 'vue';
 import { useNavLogoStore } from '@/stores/navLogoStore';
 import { useDisplay } from 'vuetify'
+import { useI18n } from 'vue-i18n'
 import { formatDate } from '@/helpers/dateTimeHelper';
+import defaultAvatar from '@/assets/images/users/avatar-default.svg';
+import CardHeader from '@/components/shared/CardHeader.vue';
 import peopleIcon from '@/assets/images/metrics/people.svg'
 import growthIcon from '@/assets/images/metrics/growth.svg'
-import groupPeopleIcon from '@/assets/images/metrics/group-people.svg'
 import accessIcon from '@/assets/images/metrics/access.png'
+import dollarBillIcon from '@/assets/images/metrics/dollar-bill.png'
+import angelIcon from '@/assets/images/metrics/angel.png'
 import worldwideCurrencyIcon from '@/assets/images/metrics/worldwide-currency.png'
 import cellGroupIcon from '@/assets/images/metrics/cell-group.png'
 import educationMetricIcon from '@/assets/images/metrics/education.png'
@@ -36,8 +40,14 @@ const props = withDefaults(
   }
 )
 
-const { smAndDown } = useDisplay()
+const { smAndDown, mdAndUp } = useDisplay()
+const { t } = useI18n()
 const isMobile = computed(() => smAndDown.value)
+const metricsExpanded = ref(false)
+const churchPictureVisible = ref(false)
+const metricHelpDialog = ref(false)
+const metricHelpTitle = ref('')
+const metricHelpContent = ref('')
 const authStore = useAuthStore();
 const navLogoStore = useNavLogoStore();
 const churchDetail = inject('churchDetail')
@@ -126,7 +136,7 @@ const actions = computed(() => {
 const metrics = shallowRef([
   {
     name: 'dashboard.people',
-    text: 'dashboard.peopleText',
+    helpKey: 'dashboard.peopleHelp',
     earnKey: 'avg_attendance',
     percentKey: null,
     color: 'primary',
@@ -134,7 +144,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.growth',
-    text: 'dashboard.growthText',
+    helpKey: 'dashboard.growthHelp',
     earnKey: null,
     percentKey: 'growth',
     color: 'primary',
@@ -142,8 +152,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.givingTithes',
-    text: 'dashboard.givingTithesText',
-    // earnKey: ,
+    helpKey: 'dashboard.givingHelp',
     earnFn: (item) => {
       if (!currencyCodeLocal) return 0; 
 
@@ -157,11 +166,11 @@ const metrics = shallowRef([
     },
     percentKey: null,
     color: 'primary',
-    icon: worldwideCurrencyIcon,
+    icon: dollarBillIcon,
   },
   {
     name: 'dashboard.churchPlants',
-    text: 'dashboard.churchPlantsText',
+    helpKey: 'dashboard.churchPlantsHelp',
     earnKey: 'total_church_plants',
     percentKey: null,
     color: 'primary',
@@ -169,7 +178,8 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.givingMFP',
-    text: 'dashboard.givingMFPText',
+    helpTitleKey: 'dashboard.givingMFPHelpTitle',
+    helpKey: 'dashboard.givingMFPHelp',
     earnFn: (item) => {
       if (!currencyCodeLocal) return 0
 
@@ -187,7 +197,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.peopleInCG',
-    text: 'dashboard.peopleInCGText',
+    helpKey: 'dashboard.peopleInCGHelp',
     earnKey: null,
     percentKey: 'percent_cell_group_attendance',
     color: 'primary',
@@ -195,7 +205,8 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.peopleInGTAndLIW',
-    text: 'dashboard.peopleInGTAndLIWText',
+    helpTitleKey: 'dashboard.peopleInGTAndLIWHelpTitle',
+    helpKey: 'dashboard.peopleInGTAndLIWHelp',
     earnKey: null,
     percentKey: 'percent_liw_students',
     color: 'primary',
@@ -203,271 +214,478 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.newDecisions',
-    text: 'dashboard.newDecisionsText',
+    helpKey: 'dashboard.newDecisionsHelp',
     earnKey: 'total_new_decisions',
     percentKey: null,
     color: 'primary',
-    icon: groupPeopleIcon,
+    icon: angelIcon,
   },
 ])
+
+const PRIMARY_METRICS_COUNT = 4
+
+const primaryMetrics = computed(() => metrics.value.slice(0, PRIMARY_METRICS_COUNT))
+const secondaryMetrics = computed(() => metrics.value.slice(PRIMARY_METRICS_COUNT))
+const showSecondaryMetricsToggle = computed(
+  () => isMobile.value && secondaryMetrics.value.length > 0
+)
+const visibleSecondaryMetrics = computed(() => {
+  if (mdAndUp.value || metricsExpanded.value) {
+    return secondaryMetrics.value
+  }
+  return []
+})
+
+const dashboardInfo = computed(() => dashboardData.value?.dashboard_info)
+
+const hasPastoralVisit = computed(() => !!dashboardInfo.value?.verified_by_user_id)
+
+const visitDateText = computed(() =>
+  formatDate(dashboardInfo.value?.verified_date, 'MMM YYYY')
+)
+
+const visitNameText = computed(() => dashboardInfo.value?.verified_by_user_name ?? '')
+
+const lastReportText = computed(
+  () => formatDate(dashboardInfo.value?.last_report_date, 'MMMM YYYY') || 'N/A'
+)
+
+const pastorDisplayName = computed(() => {
+  const name = [pastor.value?.first_name, pastor.value?.last_name].filter(Boolean).join(' ')
+  return name ? t('church.pastorName', { name }) : ''
+})
+
+const locationText = computed(() => {
+  const country = churchDetail.value?.country_name
+  const city = churchDetail.value?.city_name
+  if (city && country) return `${city}, ${country}`
+  return country || city || ''
+})
+
+const getMetricDisplayValue = (metric: (typeof metrics.value)[number]) => {
+  const indicators = dashboardData.value?.dashboard_indicators
+  if (metric.earnKey) {
+    return indicators?.[metric.earnKey] ?? 0
+  }
+  if (metric.percentKey) {
+    return `${indicators?.[metric.percentKey] ?? 0}%`
+  }
+  if (typeof metric.earnFn === 'function') {
+    return metric.earnFn(indicators || {})
+  }
+  return 0
+}
+
+const hasChurchPhoto = computed(() => !!churchDetail.value?.photo_url)
+
+type MetricItem = (typeof metrics.value)[number]
+
+const openMetricHelp = (metric: MetricItem) => {
+  metricHelpTitle.value = t(metric.helpTitleKey || metric.name)
+  metricHelpContent.value = t(metric.helpKey)
+  metricHelpDialog.value = true
+}
 </script>
 
 <template>
-  <v-card flat>
-  <!-- Cover -->
-  <v-img
-  :src="churchDetail?.photo_url"
-    cover
-    class="church-cover bg-grey-darken-2"
-  />
-  
-  <!-- Avatar + Info -->
-  <v-container class="position-relative">
-    <v-row>
-      <!-- Avatar bên trái -->
-      <v-col cols="12" sm="2" class="position-relative">
-        <v-avatar
-          size="149"
-          class="elevation-4 profile-avatar"
-        >
-          <v-img :src="pastor?.photo_url" />
-        </v-avatar>
-        <div style="clear: both"></div>
-      </v-col>
-
-      <!-- User info ở giữa -->
-      <v-col cols="12" sm="10" class="d-flex flex-column justify-center text-center text-sm-left">
-        <div class="text-medium-emphasis text-body-1">
-          <div class="text-h4 mb-1 text-medium-emphasis">
-            {{ pastor?.first_name }}  {{ pastor?.last_name }}
-          </div>
-
-          <div class="text-h4">
-            {{ churchDetail?.name }}
-
-            <!-- <template v-if="dashboardData?.dashboard_info?.verified_by_user_id">
-              <v-tooltip>
-                <template #activator="{ props: tooltipProps }">
-                  <v-icon v-bind="{ ...menuProps, ...tooltipProps }" class="text-success" size="20">$checkDecagramOutline</v-icon>
-                </template>
-
-                <span v-html="$t('church.verifiedBy', {
-                    name: dashboardData?.dashboard_info?.verified_by_user_name,
-                    date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
-                  })"></span>
-              </v-tooltip>
-            </template> -->
-
+  <!-- Header: church identity + pastor -->
+  <v-card flat class="overview-church-header mb-4">
+    <v-card-text class="pa-4 pa-md-6">
+      <v-row class="align-md-center">
+        <!-- Church info -->
+        <v-col cols="12" md="7" class="overview-church-header__church">
+          <div class="d-flex align-center flex-wrap ga-1 mb-2">
+            <h1 class="text-h4 font-weight-bold mb-0 overview-church-header__title">
+              {{ churchDetail?.name }}
+            </h1>
             <slot name="switch" />
           </div>
 
-          {{ churchDetail?.city_name }}, {{ churchDetail?.country_name }}<br />
-          <span class="text-primary">{{ $t('church.lastMonthlyRecord') }}: {{ formatDate(dashboardData?.dashboard_info?.last_report_date, 'MMMM YYYY') || 'N/A' }}</span>
-          <template v-if="dashboardData?.dashboard_info?.verified_by_user_id && false">
-            <v-icon class="text-success" size="20">$checkDecagramOutline</v-icon>
-            <span class="text-success" v-html="$t('church.visitedBy', {
-              name: dashboardData?.dashboard_info?.verified_by_user_name,
-              date: formatDate(dashboardData?.dashboard_info?.verified_date, 'MMMM YYYY')
-            })"></span>
-          </template>
-          <span v-else class="text-warning">
-            <v-icon >$exclamation</v-icon> {{ $t('church.needsVisit') }}
-          </span>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
-</v-card>
+          <div class="d-flex justify-space-between align-start ga-3">
+            <span class="text-medium-emphasis overview-church-header__location overview-church-header__meta">
+              {{ locationText }}
+            </span>
+            <div class="overview-church-header__status text-right">
+              <div
+                v-if="hasPastoralVisit"
+                class="text-success overview-church-header__visit overview-church-header__meta"
+              >
+                <v-icon icon="$check" size="15" color="success" class="me-1" />
+                <i18n-t keypath="church.visitedBy" tag="span">
+                  <template #date>
+                    <span class="font-weight-bold">{{ visitDateText }}</span>
+                  </template>
+                  <template #name>
+                    <span class="font-weight-bold">{{ visitNameText }}</span>
+                  </template>
+                </i18n-t>
+              </div>
+              <div
+                v-else
+                class="text-warning overview-church-header__visit overview-church-header__meta"
+              >
+                <v-icon icon="$exclamation" size="15" color="warning" class="me-1" />
+                {{ $t('church.needsVisit') }}
+              </div>
+              <div class="text-primary mt-1 overview-church-header__meta">
+                {{ $t('church.lastReport') }}:
+                <span class="font-weight-bold">{{ lastReportText }}</span>
+              </div>
+            </div>
+          </div>
+        </v-col>
 
-<v-card class="pa-4 mt-4" variant="text">
-  <div
-    class="d-flex flex-wrap"
-    style="gap: 12px; justify-content: flex-end;"
-  >
-    <v-btn
-      v-for="item in actions"
-      :key="item.title"
-      :to="item.to"
-      variant="outlined"
-      :color="item?.color || 'primary'"
-      class="d-inline-flex align-center w-100 w-sm-auto"
+        <!-- Pastor -->
+        <v-col
+          cols="12"
+          md="5"
+          class="overview-church-header__pastor d-flex align-center justify-start justify-md-end"
+        >
+          <v-avatar size="64" class="overview-church-header__avatar elevation-1">
+            <v-img :src="pastor?.photo_url || defaultAvatar" cover />
+          </v-avatar>
+          <div class="ms-3">
+            <div class="text-h5 font-weight-bold text-primary">
+              {{ pastorDisplayName }}
+            </div>
+            <div
+              v-if="pastor?.role?.name || pastor?.role_name"
+              class="text-body-1 text-medium-emphasis"
+            >
+              {{ pastor?.role?.name || pastor?.role_name }}
+            </div>
+          </div>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+
+  <!-- Primary metrics -->
+  <v-row class="my-0">
+    <v-col
+      v-for="(metric, i) in primaryMetrics"
+      :key="`primary-metric-${i}`"
+      cols="6"
+      md="3"
     >
-      <v-img
-        v-if="item.iconSrc"
-        :src="item.iconSrc"
-        width="20"
-        height="20"
-        :class="[
-          'mr-2 flex-shrink-0',
-          item.color === 'warning' && 'overview-church-action-btn__icon--warning',
-        ]"
-      />
-      <v-icon v-else :icon="item.icon" size="20" class="mr-2" />
-      <span class="text-body-2">{{ $t(item.title) }}</span>
-    </v-btn>
-  </div>
-</v-card>
+      <v-card elevation="0" class="h-100">
+        <v-card variant="outlined" class="h-100">
+          <v-card-text class="h-100">
+            <div class="metric-card-body">
+              <div class="metric-card-body__icon">
+                <v-img :src="metric.icon" alt="" width="40" height="40" />
+              </div>
+              <div class="metric-card-body__content">
+                <h4 class="text-h4 mb-0 indicator-value">
+                  {{ getMetricDisplayValue(metric) }}
+                </h4>
+                <div class="overview-church-metric__label-row">
+                  <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
+                    {{ $t(metric.name) }}
+                  </span>
+                  <button
+                    type="button"
+                    class="overview-church-metric__info-btn"
+                    :aria-label="$t('dashboard.metricInfo')"
+                    @click.stop="openMetricHelp(metric)"
+                  >
+                    <v-icon icon="$informationOutline" size="18" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-card>
+    </v-col>
+  </v-row>
 
-
-    <v-row class="my-0">
-      <v-col cols="6" sm="6" md="3" v-for="(metric, i) in metrics" :key="i">
+  <!-- Secondary metrics (always on desktop; expandable on mobile) -->
+  <v-expand-transition>
+    <v-row v-show="visibleSecondaryMetrics.length" class="my-0">
+      <v-col
+        v-for="(metric, i) in visibleSecondaryMetrics"
+        :key="`secondary-metric-${i}`"
+        cols="6"
+        md="3"
+      >
         <v-card elevation="0" class="h-100">
           <v-card variant="outlined" class="h-100">
             <v-card-text class="h-100">
-              <div class="d-flex align-items-center justify-space-between">
-                <v-row class="mb-0">
-                  <v-col cols="3" class="d-flex align-center justify-center pb-0">
-                    <v-img :src="metric.icon" alt="icon" width="40" height="40" />
-                  </v-col>
-
-                  <v-col cols="9" class="pb-0">
-                    <h4 class="text-h4 d-flex align-center mb-0 indicator-value" v-if="metric.earnKey">
-                      {{ dashboardData?.dashboard_indicators?.[metric.earnKey] || 0 }}
-                    </h4>
-                    <h4 class="text-h4 d-flex align-center mb-0 indicator-value" v-else-if="metric.percentKey">
-                      {{ dashboardData?.dashboard_indicators?.[metric.percentKey] || 0 }}%
-                    </h4>
-                    <h4 class="text-h4 d-flex align-center mb-0 indicator-value" v-else-if="metric.earnFn && typeof(metric.earnFn) === 'function'">
-                      <!-- <v-badge location="top right" color="error" content="9999"> -->
-                        {{ metric.earnFn(dashboardData?.dashboard_indicators || 0) }}
-                      <!-- </v-badge> -->
-                    </h4>
-                    <div class="text-body-1 font-weight-medium text-high-emphasis">
+              <div class="metric-card-body">
+                <div class="metric-card-body__icon">
+                  <v-img :src="metric.icon" alt="" width="40" height="40" />
+                </div>
+                <div class="metric-card-body__content">
+                  <h4 class="text-h4 mb-0 indicator-value">
+                    {{ getMetricDisplayValue(metric) }}
+                  </h4>
+                  <div class="overview-church-metric__label-row">
+                    <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
                       {{ $t(metric.name) }}
-                    </div>
-                    <div class="text-body-2 text-medium-emphasis">
-                      {{ $t(metric.text) }}
-                    </div>
-                  </v-col>
-                </v-row>
+                    </span>
+                    <button
+                      type="button"
+                      class="overview-church-metric__info-btn"
+                      :aria-label="$t('dashboard.metricInfo')"
+                      @click.stop="openMetricHelp(metric)"
+                    >
+                      <v-icon icon="$informationOutline" size="18" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </v-card-text>
           </v-card>
         </v-card>
       </v-col>
     </v-row>
-    
-    
-      <!-- Menu -->
-     <!-- <v-row class="pa-0" align="stretch">
-      <v-col
-        v-for="(menu, idx) in menus"
-        :key="idx"
-        cols="12"
-        md="6"
-        class="d-flex"
+  </v-expand-transition>
+
+  <div v-if="showSecondaryMetricsToggle" class="text-center my-3">
+    <v-btn
+      variant="text"
+      color="primary"
+      @click="metricsExpanded = !metricsExpanded"
+    >
+      {{ metricsExpanded ? $t('less') : $t('more') }}
+      <v-icon
+        :icon="metricsExpanded ? '$chevronUp' : '$chevronDown'"
+        end
+      />
+    </v-btn>
+  </div>
+
+  <!-- Quick actions -->
+  <v-card v-if="isMobile" class="mt-4 mb-4" variant="outlined" elevation="0">
+    <v-list density="comfortable">
+      <v-list-item
+        v-for="item in actions"
+        :key="item.title"
+        :to="item.to"
+        :base-color="item?.color || 'primary'"
       >
-        <a href="#" class="link-item d-flex align-center w-100 text-primary">
-          <v-icon size="24" class="me-3 text-primary">{{ menu.icon }}</v-icon>
-          <span class="text-body-1">{{ $t(menu.title) }}</span>
-        </a>
-      </v-col>
-    </v-row> -->
+        <template #prepend>
+          <span
+            v-if="item.iconSrc"
+            class="overview-church-action-btn__icon overview-church-action-btn__icon--themed me-3"
+            :style="{
+              WebkitMaskImage: `url(${item.iconSrc})`,
+              maskImage: `url(${item.iconSrc})`,
+            }"
+          />
+          <v-icon v-else :icon="item.icon" size="20" class="me-3" />
+        </template>
+        <v-list-item-title>{{ $t(item.title) }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-card>
 
-    <!-- Attendance, giving & visit chart -->
-    <v-row>
-      <v-col cols="12">
-        <AttendanceChartWidget :church-id="churchDetail?.id" />
-      </v-col>
-    </v-row>
-    <!-- #Attendance, giving & visit chart -->
+  <v-card v-else class="pa-4 mt-4 mb-4" variant="text">
+    <div
+      class="d-flex flex-wrap"
+      style="gap: 12px; justify-content: flex-end;"
+    >
+      <v-btn
+        v-for="item in actions"
+        :key="item.title"
+        :to="item.to"
+        variant="outlined"
+        :color="item?.color || 'primary'"
+        class="d-inline-flex align-center w-100 w-sm-auto"
+      >
+        <span
+          v-if="item.iconSrc"
+          class="overview-church-action-btn__icon overview-church-action-btn__icon--themed mr-2"
+          :style="{
+            WebkitMaskImage: `url(${item.iconSrc})`,
+            maskImage: `url(${item.iconSrc})`,
+          }"
+        />
+        <v-icon v-else :icon="item.icon" size="20" class="mr-2" />
+        <span class="text-body-2">{{ $t(item.title) }}</span>
+      </v-btn>
+    </div>
+  </v-card>
 
-    <!-- Church Planting chart -->
-    <v-row>
-      <v-col cols="12">
-        <ChurchPlantingChartWidget :church-id="churchDetail?.id" />
-      </v-col>
-    </v-row>
-    <!-- Church Planting chart -->
+  <!-- Attendance, giving & visit chart -->
+  <v-row>
+    <v-col cols="12">
+      <AttendanceChartWidget :church-id="churchDetail?.id" />
+    </v-col>
+  </v-row>
 
+  <!-- Church Planting chart -->
+  <v-row>
+    <v-col cols="12">
+      <ChurchPlantingChartWidget :church-id="churchDetail?.id" />
+    </v-col>
+  </v-row>
 
-    <!-- ChurchDetail & PastorLeader -->
-    <v-row>
-      <v-col cols="12" md="6">
-        <PastorLeaderWidget :user-id="churchDetail?.pastor_id" />
-      </v-col>
-      <v-col cols="12" md="6">
-        <ChurchDetailWidget :church-id="churchDetail?.id" />
-      </v-col>  
-    </v-row>
-    <!-- #ChurchDetail & PastorLeader -->
+  <!-- ChurchDetail & PastorLeader -->
+  <v-row>
+    <v-col cols="12" md="6">
+      <PastorLeaderWidget :user-id="churchDetail?.pastor_id" />
+    </v-col>
+    <v-col cols="12" md="6">
+      <ChurchDetailWidget :church-id="churchDetail?.id" />
+    </v-col>
+  </v-row>
 
-    <!-- Related user -->
-    <v-row>
-      <v-col cols="12">
-        <RelatedUserWidget :church-id="churchDetail?.id" />
-      </v-col>
-    </v-row>
-    <!-- #Related user -->
+  <!-- Related user -->
+  <v-row>
+    <v-col cols="12">
+      <RelatedUserWidget :church-id="churchDetail?.id" />
+    </v-col>
+  </v-row>
 
-    <!-- Daugter church -->
-    <v-row>
-      <v-col cols="12">
-        <DaugterChurchWidget :church-id="churchDetail?.id" />
-      </v-col>
-    </v-row>
-    <!-- #Daugter church -->
+  <!-- Daughter church -->
+  <v-row>
+    <v-col cols="12">
+      <DaugterChurchWidget :church-id="churchDetail?.id" />
+    </v-col>
+  </v-row>
 
-    <!-- Church planting projection (pastor-only permission) -->
-    <v-row v-if="authStore.can('church-planting.read')">
-      <v-col cols="12">
-          <ChurchPlantingProjectionWidget :church-id="churchDetail?.id" />
-      </v-col>
-    </v-row>
-    <!-- #Church planting projection -->
+  <!-- Church planting projection -->
+  <v-row v-if="authStore.can('church-planting.read')">
+    <v-col cols="12">
+      <ChurchPlantingProjectionWidget :church-id="churchDetail?.id" />
+    </v-col>
+  </v-row>
 
-    <!-- Attachement -->
-    <v-row>
-      <v-col cols="12">
-          <AttachmentWidget :church-id="churchDetail?.id" />
-      </v-col>
-    </v-row>
-    <!-- #Attachement -->
+  <!-- Attachments -->
+  <v-row>
+    <v-col cols="12">
+      <AttachmentWidget :church-id="churchDetail?.id" />
+    </v-col>
+  </v-row>
 
+  <!-- Church picture (below attachments) -->
+  <v-row v-if="hasChurchPhoto">
+    <v-col cols="12">
+      <CardHeader :title="$t('church.churchPicture')">
+        <div class="pa-4 overview-church-picture-panel">
+          <div class="overview-church-picture-panel__actions">
+            <v-btn
+              variant="outlined"
+              color="primary"
+              @click="churchPictureVisible = !churchPictureVisible"
+            >
+            {{ churchPictureVisible ? $t('church.hideChurchPicture') : $t('church.seeChurchPicture') }}
+            <v-icon
+              :icon="churchPictureVisible ? '$chevronUp' : '$chevronDown'"
+              end
+            />
+          </v-btn>
+          </div>
+          <v-expand-transition>
+            <div v-show="churchPictureVisible" class="overview-church-picture mt-4">
+              <img
+                :src="churchDetail?.photo_url"
+                :alt="churchDetail?.name"
+                class="overview-church-picture__img"
+              />
+            </div>
+          </v-expand-transition>
+        </div>
+      </CardHeader>
+    </v-col>
+  </v-row>
+
+  <v-dialog v-model="metricHelpDialog" max-width="400">
+    <v-card rounded="lg" elevation="4">
+      <div class="d-flex align-center justify-space-between ga-3 px-4 pt-4 pb-3">
+        <span class="text-h6 font-weight-bold text-high-emphasis">
+          {{ metricHelpTitle }}
+        </span>
+        <v-btn
+          icon
+          variant="text"
+          size="small"
+          :aria-label="$t('close')"
+          @click="metricHelpDialog = false"
+        >
+          <v-icon icon="$close" size="20" />
+        </v-btn>
+      </div>
+      <v-divider />
+      <div class="px-4 py-3 text-body-1 text-high-emphasis">
+        {{ metricHelpContent }}
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 <style scoped lang="scss">
-.profile-avatar {
-  position: relative;
-  top: 0px;
-  left: none;
-  z-index:1;
-   border: 1px solid white;
-   margin-left: auto;
-   margin-right: auto;
-   margin-top: -60px;
-   display: block;
+.overview-church-header__avatar {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
 }
 
-.church-cover {
-  height: 180px;      // mobile
+.overview-church-header__title {
+  line-height: 1.3;
 }
 
-.church-cover img {
-  object-position: center 30%;
+.overview-church-header__meta {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
 }
 
-@media (min-width: 768px) {
-  .profile-avatar {
-    position:absolute; 
-    left:16px;
-    margin-left: 0;
-    margin-right: 0;
+.overview-church-header__visit {
+  flex-shrink: 0;
+}
+
+.overview-church-header__status {
+  flex-shrink: 0;
+  max-width: 55%;
+}
+
+.overview-church-header__location {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.overview-church-header__pastor {
+  @media (max-width: 959px) {
+    padding-top: 12px;
   }
 }
 
-@media (min-width: 600px) {
-  .church-cover {
-    height: 220px;    // tablet
-  }
+.overview-church-metric__label-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  line-height: 1.5rem;
+  gap: 4px;
 }
 
-@media (min-width: 960px) {
-  .church-cover {
-    height: 260px;    // desktop
+.overview-church-metric__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.5rem;
+}
+
+.overview-church-metric__info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgb(var(--v-theme-primary));
+  cursor: pointer;
+  line-height: 0;
+
+  &:hover {
+    opacity: 0.75;
   }
 
-  .profile-avatar {
-    margin-top: -75px;
+  &:focus-visible {
+    outline: 2px solid rgb(var(--v-theme-primary));
+    outline-offset: 1px;
+    border-radius: 50%;
   }
 }
 </style>

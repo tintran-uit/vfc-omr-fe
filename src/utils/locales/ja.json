@@ -216,20 +216,23 @@
   "dashboard": {
     "people": "人数",
     "growth": "成長",
-    "givingTithes": "十分の一献金",
+    "givingTithes": "献金",
     "churchPlants": "教会開拓",
     "givingMFP": "MFP献金",
     "peopleInCG": "CGの参加者数",
     "peopleInGTAndLIW": "GT・LIWの参加者数",
     "newDecisions": "新しい決心",
-    "peopleText": "Av. attendance last 3 months",
-    "growthText": "% growth over last year",
-    "givingTithesText": "Av. monthly giving",
-    "churchPlantsText": "Over last 3 years",
-    "givingMFPText": "Av. monthly MFP giving",
-    "peopleInCGText": "Av. attendance last 3 months",
-    "peopleInGTAndLIWText": "Av. attendance last 3 months",
-    "newDecisionsText": "In last 3 months"
+    "metricInfo": "指標の情報",
+    "peopleHelp": "The average service attendance over the last 3 months",
+    "growthHelp": "The % growth, compared to the same 3 months last year",
+    "givingHelp": "The average tithes and offerings giving over the last 3 months",
+    "churchPlantsHelp": "The number of new churches pioneered by this mother church, in the last 3 years",
+    "givingMFPHelpTitle": "Missions Giving",
+    "givingMFPHelp": "The average Missions Faith Pledge giving and missions giving over the last 3 months. This should include any giving from the churches general fund. Many churches give a % of their income to missions",
+    "peopleInCGHelp": "The average Connect Group (Cell Group) attendance over the last 3 months, as a % of the average, adult and youth, weekly service attendance",
+    "peopleInGTAndLIWHelpTitle": "People in GT/LIW",
+    "peopleInGTAndLIWHelp": "The average Growth Track and Life In the Word class attendance over the last 3 months, as a % of the average, adult and youth, weekly service attendance",
+    "newDecisionsHelp": "The number of New Decisions for Christ made over the last 3 Months"
   },
   "overseerMetric": {
     "iconAlt": "メトリックアイコン",
@@ -409,6 +412,9 @@
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
     "needsVisit": "Needs a visit.",
+    "churchPicture": "教会の写真",
+    "seeChurchPicture": "教会の写真を見る",
+    "hideChurchPicture": "教会の写真を隠す",
     "visitedBy": "Visited {date} by {name}",
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
@@ -428,7 +434,9 @@
     "omrMapLocation": "OMR Map Location",
     "onMap": "On Map",
     "apostolicRegion": "Apostolic Region",
-    "currency": "Currency"
+    "currency": "Currency",
+    "lastReport": "最新レポート",
+    "pastorName": "Ps. {name}"
   },
   "message": {
     "errorTitle": "エラーが発生しました"
@@ -721,5 +729,6 @@
     "userDetail": "ユーザー詳細",
     "notFound": "ページが見つかりません"
   },
-  "genericSaveError": "保存に失敗しました。ハイライトされた項目を確認して再度お試しください。"
+  "genericSaveError": "保存に失敗しました。ハイライトされた項目を確認して再度お試しください。",
+  "close": "閉じる"
 }

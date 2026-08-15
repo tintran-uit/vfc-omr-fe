@@ -216,20 +216,23 @@
   "dashboard": {
     "people": "人数",
     "growth": "增长",
-    "givingTithes": "奉献（什一奉献）",
+    "givingTithes": "奉献",
     "churchPlants": "植堂",
-    "givingMFP": "MFP 奉献",
+    "givingMFP": "MFP奉献",
     "peopleInCG": "小组人数",
     "peopleInGTAndLIW": "GT 与 LIW 人数",
     "newDecisions": "新决志人数",
-    "peopleText": "Av. attendance last 3 months",
-    "growthText": "% growth over last year",
-    "givingTithesText": "Av. monthly giving",
-    "churchPlantsText": "Over last 3 years",
-    "givingMFPText": "Av. monthly MFP giving",
-    "peopleInCGText": "Av. attendance last 3 months",
-    "peopleInGTAndLIWText": "Av. attendance last 3 months",
-    "newDecisionsText": "In last 3 months"
+    "metricInfo": "指标说明",
+    "peopleHelp": "The average service attendance over the last 3 months",
+    "growthHelp": "The % growth, compared to the same 3 months last year",
+    "givingHelp": "The average tithes and offerings giving over the last 3 months",
+    "churchPlantsHelp": "The number of new churches pioneered by this mother church, in the last 3 years",
+    "givingMFPHelpTitle": "Missions Giving",
+    "givingMFPHelp": "The average Missions Faith Pledge giving and missions giving over the last 3 months. This should include any giving from the churches general fund. Many churches give a % of their income to missions",
+    "peopleInCGHelp": "The average Connect Group (Cell Group) attendance over the last 3 months, as a % of the average, adult and youth, weekly service attendance",
+    "peopleInGTAndLIWHelpTitle": "People in GT/LIW",
+    "peopleInGTAndLIWHelp": "The average Growth Track and Life In the Word class attendance over the last 3 months, as a % of the average, adult and youth, weekly service attendance",
+    "newDecisionsHelp": "The number of New Decisions for Christ made over the last 3 Months"
   },
   "overseerMetric": {
     "iconAlt": "指标图标",
@@ -409,6 +412,9 @@
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
     "needsVisit": "Needs a visit.",
+    "churchPicture": "教会照片",
+    "seeChurchPicture": "查看教会照片",
+    "hideChurchPicture": "隐藏教会照片",
     "visitedBy": "Visited {date} by {name}",
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
@@ -428,7 +434,9 @@
     "omrMapLocation": "OMR Map Location",
     "onMap": "On Map",
     "apostolicRegion": "Apostolic Region",
-    "currency": "Currency"
+    "currency": "Currency",
+    "lastReport": "最近报告",
+    "pastorName": "Ps. {name}"
   },
   "message": {
     "errorTitle": "发生错误"
@@ -721,5 +729,6 @@
     "userDetail": "用户详情",
     "notFound": "页面未找到"
   },
-  "genericSaveError": "保存失败。请检查标红的字段后重试。"
+  "genericSaveError": "保存失败。请检查标红的字段后重试。",
+  "close": "关闭"
 }

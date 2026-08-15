@@ -216,20 +216,23 @@
   "dashboard": {
     "people": "Jemaat",
     "growth": "Pertumbuhan",
-    "givingTithes": "Persembahan Persepuluhan",
+    "givingTithes": "Persembahan",
     "churchPlants": "Penanaman Gereja",
     "givingMFP": "Persembahan MFP",
     "peopleInCG": "Jemaat dalam CG",
     "peopleInGTAndLIW": "Jemaat dalam GT & LIW",
     "newDecisions": "Keputusan Baharu",
-    "peopleText": "Av. attendance last 3 months",
-    "growthText": "% growth over last year",
-    "givingTithesText": "Av. monthly giving",
-    "churchPlantsText": "Over last 3 years",
-    "givingMFPText": "Av. monthly MFP giving",
-    "peopleInCGText": "Av. attendance last 3 months",
-    "peopleInGTAndLIWText": "Av. attendance last 3 months",
-    "newDecisionsText": "In last 3 months"
+    "metricInfo": "Maklumat metrik",
+    "peopleHelp": "The average service attendance over the last 3 months",
+    "growthHelp": "The % growth, compared to the same 3 months last year",
+    "givingHelp": "The average tithes and offerings giving over the last 3 months",
+    "churchPlantsHelp": "The number of new churches pioneered by this mother church, in the last 3 years",
+    "givingMFPHelpTitle": "Missions Giving",
+    "givingMFPHelp": "The average Missions Faith Pledge giving and missions giving over the last 3 months. This should include any giving from the churches general fund. Many churches give a % of their income to missions",
+    "peopleInCGHelp": "The average Connect Group (Cell Group) attendance over the last 3 months, as a % of the average, adult and youth, weekly service attendance",
+    "peopleInGTAndLIWHelpTitle": "People in GT/LIW",
+    "peopleInGTAndLIWHelp": "The average Growth Track and Life In the Word class attendance over the last 3 months, as a % of the average, adult and youth, weekly service attendance",
+    "newDecisionsHelp": "The number of New Decisions for Christ made over the last 3 Months"
   },
   "overseerMetric": {
     "iconAlt": "Ikon metrik",
@@ -409,6 +412,9 @@
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
     "needsVisit": "Needs a visit.",
+    "churchPicture": "Gambar gereja",
+    "seeChurchPicture": "Lihat gambar gereja",
+    "hideChurchPicture": "Sembunyikan gambar gereja",
     "visitedBy": "Visited {date} by {name}",
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
@@ -428,7 +434,9 @@
     "omrMapLocation": "OMR Map Location",
     "onMap": "On Map",
     "apostolicRegion": "Apostolic Region",
-    "currency": "Currency"
+    "currency": "Currency",
+    "lastReport": "Laporan Terakhir",
+    "pastorName": "Ps. {name}"
   },
   "message": {
     "errorTitle": "Ralat telah berlaku"
@@ -721,5 +729,6 @@
     "userDetail": "Butiran Pengguna",
     "notFound": "Halaman Tidak Dijumpai"
   },
-  "genericSaveError": "Simpan gagal. Sila semak medan yang ditanda dan cuba lagi."
+  "genericSaveError": "Simpan gagal. Sila semak medan yang ditanda dan cuba lagi.",
+  "close": "Tutup"
 }

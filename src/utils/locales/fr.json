@@ -225,20 +225,23 @@
   "dashboard": {
     "people": "Personnes",
     "growth": "Croissance",
-    "givingTithes": "Dîmes et offrandes",
+    "givingTithes": "Offrandes",
     "churchPlants": "Implantations d’églises",
     "givingMFP": "Offrandes MFP",
     "peopleInCG": "Personnes dans les groupes de maison",
     "peopleInGTAndLIW": "Personnes dans GT et LIW",
     "newDecisions": "Nouvelles décisions",
-    "peopleText": "Présence moy. sur les 3 derniers mois",
-    "growthText": "% de croissance sur l’an dernier",
-    "givingTithesText": "Dons mensuels moyens",
-    "churchPlantsText": "Sur les 3 dernières années",
-    "givingMFPText": "Dons MFP mensuels moyens",
-    "peopleInCGText": "Présence moy. sur les 3 derniers mois",
-    "peopleInGTAndLIWText": "Présence moy. sur les 3 derniers mois",
-    "newDecisionsText": "Sur les 3 derniers mois"
+    "metricInfo": "Informations sur la métrique",
+    "peopleHelp": "La fréquentation moyenne du culte sur les 3 derniers mois",
+    "growthHelp": "Le % de croissance, comparé aux mêmes 3 mois de l'année dernière",
+    "givingHelp": "La moyenne des dîmes et offrandes sur les 3 derniers mois",
+    "churchPlantsHelp": "Le nombre de nouvelles églises implantées par cette église mère au cours des 3 dernières années",
+    "givingMFPHelpTitle": "Offrandes missionnaires",
+    "givingMFPHelp": "La moyenne des Missions Faith Pledge et des offrandes missionnaires sur les 3 derniers mois. Cela doit inclure toute offrande du fonds général de l'église. Beaucoup d'églises donnent un % de leurs revenus aux missions",
+    "peopleInCGHelp": "La fréquentation moyenne des groupes de connexion (cellules) sur les 3 derniers mois, en % de la fréquentation hebdomadaire moyenne des adultes et des jeunes",
+    "peopleInGTAndLIWHelpTitle": "Personnes dans GT/LIW",
+    "peopleInGTAndLIWHelp": "La fréquentation moyenne aux cours Growth Track et Life In the Word sur les 3 derniers mois, en % de la fréquentation hebdomadaire moyenne des adultes et des jeunes",
+    "newDecisionsHelp": "Le nombre de nouvelles décisions pour Christ au cours des 3 derniers mois"
   },
   "overseerMetric": {
     "iconAlt": "Icône de métrique",
@@ -400,6 +403,9 @@
     "apostolicRegion": "Région apostolique",
     "currency": "Devise",
     "needsVisit": "Nécessite une visite.",
+    "churchPicture": "Photo de l'église",
+    "seeChurchPicture": "Voir la photo de l'église",
+    "hideChurchPicture": "Masquer la photo de l'église",
     "switchAnotherChurches": "Passer à une autre de vos églises",
     "upToDateGoodWork": "À jour, bon travail !",
     "visitedBy": "Visité {date} par {name}",
@@ -437,7 +443,9 @@
     "infoInstagram": "Lien vers le compte Instagram de l’église.",
     "infoDateOfBirth": "Date du premier culte.",
     "phShortName": "ex. : VFC-NewLyn",
-    "phName": "ex. : Victory Family Centre – New Lynn"
+    "phName": "ex. : Victory Family Centre – New Lynn",
+    "lastReport": "Dernier rapport",
+    "pastorName": "Ps. {name}"
   },
   "message": {
     "errorTitle": "Une erreur est survenue"
@@ -721,5 +729,6 @@
     "userDetail": "Détails de l'utilisateur",
     "notFound": "Page non trouvée"
   },
-  "genericSaveError": "Échec de l'enregistrement. Vérifiez les champs signalés et réessayez."
+  "genericSaveError": "Échec de l'enregistrement. Vérifiez les champs signalés et réessayez.",
+  "close": "Fermer"
 }
