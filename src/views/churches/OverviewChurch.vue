@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import { formatDate } from '@/helpers/dateTimeHelper';
 import defaultAvatar from '@/assets/images/users/avatar-default.svg';
 import CardHeader from '@/components/shared/CardHeader.vue';
+import InfoHelpDialog from '@/components/shared/InfoHelpDialog.vue';
 import peopleIcon from '@/assets/images/metrics/people.svg'
 import growthIcon from '@/assets/images/metrics/growth.svg'
 import accessIcon from '@/assets/images/metrics/access.png'
@@ -86,7 +87,7 @@ const actions = computed(() => {
           id: churchDetail.value?.id
         }
       },
-      color: 'warning'
+      color: 'primary'
     },
     {
       title: 'dashboardMenu.editChurch',
@@ -136,6 +137,7 @@ const actions = computed(() => {
 const metrics = shallowRef([
   {
     name: 'dashboard.people',
+    helpTitleKey: 'dashboard.peopleHelpTitle',
     helpKey: 'dashboard.peopleHelp',
     earnKey: 'avg_attendance',
     percentKey: null,
@@ -144,6 +146,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.growth',
+    helpTitleKey: 'dashboard.growthHelpTitle',
     helpKey: 'dashboard.growthHelp',
     earnKey: null,
     percentKey: 'growth',
@@ -152,11 +155,12 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.givingTithes',
+    helpTitleKey: 'dashboard.givingHelpTitle',
     helpKey: 'dashboard.givingHelp',
     earnFn: (item) => {
-      if (!currencyCodeLocal) return 0; 
+      if (!currencyCodeLocal.value) return 0
 
-      if (currencyCodeLocal === 'USD') {
+      if (currencyCodeLocal.value === 'USD') {
         return formatCompactCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
       }
 
@@ -170,6 +174,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.churchPlants',
+    helpTitleKey: 'dashboard.churchPlantsHelpTitle',
     helpKey: 'dashboard.churchPlantsHelp',
     earnKey: 'total_church_plants',
     percentKey: null,
@@ -181,9 +186,9 @@ const metrics = shallowRef([
     helpTitleKey: 'dashboard.givingMFPHelpTitle',
     helpKey: 'dashboard.givingMFPHelp',
     earnFn: (item) => {
-      if (!currencyCodeLocal) return 0
+      if (!currencyCodeLocal.value) return 0
 
-      if (currencyCodeLocal === 'USD') {
+      if (currencyCodeLocal.value === 'USD') {
         return formatCompactCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
       }
 
@@ -197,6 +202,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.peopleInCG',
+    helpTitleKey: 'dashboard.peopleInCGHelpTitle',
     helpKey: 'dashboard.peopleInCGHelp',
     earnKey: null,
     percentKey: 'percent_cell_group_attendance',
@@ -214,6 +220,7 @@ const metrics = shallowRef([
   },
   {
     name: 'dashboard.newDecisions',
+    helpTitleKey: 'dashboard.newDecisionsHelpTitle',
     helpKey: 'dashboard.newDecisionsHelp',
     earnKey: 'total_new_decisions',
     percentKey: null,
@@ -281,7 +288,7 @@ const hasChurchPhoto = computed(() => !!churchDetail.value?.photo_url)
 type MetricItem = (typeof metrics.value)[number]
 
 const openMetricHelp = (metric: MetricItem) => {
-  metricHelpTitle.value = t(metric.helpTitleKey || metric.name)
+  metricHelpTitle.value = t(metric.helpTitleKey ?? metric.name)
   metricHelpContent.value = t(metric.helpKey)
   metricHelpDialog.value = true
 }
@@ -371,9 +378,9 @@ const openMetricHelp = (metric: MetricItem) => {
       <v-card elevation="0" class="h-100">
         <v-card variant="outlined" class="h-100">
           <v-card-text class="h-100">
-            <div class="metric-card-body">
-              <div class="metric-card-body__icon">
-                <v-img :src="metric.icon" alt="" width="40" height="40" />
+              <div class="metric-card-body overview-church-metric">
+              <div class="metric-card-body__icon overview-church-metric__icon">
+                <v-img :src="metric.icon" alt="" width="36" height="36" />
               </div>
               <div class="metric-card-body__content">
                 <h4 class="text-h4 mb-0 indicator-value">
@@ -389,7 +396,7 @@ const openMetricHelp = (metric: MetricItem) => {
                     :aria-label="$t('dashboard.metricInfo')"
                     @click.stop="openMetricHelp(metric)"
                   >
-                    <v-icon icon="$informationOutline" size="18" />
+                    <v-icon icon="$informationOutline" size="16" />
                   </button>
                 </div>
               </div>
@@ -412,29 +419,29 @@ const openMetricHelp = (metric: MetricItem) => {
         <v-card elevation="0" class="h-100">
           <v-card variant="outlined" class="h-100">
             <v-card-text class="h-100">
-              <div class="metric-card-body">
-                <div class="metric-card-body__icon">
-                  <v-img :src="metric.icon" alt="" width="40" height="40" />
-                </div>
-                <div class="metric-card-body__content">
-                  <h4 class="text-h4 mb-0 indicator-value">
-                    {{ getMetricDisplayValue(metric) }}
-                  </h4>
-                  <div class="overview-church-metric__label-row">
-                    <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
-                      {{ $t(metric.name) }}
-                    </span>
-                    <button
-                      type="button"
-                      class="overview-church-metric__info-btn"
-                      :aria-label="$t('dashboard.metricInfo')"
-                      @click.stop="openMetricHelp(metric)"
-                    >
-                      <v-icon icon="$informationOutline" size="18" />
-                    </button>
-                  </div>
+              <div class="metric-card-body overview-church-metric">
+              <div class="metric-card-body__icon overview-church-metric__icon">
+                <v-img :src="metric.icon" alt="" width="36" height="36" />
+              </div>
+              <div class="metric-card-body__content">
+                <h4 class="text-h4 mb-0 indicator-value">
+                  {{ getMetricDisplayValue(metric) }}
+                </h4>
+                <div class="overview-church-metric__label-row">
+                  <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
+                    {{ $t(metric.name) }}
+                  </span>
+                  <button
+                    type="button"
+                    class="overview-church-metric__info-btn"
+                    :aria-label="$t('dashboard.metricInfo')"
+                    @click.stop="openMetricHelp(metric)"
+                  >
+                    <v-icon icon="$informationOutline" size="16" />
+                  </button>
                 </div>
               </div>
+            </div>
             </v-card-text>
           </v-card>
         </v-card>
@@ -592,28 +599,11 @@ const openMetricHelp = (metric: MetricItem) => {
     </v-col>
   </v-row>
 
-  <v-dialog v-model="metricHelpDialog" max-width="400">
-    <v-card rounded="lg" elevation="4">
-      <div class="d-flex align-center justify-space-between ga-3 px-4 pt-4 pb-3">
-        <span class="text-h6 font-weight-bold text-high-emphasis">
-          {{ metricHelpTitle }}
-        </span>
-        <v-btn
-          icon
-          variant="text"
-          size="small"
-          :aria-label="$t('close')"
-          @click="metricHelpDialog = false"
-        >
-          <v-icon icon="$close" size="20" />
-        </v-btn>
-      </div>
-      <v-divider />
-      <div class="px-4 py-3 text-body-1 text-high-emphasis">
-        {{ metricHelpContent }}
-      </div>
-    </v-card>
-  </v-dialog>
+  <InfoHelpDialog
+    v-model="metricHelpDialog"
+    :title="metricHelpTitle"
+    :content="metricHelpContent"
+  />
 </template>
 <style scoped lang="scss">
 .overview-church-header__avatar {
@@ -647,6 +637,10 @@ const openMetricHelp = (metric: MetricItem) => {
   @media (max-width: 959px) {
     padding-top: 12px;
   }
+}
+
+.overview-church-metric__icon {
+  flex: 0 0 36px;
 }
 
 .overview-church-metric__label-row {

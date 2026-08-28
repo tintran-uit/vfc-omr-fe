@@ -7,7 +7,4 @@ export default {
     { key: 'time', title: 'worshipService.labelTime', sortable: false, filterable: true },
     { key: 'actions', title: '', sortable: false },
   ],
-  searches: [
-    { name: 'name', label: 'searchByName', type: 'TextInput' },
-  ]
 }

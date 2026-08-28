@@ -6,6 +6,7 @@ import { useI18n } from "vue-i18n";
 import { getColProps } from "@/helpers/formHelper";
 import { unwrapErrorMap, normalizeFieldErrors, flattenErrorKeys, mapErrorsToFieldNames } from "@/utils/formErrors";
 import PioneeringStartDateInput from "@/components/input/PioneeringStartDateInput.vue";
+import InfoHelpDialog from "@/components/shared/InfoHelpDialog.vue";
 
 const { t } = useI18n();
 
@@ -321,6 +322,21 @@ const handleCancel = () => {
   emit("cancel");
 };
 
+const helpDialogOpen = ref(false);
+const helpDialogTitle = ref("");
+const helpDialogContent = ref("");
+
+const resolveFieldLabel = (field: Record<string, any>) => {
+  if (!field.label) return "";
+  return typeof field.label === "function" ? field.label(context.value) : t(field.label);
+};
+
+const openFieldHelp = (field: Record<string, any>) => {
+  helpDialogTitle.value = resolveFieldLabel(field);
+  helpDialogContent.value = field.description ? t(field.description) : "";
+  helpDialogOpen.value = true;
+};
+
 watch(
   () => props.initData,
   (val) => {
@@ -405,34 +421,42 @@ watch(
               v-else-if="isFieldVisible(field)"
               v-bind="getColProps(field)"
             >
-              <v-label
-                class="mb-1"
-                v-if="field.label && !field.hideLabel"
-                :for="`field-${field.name}-${index}`"
+              <div
+                class="w-100"
+                :class="{ 'dynamic-form-photo-field': field.type === 'PhotoCropperInput' }"
               >
-                {{ typeof field.label === "function" ? field.label(context) : $t(field.label) }}
+              <div
+                v-if="field.label && !field.hideLabel"
+                class="d-inline-flex align-center flex-wrap mb-1"
+              >
+                <v-label
+                  class="mb-0"
+                  :for="`field-${field.name}-${index}`"
+                >
+                  {{ typeof field.label === "function" ? field.label(context) : $t(field.label) }}
 
-                <span
-                  class="text-error"
-                  v-if="field?.rules?.includes('required')"
-                  >*</span
-                >
-                <v-tooltip
-                  :text="$t(field.description)"
+                  <span
+                    class="text-error"
+                    v-if="field?.rules?.includes('required')"
+                    >*</span
+                  >
+                </v-label>
+                <v-icon
                   v-if="field.description"
+                  size="16"
+                  color="primary"
+                  class="ml-1 cursor-pointer"
+                  role="button"
+                  tabindex="0"
+                  :aria-label="resolveFieldLabel(field)"
+                  @mousedown.prevent
+                  @click.stop.prevent="openFieldHelp(field)"
+                  @keydown.enter.stop="openFieldHelp(field)"
+                  @keydown.space.prevent.stop="openFieldHelp(field)"
                 >
-                  <template #activator="{ props }">
-                    <v-icon
-                      v-bind="props"
-                      size="16"
-                      color="primary"
-                      class="ml-1"
-                    >
-                      $informationOutline
-                    </v-icon>
-                  </template>
-                </v-tooltip>
-              </v-label>
+                  $informationOutline
+                </v-icon>
+              </div>
 
               <template v-if="field.component">
                 <ChangePassword
@@ -661,6 +685,7 @@ watch(
                   :id="`field-${field.name}-${index}`"
                 ></TextInput>
               </template>
+              </div>
             </v-col>
           </template>
         </v-row>
@@ -695,6 +720,18 @@ watch(
       </v-form>
     </component>
   </component>
+
+  <InfoHelpDialog
+    v-model="helpDialogOpen"
+    :title="helpDialogTitle"
+    :content="helpDialogContent"
+  />
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.dynamic-form-photo-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+</style>

@@ -1,5 +1,10 @@
+import { ROLE_PASTOR_LEADER } from '@/constants/roleConstant';
+
 export const createFormSchema = () => ({
     name: 'user.pastorLeaderData',
+    initData: () => ({
+        role_id: ROLE_PASTOR_LEADER,
+    }),
     fields: [
         {
             label: 'user.labelPrefix',
@@ -45,6 +50,7 @@ export const createFormSchema = () => ({
             rules: ['required'],
             type: 'SelectInput',
             optionName: 'roles',
+            defaultValue: ROLE_PASTOR_LEADER,
             attrs: {
                 itemTitle: 'name',
                 itemValue: 'id',

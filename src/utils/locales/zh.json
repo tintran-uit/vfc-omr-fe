@@ -438,6 +438,16 @@
     "lastReport": "最近报告",
     "pastorName": "Ps. {name}"
   },
+  "city": {
+    "addNew": "添加城市 / 城镇 / 村庄",
+    "addNamed": "添加 \"{name}\"",
+    "noResults": "未找到 \"{name}\" 对应的城市",
+    "addTitle": "添加城市 / 城镇 / 村庄",
+    "labelName": "城市 / 城镇 / 村庄名称",
+    "labelNation": "国家",
+    "createSuccess": "城市添加成功",
+    "createSelectManually": "城市已创建，请从列表中选择。"
+  },
   "message": {
     "errorTitle": "发生错误"
   },

@@ -21,8 +21,20 @@ const props = defineProps({
       </div>
     </v-card-item>
     <v-divider></v-divider>
+    <div v-if="$slots.intro" class="card-header-intro">
+      <slot name="intro" />
+    </div>
     <v-card-text class="pa-0">
       <slot />
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped lang="scss">
+.card-header-intro {
+  display: block;
+  width: 100%;
+  padding: 20px 20px 0;
+  box-sizing: border-box;
+}
+</style>

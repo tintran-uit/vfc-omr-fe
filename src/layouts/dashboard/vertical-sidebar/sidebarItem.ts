@@ -33,28 +33,41 @@ export interface menu {
   subCaption?: string;
   permissions?: string[];
   exact?: boolean;
+  pastorOnly?: boolean;
+  nonPastorOnly?: boolean;
 }
 
 const sidebarItem: menu[] = [
-  // { header: 'Dashboard' },
+  {
+    id: "my-church-profile",
+    title: "mainMenu.myChurchProfile",
+    icon: HomeOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    pastorOnly: true,
+    children: [
+      {
+        id: "my-church-dashboard",
+        title: "mainMenu.myDashboard",
+        to: "/",
+        exact: true,
+      },
+      {
+        id: "my-church-worship-services",
+        title: "mainMenu.worshipServices",
+        to: "#",
+      },
+    ],
+  },
   {
     id: "dashboard",
     title: "mainMenu.myDashboard",
     icon: DashboardOutlined,
     to: "/",
     exact: true,
-    // children: [
-    //   {
-    //     id: 'default',
-    //     title: 'Default',
-    //     to: '/dashboard/default'
-    //   },
-    //   {
-    //     id: 'analytics',
-    //     title: 'Analytics',
-    //     to: '/dashboard/analytics'
-    //   }
-    // ]
+    nonPastorOnly: true,
   },
   // {
   //   id: 'my-church-profile',
@@ -316,6 +329,22 @@ const sidebarItem: menu[] = [
         title: "mainMenu.addNew",
         to: "/languages/add",
         permissions: ["languages.create"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.relating",
+    icon: CompassOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "relating-search",
+        title: "mainMenu.relatingSearch",
+        to: "/relating/search",
+        permissions: ["relating.request-info"],
       },
     ],
   },

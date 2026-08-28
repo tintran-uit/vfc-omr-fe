@@ -438,6 +438,16 @@
     "lastReport": "Laporan Terakhir",
     "pastorName": "Ps. {name}"
   },
+  "city": {
+    "addNew": "Tambah bandar / pekan / kampung",
+    "addNamed": "Tambah \"{name}\"",
+    "noResults": "Tiada bandar dijumpai untuk \"{name}\"",
+    "addTitle": "Tambah bandar / pekan / kampung",
+    "labelName": "Nama bandar / pekan / kampung",
+    "labelNation": "Negara",
+    "createSuccess": "Bandar berjaya ditambah",
+    "createSelectManually": "Bandar telah dicipta. Sila pilih dari senarai."
+  },
   "message": {
     "errorTitle": "Ralat telah berlaku"
   },

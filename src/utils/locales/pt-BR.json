@@ -444,6 +444,16 @@
     "lastReport": "Último relatório",
     "pastorName": "Ps. {name}"
   },
+  "city": {
+    "addNew": "Adicionar cidade / vila / aldeia",
+    "addNamed": "Adicionar \"{name}\"",
+    "noResults": "Nenhuma cidade encontrada para \"{name}\"",
+    "addTitle": "Adicionar cidade / vila / aldeia",
+    "labelName": "Nome da cidade / vila / aldeia",
+    "labelNation": "Nação",
+    "createSuccess": "Cidade adicionada com sucesso",
+    "createSelectManually": "A cidade foi criada. Selecione-a na lista."
+  },
   "message": {
     "errorTitle": "Ocorreu um erro"
   },

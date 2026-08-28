@@ -26,6 +26,10 @@
 // }
 
 export const getNestedValue = (obj, path, defaultValue = null) => {
+  if (path == null || path === "") {
+    return typeof defaultValue === "function" ? defaultValue() : defaultValue;
+  }
+
   const keys = path.split(".");
   let target = obj;
 
@@ -51,6 +55,8 @@ export const getNestedValue = (obj, path, defaultValue = null) => {
 };
 
 export const setNestedValue = (obj, path, value, defaultValue = null) => {
+  if (path == null || path === "") return;
+
   const keys = path.split(".");
   const lastKey = keys.pop();
 
@@ -134,12 +140,18 @@ export const initFormData = (schema, initValue = {}) => {
   const result = {};
 
   schema.forEach((field) => {
-    setNestedValue(result, field.name, resolveFieldDefault(field.default));
+    if (!field?.name) return;
+    setNestedValue(
+      result,
+      field.name,
+      resolveFieldDefault(field.default ?? field.defaultValue),
+    );
   });
 
   // Gộp initValue (nếu có) → override
   const copiedInit = cloneDeep(initValue);
   Object.entries(flatObject(copiedInit)).forEach(([path, value]) => {
+    if (!path) return;
     setNestedValue(result, path, value);
   });
 

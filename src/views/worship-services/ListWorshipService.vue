@@ -7,14 +7,12 @@ import tableSchema from '@/table-schemas/worshipServiceTableSchema';
 import { useI18n } from 'vue-i18n';
 import DataTable from '@/components/tables/DataTable.vue';
 import TablePageShell from "@/components/shared/TablePageShell.vue";
-import TableSearchBox from "@/components/tables/TableSearchBox.vue";
 
 const router = useRouter()
 const route = useRoute()
 const {t} = useI18n();
 const items = ref([])
 const church = ref(null)
-const searches = ref([])
 const page = ref(1)
 const itemsPerPage = ref(25)
 const sortBy = ref([{ key: 'id', order: 'desc' }])
@@ -42,10 +40,6 @@ const onDelete = async (item: unknown) => {
   fetchData(churchId.value)
 }
 
-const onSearch = () => {
-  page.value = 1
-}
-
 watch(
   () => churchId.value,
   async (id) => {
@@ -58,18 +52,16 @@ watch(
 </script>
 
 <template>
-  <TablePageShell :title="t('worshipService.listTitle', { churchName: church?.name })">
+  <TablePageShell
+    :title="t('worshipService.listTitle', { churchName: church?.name })"
+    :title-md="10"
+    :header-right-md="2"
+  >
     <template #header-right>
-      <TableSearchBox
-        v-model:searches="searches"
-        :searches-config="tableSchema.searches"
-        @search="onSearch"
-      />
-
       <v-btn 
         color="primary" 
         variant="outlined" 
-        @click="router.push({ name: 'WorshipServiceAdd' })"
+        @click="router.push({ name: 'WorshipServiceAdd', params: { churchId: churchId } })"
       >
         <v-icon>$plus</v-icon> {{ $t('addNew') }}
       </v-btn>
@@ -79,7 +71,6 @@ watch(
       v-model:page="page"
       v-model:items-per-page="itemsPerPage"
       v-model:sort-by="sortBy"
-      v-model:searches="searches"
       :headers="tableSchema.headers"
       :items="items"
       :enabled-actions="['edit', 'delete']"

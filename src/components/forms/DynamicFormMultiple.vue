@@ -8,6 +8,7 @@ import {mapModel} from '@/utils/mapperUtil'
 import { unwrapErrorMap, normalizeFieldErrors, flattenErrorKeys, mapErrorsToAccessKeys } from '@/utils/formErrors'
 import CardHeader from '@/components/shared/CardHeader.vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
+import InfoHelpDialog from '@/components/shared/InfoHelpDialog.vue'
 
 const { t } = useI18n()
 const router = useRouter();
@@ -248,6 +249,21 @@ watch(
   },
   {immediate: true}
 )
+
+const helpDialogOpen = ref(false)
+const helpDialogTitle = ref('')
+const helpDialogContent = ref('')
+
+const resolveFieldLabel = (field: Record<string, any>) => {
+  if (!field.label) return ''
+  return t(field.label)
+}
+
+const openFieldHelp = (field: Record<string, any>) => {
+  helpDialogTitle.value = resolveFieldLabel(field)
+  helpDialogContent.value = field.description ? t(field.description) : ''
+  helpDialogOpen.value = true
+}
 </script>
 
 <template>
@@ -283,17 +299,37 @@ watch(
           <v-row dense>
             <template v-for="(field, index) in schemaDef.fields" :key="`${schemaKey}-${index}`">
               <v-col cols="12" md="6">
-                <v-label class="mb-1" v-if="field.label" :for="`field-${field.name}-${index}`">
-                  {{ $t(field.label)}}
-                  <span class="text-error" v-if="field?.rules?.includes('required')">*</span>
-                  <v-tooltip :text="$t(field.description)" v-if="field.description">
-                      <template #activator="{ props }">
-                        <v-icon v-bind="props" size="16" color="primary" class="ml-1">
-                          $informationOutline
-                        </v-icon>
-                      </template>
-                    </v-tooltip>
-                </v-label>
+                <div
+                  class="w-100"
+                  :class="{ 'dynamic-form-photo-field': field.type === 'PhotoCropperInput' }"
+                >
+                <div
+                  v-if="field.label"
+                  class="d-inline-flex align-center flex-wrap mb-1"
+                >
+                  <v-label
+                    class="mb-0"
+                    :for="`field-${field.name}-${index}`"
+                  >
+                    {{ $t(field.label)}}
+                    <span class="text-error" v-if="field?.rules?.includes('required')">*</span>
+                  </v-label>
+                  <v-icon
+                    v-if="field.description"
+                    size="16"
+                    color="primary"
+                    class="ml-1 cursor-pointer"
+                    role="button"
+                    tabindex="0"
+                    :aria-label="resolveFieldLabel(field)"
+                    @mousedown.prevent
+                    @click.stop.prevent="openFieldHelp(field)"
+                    @keydown.enter.stop="openFieldHelp(field)"
+                    @keydown.space.prevent.stop="openFieldHelp(field)"
+                  >
+                    $informationOutline
+                  </v-icon>
+                </div>
 
                 <SelectInput
                   v-if="field.type === 'SelectInput'"
@@ -466,6 +502,7 @@ watch(
                   v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
                 ></TextInput>
+                </div>
               </v-col>
             </template>
           </v-row>
@@ -480,8 +517,18 @@ watch(
         </v-col>
       </v-row>
     </v-form>
+
+  <InfoHelpDialog
+    v-model="helpDialogOpen"
+    :title="helpDialogTitle"
+    :content="helpDialogContent"
+  />
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+.dynamic-form-photo-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 </style>

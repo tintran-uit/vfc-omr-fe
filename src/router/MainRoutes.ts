@@ -301,6 +301,12 @@ const MainRoutes = {
       meta: { title: "visitsAdd.title" },
     },
     {
+      name: "RelatingSearch",
+      path: "relating/search",
+      component: () => import("@/views/relating/SearchRelating.vue"),
+      meta: { permissions: ["relating.request-info"], title: "relating.searchTitle" },
+    },
+    {
       name: "SupportSend",
       path: "support",
       component: () => import("@/views/support/Send.vue"),

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import {useDialogStore} from '@/stores/dialogStore';
 
 const confirmStore = useDialogStore()
-
 </script>
 
 <template>
-  <v-dialog v-model="confirmStore.confirmOpen" max-width="400">
+  <v-dialog v-model="confirmStore.confirmOpen" max-width="480">
     <v-card>
-      <v-card-title>{{ confirmStore.confirmMessage }}</v-card-title>
+      <v-card-text class="text-body-1 pt-6 app-confirm-message">
+        {{ confirmStore.confirmMessage }}
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn text @click="confirmStore.confirmCancel()">Cancel</v-btn>
@@ -20,5 +20,8 @@ const confirmStore = useDialogStore()
 </template>
 
 <style scoped>
-
+.app-confirm-message {
+  white-space: normal;
+  word-break: break-word;
+}
 </style>

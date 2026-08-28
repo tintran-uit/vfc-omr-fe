@@ -2,6 +2,7 @@ import apiClient from "@/services/apiClient";
 
 export type SupportPayload = {
   name: string;
+  email?: string;
   subject: string;
   message: string;
 };

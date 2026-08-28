@@ -1,27 +1,32 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { createFormSchema } from '@/form-schemas/addWorshipServiceFormSchema';
 import { worshipServiceService } from '@/services/worshipServiceService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useMessageStore } from '@/stores/messageStore';
 import { extractApiError } from '@/utils/formErrors';
 
-const router = useRouter()
+const router = useRouter();
+const route = useRoute();
 const { t } = useI18n();
 const messageStore = useMessageStore();
-const route = useRoute()
-const options = ref({})
+const options = ref({});
 const churchId = computed(() => route.params.churchId);
 const formSchema = createFormSchema();
 const formRef = ref();
 
+const listBackUrl = computed(() => ({
+  name: 'WorshipServiceList',
+  params: { churchId: churchId.value },
+}));
+
 const handleSubmit = async (formData) => {
   try {
-    await worshipServiceService.createForChurch(churchId.value, formData)
+    await worshipServiceService.createForChurch(churchId.value, formData);
 
-    router.push({ name: 'WorshipServiceList' });
+    router.push(listBackUrl.value);
   } catch (e) {
     const { errors } = extractApiError(e);
     if (Object.keys(errors).length) {
@@ -30,43 +35,18 @@ const handleSubmit = async (formData) => {
       messageStore.error(t('genericSaveError'));
     }
   }
-}
+};
 </script>
 
 <template>
-
-    <!-- Main Content -->
-    <v-sheet color="grey lighten-4" class="pa-8">
-      <v-row>
-        <v-col cols="12" class="d-flex align-center justify-space-between">
-          <h1>{{ $t('worshipService.addTitle') }}</h1>
-          <v-btn 
-            color="primary" 
-            variant="outlined" 
-            @click="router.push({ name: 'WorshipServiceList' })"
-          >
-            <v-icon>$arrowLeft</v-icon> {{ $t('backToList') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row justify="center">
-        <v-col cols="12" md="10" lg="12">
-          <v-sheet class="pa-6" elevation="2" rounded="lg" color="white">
-            <slot name="form">
-              <DynamicFormDefault
-                ref="formRef"
-                :options="options"
-                :form-schema="formSchema"
-                @submit="handleSubmit"
-              />
-            </slot>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-sheet>
+  <DynamicFormDefault
+    ref="formRef"
+    :options="options"
+    :form-schema="formSchema"
+    :page-title="$t('worshipService.addTitle')"
+    :back-url="listBackUrl"
+    @submit="handleSubmit"
+  />
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

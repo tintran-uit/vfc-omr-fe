@@ -438,6 +438,16 @@
     "lastReport": "最新レポート",
     "pastorName": "Ps. {name}"
   },
+  "city": {
+    "addNew": "市区町村を追加",
+    "addNamed": "「{name}」を追加",
+    "noResults": "「{name}」に一致する市区町村が見つかりません",
+    "addTitle": "市区町村を追加",
+    "labelName": "市区町村名",
+    "labelNation": "国",
+    "createSuccess": "市区町村を追加しました",
+    "createSelectManually": "市区町村が作成されました。リストから選択してください。"
+  },
   "message": {
     "errorTitle": "エラーが発生しました"
   },

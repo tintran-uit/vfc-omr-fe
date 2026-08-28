@@ -2,14 +2,31 @@
 import { computed } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
 import sidebarItems from './sidebarItem';
+import type { menu } from './sidebarItem';
 
 import NavGroup from './NavGroup/NavGroup.vue';
 import NavItem from './NavItem/NavItem.vue';
 import NavCollapse from './NavCollapse/NavCollapse.vue';
 
 import { useAuthStore } from '@/stores/authStore';
+import { usePastorChurchStore } from '@/stores/pastorChurchStore';
 import { useNavLogoStore } from '@/stores/navLogoStore';
 import defaultLogo from '@/assets/images/logo/logo.png';
+
+function filterNavigationByRole(items: menu[], isPastor: boolean): menu[] {
+  return items
+    .filter((item) => {
+      if (item.pastorOnly && !isPastor) return false;
+      if (item.nonPastorOnly && isPastor) return false;
+      return true;
+    })
+    .map((item) => ({
+      ...item,
+      children: item.children
+        ? filterNavigationByRole(item.children, isPastor)
+        : undefined,
+    }));
+}
 
 function filterNavigationByPermissions(items, canFn) {
   return items
@@ -59,7 +76,36 @@ function filterNavigationByPermissions(items, canFn) {
     .filter(Boolean);
 }
 
+function resolveSidebarLinks(items: menu[], churchId: number | string | null | undefined): menu[] {
+  return items
+    .map((item) => {
+      const resolvedChildren = item.children
+        ? resolveSidebarLinks(item.children, churchId)
+        : undefined;
+
+      if (item.id === 'my-church-worship-services') {
+        if (!churchId) return null;
+        return {
+          ...item,
+          to: `/churches/${churchId}/services`,
+          children: resolvedChildren,
+        };
+      }
+
+      if (resolvedChildren) {
+        return {
+          ...item,
+          children: resolvedChildren,
+        };
+      }
+
+      return item;
+    })
+    .filter(Boolean) as menu[];
+}
+
 const authStore = useAuthStore();
+const pastorChurchStore = usePastorChurchStore();
 const navLogoStore = useNavLogoStore();
 const customizer = useCustomizerStore();
 
@@ -70,9 +116,13 @@ const sidebarLogoAlt = computed(() =>
   navLogoStore.hasOverride ? (navLogoStore.overrideAlt || 'Logo') : 'Logo'
 );
 /* Re-compute when permissions change (e.g. after login or role-based sync from authStore). */
-const sidebarMenu = computed(() =>
-  filterNavigationByPermissions(sidebarItems, (p) => authStore.can(p))
-);
+const sidebarMenu = computed(() => {
+  const isPastor = authStore.isRolePastorLeader;
+  const churchId = isPastor ? pastorChurchStore.selectedChurchId : undefined;
+  const roleFiltered = filterNavigationByRole(sidebarItems, isPastor);
+  const withResolvedLinks = resolveSidebarLinks(roleFiltered, churchId);
+  return filterNavigationByPermissions(withResolvedLinks, (p) => authStore.can(p));
+});
 </script>
 
 <template>

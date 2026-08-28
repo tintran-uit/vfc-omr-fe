@@ -14,10 +14,16 @@ const props = withDefaults(
     hideBack?: boolean;
     /** Wrap content in an outlined card */
     withCard?: boolean;
+    /** v-col md breakpoint for title (default 6) */
+    titleMd?: number;
+    /** v-col md breakpoint for header-right slot (default 6) */
+    headerRightMd?: number;
   }>(),
   {
     hideBack: false,
     withCard: true,
+    titleMd: 6,
+    headerRightMd: 6,
   },
 );
 
@@ -31,13 +37,13 @@ const resolvedTitle = computed(() => {
 <template>
   <div>
     <v-row class="my-2">
-      <v-col cols="12" md="6" class="d-flex align-center">
-        <div class="text-h4 font-weight-medium">
+      <v-col cols="12" :md="titleMd" class="d-flex align-center">
+        <div class="text-h4 font-weight-medium table-page-shell__title">
           {{ resolvedTitle }}
         </div>
       </v-col>
 
-      <v-col cols="12" md="6">
+      <v-col cols="12" :md="headerRightMd">
         <div class="d-flex flex-column flex-md-row flex-md-wrap align-stretch align-md-center justify-md-end ga-2">
           <slot name="header-right" />
 
@@ -65,3 +71,9 @@ const resolvedTitle = computed(() => {
   </div>
 </template>
 
+<style scoped lang="scss">
+.table-page-shell__title {
+  line-height: 1.3;
+  word-break: break-word;
+}
+</style>

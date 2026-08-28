@@ -102,32 +102,75 @@ watch(
     v-model="modelValue"
     hide-details="auto"
   >
-    <div class="d-flex ga-2 w-100">
-      <v-autocomplete
-        v-model="modelHour"
-        :placeholder="$t('hour')"
-        :items="listHours"
-        variant="outlined"
-      />
-      <v-autocomplete
-        v-model="modelMinute"
-        :placeholder="$t('minute')"
-        :items="listMinutes"
-        variant="outlined"
-      />
-      <v-autocomplete
-        v-model="modelTimeSuffix"
-        :items="listTimeSuffixes"
-        item-title="title"
-        item-value="value"
-        variant="outlined"
-      />
+    <div class="time-input">
+      <div class="time-input__field time-input__field--hour">
+        <v-autocomplete
+          v-model="modelHour"
+          :placeholder="$t('hour')"
+          :items="listHours"
+          variant="outlined"
+          density="compact"
+          color="primary"
+          hide-details
+        />
+      </div>
+      <div class="time-input__field time-input__field--minute">
+        <v-autocomplete
+          v-model="modelMinute"
+          :placeholder="$t('minute')"
+          :items="listMinutes"
+          variant="outlined"
+          density="compact"
+          color="primary"
+          hide-details
+        />
+      </div>
+      <div class="time-input__field time-input__field--suffix">
+        <v-autocomplete
+          v-model="modelTimeSuffix"
+          :items="listTimeSuffixes"
+          item-title="title"
+          item-value="value"
+          variant="outlined"
+          density="compact"
+          color="primary"
+          hide-details
+        />
+      </div>
     </div>
   </v-input>
 </template>
 
-<style scoped>
-.v-input .v-field {
-  min-height: 40px; /* giữ layout ổn định */
+<style scoped lang="scss">
+.time-input {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.time-input__field {
+  flex: 0 0 88px;
+  width: 88px;
+  max-width: 88px;
+}
+
+.time-input__field--suffix {
+  flex-basis: 96px;
+  width: 96px;
+  max-width: 96px;
+}
+
+.time-input__field :deep(.v-input) {
+  width: 100%;
+}
+
+.time-input__field :deep(.v-field) {
+  min-height: 40px;
+}
+
+.time-input__field :deep(.v-field__input) {
+  min-width: 0;
 }
 </style>

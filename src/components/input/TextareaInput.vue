@@ -15,6 +15,9 @@ const props = withDefaults(
     disabled?: boolean;
     hideDetails?: boolean | "auto";
     rows?: number | string;
+    autoGrow?: boolean;
+    maxRows?: number | string;
+    noResize?: boolean;
   }>(),
   {
     rules: () => [],
@@ -22,6 +25,8 @@ const props = withDefaults(
     disabled: false,
     hideDetails: true,
     rows: 4,
+    autoGrow: false,
+    noResize: false,
   },
 );
 
@@ -41,6 +46,9 @@ const translatedPlaceholder = computed(() =>
     :disabled="props.disabled"
     :hide-details="props.hideDetails"
     :rows="props.rows"
+    :auto-grow="props.autoGrow"
+    :max-rows="props.maxRows"
+    :no-resize="props.noResize"
     color="primary"
     variant="outlined"
     density="compact"

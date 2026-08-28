@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { dashboardService } from '@/services/dashboardService';
-import { computed, onMounted, ref, provide, watch } from 'vue';
+import { computed, onMounted, ref, provide } from 'vue';
 import { churchService } from '@/services/churchService';
 import { userService } from '@/services/userService';
 import OverviewChurch from '@/views/churches/OverviewChurch.vue';
+import { usePastorChurchStore } from '@/stores/pastorChurchStore';
 
-const selectedChurchId = ref()
+const pastorChurchStore = usePastorChurchStore();
 const churchDetail = ref({})
 provide('churchDetail', churchDetail)
 const dashboardData = ref({})
@@ -19,8 +20,9 @@ const assignedChurches = computed(() => {
 const fetchDefaultProfile = async () => {
   try {
     dashboardData.value = await dashboardService.getProfile();
-    selectedChurchId.value = dashboardData.value?.dashboard_info?.church_id;
-    fetchChurchDetail(selectedChurchId.value)
+    const churchId = dashboardData.value?.dashboard_info?.church_id;
+    await fetchChurchDetail(churchId);
+    pastorChurchStore.setSelectedChurchId(churchId ?? churchDetail.value?.id);
   } catch (error) {
     console.error('Failed to fetch default profile:', error);
   }
@@ -54,11 +56,12 @@ onMounted(async () => {
   }
 });
 
-const switchToChurch = (churchId) => {
-  selectedChurchId.value = churchId
+const switchToChurch = async (churchId) => {
+  pastorChurchStore.setSelectedChurchId(churchId);
 
-  fetchProfileByChurchId(churchId)
-  fetchChurchDetail(churchId)
+  await fetchProfileByChurchId(churchId);
+  await fetchChurchDetail(churchId);
+  pastorChurchStore.setSelectedChurchId(churchId ?? churchDetail.value?.id);
 }
 </script>
 

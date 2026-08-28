@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from '@/constants/roleConstant';
 import { clearSessionAndGoLogin } from '@/utils/session';
+import { usePastorChurchStore } from '@/stores/pastorChurchStore';
 const pastorLeaderPermissions = [
   'user.read',
   'user.create',
@@ -14,6 +15,7 @@ const pastorLeaderPermissions = [
   'report.church-status',
   'resource.read',
   'relating.update',
+  'relating.request-info',
   'faq.read',
   'church-planting.read',
   'church-planting.create',
@@ -135,6 +137,7 @@ export const useAuthStore = defineStore('auth', {
       this.token = null;
       this.permissions = []
       this.returnUrl = null;
+      usePastorChurchStore().clearSelectedChurchId();
       clearSessionAndGoLogin();
     },
     can(permissions: string | string[]) {

@@ -1,5 +1,8 @@
+import { ROLE_PASTOR_LEADER } from '@/constants/roleConstant';
+
 export const createFormSchema = () => ({
     initData: () => ({
+        role_id: ROLE_PASTOR_LEADER,
         sensitive_nation: false,
     }),
     fields: [
@@ -45,6 +48,7 @@ export const createFormSchema = () => ({
             rules: ['required'],
             type: 'SelectInput',
             optionName: 'roles',
+            defaultValue: ROLE_PASTOR_LEADER,
             attrs: {
                 itemTitle: 'name',
                 itemValue: 'id',
