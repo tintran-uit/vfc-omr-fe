@@ -175,13 +175,17 @@ watch(listChartDataByChurch, (newVal) => {
     </div>
 
     <!-- Tabs -->
-    <v-tabs v-model="tab" color="primary" class="attendant-tab" bg-color="transparent">
+    <v-tabs
+      v-model="tab"
+      class="attendant-tab"
+      bg-color="transparent"
+      hide-slider
+      align-tabs="start"
+    >
       <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
         <v-tab :value="`chart-${chartDataByChurch.church_id}`">{{ chartDataByChurch.church_name }}</v-tab>
       </template>
     </v-tabs>
-
-    <v-divider></v-divider>
 
     <v-window v-model="tab" :touch="false">
       <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">

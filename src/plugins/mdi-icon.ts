@@ -49,6 +49,12 @@ import {
   mdiCalendarMonth,
   mdiFlowerOutline,
   mdiPrinter,
+  mdiFolderOutline,
+  mdiFolderOpenOutline,
+  mdiFileDocumentOutline,
+  mdiDownload,
+  mdiChevronRight,
+  mdiTranslate,
 } from "@mdi/js";
 import { mdi } from "vuetify/iconsets/mdi-svg";
 
@@ -111,4 +117,11 @@ export const icons = {
   calendar: mdiCalendarMonth,
   sprout: mdiFlowerOutline,
   printer: mdiPrinter,
+
+  folder: mdiFolderOutline,
+  folderOpen: mdiFolderOpenOutline,
+  fileDocument: mdiFileDocumentOutline,
+  download: mdiDownload,
+  chevronRight: mdiChevronRight,
+  translate: mdiTranslate,
 };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import type { RouteLocationRaw } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -44,7 +44,7 @@ const { t } = useI18n();
 const authStore = useAuthStore();
 const { isRolePastorLeader } = storeToRefs(authStore);
 const detail = ref<Record<string, any>>({});
-const headingClass = "text-left font-weight-bold";
+const headingClass = "text-left";
 
 const cardTitle = computed(() => props.title ?? t("user.pastorLeaderDetails"));
 
@@ -75,6 +75,18 @@ const fromChurchesText = computed(() => {
   if (!Array.isArray(churches) || churches.length === 0) return "";
   return churches.map((church: { name: string }) => church.name).join(", ");
 });
+
+const fromExpanded = ref(false);
+const fromOverflows = ref(false);
+const fromTextEl = ref<HTMLElement | null>(null);
+
+async function measureFromOverflow() {
+  await nextTick();
+  const raw = fromTextEl.value as HTMLElement | HTMLElement[] | null;
+  const el = Array.isArray(raw) ? raw[0] : raw;
+  if (!el || fromExpanded.value) return;
+  fromOverflows.value = el.scrollHeight > el.clientHeight + 1;
+}
 
 const holdsCredentials = computed(() => {
   const credentials = resolvedDetail.value?.credentials;
@@ -168,7 +180,6 @@ const rows = computed((): DetailRow[] => {
       key: "pastorOf",
       label: "user.pastorOf",
       value: user.church_name,
-      cellClass: "font-weight-bold",
       to: user.church_id
         ? { name: "ChurchDetail", params: { id: user.church_id } }
         : undefined,
@@ -188,7 +199,6 @@ const rows = computed((): DetailRow[] => {
       key: "nation",
       label: "user.nation",
       value: user.country_name,
-      cellClass: "font-weight-bold",
     });
   }
 
@@ -196,7 +206,7 @@ const rows = computed((): DetailRow[] => {
     key: "sensitiveNation",
     label: "user.sensitiveNation",
     value: user.sensitive_nation ? t("yes") : t("no"),
-    cellClass: user.sensitive_nation ? "text-error font-weight-bold" : undefined,
+    cellClass: user.sensitive_nation ? "text-error" : undefined,
   });
 
   if (user.email_address) {
@@ -302,6 +312,12 @@ watch(
   },
   { immediate: true },
 );
+
+watch(fromChurchesText, () => {
+  fromExpanded.value = false;
+  fromOverflows.value = false;
+  void measureFromOverflow();
+}, { immediate: true });
 </script>
 
 <template>
@@ -318,20 +334,20 @@ watch(
       class="pastor-leader-widget"
     >
       <div class="pa-4">
-        <div class="d-flex align-start ga-4">
+        <div class="d-flex align-center ga-4">
           <Avatar
             :src="avatarUrl"
             :size="100"
             class="flex-shrink-0"
           />
 
-          <div class="flex-grow-1 min-w-0 pt-1">
-            <div class="text-h4 font-weight-bold text-primary">
+          <div class="flex-grow-1 min-w-0">
+            <div class="text-h5 font-weight-bold text-primary">
               {{ displayName }}
             </div>
             <div
               v-if="resolvedDetail?.title"
-              class="text-body-1"
+              class="text-body-2 text-medium-emphasis"
             >
               {{ resolvedDetail.title }}
             </div>
@@ -368,6 +384,25 @@ watch(
               >
                 {{ row.value }}
               </a>
+              <template v-else-if="row.key === 'from'">
+                <div
+                  ref="fromTextEl"
+                  class="pastor-leader-widget__from"
+                  :class="{ 'pastor-leader-widget__from--clamp': !fromExpanded }"
+                >
+                  {{ row.value }}
+                </div>
+                <v-btn
+                  v-if="fromOverflows || fromExpanded"
+                  variant="text"
+                  color="primary"
+                  size="small"
+                  class="px-0 pastor-leader-widget__from-toggle"
+                  @click="fromExpanded = !fromExpanded"
+                >
+                  {{ fromExpanded ? $t("less") : $t("seeMore") }}
+                </v-btn>
+              </template>
               <template v-else>
                 {{ row.value }}
               </template>
@@ -385,3 +420,18 @@ watch(
     </div>
   </CardHeader>
 </template>
+
+<style scoped lang="scss">
+.pastor-leader-widget__from--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.pastor-leader-widget__from-toggle {
+  min-width: 0;
+  height: auto;
+  margin-top: 2px;
+}
+</style>

@@ -129,6 +129,10 @@ export const useAuthStore = defineStore('auth', {
       this.permissions = permissionsForRole(this.user?.role?.id);
       localStorage.setItem('permissions', JSON.stringify(this.permissions));
 
+      import('@/services/firebaseMessagingService').then(({ syncWebPushIfGranted }) => {
+        syncWebPushIfGranted();
+      });
+
       // redirect to previous url or default to home page
       router.push(this.returnUrl || {name: 'Dashboard'});
     },

@@ -30,7 +30,7 @@ import AttachmentWidget from '@/components/widgets/AttachmentWidget.vue';
 import DaugterChurchWidget from '@/components/widgets/DaugterChurchWidget.vue';
 import AttendanceChartWidget from '@/components/widgets/AttendanceChartWidget.vue';
 import ChurchPlantingChartWidget from '@/components/widgets/ChurchPlantingChartWidget.vue';
-import { formatCompactCurrency } from '@/helpers/appHelper';
+import { formatCompactCurrency, formatCurrency } from '@/helpers/appHelper';
 
 const props = withDefaults(
   defineProps<{
@@ -157,17 +157,10 @@ const metrics = shallowRef([
     name: 'dashboard.givingTithes',
     helpTitleKey: 'dashboard.givingHelpTitle',
     helpKey: 'dashboard.givingHelp',
-    earnFn: (item) => {
-      if (!currencyCodeLocal.value) return 0
-
-      if (currencyCodeLocal.value === 'USD') {
-        return formatCompactCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
-      }
-
-      const localFormat = formatCompactCurrency(item['avg_monthly_giving'], currencyCodeLocal.value)
-      const usdFormat = formatCompactCurrency(item['avg_monthly_giving_in_usd'], 'USD')
-      return `${localFormat} (${usdFormat})`
-    },
+    earnFn: (item) => formatMetricMoney(
+      item['avg_monthly_giving'],
+      item['avg_monthly_giving_in_usd'],
+    ),
     percentKey: null,
     color: 'primary',
     icon: dollarBillIcon,
@@ -185,17 +178,10 @@ const metrics = shallowRef([
     name: 'dashboard.givingMFP',
     helpTitleKey: 'dashboard.givingMFPHelpTitle',
     helpKey: 'dashboard.givingMFPHelp',
-    earnFn: (item) => {
-      if (!currencyCodeLocal.value) return 0
-
-      if (currencyCodeLocal.value === 'USD') {
-        return formatCompactCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
-      }
-
-      const localFormat = formatCompactCurrency(item['avg_monthly_mfp_giving'], currencyCodeLocal.value)
-      const usdFormat = formatCompactCurrency(item['avg_monthly_mfp_giving_in_usd'], 'USD')
-      return `${localFormat} (${usdFormat})`
-    },
+    earnFn: (item) => formatMetricMoney(
+      item['avg_monthly_mfp_giving'],
+      item['avg_monthly_mfp_giving_in_usd'],
+    ),
     percentKey: null,
     color: 'primary',
     icon: worldwideCurrencyIcon,
@@ -269,18 +255,48 @@ const locationText = computed(() => {
   return country || city || ''
 })
 
-const getMetricDisplayValue = (metric: (typeof metrics.value)[number]) => {
+type MetricDisplay = { primary: string; secondary: string }
+
+function formatLocalMetricAmount(value: unknown, currency: string) {
+  const amount = Number(value)
+  if (!Number.isFinite(amount)) return ''
+  if (Math.abs(amount) >= 1_000_000) {
+    return formatCompactCurrency(amount, currency)
+  }
+  return formatCurrency(amount, currency, { maximumFractionDigits: 0 })
+}
+
+function formatUsdMetricLine(value: unknown) {
+  const formatted = formatCurrency(value as number, 'USD', {
+    currencyDisplay: 'narrowSymbol',
+    maximumFractionDigits: 0,
+  })
+  if (!formatted) return ''
+  return `USD ${formatted}`
+}
+
+function formatMetricMoney(localAmount: unknown, usdAmount: unknown): MetricDisplay {
+  const currency = currencyCodeLocal.value
+  if (!currency) return { primary: '0', secondary: '' }
+
+  const primary = formatLocalMetricAmount(localAmount, currency) || '0'
+  if (currency === 'USD') return { primary, secondary: '' }
+
+  return { primary, secondary: formatUsdMetricLine(usdAmount) }
+}
+
+const getMetricDisplay = (metric: (typeof metrics.value)[number]): MetricDisplay => {
   const indicators = dashboardData.value?.dashboard_indicators
   if (metric.earnKey) {
-    return indicators?.[metric.earnKey] ?? 0
+    return { primary: String(indicators?.[metric.earnKey] ?? 0), secondary: '' }
   }
   if (metric.percentKey) {
-    return `${indicators?.[metric.percentKey] ?? 0}%`
+    return { primary: `${indicators?.[metric.percentKey] ?? 0}%`, secondary: '' }
   }
   if (typeof metric.earnFn === 'function') {
     return metric.earnFn(indicators || {})
   }
-  return 0
+  return { primary: '0', secondary: '' }
 }
 
 const hasChurchPhoto = computed(() => !!churchDetail.value?.photo_url)
@@ -384,8 +400,14 @@ const openMetricHelp = (metric: MetricItem) => {
               </div>
               <div class="metric-card-body__content">
                 <h4 class="text-h4 mb-0 indicator-value">
-                  {{ getMetricDisplayValue(metric) }}
+                  {{ getMetricDisplay(metric).primary }}
                 </h4>
+                <div
+                  v-if="getMetricDisplay(metric).secondary"
+                  class="overview-church-metric__usd"
+                >
+                  {{ getMetricDisplay(metric).secondary }}
+                </div>
                 <div class="overview-church-metric__label-row">
                   <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
                     {{ $t(metric.name) }}
@@ -425,8 +447,14 @@ const openMetricHelp = (metric: MetricItem) => {
               </div>
               <div class="metric-card-body__content">
                 <h4 class="text-h4 mb-0 indicator-value">
-                  {{ getMetricDisplayValue(metric) }}
+                  {{ getMetricDisplay(metric).primary }}
                 </h4>
+                <div
+                  v-if="getMetricDisplay(metric).secondary"
+                  class="overview-church-metric__usd"
+                >
+                  {{ getMetricDisplay(metric).secondary }}
+                </div>
                 <div class="overview-church-metric__label-row">
                   <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
                     {{ $t(metric.name) }}
@@ -641,6 +669,14 @@ const openMetricHelp = (metric: MetricItem) => {
 
 .overview-church-metric__icon {
   flex: 0 0 36px;
+}
+
+.overview-church-metric__usd {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: rgba(var(--v-theme-on-surface), 0.45);
 }
 
 .overview-church-metric__label-row {

@@ -3,6 +3,17 @@ export const DirAttrSet = (dir: 'ltr' | 'rtl') => {
   if (typeof document !== 'undefined') document.documentElement.setAttribute('dir', dir);
 };
 
+/** Strip HTML tags for plain-text list previews (keeps entities decoded via textContent). */
+export function stripHtmlTags(html: string | null | undefined): string {
+  if (!html) return "";
+  if (typeof document === "undefined") {
+    return String(html).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  }
+  const el = document.createElement("div");
+  el.innerHTML = html;
+  return (el.textContent || el.innerText || "").replace(/\s+/g, " ").trim();
+}
+
 /**
  * Convert Hex color to rgb
  */

@@ -307,6 +307,18 @@ const MainRoutes = {
       meta: { permissions: ["relating.request-info"], title: "relating.searchTitle" },
     },
     {
+      name: "ResourceBrowse",
+      path: "resources",
+      component: () => import("@/views/resources/BrowseResource.vue"),
+      meta: { permissions: ["resource.read"], title: "resource.browseTitle" },
+    },
+    {
+      name: "ResourceFolder",
+      path: "resources/:id",
+      component: () => import("@/views/resources/BrowseResource.vue"),
+      meta: { permissions: ["resource.read"], title: "resource.browseTitle" },
+    },
+    {
       name: "SupportSend",
       path: "support",
       component: () => import("@/views/support/Send.vue"),

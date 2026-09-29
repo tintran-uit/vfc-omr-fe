@@ -26,7 +26,7 @@ const serviceVenueStore = useServiceVenueStore();
 const detail = ref<Record<string, any>>({});
 const worshipServices = ref<ChurchWorshipService[]>([]);
 const geographicRegionDisplay = ref("");
-const headingClass = "text-left font-weight-bold";
+const headingClass = "text-left";
 
 /** Facebook cover ratio (820 x 312), matches church photo upload. */
 const CHURCH_COVER_ASPECT_RATIO = 820 / 312;
@@ -130,7 +130,7 @@ watch(
           />
 
           <div class="flex-grow-1 min-w-0">
-            <div class="text-h4 font-weight-bold text-primary">
+            <div class="text-h5 font-weight-bold text-primary">
               {{ detail.name }}
             </div>
           </div>
@@ -212,7 +212,7 @@ watch(
 
       <v-expansion-panels class="church-detail-widget__panels">
         <v-expansion-panel elevation="0">
-          <v-expansion-panel-title>
+          <v-expansion-panel-title class="font-weight-bold">
             {{ $t("church.contactDetails") }}
           </v-expansion-panel-title>
           <v-expansion-panel-text class="pa-0">
@@ -309,7 +309,7 @@ watch(
         </v-expansion-panel>
 
         <v-expansion-panel elevation="0">
-          <v-expansion-panel-title>
+          <v-expansion-panel-title class="font-weight-bold">
             {{ $t("church.omrDetails") }}
           </v-expansion-panel-title>
           <v-expansion-panel-text class="pa-0">
@@ -360,7 +360,7 @@ watch(
                 </tr>
                 <tr>
                   <th :class="headingClass">{{ $t("church.sensitiveNation") }}</th>
-                  <td :class="detail.sensitive_nation ? 'text-error font-weight-bold' : undefined">
+                  <td :class="detail.sensitive_nation ? 'text-error' : undefined">
                     {{ detail.sensitive_nation ? $t("yes") : $t("no") }}
                   </td>
                 </tr>

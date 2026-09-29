@@ -29,7 +29,6 @@ const userEditTo = computed((): RouteLocationRaw | undefined => {
 
 <template>
   <div>
-    <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 150px">
       <v-list class="py-0" aria-label="profile list">
         <v-list-item
           color="primary"
@@ -75,6 +74,5 @@ const userEditTo = computed((): RouteLocationRaw | undefined => {
               <v-list-item-title class="text-h6"> {{ $t('logout') }}</v-list-item-title>
             </v-list-item>
       </v-list>
-    </perfect-scrollbar>
   </div>
 </template>

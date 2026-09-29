@@ -26,6 +26,8 @@ const props = withDefaults(
     formOnly?: boolean;
     /** Khi true: ẩn hàng tiêu đề + back mặc định; parent tự dựng header (vd. edit có icon). */
     hideFormHeader?: boolean;
+    /** Khi true: slot actions nằm cùng hàng với field. Mặc định false để form khác giữ nút ở hàng riêng. */
+    inlineActions?: boolean;
   }>(),
   {
     // initData: null,
@@ -35,6 +37,7 @@ const props = withDefaults(
     showCancel: false,
     formOnly: false,
     hideFormHeader: false,
+    inlineActions: false,
   },
 );
 
@@ -688,9 +691,22 @@ watch(
               </div>
             </v-col>
           </template>
+
+          <v-col
+            v-if="inlineActions"
+            cols="12"
+            md="2"
+            class="d-flex align-end justify-end dynamic-form-inline-actions"
+          >
+            <slot
+              name="actions"
+              :submit="handleSubmit"
+            />
+          </v-col>
         </v-row>
 
         <slot
+          v-if="!inlineActions"
           name="actions"
           :submit="handleSubmit"
         >
@@ -733,5 +749,11 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+@media (min-width: 960px) {
+  .dynamic-form-inline-actions {
+    padding-bottom: 27px;
+  }
 }
 </style>

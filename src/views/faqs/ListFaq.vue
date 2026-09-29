@@ -88,7 +88,9 @@ onMounted(() => {
               <v-btn
                 v-bind="tip"
                 icon="$edit"
+                variant="text"
                 size="x-small"
+                color="primary"
                 @click="onEdit(item)"
               />
             </template>

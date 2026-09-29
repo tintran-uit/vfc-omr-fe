@@ -90,17 +90,20 @@ function renderGraph(json: any) {
 
   const rgraph = new $jit.RGraph({
     injectInto: containerId,
-    background: { CanvasStyles: { strokeStyle: "#ccc" } },
+    background: { CanvasStyles: { strokeStyle: "#d5d5d5", lineWidth: 0.6 } },
     Navigation: { enable: true, panning: true, zooming: 10 },
     Node: { overridable: true },
-    Edge: { color: "#888", lineWidth: 1.2 },
+    Edge: { color: "#c8c8c8", lineWidth: 0.6 },
 
     onCreateLabel(domElement, node) {
       domElement.innerHTML = node.name;
       domElement.style.cursor = "pointer";
 
       domElement.onclick = async () => {
-        rgraph.onClick(node.id, { hideLabels: false });
+        rgraph.onClick(node.id, {
+          hideLabels: false,
+          onComplete: () => layoutLabels(),
+        });
 
         selectedChurchId.value = node.id
       };
@@ -119,24 +122,34 @@ function renderGraph(json: any) {
     },
 
     onPlaceLabel(domElement, node) {
-      // 🛡️ Bảo vệ khi node chưa render xong
       if (!domElement || !domElement.style) return;
 
+      const scale = canvasScale();
+      const fontPx = Math.max(7, Math.min(11, Math.round(11 * scale)));
       const style = domElement.style;
-      style.fontSize = node._depth <= 1 ? "0.8em" : "0.7em";
-      style.color = "#333";
+      style.fontSize = fontPx + "px";
+      style.fontWeight = "600";
+      style.color = "#1a1a1a";
+      style.lineHeight = "1.1";
+      style.whiteSpace = "nowrap";
+      style.display = "block";
+      style.width = "max-content";
+      style.maxWidth = "none";
+      style.padding = "0 2px";
+      style.borderRadius = "2px";
+      style.background = "transparent";
+      style.textShadow = "0 0 2px #fff, 0 0 2px #fff";
+      style.zIndex = "2";
 
-      // 🧩 Đợi offsetWidth có giá trị
-      const trySetPosition = () => {
-        const w = domElement.offsetWidth;
-        const leftVal = parseInt(style.left);
-        if (!w || isNaN(leftVal)) {
-          requestAnimationFrame(trySetPosition);
-          return;
-        }
-        style.left = leftVal - w / 2 + "px";
-      };
-      trySetPosition();
+      const nodeLeft = parseFloat(style.left);
+      const nodeTop = parseFloat(style.top);
+      if (Number.isNaN(nodeLeft) || Number.isNaN(nodeTop)) return;
+
+      const dim = (Number(node.getData("dim")) || 4) * scale;
+      domElement.dataset.nodeX = String(nodeLeft);
+      domElement.dataset.nodeY = String(nodeTop);
+      domElement.dataset.dim = String(dim);
+      scheduleLayout();
     },
   });
 
@@ -153,7 +166,118 @@ function renderGraph(json: any) {
 
   // ✅ Render
   rgraph.compute("end");
-  rgraph.fx.animate({ modes: ["polar"], duration: 2000 });
+  rgraph.fx.animate({
+    modes: ["polar"],
+    duration: 2000,
+    onComplete: () => layoutLabels(),
+  });
+
+  function canvasScale() {
+    const scale = Number(rgraph.canvas?.scaleOffsetX);
+    return Number.isFinite(scale) && scale > 0 ? scale : 1;
+  }
+
+  let layoutQueued = false;
+  function scheduleLayout() {
+    if (layoutQueued) return;
+    layoutQueued = true;
+    queueMicrotask(() => {
+      layoutQueued = false;
+      layoutLabels();
+    });
+  }
+
+  function layoutLabels() {
+    const host = document.getElementById(containerId);
+    if (!host) return;
+
+    const cx = host.clientWidth / 2;
+    const cy = host.clientHeight / 2;
+    const allowChip = canvasScale() >= 0.9;
+    const labels = [...host.querySelectorAll<HTMLElement>(".node")];
+    const placed: { l: number; t: number; r: number; b: number }[] = [];
+
+    const items = labels
+      .map((el) => {
+        const nx = parseFloat(el.dataset.nodeX || "");
+        const ny = parseFloat(el.dataset.nodeY || "");
+        if (Number.isNaN(nx) || Number.isNaN(ny)) return null;
+        el.style.padding = allowChip ? "0 3px" : "0";
+        const dx = nx - cx;
+        const dy = ny - cy;
+        const dist = Math.hypot(dx, dy) || 1;
+        return {
+          el,
+          nx,
+          ny,
+          w: el.offsetWidth,
+          h: el.offsetHeight,
+          ux: dx / dist,
+          uy: dy / dist,
+          dist,
+          dim: Number(el.dataset.dim) || 4,
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => !!item)
+      .sort((a, b) => a.dist - b.dist);
+
+    const hitsNode = (box: { l: number; t: number; r: number; b: number }) =>
+      items.some((other) => {
+        const rad = other.dim + 3;
+        const px = Math.max(box.l, Math.min(other.nx, box.r));
+        const py = Math.max(box.t, Math.min(other.ny, box.b));
+        const ddx = px - other.nx;
+        const ddy = py - other.ny;
+        return ddx * ddx + ddy * ddy < rad * rad;
+      });
+
+    const hitsLabel = (box: { l: number; t: number; r: number; b: number }) =>
+      placed.some((b) => !(box.r < b.l || box.l > b.r || box.b < b.t || box.t > b.b));
+
+    for (const item of items) {
+      let clearance = item.dim + 4;
+      let left = item.nx;
+      let top = item.ny;
+      let clearOfDots = false;
+      const maxClearance = item.dim + 80;
+
+      for (let step = 0; step < 28; step++) {
+        if (item.dist < 12) {
+          left = item.nx - item.w / 2;
+          top = item.ny + clearance;
+        } else if (Math.abs(item.ux) >= Math.abs(item.uy)) {
+          top = item.ny - item.h / 2;
+          left = item.ux >= 0 ? item.nx + clearance : item.nx - clearance - item.w;
+        } else {
+          left = item.nx - item.w / 2;
+          top = item.uy >= 0 ? item.ny + clearance : item.ny - clearance - item.h;
+        }
+
+        const box = { l: left, t: top, r: left + item.w, b: top + item.h };
+        const blocked = hitsNode(box) || hitsLabel(box);
+        if (!blocked) {
+          clearOfDots = true;
+          placed.push(box);
+          break;
+        }
+        if (clearance >= maxClearance) break;
+        clearance += Math.max(3, Math.round(item.h * 0.7));
+      }
+
+      if (!clearOfDots) {
+        placed.push({ l: left, t: top, r: left + item.w, b: top + item.h });
+      }
+
+      const showChip = allowChip && clearOfDots;
+      item.el.style.left = left + "px";
+      item.el.style.top = top + "px";
+      item.el.style.background = showChip ? "rgba(255,255,255,0.92)" : "transparent";
+      item.el.style.padding = showChip ? "0 3px" : "0";
+      item.el.style.textShadow = showChip
+        ? "none"
+        : "0 0 3px #fff, 0 0 3px #fff, 0 0 1px #fff";
+    }
+  }
 }
 
 // ✅ Render lại khi data có
@@ -271,7 +395,8 @@ const rows = [
   },
   {
     "label": "report.liwStudents",
-    "fn": (r) => r?.church_metrics?.liw_total_students || '-'
+    "fn": (r) => r?.church_metrics?.liw_total_students || '-',
+    "classes": ['summary-class']
   },
   {
     "label": "report.numberLeaders",
@@ -279,27 +404,31 @@ const rows = [
   },
   {
     "label": "report.tithesOfferings",
-    "fn": (r) => {
-      if(!r?.church_metrics?.giving_in_local_currency && !r?.church_metrics?.giving_in_usd) return '-'
-
-      const localFomatted = formatCurrency(r?.church_metrics?.giving_in_local_currency, selectedChurch.value?.currency_name)
-      const usdFormatted = formatCurrency(r?.church_metrics?.giving_in_usd, 'USD')
-
-      return `${localFomatted} (${usdFormatted})`;
-    }
+    "classes": ['summary-class'],
+    "fn": (r) => formatLocalWithUsd(
+      r?.church_metrics?.giving_in_local_currency,
+      r?.church_metrics?.giving_in_usd,
+    )
   },
   {
     "label": "report.missionMfpGiving",
-    "fn": (r) => {
-      if(!r?.church_metrics?.mfp_in_local_currency && !r?.church_metrics?.mfp_in_usd) return '-'
-
-      const localFomatted = formatCurrency(r?.church_metrics?.mfp_in_local_currency, selectedChurch.value?.currency_name)
-      const usdFormatted = formatCurrency(r?.church_metrics?.mfp_in_usd, 'USD')
-
-      return `${localFomatted} (${usdFormatted})`;
-    }
+    "classes": ['summary-class'],
+    "fn": (r) => formatLocalWithUsd(
+      r?.church_metrics?.mfp_in_local_currency,
+      r?.church_metrics?.mfp_in_usd,
+    )
   },
 ]
+
+function formatLocalWithUsd(localAmount: unknown, usdAmount: unknown) {
+  if (!localAmount && !usdAmount) return '-'
+
+  const localFormatted = formatCurrency(localAmount as number, selectedChurch.value?.currency_name)
+  const usdFormatted = formatCurrency(usdAmount as number, 'USD')
+  if (!usdFormatted) return localFormatted || '-'
+
+  return `${localFormatted} (${usdFormatted})`
+}
 
 const showWeekRange = (year, week) => {
   const [startDate, endDate] = getISOWeekRange(year, week)
@@ -331,6 +460,10 @@ function formatRange(bucket: any, index: number) {
   return `${min + 1} – ${bucket.max}`
 }
 
+function legendDotSize(dim: number) {
+  return Math.round(8 + (dim - 3) * 2.4)
+}
+
 </script>
 
 <template>
@@ -338,41 +471,32 @@ function formatRange(bucket: any, index: number) {
     <!-- Legend -->
     <!-- Quote + Legend row -->
 <v-row dense class="mb-4 align-center">
-  <!-- Scripture quote -->
-  <v-col cols="12" md="8">
-    <blockquote class="scripture-quote">
-      <p class="scripture-text">
-        “{{ $t('chart.bibleVerse') }}”
-      </p>
-      <footer class="scripture-ref">
-        — {{ $t('chart.bibleReference') }}
-      </footer>
-    </blockquote>
-  </v-col>
-
-  <!-- Legend -->
   <v-col
     cols="12"
-    md="4"
     class="d-flex justify-end"
   >
-    <div class="chart-legend">
-      <div
-        v-for="(bucket, index) in buckets"
-        :key="index"
-        class="legend-item"
-      >
-        <span
-          class="legend-dot"
-          :style="{
-            backgroundColor: bucket.color,
-            width: `${bucket.dim * 2}px`,
-            height: `${bucket.dim * 2}px`,
-          }"
-        />
-        <span class="legend-label">
-          {{ formatRange(bucket, index) }}
-        </span>
+    <div class="chart-legend-wrap">
+      <div class="chart-legend-title">{{ $t("chart.churchSize") }}</div>
+      <div class="chart-legend">
+        <div
+          v-for="(bucket, index) in buckets"
+          :key="index"
+          class="legend-item"
+        >
+          <span class="legend-dot-slot">
+            <span
+              class="legend-dot"
+              :style="{
+                backgroundColor: bucket.color,
+                width: `${legendDotSize(bucket.dim)}px`,
+                height: `${legendDotSize(bucket.dim)}px`,
+              }"
+            />
+          </span>
+          <span class="legend-label">
+            {{ formatRange(bucket, index) }}
+          </span>
+        </div>
       </div>
     </div>
   </v-col>
@@ -492,47 +616,53 @@ function formatRange(bucket: any, index: number) {
   color: rgb(var(--v-theme-primary));
 }
 
-.scripture-quote {
-  margin: 0;
-  padding-left: 16px;
-  border-left: 3px solid rgba(0, 0, 0, 0.12);
+.chart-legend-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: max-content;
+  max-width: 100%;
 }
 
-.scripture-text {
-  font-size: 14px;
-  font-style: italic;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.78);
-  margin: 0;
-}
-
-.scripture-ref {
-  margin-top: 4px;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.54);
+.chart-legend-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: rgba(var(--v-theme-on-surface), 0.9);
 }
 
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px 16px;
-  max-width: 360px;
+  align-items: center;
+  gap: 6px 16px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+}
+
+.legend-dot-slot {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .legend-dot {
   border-radius: 50%;
-  flex-shrink: 0;
+  display: block;
 }
 
 .legend-label {
   font-size: 12px;
+  line-height: 1;
   white-space: nowrap;
+  color: rgba(var(--v-theme-on-surface), 0.75);
 }
 </style>

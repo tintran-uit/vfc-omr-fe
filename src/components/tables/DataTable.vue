@@ -174,7 +174,7 @@ const shouldAlwaysTooltip = (key: string) => ['name', 'full_name', 'question_hea
                   <div class="d-flex ga-2 text-no-wrap">
                 <v-tooltip :text="$t('dataTable.buttonEditTitle')">
                   <template #activator="{ props }">
-                    <v-btn v-bind="props" icon="$edit" size="x-small" @click="handleActionEdit(item)" v-if="enabledActions.includes('edit')" />
+                    <v-btn v-bind="props" icon="$edit" variant="text" size="x-small" color="primary" @click="handleActionEdit(item)" v-if="enabledActions.includes('edit')" />
                   </template>
                 </v-tooltip>
                 

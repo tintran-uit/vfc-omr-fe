@@ -10,7 +10,8 @@ import {
   CompassOutlined,
   HomeOutlined,
   CalendarOutlined,
-  QuestionOutlined
+  QuestionOutlined,
+  FolderOutlined
 } from "@ant-design/icons-vue";
 import churchIcon from "@/assets/images/icons/house.png";
 import peopleIcon from "@/assets/images/metrics/people.svg";
@@ -345,6 +346,22 @@ const sidebarItem: menu[] = [
         title: "mainMenu.relatingSearch",
         to: "/relating/search",
         permissions: ["relating.request-info"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.resources",
+    icon: FolderOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "resources-browse",
+        title: "mainMenu.resourcesBrowse",
+        to: "/resources",
+        permissions: ["resource.read"],
       },
     ],
   },

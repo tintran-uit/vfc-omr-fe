@@ -68,9 +68,19 @@ const emit = defineEmits<{
   (e: 'action:enable', value: unknown): void
 }>()
 
+const ACTION_BTN_PX = 32
+const ACTION_GAP_PX = 4
+const ACTION_PAD_PX = 16
+
+const actionsColWidth = computed(() => {
+  const count = props.enabledActions?.length ?? 0
+  if (count <= 0) return '16px'
+  return `${count * ACTION_BTN_PX + (count - 1) * ACTION_GAP_PX + ACTION_PAD_PX}px`
+})
+
 const getColWidthPx = (key: string) => {
   if (key === 'id') return '72px'
-  if (key === 'actions') return '120px'
+  if (key === 'actions') return actionsColWidth.value
   if (key === 'attributes') return '128px'
   if (key === 'country_name') return '104px'
   if (key === 'city') return '136px'
@@ -85,7 +95,7 @@ const getCellStyle = (key: string) => {
     width: w,
     minWidth: w,
     maxWidth: w,
-    overflow: 'hidden',
+    overflow: key === 'actions' ? 'visible' : 'hidden',
   }
 }
 
@@ -314,40 +324,40 @@ onMounted(() => {
             :class="`dt-col--${header.key}`"
             :style="getCellStyle(String(header.key))"
           >
-            <div v-if="header.key === 'actions'" class="d-flex ga-2 text-no-wrap">
+            <div v-if="header.key === 'actions'" class="dt-actions">
               <v-tooltip :text="$t('dataTable.buttonEditTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" icon="$edit" variant="plain" size="small" @click="handleActionEdit(item)" v-if="enabledActions.includes('edit')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$edit" variant="text" size="small" color="primary" @click="handleActionEdit(item)" v-if="enabledActions.includes('edit')" />
                 </template>
               </v-tooltip>
               
               <v-tooltip :text="$t('dataTable.buttonDeleteTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" icon="$delete" variant="plain" size="small" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$delete" variant="plain" size="small" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
                 </template>
               </v-tooltip>
               
               <v-tooltip :text="$t('dataTable.buttonCloneTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" icon="$copy"  variant="plain" size="small" @click="handleActionClone(item)" v-if="enabledActions.includes('clone')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$copy" variant="plain" size="small" @click="handleActionClone(item)" v-if="enabledActions.includes('clone')" />
                 </template>
               </v-tooltip>
               
               <v-tooltip :text="$t('dataTable.buttonAssignOverseerTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" icon="$earthPlus" variant="plain" size="small" @click="handleAssignOverseerAction(item)" v-if="enabledActions.includes('assignOverseer')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$earthPlus" variant="plain" size="small" @click="handleAssignOverseerAction(item)" v-if="enabledActions.includes('assignOverseer')" />
                 </template>
               </v-tooltip>
               
               <v-tooltip :text="$t('dataTable.buttonDisableTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" icon="$blockHelper" variant="plain" size="small" @click="handleDisableAction(item)" v-if="enabledActions.includes('disable')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$blockHelper" variant="plain" size="small" @click="handleDisableAction(item)" v-if="enabledActions.includes('disable')" />
                 </template>
               </v-tooltip>
 
               <v-tooltip :text="$t('dataTable.buttonEnableTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" icon="$check"  variant="plain" size="default" @click="handleEnableAction(item)" v-if="enabledActions.includes('enable')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$check" variant="plain" size="small" @click="handleEnableAction(item)" v-if="enabledActions.includes('enable')" />
                 </template>
               </v-tooltip>
             </div>
@@ -439,11 +449,9 @@ onMounted(() => {
   white-space: nowrap;
 }
 
-/* keep actions compact even when few columns */
 .dt-col--actions {
-  width: 120px;
-  max-width: 120px;
   white-space: nowrap;
+  padding: 2px 8px !important;
 }
 
 /* compact columns — leave remaining width to name */
@@ -483,9 +491,16 @@ onMounted(() => {
   text-decoration: none;
 }
 
-/* Actions: never let content push the column wider */
-.dt-col--actions > div {
-  max-width: 100%;
-  overflow: hidden;
+.dt-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: max-content;
+}
+
+.dt-action-btn {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
 }
 </style>
