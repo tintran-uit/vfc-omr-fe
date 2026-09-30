@@ -266,6 +266,7 @@
   },
   "user": {
     "listTitle": "ユーザー一覧",
+    "switchUserConfirm": "{name} に切り替えてもよろしいですか？",
     "addTitle": "新しいユーザーを追加",
     "editTitle": "ユーザー編集 #{id}",
     "listOverseerTitle": "監督者一覧",
@@ -412,7 +413,7 @@
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a visit.",
+    "needsVisit": "Needs a Verification Visit",
     "churchPicture": "教会の写真",
     "seeChurchPicture": "教会の写真を見る",
     "hideChurchPicture": "教会の写真を隠す",
@@ -455,6 +456,7 @@
   "create": "作成",
   "noData": "データがありません",
   "logout": "ログアウト",
+  "switchBack": "元に戻る",
   "addNew": "新規追加",
   "cancel": "キャンセル",
   "profile": {
@@ -485,7 +487,8 @@
     "buttonCloneTitle": "複製",
     "buttonAssignOverseerTitle": "監督者を割り当て",
     "buttonDisableTitle": "無効化",
-    "buttonEnableTitle": "有効化"
+    "buttonEnableTitle": "有効化",
+    "buttonSwitchUserTitle": "このユーザーに切り替え"
   },
   "chart": {
     "worshipService": "礼拝",

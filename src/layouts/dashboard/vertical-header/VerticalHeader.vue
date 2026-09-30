@@ -28,6 +28,16 @@ const authStore = useAuthStore();
 const avatarUrl = computed(() => {
   return authStore.user?.photo_url || defaultAvatar
 })
+
+const switchingBack = ref(false);
+const onSwitchBack = async () => {
+  switchingBack.value = true;
+  try {
+    await authStore.switchBack();
+  } finally {
+    switchingBack.value = false;
+  }
+};
 </script>
 
 <template>
@@ -138,6 +148,18 @@ const avatarUrl = computed(() => {
         
       </v-sheet>
     </v-menu> -->
+    <v-btn
+      v-if="authStore.isImpersonating"
+      class="switch-back-btn text-none me-2"
+      color="primary"
+      variant="tonal"
+      rounded="sm"
+      prepend-icon="$accountArrowLeft"
+      :loading="switchingBack"
+      @click="onSwitchBack"
+    >
+      <span class="d-none d-sm-inline">{{ $t('switchBack') }}</span>
+    </v-btn>
     <LanguageDD />
 
     <!-- ---------------------------------------------- -->

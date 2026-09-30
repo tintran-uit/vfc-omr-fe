@@ -11,6 +11,7 @@ import Vue3Marquee from "vue3-marquee";
 import * as Antd from "ant-design-vue";
 import "ant-design-vue/dist/reset.css";
 import { useAuthStore } from "@/stores/authStore";
+import { startIdleLogout } from "@/services/idleLogoutService";
 
 // google-fonts
 import "@fontsource/roboto/400.css";
@@ -133,5 +134,7 @@ if (authStore.token) {
     syncWebPushIfGranted();
   });
 }
+
+startIdleLogout(() => authStore.logout());
 
 app.use(vuetify).mount("#app");

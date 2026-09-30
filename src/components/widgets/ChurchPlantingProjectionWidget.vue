@@ -56,7 +56,18 @@ watch(
       <tbody>
         <tr v-for="projection in projections" :key="projection.id">
           <td>{{ formatDateTimeHumanReadable(displayStartDatePioneering(projection)) }}</td>
-          <td>{{ projection.town }}</td>
+          <td>
+            <router-link
+              class="dt-cell-link"
+              :to="{
+                name: 'PlantingProjectionList',
+                params: { churchId: projection.church_id ?? churchId },
+                hash: `#projection-${projection.id}`,
+              }"
+            >
+              {{ projection.town }}
+            </router-link>
+          </td>
           <td>{{ displayFormattedPopulation(projection.population) || '—' }}</td>
           <td>{{ projection.proposed_leader_name }}</td>
           <td v-for="step in steps" :key="step">

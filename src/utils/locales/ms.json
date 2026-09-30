@@ -266,6 +266,7 @@
   },
   "user": {
     "listTitle": "Senarai Pengguna",
+    "switchUserConfirm": "Adakah anda pasti mahu menukar kepada {name}?",
     "addTitle": "Tambah Pengguna Baharu",
     "editTitle": "Sunting Pengguna #{id}",
     "listOverseerTitle": "Senarai Penyelia",
@@ -412,7 +413,7 @@
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a visit.",
+    "needsVisit": "Needs a Verification Visit",
     "churchPicture": "Gambar gereja",
     "seeChurchPicture": "Lihat gambar gereja",
     "hideChurchPicture": "Sembunyikan gambar gereja",
@@ -455,6 +456,7 @@
   "create": "Cipta",
   "noData": "Tiada data tersedia",
   "logout": "Log Keluar",
+  "switchBack": "Tukar Kembali",
   "addNew": "Tambah Baharu",
   "cancel": "Batal",
   "profile": {
@@ -485,7 +487,8 @@
     "buttonCloneTitle": "Salin",
     "buttonAssignOverseerTitle": "Tetapkan Penyelia",
     "buttonDisableTitle": "Nyahaktifkan",
-    "buttonEnableTitle": "Aktifkan"
+    "buttonEnableTitle": "Aktifkan",
+    "buttonSwitchUserTitle": "Tukar ke pengguna"
   },
   "chart": {
     "worshipService": "Ibadah",

@@ -272,6 +272,7 @@
   },
   "user": {
     "listTitle": "Lista de Usuários",
+    "switchUserConfirm": "Tem certeza de que deseja alternar para {name}?",
     "addTitle": "Adicionar Novo Usuário",
     "editTitle": "Editar Usuário #{id}",
     "listOverseerTitle": "Lista de Supervisores",
@@ -418,7 +419,7 @@
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a visit.",
+    "needsVisit": "Needs a Verification Visit",
     "churchPicture": "Foto da igreja",
     "seeChurchPicture": "Ver foto da igreja",
     "hideChurchPicture": "Ocultar foto da igreja",
@@ -461,6 +462,7 @@
   "create": "Criar",
   "noData": "Nenhum dado disponível",
   "logout": "Sair",
+  "switchBack": "Voltar",
   "addNew": "Adicionar novo",
   "cancel": "Cancelar",
   "profile": {
@@ -491,7 +493,8 @@
     "buttonCloneTitle": "Clonar",
     "buttonAssignOverseerTitle": "Designar Supervisor",
     "buttonDisableTitle": "Desativar",
-    "buttonEnableTitle": "Ativar"
+    "buttonEnableTitle": "Ativar",
+    "buttonSwitchUserTitle": "Alternar para usuário"
   },
   "chart": {
     "worshipService": "Culto",

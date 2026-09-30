@@ -29,6 +29,8 @@ const props = withDefaults(
     // onOptionsChange: (opts: any) => void,
     // onAction: (action: string, item: any) => void
     enabledActions?:string[],
+    /** Per-row visibility for an enabled action; all enabled actions show when omitted. */
+    isActionVisible?: (action: string, item: unknown) => boolean,
     actionTitles?: Record<string, string>,
     emptyPlaceholder?: string,
     pageTitle?: string,
@@ -47,6 +49,7 @@ const props = withDefaults(
       assignOverseer: "dataTable.buttonAssignOverseerTitle",
       disable: "dataTable.buttonDisableTitle",
       enable: "dataTable.buttonEnableTitle",
+      switchUser: "dataTable.buttonSwitchUserTitle",
     }),
     emptyPlaceholder: '-',
     hideTitle: false,
@@ -66,7 +69,11 @@ const emit = defineEmits<{
   (e: 'action:clone', value: unknown): void
   (e: 'action:disable', value: unknown): void
   (e: 'action:enable', value: unknown): void
+  (e: 'action:switchUser', value: unknown): void
 }>()
+
+const showAction = (action: string, item: unknown) =>
+  props.enabledActions.includes(action) && (props.isActionVisible?.(action, item) ?? true)
 
 const ACTION_BTN_PX = 32
 const ACTION_GAP_PX = 4
@@ -198,6 +205,10 @@ const closeDisableDialog = () => {
 const handleEnableAction = async (item: unknown) => {
   if (!await dialogStore.confirm(t('areYouSureWantToEnable'))) return
   emit('action:enable', item)
+}
+
+const handleSwitchUserAction = (item: unknown) => {
+  emit('action:switchUser', item)
 }
 
 onMounted(() => {
@@ -358,6 +369,12 @@ onMounted(() => {
               <v-tooltip :text="$t('dataTable.buttonEnableTitle')">
                 <template #activator="{ props }">
                   <v-btn v-bind="props" class="dt-action-btn" icon="$check" variant="plain" size="small" @click="handleEnableAction(item)" v-if="enabledActions.includes('enable')" />
+                </template>
+              </v-tooltip>
+
+              <v-tooltip :text="$t('dataTable.buttonSwitchUserTitle')">
+                <template #activator="{ props }">
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$accountSwitch" variant="plain" size="small" @click="handleSwitchUserAction(item)" v-if="showAction('switchUser', item)" />
                 </template>
               </v-tooltip>
             </div>

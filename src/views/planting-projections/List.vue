@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, reactive } from 'vue';
+import { ref, computed, watch, reactive, nextTick, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useDialogStore } from '@/stores/dialogStore';
@@ -252,15 +252,38 @@ const onDelete = async (item: any) => {
   fetchData(churchId.value);
 };
 
+const focusedId = ref<number | null>(null);
+let focusTimer: ReturnType<typeof setTimeout> | undefined;
+
+const focusProjectionFromHash = async () => {
+  const match = /^#projection-(\d+)$/.exec(route.hash || '');
+  if (!match) return;
+  const id = Number(match[1]);
+  if (!items.value.some((it) => Number(it.id) === id)) return;
+
+  await nextTick();
+  document.getElementById(`projection-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  focusedId.value = id;
+  clearTimeout(focusTimer);
+  focusTimer = setTimeout(() => {
+    focusedId.value = null;
+  }, 2500);
+};
+
 watch(
   () => churchId.value,
   async (id) => {
     if (!id) return;
     fetchChurch(id);
-    fetchData(id);
+    await fetchData(id);
+    focusProjectionFromHash();
   },
   { immediate: true }
 );
+
+watch(() => route.hash, focusProjectionFromHash);
+
+onBeforeUnmount(() => clearTimeout(focusTimer));
 </script>
 
 <template>
@@ -302,10 +325,12 @@ watch(
 
   <v-card
     v-for="item in items"
+    :id="`projection-${item.id}`"
     :key="item.id"
     variant="outlined"
     elevation="0"
     class="projection-card mb-6"
+    :class="{ 'projection-card--focused': focusedId === item.id }"
   >
     <div class="projection-card__title d-flex align-center ga-2">
       <v-icon color="error" size="22">$calendar</v-icon>
@@ -596,6 +621,13 @@ watch(
 .projection-card {
   border-color: rgba(0, 0, 0, 0.12);
   overflow: hidden;
+  scroll-margin-top: 80px;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.projection-card--focused {
+  border-color: rgb(var(--v-theme-primary));
+  box-shadow: 0 0 0 3px rgba(var(--v-theme-primary), 0.25);
 }
 
 .projection-card__title {

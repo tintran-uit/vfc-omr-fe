@@ -309,14 +309,14 @@ a:hover {
 
 /* table */
 .bordered-table {
-  border: 1px solid #ddd;
+  border: 1px solid rgb(var(--v-theme-borderLight));
   width: 100%;
   font-size: 0.9rem;
 }
 
 .bordered-table th,
 .bordered-table td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgb(var(--v-theme-borderLight));
   padding: 6px 12px !important;
   vertical-align: middle;
 }
@@ -343,7 +343,7 @@ a:hover {
 .v-table.bordered-table.table-border-top .v-table__wrapper,
 .bordered-table.table-in-card.table-border-top,
 .v-table.bordered-table.table-in-card.table-border-top .v-table__wrapper {
-  border-top: 1px solid #ddd !important;
+  border-top: 1px solid rgb(var(--v-theme-borderLight)) !important;
 }
 
 /* Inside outlined CardHeader: remove outer wrap only (keep row borders) */
@@ -368,7 +368,7 @@ a:hover {
 .bordered-table.table-in-card td,
 .v-table.bordered-table.table-in-card th,
 .v-table.bordered-table.table-in-card td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgb(var(--v-theme-borderLight));
 }
 
 /* Alternating row colors — better for data grids (many columns), not key-value profiles */
@@ -402,20 +402,24 @@ a:hover {
 .v-table.table-key-value .v-table__wrapper > table > tbody > tr > th {
   width: 28%;
   max-width: 260px;
-  background-color: rgb(var(--v-theme-gray100)) !important;
-  color: rgb(var(--v-theme-darkText)) !important;
+  background-color: rgb(var(--v-theme-surface)) !important;
+  color: rgba(var(--v-theme-on-surface), 0.72) !important;
   font-weight: 600;
-  vertical-align: middle;
+  vertical-align: top;
   white-space: normal;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 
 .table-key-value tbody td,
 .v-table.table-key-value .v-table__wrapper > table > tbody > tr > td {
   background-color: rgb(var(--v-theme-surface)) !important;
   color: rgb(var(--v-theme-darkText));
-  vertical-align: middle;
+  vertical-align: top;
   white-space: normal;
   word-break: break-word;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 
 /* ------------------------------------------------------------ */
@@ -580,6 +584,37 @@ input[type="number"] {
 
 .dashboard-overseer-action-icon {
   filter: brightness(0) invert(1);
+}
+
+.overview-church-action-btn.v-btn {
+  height: 38px;
+  padding: 0 10px;
+  letter-spacing: normal;
+
+  .overview-church-action-btn__icon {
+    margin-right: 6px;
+  }
+
+  .overview-church-action-btn__label {
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
+}
+
+.overview-church-action-btn--quiet.v-btn {
+  background-color: rgb(var(--v-theme-surface));
+  border-color: rgb(var(--v-theme-borderLight));
+  color: rgb(var(--v-theme-darkText));
+  box-shadow: var(--v-card-shadow);
+
+  .overview-church-action-btn__icon--themed {
+    color: rgb(var(--v-theme-primary));
+  }
+
+  &:hover {
+    border-color: rgba(var(--v-theme-primary), 0.5);
+    color: rgb(var(--v-theme-primary));
+  }
 }
 
 .overview-church-action-btn__icon--themed {

@@ -10,6 +10,11 @@ import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 import { useAuthStore } from '@/stores/authStore';
 import Avatar from '@/components/ui/Avatar.vue'
 import defaultAvatar from '@/assets/images/users/avatar-default.svg';
+import { useDialogStore } from '@/stores/dialogStore';
+import { useI18n } from 'vue-i18n';
+
+const dialogStore = useDialogStore()
+const { t } = useI18n()
 
 const router = useRouter()
 const items = ref([])
@@ -31,9 +36,19 @@ const actions = computed(() => {
   if (authStore.can('user.delete')) {
     actions.push('delete');
   }
+
+  if (authStore.can('user.switch')) {
+    actions.push('switchUser');
+  }
   
   return actions;
 })
+
+const isActionVisible = (action: string, item: unknown) => {
+  if (action !== 'switchUser') return true
+  const it = item as { id: number | string }
+  return String(it.id) !== String(authStore.user?.id)
+}
 
 const fetchData = async function (options = {}) {
   const data = await userService.getList(
@@ -62,6 +77,12 @@ const onDelete = async (item: unknown) => {
   await userService.del(it.id)
   
   fetchData(buildOptions())
+}
+
+const onSwitchUser = async (item: unknown) => {
+  const it = item as { id: number | string; name?: string }
+  if (!await dialogStore.confirm(t('user.switchUserConfirm', { name: it.name || `#${it.id}` }))) return
+  await authStore.switchToUser(it.id)
 }
 
 const onUpdateOptions = (options) => {
@@ -116,8 +137,10 @@ const onSearch = () => {
       :headers="tableSchema.headers"
       :items="items"
       :enabled-actions="actions"
+      :is-action-visible="isActionVisible"
       @action:delete="onDelete"
       @action:edit="onEdit"
+      @action:switchUser="onSwitchUser"
       @update:options="onUpdateOptions"
     >
     <template v-slot:[`item.name`]="{ item }">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch, nextTick, ref } from "vue";
+import { onMounted, onBeforeUnmount, watch, nextTick, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { reportService } from "@/services/reportService";
 import { churchService } from "@/services/churchService";
@@ -72,6 +72,9 @@ function createTooltip(containerId: string) {
 //   await new Promise((r) => setTimeout(r, 500));
 // }
 
+let resizeObserver: ResizeObserver | null = null;
+onBeforeUnmount(() => resizeObserver?.disconnect());
+
 // ✅ Hàm vẽ chart
 function renderGraph(json: any) {
   const containerId = "infovis";
@@ -95,29 +98,32 @@ function renderGraph(json: any) {
     Node: { overridable: true },
     Edge: { color: "#c8c8c8", lineWidth: 0.6 },
 
+    Events: {
+      enable: true,
+      type: "Native",
+      onClick(node) {
+        if (node) selectNode(node);
+      },
+      onMouseEnter(node, _eventInfo, event: MouseEvent) {
+        setCanvasCursor("pointer");
+        tooltip.show(nodeTooltip(node), event);
+      },
+      onMouseMove(node, _eventInfo, event: MouseEvent) {
+        if (node) tooltip.show(nodeTooltip(node), event);
+      },
+      onMouseLeave() {
+        setCanvasCursor("");
+        tooltip.hide();
+      },
+    },
+
     onCreateLabel(domElement, node) {
       domElement.innerHTML = node.name;
       domElement.style.cursor = "pointer";
 
-      domElement.onclick = async () => {
-        rgraph.onClick(node.id, {
-          hideLabels: false,
-          onComplete: () => layoutLabels(),
-        });
-
-        selectedChurchId.value = node.id
-      };
-
-      let tooltipContent = "";
-      domElement.onmouseover = (event: MouseEvent) => {
-        const data = node.data || {};
-        tooltipContent = `
-          <b>${data.full_name}</b><br/>
-          ${t("chart.averageAttendance")}: <b>${data.avg_attendance ?? "N/A"}</b><br/>
-        `;
-        tooltip.show(tooltipContent, event);
-      };
-      domElement.onmousemove = (event: MouseEvent) => tooltip.show(tooltipContent, event);
+      domElement.onclick = () => selectNode(node);
+      domElement.onmouseover = (event: MouseEvent) => tooltip.show(nodeTooltip(node), event);
+      domElement.onmousemove = (event: MouseEvent) => tooltip.show(nodeTooltip(node), event);
       domElement.onmouseout = () => tooltip.hide();
     },
 
@@ -153,6 +159,35 @@ function renderGraph(json: any) {
     },
   });
 
+  // JIT caches the canvas page offset at creation; widgets above the chart
+  // load later and shift it, which breaks node hit-testing.
+  rgraph.canvas.getPos = () => {
+    const rect = rgraph.canvas.getElement().getBoundingClientRect();
+    return { x: rect.left + window.scrollX, y: rect.top + window.scrollY };
+  };
+
+  resizeObserver?.disconnect();
+  resizeObserver = new ResizeObserver(() => {
+    const host = document.getElementById(containerId);
+    if (!host) return;
+    const size = rgraph.canvas.getSize();
+    const width = host.clientWidth;
+    const height = host.clientHeight;
+    if (!width || !height || (width === size.width && height === size.height)) return;
+    rgraph.canvas.resize(width, height);
+    rgraph.plot();
+  });
+  resizeObserver.observe(container);
+
+  const MIN_ZOOM = 0.4;
+  const MAX_ZOOM = 4;
+  const baseScale = rgraph.canvas.scale.bind(rgraph.canvas);
+  rgraph.canvas.scale = (x: number, y: number, disablePlot?: boolean) => {
+    const next = canvasScale() * x;
+    if ((x < 1 && next < MIN_ZOOM) || (x > 1 && next > MAX_ZOOM)) return;
+    baseScale(x, y, disablePlot);
+  };
+
   rgraph.loadJSON(json);
 
   // ✅ Thiết lập màu sắc node
@@ -171,6 +206,27 @@ function renderGraph(json: any) {
     duration: 2000,
     onComplete: () => layoutLabels(),
   });
+
+  function selectNode(node: any) {
+    rgraph.onClick(node.id, {
+      hideLabels: false,
+      onComplete: () => layoutLabels(),
+    });
+    selectedChurchId.value = node.id;
+  }
+
+  function nodeTooltip(node: any) {
+    const data = node.data || {};
+    return `
+      <b>${data.full_name}</b><br/>
+      ${t("chart.averageAttendance")}: <b>${data.avg_attendance ?? "N/A"}</b><br/>
+    `;
+  }
+
+  function setCanvasCursor(cursor: string) {
+    const el = rgraph.canvas?.getElement?.();
+    if (el) el.style.cursor = cursor;
+  }
 
   function canvasScale() {
     const scale = Number(rgraph.canvas?.scaleOffsetX);
@@ -194,15 +250,22 @@ function renderGraph(json: any) {
     const cx = host.clientWidth / 2;
     const cy = host.clientHeight / 2;
     const allowChip = canvasScale() >= 0.9;
-    const labels = [...host.querySelectorAll<HTMLElement>(".node")];
+    const hostW = host.clientWidth;
+    const hostH = host.clientHeight;
+    const labels = [...host.querySelectorAll<HTMLElement>(".node")].filter(
+      (el) => el.style.display !== "none"
+    );
     const placed: { l: number; t: number; r: number; b: number }[] = [];
+
+    labels.forEach((el) => {
+      el.style.padding = allowChip ? "0 3px" : "0";
+    });
 
     const items = labels
       .map((el) => {
         const nx = parseFloat(el.dataset.nodeX || "");
         const ny = parseFloat(el.dataset.nodeY || "");
         if (Number.isNaN(nx) || Number.isNaN(ny)) return null;
-        el.style.padding = allowChip ? "0 3px" : "0";
         const dx = nx - cx;
         const dy = ny - cy;
         const dist = Math.hypot(dx, dy) || 1;
@@ -239,7 +302,7 @@ function renderGraph(json: any) {
       let left = item.nx;
       let top = item.ny;
       let clearOfDots = false;
-      const maxClearance = item.dim + 80;
+      const maxClearance = item.dim + 40;
 
       for (let step = 0; step < 28; step++) {
         if (item.dist < 12) {
@@ -264,8 +327,11 @@ function renderGraph(json: any) {
         clearance += Math.max(3, Math.round(item.h * 0.7));
       }
 
-      if (!clearOfDots) {
-        placed.push({ l: left, t: top, r: left + item.w, b: top + item.h });
+      const insideHost =
+        left >= 0 && top >= 0 && left + item.w <= hostW && top + item.h <= hostH;
+      if (!clearOfDots || !insideHost) {
+        item.el.style.display = "none";
+        continue;
       }
 
       const showChip = allowChip && clearOfDots;
@@ -460,8 +526,9 @@ function formatRange(bucket: any, index: number) {
   return `${min + 1} – ${bucket.max}`
 }
 
+// JIT draws "circle" nodes with radius = dim at zoom 1.
 function legendDotSize(dim: number) {
-  return Math.round(8 + (dim - 3) * 2.4)
+  return dim * 2
 }
 
 </script>
@@ -506,7 +573,7 @@ function legendDotSize(dim: number) {
     <div
       id="infovis"
       class="jit-chart"
-      style="width: 100%; height: 600px; position: relative;"
+      style="width: 100%; height: 600px; position: relative; overflow: hidden;"
     ></div>
 
     <h3 class="mt-5 text-h4">{{ $t('chart.last4WeeksDetail') }}</h3>

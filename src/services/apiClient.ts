@@ -155,6 +155,7 @@ instance.interceptors.response.use(
                 const authStore = useAuthStore();
                 authStore.user = null;
                 authStore.token = null;
+                authStore.impersonatorToken = null;
                 authStore.permissions = [];
                 authStore.returnUrl = null;
               } catch {

@@ -55,6 +55,8 @@ import {
   mdiDownload,
   mdiChevronRight,
   mdiTranslate,
+  mdiAccountSwitchOutline,
+  mdiAccountArrowLeftOutline,
 } from "@mdi/js";
 import { mdi } from "vuetify/iconsets/mdi-svg";
 
@@ -124,4 +126,6 @@ export const icons = {
   download: mdiDownload,
   chevronRight: mdiChevronRight,
   translate: mdiTranslate,
+  accountSwitch: mdiAccountSwitchOutline,
+  accountArrowLeft: mdiAccountArrowLeftOutline,
 };

@@ -285,6 +285,7 @@
   },
   "user": {
     "listTitle": "List of Users",
+    "switchUserConfirm": "Are you sure you want to switch to {name}?",
     "addTitle": "Add New Pastor / Leader",
     "editTitle": "Edit Pastor / Leader #{id}",
     "listOverseerTitle": "List of Overseers",
@@ -433,7 +434,7 @@
     "phName": "i.e Victory Family Centre – New Lynn",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a visit.",
+    "needsVisit": "Needs a Verification Visit",
     "churchPicture": "Church Picture",
     "seeChurchPicture": "See Church Picture",
     "hideChurchPicture": "Hide Church Picture",
@@ -474,6 +475,7 @@
   "create": "Create",
   "noData": "No data available",
   "logout": "Logout",
+  "switchBack": "Switch back",
   "addNew": "Add new",
   "cancel": "Cancel",
   "close": "Close",
@@ -505,7 +507,8 @@
     "buttonCloneTitle": "Clone",
     "buttonAssignOverseerTitle": "Assign Overseer",
     "buttonDisableTitle": "Disable",
-    "buttonEnableTitle": "Enable"
+    "buttonEnableTitle": "Enable",
+    "buttonSwitchUserTitle": "Switch to user"
   },
   "chart": {
     "worshipService": "Worship Service",

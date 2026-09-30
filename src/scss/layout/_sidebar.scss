@@ -114,9 +114,9 @@
   }
   /*This is for the dropdown*/
   .v-list {
-    .v-list-item--active {
+    .v-list-item--active.v-list-item--link:not(.v-list-group__header) {
       .v-list-item-title {
-        font-weight: 500;
+        font-weight: 600;
       }
     }
     .sidebarchip .v-icon {

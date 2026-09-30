@@ -275,6 +275,7 @@
   },
   "user": {
     "listTitle": "Liste des utilisateurs",
+    "switchUserConfirm": "Voulez-vous vraiment basculer vers {name} ?",
     "addTitle": "Ajouter un nouvel utilisateur",
     "addNewUserBtn": "Ajouter un nouvel utilisateur",
     "editTitle": "Modifier l’utilisateur #{id}",
@@ -403,7 +404,7 @@
     "onMap": "Sur la carte",
     "apostolicRegion": "Région apostolique",
     "currency": "Devise",
-    "needsVisit": "Nécessite une visite.",
+    "needsVisit": "Nécessite une visite de vérification",
     "churchPicture": "Photo de l'église",
     "seeChurchPicture": "Voir la photo de l'église",
     "hideChurchPicture": "Masquer la photo de l'église",
@@ -464,6 +465,7 @@
   "create": "Créer",
   "noData": "Aucune donnée disponible",
   "logout": "Déconnexion",
+  "switchBack": "Revenir",
   "addNew": "Ajouter",
   "cancel": "Annuler",
   "profile": {
@@ -494,7 +496,8 @@
     "buttonCloneTitle": "Cloner",
     "buttonAssignOverseerTitle": "Assigner un superviseur",
     "buttonDisableTitle": "Désactiver",
-    "buttonEnableTitle": "Activer"
+    "buttonEnableTitle": "Activer",
+    "buttonSwitchUserTitle": "Basculer vers l'utilisateur"
   },
   "chart": {
     "worshipService": "Culte",

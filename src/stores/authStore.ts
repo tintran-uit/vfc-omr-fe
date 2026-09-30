@@ -2,7 +2,8 @@ import { authService } from '@/services/authService';
 import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from '@/constants/roleConstant';
-import { clearSessionAndGoLogin } from '@/utils/session';
+import { clearSessionAndGoLogin, IMPERSONATOR_TOKEN_KEY } from '@/utils/session';
+import { markUserActivity } from '@/services/idleLogoutService';
 import { usePastorChurchStore } from '@/stores/pastorChurchStore';
 const pastorLeaderPermissions = [
   'user.read',
@@ -43,6 +44,7 @@ const overseerPermissions = [
 const adminPermissions = [
   ...overseerPermissions,
   'user.delete',
+  'user.switch',
   'church.clone',
   'church.disable',
   'church.enable',
@@ -108,6 +110,7 @@ export const useAuthStore = defineStore('auth', {
     return {
       user,
       token: localStorage.getItem('token') || null,
+      impersonatorToken: localStorage.getItem(IMPERSONATOR_TOKEN_KEY) || null,
       returnUrl: null,
       permissions,
       role: null,
@@ -118,8 +121,11 @@ export const useAuthStore = defineStore('auth', {
       const user = await authService.login(username, password);
 
       this.token = user.token;
+      this.impersonatorToken = null;
 
       localStorage.setItem('token', user.token);
+      localStorage.removeItem(IMPERSONATOR_TOKEN_KEY);
+      markUserActivity(true);
       // localStorage.setItem('user', JSON.stringify(user));
 
       const fullyUserData = await authService.getMe();
@@ -136,9 +142,47 @@ export const useAuthStore = defineStore('auth', {
       // redirect to previous url or default to home page
       router.push(this.returnUrl || {name: 'Dashboard'});
     },
+    async applyToken(token: string) {
+      this.token = token;
+      localStorage.setItem('token', token);
+      markUserActivity(true);
+
+      const fullyUserData = await authService.getMe();
+      localStorage.setItem('user', JSON.stringify(fullyUserData));
+      this.user = fullyUserData;
+
+      this.permissions = permissionsForRole(this.user?.role?.id);
+      localStorage.setItem('permissions', JSON.stringify(this.permissions));
+      usePastorChurchStore().clearSelectedChurchId();
+    },
+    async switchToUser(targetUserId: number | string) {
+      const result = await authService.switchUser(targetUserId);
+      if (!result?.token) return;
+
+      // Keep the very first admin token if the admin switches more than once.
+      if (!this.impersonatorToken) {
+        const adminToken = result.original_token || this.token;
+        this.impersonatorToken = adminToken;
+        localStorage.setItem(IMPERSONATOR_TOKEN_KEY, adminToken);
+      }
+
+      await this.applyToken(result.token);
+      router.push({ name: 'Dashboard' });
+    },
+    async switchBack() {
+      const adminToken = this.impersonatorToken;
+      if (!adminToken) return;
+
+      this.impersonatorToken = null;
+      localStorage.removeItem(IMPERSONATOR_TOKEN_KEY);
+
+      await this.applyToken(adminToken);
+      router.push({ name: 'UserList' });
+    },
     logout() {
       this.user = null;
       this.token = null;
+      this.impersonatorToken = null;
       this.permissions = []
       this.returnUrl = null;
       usePastorChurchStore().clearSelectedChurchId();
@@ -175,6 +219,7 @@ export const useAuthStore = defineStore('auth', {
     avatarUrl: (state) => {
       return state.user?.photo_url ?? 'https://placehold.co/128x128.png';
     },
+    isImpersonating: (state) => !!state.impersonatorToken,
     countryId: (state) => {
       return state.user?.country_id || null;
     },

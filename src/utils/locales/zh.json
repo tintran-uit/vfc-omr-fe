@@ -266,6 +266,7 @@
   },
   "user": {
     "listTitle": "用户列表",
+    "switchUserConfirm": "确定要切换到 {name} 吗？",
     "addTitle": "新增用户",
     "editTitle": "编辑用户 #{id}",
     "listOverseerTitle": "监督列表",
@@ -412,7 +413,7 @@
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a visit.",
+    "needsVisit": "Needs a Verification Visit",
     "churchPicture": "教会照片",
     "seeChurchPicture": "查看教会照片",
     "hideChurchPicture": "隐藏教会照片",
@@ -455,6 +456,7 @@
   "create": "创建",
   "noData": "暂无数据",
   "logout": "退出登录",
+  "switchBack": "切换回来",
   "addNew": "新增",
   "cancel": "取消",
   "profile": {
@@ -485,7 +487,8 @@
     "buttonCloneTitle": "复制",
     "buttonAssignOverseerTitle": "指派监督牧者",
     "buttonDisableTitle": "停用",
-    "buttonEnableTitle": "启用"
+    "buttonEnableTitle": "启用",
+    "buttonSwitchUserTitle": "切换到该用户"
   },
   "chart": {
     "worshipService": "敬拜聚会",

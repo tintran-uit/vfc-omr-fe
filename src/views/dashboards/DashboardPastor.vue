@@ -67,36 +67,61 @@ const switchToChurch = async (churchId) => {
 
 <template>
   <OverviewChurch>
-    <template v-slot:switch>
+    <template v-slot:switch="{ title }">
       <v-menu>
-            <template #activator="{ props: menuProps }">
-              <v-tooltip :text="$t('church.switchAnotherChurches')" location="top">
-                <template #activator="{ props: tooltipProps }">
-                  <v-btn
-                    v-bind="{ ...menuProps, ...tooltipProps }"
-                    icon="$swapHorizontal"
-                    color="primary"
-                    variant="text"
-                  />
-                </template>
-              </v-tooltip>
+        <template #activator="{ props: menuProps }">
+          <v-tooltip :text="$t('church.switchAnotherChurches')" location="top">
+            <template #activator="{ props: tooltipProps }">
+              <h1 class="overview-church-header__title">
+                <button
+                  type="button"
+                  v-bind="{ ...menuProps, ...tooltipProps }"
+                  class="church-switch-trigger"
+                >
+                  <span>{{ title }}</span>
+                  <v-icon icon="$menuDown" size="20" class="church-switch-caret" />
+                </button>
+              </h1>
             </template>
+          </v-tooltip>
+        </template>
 
-            <v-list>
-              <v-list-item
-                v-for="(item, index) in assignedChurches"
-                :key="index"
-                @click="switchToChurch(item.id)"
-              >
-                <v-list-item-title>{{ item.name }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in assignedChurches"
+            :key="index"
+            @click="switchToChurch(item.id)"
+          >
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </template>
   </OverviewChurch>
 </template>
 
 <style scoped lang="scss">
+.church-switch-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.church-switch-caret {
+  flex: 0 0 auto;
+  color: #1c1c1e;
+  pointer-events: none;
+}
+
 .profile-avatar {
   position: relative;
     top: 0px;

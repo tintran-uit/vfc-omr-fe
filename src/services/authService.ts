@@ -13,5 +13,8 @@ export const authService  = {
     },
     async getMe() {
         return await apiClient.get(`/users/me`);
+    },
+    async switchUser(targetUserId: number | string) {
+        return await apiClient.post('/auth/switch-user', { target_user_id: Number(targetUserId) });
     }
 }

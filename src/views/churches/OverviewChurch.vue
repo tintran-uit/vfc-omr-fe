@@ -231,6 +231,8 @@ const visibleSecondaryMetrics = computed(() => {
 
 const dashboardInfo = computed(() => dashboardData.value?.dashboard_info)
 
+const isDashboardReady = computed(() => Object.keys(dashboardData.value || {}).length > 0)
+
 const hasPastoralVisit = computed(() => !!dashboardInfo.value?.verified_by_user_id)
 
 const visitDateText = computed(() =>
@@ -240,7 +242,7 @@ const visitDateText = computed(() =>
 const visitNameText = computed(() => dashboardInfo.value?.verified_by_user_name ?? '')
 
 const lastReportText = computed(
-  () => formatDate(dashboardInfo.value?.last_report_date, 'MMMM YYYY') || 'N/A'
+  () => formatDate(dashboardInfo.value?.last_report_date, 'MMMM YYYY') || '-'
 )
 
 const pastorDisplayName = computed(() => {
@@ -248,12 +250,7 @@ const pastorDisplayName = computed(() => {
   return name ? t('church.pastorName', { name }) : ''
 })
 
-const locationText = computed(() => {
-  const country = churchDetail.value?.country_name
-  const city = churchDetail.value?.city_name
-  if (city && country) return `${city}, ${country}`
-  return country || city || ''
-})
+const locationText = computed(() => churchDetail.value?.country_name || '')
 
 type MetricDisplay = { primary: string; secondary: string }
 
@@ -311,29 +308,30 @@ const openMetricHelp = (metric: MetricItem) => {
 </script>
 
 <template>
-  <!-- Header: church identity + pastor -->
+  <!-- Header: church block and pastor block stay separate -->
   <v-card flat class="overview-church-header mb-4">
-    <v-card-text class="pa-4 pa-md-6">
-      <v-row class="align-md-center">
-        <!-- Church info -->
-        <v-col cols="12" md="7" class="overview-church-header__church">
-          <div class="d-flex align-center flex-wrap ga-1 mb-2">
-            <h1 class="text-h4 font-weight-bold mb-0 overview-church-header__title">
-              {{ churchDetail?.name }}
-            </h1>
-            <slot name="switch" />
+    <v-card-text class="pa-4 pa-md-5">
+      <div class="overview-church-header__row">
+        <div class="overview-church-header__church">
+          <div class="overview-church-header__title-row">
+            <slot name="switch" :title="churchDetail?.name">
+              <h1 class="overview-church-header__title">
+                {{ churchDetail?.name }}
+              </h1>
+            </slot>
           </div>
 
-          <div class="d-flex justify-space-between align-start ga-3">
-            <span class="text-medium-emphasis overview-church-header__location overview-church-header__meta">
+          <div class="overview-church-header__meta">
+            <div v-if="locationText" class="overview-church-header__location">
               {{ locationText }}
-            </span>
-            <div class="overview-church-header__status text-right">
-              <div
-                v-if="hasPastoralVisit"
-                class="text-success overview-church-header__visit overview-church-header__meta"
-              >
-                <v-icon icon="$check" size="15" color="success" class="me-1" />
+            </div>
+            <div v-if="isDashboardReady" class="overview-church-header__status">
+              <div class="overview-church-header__report">
+                {{ $t('church.lastReport') }}:
+                <span class="font-weight-bold">{{ lastReportText }}</span>
+              </div>
+              <div v-if="hasPastoralVisit" class="overview-church-header__visit">
+                <v-icon icon="$check" size="15" class="overview-church-header__visit-icon me-1" />
                 <i18n-t keypath="church.visitedBy" tag="span">
                   <template #date>
                     <span class="font-weight-bold">{{ visitDateText }}</span>
@@ -343,43 +341,30 @@ const openMetricHelp = (metric: MetricItem) => {
                   </template>
                 </i18n-t>
               </div>
-              <div
-                v-else
-                class="text-warning overview-church-header__visit overview-church-header__meta"
-              >
-                <v-icon icon="$exclamation" size="15" color="warning" class="me-1" />
+              <div v-else class="overview-church-header__visit overview-church-header__visit--needed">
                 {{ $t('church.needsVisit') }}
-              </div>
-              <div class="text-primary mt-1 overview-church-header__meta">
-                {{ $t('church.lastReport') }}:
-                <span class="font-weight-bold">{{ lastReportText }}</span>
               </div>
             </div>
           </div>
-        </v-col>
+        </div>
 
-        <!-- Pastor -->
-        <v-col
-          cols="12"
-          md="5"
-          class="overview-church-header__pastor d-flex align-center justify-start justify-md-end"
-        >
-          <v-avatar size="64" class="overview-church-header__avatar elevation-1">
+        <div class="overview-church-header__pastor">
+          <v-avatar size="56" class="overview-church-header__avatar">
             <v-img :src="pastor?.photo_url || defaultAvatar" cover />
           </v-avatar>
-          <div class="ms-3">
-            <div class="text-h5 font-weight-bold text-primary">
+          <div class="overview-church-header__pastor-text">
+            <div v-if="pastorDisplayName" class="overview-church-header__pastor-name">
               {{ pastorDisplayName }}
             </div>
             <div
               v-if="pastor?.role?.name || pastor?.role_name"
-              class="text-body-1 text-medium-emphasis"
+              class="overview-church-header__pastor-role"
             >
               {{ pastor?.role?.name || pastor?.role_name }}
             </div>
           </div>
-        </v-col>
-      </v-row>
+        </div>
+      </div>
     </v-card-text>
   </v-card>
 
@@ -516,29 +501,32 @@ const openMetricHelp = (metric: MetricItem) => {
     </v-list>
   </v-card>
 
-  <v-card v-else class="pa-4 mt-4 mb-4" variant="text">
+  <v-card v-else class="px-0 py-4 mt-4 mb-4" variant="text">
     <div
       class="d-flex flex-wrap"
-      style="gap: 12px; justify-content: flex-end;"
+      style="gap: 8px; justify-content: flex-end;"
     >
       <v-btn
         v-for="item in actions"
         :key="item.title"
         :to="item.to"
-        variant="outlined"
-        :color="item?.color || 'primary'"
-        class="d-inline-flex align-center w-100 w-sm-auto"
+        :variant="item?.color ? 'flat' : 'outlined'"
+        :color="item?.color || undefined"
+        :class="[
+          'd-inline-flex align-center w-100 w-sm-auto overview-church-action-btn',
+          { 'overview-church-action-btn--quiet': !item?.color },
+        ]"
       >
         <span
           v-if="item.iconSrc"
-          class="overview-church-action-btn__icon overview-church-action-btn__icon--themed mr-2"
+          class="overview-church-action-btn__icon overview-church-action-btn__icon--themed"
           :style="{
             WebkitMaskImage: `url(${item.iconSrc})`,
             maskImage: `url(${item.iconSrc})`,
           }"
         />
-        <v-icon v-else :icon="item.icon" size="20" class="mr-2" />
-        <span class="text-body-2">{{ $t(item.title) }}</span>
+        <v-icon v-else :icon="item.icon" size="20" class="overview-church-action-btn__icon" />
+        <span class="overview-church-action-btn__label">{{ $t(item.title) }}</span>
       </v-btn>
     </div>
   </v-card>
@@ -634,37 +622,122 @@ const openMetricHelp = (metric: MetricItem) => {
   />
 </template>
 <style scoped lang="scss">
-.overview-church-header__avatar {
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+// Sampled from the mobile app screenshot, not the CMS theme.
+$app-text: #1c1c1e;
+$app-secondary: #8e8e93;
+$app-blue: #2478ce;
+$app-green: #248a3d;
+$app-red: #ff3b30;
+
+.overview-church-header__row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (min-width: 960px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+}
+
+.overview-church-header__church {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.overview-church-header__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  :deep(.overview-church-header__title) {
+    margin: 0;
+    color: $app-text;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
 }
 
 .overview-church-header__title {
+  margin: 0;
+  color: $app-text;
+  font-size: 1.25rem;
+  font-weight: 700;
   line-height: 1.3;
 }
 
 .overview-church-header__meta {
-  font-size: 0.8125rem;
-  line-height: 1.125rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
 }
 
-.overview-church-header__visit {
-  flex-shrink: 0;
-}
-
-.overview-church-header__status {
-  flex-shrink: 0;
-  max-width: 55%;
+.overview-church-header__location,
+.overview-church-header__pastor-role {
+  color: $app-secondary;
+  font-weight: 400;
 }
 
 .overview-church-header__location {
-  flex: 1 1 auto;
   min-width: 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.overview-church-header__pastor-role {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.overview-church-header__status {
+  flex: 0 1 auto;
+  text-align: right;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.overview-church-header__visit,
+.overview-church-header__visit-icon {
+  color: $app-green;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.overview-church-header__visit--needed {
+  color: $app-red;
+}
+
+.overview-church-header__report {
+  color: $app-blue;
 }
 
 .overview-church-header__pastor {
-  @media (max-width: 959px) {
-    padding-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+
+  @media (min-width: 960px) {
+    padding-left: 28px;
+    border-left: 1px solid rgb(var(--v-theme-borderLight));
   }
+}
+
+.overview-church-header__avatar {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.overview-church-header__pastor-name {
+  color: $app-blue;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .overview-church-metric__icon {

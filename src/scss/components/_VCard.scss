@@ -1,6 +1,7 @@
 // Outline Card
 .v-card--variant-outlined {
   border-color: rgba(var(--v-theme-borderLight), 1);
+  box-shadow: var(--v-card-shadow);
   .v-divider {
     border-color: rgba(var(--v-theme-borderLight), 0.8);
   }
