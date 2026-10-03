@@ -23,7 +23,7 @@ const chartTitle = computed(() => {
   const fromApi = [props.title, props.data?.graph_title].find(
     (value) => typeof value === "string" && value.trim(),
   );
-  return fromApi?.trim() || t("chart.attendanceGraph");
+  return fromApi?.trim() || t("chart.attendance");
 });
 
 const transformedData = ref([]);
