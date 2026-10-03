@@ -54,14 +54,15 @@ router.beforeEach((to, from, next) => {
   uiStore.isLoading = true;
 
   const authRequired = to.matched.some(record => record.meta.requiresAuth);
+  const isLoggedIn = !!authStore.user && !!authStore.token;
 
-  if (authRequired && !authStore.user) {
+  if (authRequired && !isLoggedIn) {
     authStore.returnUrl = to.fullPath;
     return next('/auth/login');
   }
 
-  if (authStore.user && to.name === 'Login') {
-    return next('/dashboard');
+  if (isLoggedIn && to.name === 'Login') {
+    return next({ name: 'Dashboard' });
   }
 
   const withRoutePermissions = to.matched

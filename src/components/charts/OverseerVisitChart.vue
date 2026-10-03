@@ -34,12 +34,16 @@ function updateBreakpoint() {
 
 /* ================== TOOLTIP ================== */
 const formatTooltipContent = (d: any) => {
+  const churches = d.churchNames
+    ? `<br><span style="white-space:normal;display:block;max-width:260px">${t("chart.churchNames")}: <b>${d.churchNames}</b></span>`
+    : "";
+
   return `
     <div style="line-height: 1.5">
       <div class="mb-1"><b>${t("chart.visits")}</b></div>
       ${t("chart.week")}: <strong>${d.week} - ${d.year}</strong><br>
       ${t("chart.weekEnding")}: <strong>${d.xLabel}</strong><br>
-      ${t("chart.visits")}: <b>${d.visits}</b>
+      ${t("chart.visits")}: <b>${d.visits}</b>${churches}
     </div>
   `;
 };
@@ -57,20 +61,21 @@ const drawChart = () => {
       year: d.week_key?.year,
       week: d.week_key?.week,
       visits: Number(d.visit_days) || 0,
+      churchNames: String(d.church_names || "").trim(),
       xKey: `${d.week_key?.year}-W${d.week_key?.week}`,
-      xLabel: formatDate(d.dates, "DD MMM ’YY"), // dùng luôn dates
+      xLabel: formatDate(d.dates, "DD MMM ’YY"),
     };
   });
 
   const tooltip = d3.select(tooltipRef.value!);
 
-  const wrapperWidth = container.parentElement!.clientWidth;
+  const wrapperWidth = container.parentElement?.clientWidth || container.clientWidth || 600;
   const contentWidth = isMobile.value
     ? Math.max(data.length * MIN_BAR_WIDTH, wrapperWidth)
     : wrapperWidth;
 
-  const height = 360;
-  const margin = { top: 20, right: 20, bottom: 130, left: 60 };
+  const height = 320;
+  const margin = { top: 20, right: 20, bottom: 90, left: 60 };
   const width = contentWidth;
 
   d3.select(container).selectAll("svg").remove();
@@ -179,7 +184,7 @@ const drawChart = () => {
   svg
     .append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom + 80)
+    .attr("y", height - margin.bottom + 68)
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("fill", "#2B6893")
@@ -190,14 +195,19 @@ const drawChart = () => {
 };
 
 /* ================== LIFECYCLE ================== */
+function handleResize() {
+  updateBreakpoint();
+  drawChart();
+}
+
 onMounted(() => {
   updateBreakpoint();
-  window.addEventListener("resize", updateBreakpoint);
+  window.addEventListener("resize", handleResize);
   nextTick(drawChart);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("resize", updateBreakpoint);
+  window.removeEventListener("resize", handleResize);
 });
 
 watch(
@@ -219,7 +229,7 @@ watch(locale, () => nextTick(drawChart));
       <div
         ref="chartRef"
         class="chart-inner"
-        style="height: 360px; position: relative"
+        style="height: 320px; position: relative"
       >
         <div
           ref="tooltipRef"

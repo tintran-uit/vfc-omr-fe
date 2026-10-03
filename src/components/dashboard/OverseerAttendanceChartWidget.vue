@@ -8,9 +8,23 @@ const { t } = useI18n();
 const props = withDefaults(
   defineProps<{
     data: any;
+    title?: string;
   }>(),
   {},
 );
+
+const rows = computed(() => {
+  if (Array.isArray(props.data)) return props.data;
+  if (Array.isArray(props.data?.data)) return props.data.data;
+  return [];
+});
+
+const chartTitle = computed(() => {
+  const fromApi = [props.title, props.data?.graph_title].find(
+    (value) => typeof value === "string" && value.trim(),
+  );
+  return fromApi?.trim() || t("chart.attendanceGraph");
+});
 
 const transformedData = ref([]);
 
@@ -42,7 +56,7 @@ function transformAttendanceData(data) {
 }
 
 watch(
-  () => props.data,
+  rows,
   (newVal) => {
     if (!Array.isArray(newVal) || newVal.length === 0) return;
 
@@ -53,7 +67,7 @@ watch(
 </script>
 
 <template>
-  <CardHeader :title="$t('chart.attendanceGraph')">
+  <CardHeader :title="chartTitle">
     <OverseerAttendanceChart :data="transformedData" />
   </CardHeader>
 </template>

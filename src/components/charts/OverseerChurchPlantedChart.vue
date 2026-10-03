@@ -16,6 +16,7 @@ const props = withDefaults(
 );
 
 const barColor = theme.current.value.colors.chartVisit || "#B5282E";
+const disabledColor = "#8e8e93";
 const gridColor = "#aaaaaa";
 
 const chartRef = ref<HTMLElement | null>(null);
@@ -36,7 +37,8 @@ const formatTooltipContent = (d: any) => {
     <div style="line-height: 1.5">
       <div class="mb-1"><b>${t("chart.churchPlanted")}</b></div>
       ${t("year")}: <strong>${d.year}</strong><br>
-      ${t("chart.churchPlanted")}: <b>${d.count}</b>
+      ${t("chart.churchPlanted")}: <b>${d.count}</b><br>
+      ${t("chart.disabled")}: <b>${d.disabled}</b>
     </div>
   `;
 };
@@ -51,13 +53,14 @@ const drawChart = () => {
   const normalizedData = data.map((d) => ({
     year: d.year,
     count: Number(d.count) || 0,
+    disabled: Number(d.disabled_count) || 0,
     xKey: String(d.year),
     xLabel: String(d.year),
   }));
 
   const tooltip = d3.select(tooltipRef.value!);
 
-  const wrapperWidth = container.parentElement?.clientWidth || 600;
+  const wrapperWidth = container.parentElement?.clientWidth || container.clientWidth || 600;
   const contentWidth = isMobile.value
     ? Math.max(data.length * MIN_BAR_WIDTH, wrapperWidth)
     : wrapperWidth;
@@ -80,7 +83,7 @@ const drawChart = () => {
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(normalizedData, (d) => d.count) || 10])
+    .domain([0, d3.max(normalizedData, (d) => d.count + d.disabled) || 10])
     .nice()
     .range([height - margin.bottom, margin.top]);
 
@@ -99,47 +102,59 @@ const drawChart = () => {
     .attr("stroke", gridColor)
     .attr("stroke-opacity", 0.3);
 
-  /* ===== BARS ===== */
-  svg
-    .selectAll("rect")
+  const moveTooltip = (event: MouseEvent) => {
+    const containerEl = chartRef.value!;
+    const tooltipEl = tooltipRef.value!;
+    const [mouseX, mouseY] = d3.pointer(event, containerEl);
+    const OFFSET = 12;
+    let left = mouseX + OFFSET;
+    if (left + tooltipEl.offsetWidth > containerEl.clientWidth) {
+      left = mouseX - tooltipEl.offsetWidth - OFFSET;
+    }
+    let top = mouseY - tooltipEl.offsetHeight / 2;
+    if (top < 0) top = 0;
+    tooltip.style("left", `${left}px`).style("top", `${top}px`);
+  };
+
+  const bars = svg
+    .selectAll("g.bar-group")
     .data(normalizedData)
-    .join("rect")
+    .join("g")
+    .attr("class", "bar-group")
+    .style("cursor", "pointer")
+    .on("mouseover", function (_event, d) {
+      const group = d3.select(this);
+      group.select("rect.count").attr("fill", d3.color(barColor)!.darker(0.8).toString());
+      group.select("rect.disabled").attr("fill", d3.color(disabledColor)!.darker(0.8).toString());
+      tooltip.style("opacity", 1).html(formatTooltipContent(d));
+    })
+    .on("mousemove", function (event) {
+      moveTooltip(event);
+    })
+    .on("mouseout", function () {
+      const group = d3.select(this);
+      group.select("rect.count").attr("fill", barColor);
+      group.select("rect.disabled").attr("fill", disabledColor);
+      tooltip.style("opacity", 0);
+    });
+
+  bars
+    .append("rect")
+    .attr("class", "count")
     .attr("x", (d) => x(d.xKey)!)
     .attr("y", (d) => y(d.count))
     .attr("width", x.bandwidth())
     .attr("height", (d) => y(0) - y(d.count))
-    .attr("fill", barColor)
-    .style("cursor", "pointer")
-    .on("mouseover", function (event, d) {
-      d3.select(this).attr("fill", d3.color(barColor)!.darker(0.8).toString());
-      tooltip.style("opacity", 1).html(formatTooltipContent(d));
-    })
-    .on("mousemove", function (event) {
-      const containerEl = chartRef.value!;
-      const tooltipEl = tooltipRef.value!;
+    .attr("fill", barColor);
 
-      const [mouseX, mouseY] = d3.pointer(event, containerEl);
-
-      const tooltipWidth = tooltipEl.offsetWidth;
-      const tooltipHeight = tooltipEl.offsetHeight;
-      const containerWidth = containerEl.clientWidth;
-
-      const OFFSET = 12;
-
-      let left = mouseX + OFFSET;
-      if (left + tooltipWidth > containerWidth) {
-        left = mouseX - tooltipWidth - OFFSET;
-      }
-
-      let top = mouseY - tooltipHeight / 2;
-      if (top < 0) top = 0;
-
-      tooltip.style("left", `${left}px`).style("top", `${top}px`);
-    })
-    .on("mouseout", function () {
-      d3.select(this).attr("fill", barColor);
-      tooltip.style("opacity", 0);
-    });
+  bars
+    .append("rect")
+    .attr("class", "disabled")
+    .attr("x", (d) => x(d.xKey)!)
+    .attr("y", (d) => y(d.count + d.disabled))
+    .attr("width", x.bandwidth())
+    .attr("height", (d) => y(d.count) - y(d.count + d.disabled))
+    .attr("fill", disabledColor);
 
   /* ===== X AXIS (KHÔNG rotate) ===== */
   const xAxis = d3
@@ -173,14 +188,19 @@ const drawChart = () => {
 };
 
 /* ================== LIFE ================== */
+function handleResize() {
+  updateBreakpoint();
+  drawChart();
+}
+
 onMounted(() => {
   updateBreakpoint();
-  window.addEventListener("resize", updateBreakpoint);
+  window.addEventListener("resize", handleResize);
   nextTick(drawChart);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("resize", updateBreakpoint);
+  window.removeEventListener("resize", handleResize);
 });
 
 watch(

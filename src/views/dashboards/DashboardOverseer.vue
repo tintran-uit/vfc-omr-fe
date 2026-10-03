@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, provide } from "vue";
+import { useDisplay } from "vuetify";
 import { useAuthStore } from "@/stores/authStore";
 import { dashboardService } from "@/services/dashboardService";
 import type {
@@ -24,12 +25,14 @@ import OverseerChurchPlantedChartWidget from "@/components/dashboard/OverseerChu
 import OverseerVisitChartWidget from "@/components/dashboard/OverseerVisitChartWidget.vue";
 
 import carIcon from "@/assets/images/icons/car.png";
-import editIcon from "@/assets/images/icons/edit.png";
-import homeUserIcon from "@/assets/images/icons/house-user.png";
-import userIcon from "@/assets/images/icons/user.png";
-import homeIcon from "@/assets/images/icons/home.png";
+import editIcon from "@/assets/images/metrics/edit.png";
+import homeUserIcon from "@/assets/images/metrics/house-user.png";
+import userIcon from "@/assets/images/metrics/user.png";
+import houseIcon from "@/assets/images/metrics/house.png";
 
 const authStore = useAuthStore();
+const { smAndDown } = useDisplay();
+const isMobile = computed(() => smAndDown.value);
 const dashboardData = ref({});
 provide("dashboardData", dashboardData);
 const indicators = ref({});
@@ -93,7 +96,7 @@ const actions = computed(() => {
     },
     {
       title: "dashboardMenu.newChurch",
-      iconSrc: homeIcon,
+      iconSrc: houseIcon,
       to: {
         name: "ChurchAdd",
       },
@@ -113,6 +116,10 @@ const canSeeMoreMyOverseers = computed(
 const canSeeLessMyOverseers = computed(
   () => myOverseers.value.length > 1 && showAllMyOverseers.value,
 );
+
+function graphPayload(key: string) {
+  return (indicators.value as Record<string, any>)?.[key] ?? {};
+}
 
 const loadMyOverseers = async () => {
   try {
@@ -150,33 +157,74 @@ onMounted(async () => {
   />
 
   <v-card
-    class="pa-4 mt-4"
+    v-if="isMobile"
+    class="mt-4 mb-4"
+    variant="outlined"
+    elevation="0"
+  >
+    <v-list density="comfortable">
+      <v-list-item
+        v-for="item in actions"
+        :key="item.title"
+        :to="item.to"
+        :base-color="item?.color || 'primary'"
+      >
+        <template #prepend>
+          <span
+            v-if="item.iconSrc"
+            class="overview-church-action-btn__icon overview-church-action-btn__icon--themed me-3"
+            :style="{
+              WebkitMaskImage: `url(${item.iconSrc})`,
+              maskImage: `url(${item.iconSrc})`,
+            }"
+          />
+          <v-icon
+            v-else
+            :icon="item.icon"
+            size="20"
+            class="me-3"
+          />
+        </template>
+        <v-list-item-title>{{ $t(item.title) }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-card>
+
+  <v-card
+    v-else
+    class="px-0 py-4 mt-4 mb-4"
     variant="text"
   >
-    <div class="d-flex flex-wrap dashboard-overseer-actions">
+    <div
+      class="d-flex flex-wrap"
+      style="gap: 8px; justify-content: flex-end;"
+    >
       <v-btn
         v-for="item in actions"
         :key="item.title"
         :to="item.to"
-        variant="elevated"
-        :color="item?.color || 'primary'"
-        class="d-inline-flex align-center w-100 w-sm-auto"
+        :variant="item?.color ? 'flat' : 'outlined'"
+        :color="item?.color || undefined"
+        :class="[
+          'd-inline-flex align-center w-100 w-sm-auto overview-church-action-btn',
+          { 'overview-church-action-btn--quiet': !item?.color },
+        ]"
       >
-        <v-img
+        <span
           v-if="item.iconSrc"
-          :src="item.iconSrc"
-          width="20"
-          height="20"
-          class="mr-2 flex-shrink-0 dashboard-overseer-action-icon"
-          alt=""
+          class="overview-church-action-btn__icon overview-church-action-btn__icon--themed"
+          :style="{
+            WebkitMaskImage: `url(${item.iconSrc})`,
+            maskImage: `url(${item.iconSrc})`,
+          }"
         />
         <v-icon
           v-else
           :icon="item.icon"
           size="20"
-          class="mr-2"
+          class="overview-church-action-btn__icon"
         />
-        <span class="text-body-2">{{ $t(item.title) }}</span>
+        <span class="overview-church-action-btn__label">{{ $t(item.title) }}</span>
       </v-btn>
     </div>
   </v-card>
@@ -192,6 +240,12 @@ onMounted(async () => {
   </v-row>
 
   <OverseerMetricBlock :indicators="indicators" />
+
+  <div class="d-flex flex-column ga-4 mt-4">
+    <OverseerAttendanceChartWidget :data="graphPayload('attendance_graph')" />
+    <OverseerChurchPlantedChartWidget :data="graphPayload('church_planted_graph')" />
+    <OverseerVisitChartWidget :data="graphPayload('pastoral_visits_graph')" />
+  </div>
 
   <section
     v-if="myOverseers.length > 0"

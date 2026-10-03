@@ -4,11 +4,21 @@ import OverseerChurchPlantedChartWidget from "@/components/dashboard/OverseerChu
 import OverseerVisitChartWidget from "@/components/dashboard/OverseerVisitChartWidget.vue";
 import OverseerMetricBlock from "@/components/dashboard/OverseerMetricBlock.vue";
 
-defineProps<{
+const props = defineProps<{
   dashboardData: any;
 }>();
 
 const headingClass = "text-left font-weight-medium";
+
+function graphPayload(key: string) {
+  const candidates = [
+    props.dashboardData?.overseer_indicators?.[key],
+    props.dashboardData?.[key],
+  ];
+  const withRows = candidates.find((graph) => Array.isArray(graph?.data) && graph.data.length);
+  if (withRows) return withRows;
+  return candidates.find(Boolean) ?? {};
+}
 </script>
 
 <template>
@@ -85,13 +95,11 @@ const headingClass = "text-left font-weight-medium";
 
       <OverseerMetricBlock :indicators="dashboardData?.overseer_indicators" />
 
-      <OverseerAttendanceChartWidget
-        :data="dashboardData?.overseer_indicators?.attendance_graph?.data"
-      />
+      <OverseerAttendanceChartWidget :data="graphPayload('attendance_graph')" />
 
-      <!-- <OverseerChurchPlantedChartWidget :data="dashboardData?.church_planted_graph" />
+      <OverseerChurchPlantedChartWidget :data="graphPayload('church_planted_graph')" />
 
-      <OverseerVisitChartWidget :data="dashboardData?.pastoral_visits_graph" /> -->
+      <OverseerVisitChartWidget :data="graphPayload('pastoral_visits_graph')" />
     </v-card-text>
   </v-card>
 </template>

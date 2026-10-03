@@ -13,6 +13,10 @@ const MainRoutes = {
       meta: { title: "mainMenu.myDashboard" },
     },
     {
+      path: "dashboard",
+      redirect: { name: "Dashboard" },
+    },
+    {
       name: "Test",
       path: "test/test",
       component: () => import("@/views/test/Test.vue"),

@@ -281,4 +281,8 @@ function drawChart() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.chart-inner {
+  height: auto;
+}
+</style>

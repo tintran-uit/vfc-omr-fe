@@ -11,9 +11,13 @@ export type OverseerProfile = {
 export type OverseerAssignmentItem = {
   overseer_profile: OverseerProfile;
   overseer_permissions: Record<string, unknown>;
-  overseer_indicators: Record<string, unknown>;
-  pastoral_visits_graph?: Record<string, unknown>;
-  church_planted_graph?: Record<string, unknown>;
+  overseer_indicators: Record<string, unknown> & {
+    attendance_graph?: { graph_title?: string; data?: unknown[] };
+    pastoral_visits_graph?: { graph_title?: string; data?: unknown[] };
+    church_planted_graph?: { graph_title?: string; data?: unknown[] };
+  };
+  pastoral_visits_graph?: { graph_title?: string; data?: unknown[] };
+  church_planted_graph?: { graph_title?: string; data?: unknown[] };
 };
 
 export type OverseerAssignmentsStreamMeta = {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, type Ref } from "vue";
 
-import defaultAvatar from "@/assets/images/users/avatar-1.png";
+import defaultAvatar from "@/assets/images/users/avatar-default.svg";
 
 const props = defineProps<{
   user?: {
@@ -26,53 +26,75 @@ const geographicalRegionNames = computed(() => {
   <v-card
     v-if="user"
     flat
-    class="overseer-profile-header bg-surface"
+    class="overseer-profile-header mb-4"
   >
-    <div class="overseer-profile-header__cover" />
-
-    <v-container class="position-relative pb-4">
-      <v-row>
-        <v-col
-          cols="12"
-          sm="auto"
-          class="position-relative text-center text-sm-start"
+    <v-card-text class="pa-4 pa-md-5">
+      <div class="overseer-profile-header__row">
+        <v-avatar
+          size="56"
+          class="overseer-profile-header__avatar"
         >
-          <v-avatar
-            size="149"
-            class="elevation-4 overseer-profile-header__avatar"
-          >
-            <v-img
-              :src="avatarUrl"
-              :alt="user?.name"
-              cover
-            />
-          </v-avatar>
-        </v-col>
+          <v-img
+            :src="avatarUrl"
+            :alt="user?.name"
+            cover
+          />
+        </v-avatar>
 
-        <v-col
-          cols="12"
-          sm
-          class="d-flex flex-column justify-center text-center text-sm-start overseer-profile-header__info"
-        >
-          <div class="text-h4 text-medium-emphasis mb-1">
+        <div class="overseer-profile-header__text">
+          <h1 class="overseer-profile-header__name">
             {{ user?.name }}
-          </div>
-
+          </h1>
           <div
             v-if="user?.role_name"
-            class="text-body-1 text-medium-emphasis mb-1"
+            class="overseer-profile-header__role"
           >
             {{ user.role_name }}
           </div>
-
           <div
             v-if="geographicalRegionNames"
-            class="text-body-1 text-medium-emphasis"
+            class="overseer-profile-header__regions"
           >
             {{ geographicalRegionNames }}
           </div>
-        </v-col>
-      </v-row>
-    </v-container>
+        </div>
+      </div>
+    </v-card-text>
   </v-card>
 </template>
+
+<style scoped lang="scss">
+$app-text: #1c1c1e;
+$app-secondary: #8e8e93;
+
+.overseer-profile-header__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.overseer-profile-header__avatar {
+  flex: 0 0 auto;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.overseer-profile-header__text {
+  min-width: 0;
+}
+
+.overseer-profile-header__name {
+  margin: 0;
+  color: $app-text;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.overseer-profile-header__role,
+.overseer-profile-header__regions {
+  color: $app-secondary;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+</style>
