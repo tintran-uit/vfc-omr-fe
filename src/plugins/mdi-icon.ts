@@ -57,6 +57,7 @@ import {
   mdiTranslate,
   mdiAccountSwitchOutline,
   mdiAccountArrowLeftOutline,
+  mdiAirplane,
 } from "@mdi/js";
 import { mdi } from "vuetify/iconsets/mdi-svg";
 
@@ -128,4 +129,5 @@ export const icons = {
   translate: mdiTranslate,
   accountSwitch: mdiAccountSwitchOutline,
   accountArrowLeft: mdiAccountArrowLeftOutline,
+  airplane: mdiAirplane,
 };

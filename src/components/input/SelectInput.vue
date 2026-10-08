@@ -19,11 +19,13 @@ const props = withDefaults(
     /** Show label on outlined field instead of separate v-label above */
     labelOnField?: boolean
     disabled?: boolean
+    clearable?: boolean
   }>(),
   {
     rules: () => [],
     labelOnField: false,
     disabled: false,
+    clearable: true,
   }
 )
 
@@ -48,7 +50,7 @@ const resolvedLabel = computed(() => (props.label ? t(props.label) : undefined))
       :item-title="itemTitle"
       :item-value="itemValue"
       v-model="modelValue"
-      :clearable="true"
+      :clearable="clearable"
       :disabled="disabled"
       location="bottom"
       position-strategy="connected"

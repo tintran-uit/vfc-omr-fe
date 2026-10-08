@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { inject } from "vue";
+import { computed, inject, unref } from "vue";
 
 import CardHeader from "../shared/CardHeader.vue";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     userId: number;
     user: any;
+    permissions?: any;
   }>(),
   {},
 );
 
-const dashboardData = inject("dashboardData");
+const injectedDashboard = inject("dashboardData", null);
+
+const permissions = computed(
+  () => props.permissions ?? unref(injectedDashboard)?.overseer_permissions,
+);
 
 const headingClass = "text-left font-weight-medium";
 </script>
@@ -32,7 +37,7 @@ const headingClass = "text-left font-weight-medium";
           <th :class="headingClass">{{ $t("user.geographicalRegion") }}</th>
           <td>
             {{
-              dashboardData?.overseer_permissions?.allowedIds?.geographicalRegionIds
+              permissions?.allowedIds?.geographicalRegionIds
                 ?.map((i) => i.name)
                 .join(", ")
             }}
@@ -42,7 +47,7 @@ const headingClass = "text-left font-weight-medium";
           <th :class="headingClass">{{ $t("user.languageRegion") }}</th>
           <td>
             {{
-              dashboardData?.overseer_permissions?.allowedIds?.languageRegionIds
+              permissions?.allowedIds?.languageRegionIds
                 ?.map((i) => i.name)
                 .join(", ")
             }}
@@ -52,7 +57,7 @@ const headingClass = "text-left font-weight-medium";
           <th :class="headingClass">{{ $t("user.churchApostolicRegions") }}</th>
           <td>
             {{
-              dashboardData?.overseer_permissions?.allowedIds?.churchRegionIds
+              permissions?.allowedIds?.churchRegionIds
                 ?.map((i) => i.name)
                 .join(", ")
             }}
@@ -62,7 +67,7 @@ const headingClass = "text-left font-weight-medium";
           <th :class="headingClass">{{ $t("user.churchApostolicRegionExclusions") }}</th>
           <td>
             {{
-              dashboardData?.overseer_permissions?.excludedIds?.churchRegionIds
+              permissions?.excludedIds?.churchRegionIds
                 ?.map((i) => i.name)
                 .join(", ")
             }}

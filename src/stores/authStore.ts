@@ -14,6 +14,8 @@ const pastorLeaderPermissions = [
   'church.create',
   'report.church',
   'report.church-status',
+  'report.my-directory',
+  'report.visit',
   'resource.read',
   'relating.update',
   'relating.request-info',
@@ -33,6 +35,13 @@ const overseerPermissions = [
   'church.create',
   'report.church',
   'report.church-status',
+  'report.my-directory',
+  'report.visit',
+  'report.multi-church',
+  'report.leaders-spreadsheet',
+  'report.leaders-graph',
+  'report.overseer-goals',
+  'report.overseer-goals-actuals',
   'resource.read',
   'relating.update',
   'faq.read',
@@ -42,7 +51,7 @@ const overseerPermissions = [
 ]
 
 const adminPermissions = [
-  ...overseerPermissions,
+  ...overseerPermissions.filter((permission) => permission !== 'report.overseer-goals'),
   'user.delete',
   'user.switch',
   'church.clone',
@@ -68,7 +77,13 @@ const adminPermissions = [
 
   'faq.create',
   'faq.update',
-  'faq.delete'
+  'faq.delete',
+
+  'report.uaog-search-log',
+  'report.overseer-reg-goals',
+  'report.overseer-goals-3yr',
+  'report.overseer-goals-actuals-3yr',
+  'report.overseer-access-rights',
 ];
 
 const superAdminPermissions = [
@@ -135,8 +150,8 @@ export const useAuthStore = defineStore('auth', {
       this.permissions = permissionsForRole(this.user?.role?.id);
       localStorage.setItem('permissions', JSON.stringify(this.permissions));
 
-      import('@/services/firebaseMessagingService').then(({ syncWebPushIfGranted }) => {
-        syncWebPushIfGranted();
+      import('@/services/firebaseMessagingService').then(({ ensureWebPush }) => {
+        ensureWebPush();
       });
 
       // redirect to previous url or default to home page

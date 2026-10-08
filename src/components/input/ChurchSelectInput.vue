@@ -16,8 +16,10 @@ const props = withDefaults(defineProps<{
   returnObject?: boolean
   noDataText?: string,
   clearable?: boolean
+  rules?: (string | ((v: any) => boolean | string))[]
 }>(), {
-  clearable: true
+  clearable: true,
+  rules: () => [],
 })
 
 const translatedLabel = computed(() => props.label ? t(props.label) : '')
@@ -158,12 +160,14 @@ watch(
       role="link"
       color="primary"
       variant="outlined"
-      hide-details
+      :hide-details="!rules.length"
+      :rules="rules"
       density="compact"
       item-title="name"
       item-value="id"
       :loading="loading"
       :hide-no-data="loading"
+      :placeholder="translatedPlaceholder"
       no-filter
       @focus="onFocus"
       @update:search="onSearch"

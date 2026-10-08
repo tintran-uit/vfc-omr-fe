@@ -4,7 +4,10 @@ import { useLoadingStore } from "@/stores/loadingStore"
 import { useMessageStore } from "@/stores/messageStore";
 import { clearSessionAndGoLogin } from '@/utils/session'
 
-type AxiosConfigWithLoading = InternalAxiosRequestConfig & { showLoading?: boolean }
+type AxiosConfigWithLoading = InternalAxiosRequestConfig & {
+  showLoading?: boolean
+  rawResponse?: boolean
+}
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -87,6 +90,23 @@ const postFormData = async(uri, payload, showLoading = true) => {
   return respData;
 }
 
+/**
+ * Reports can take much longer than the default timeout, and the caller needs the
+ * raw response so `Content-Disposition` survives the response interceptor.
+ */
+const postDownload = async (uri, payload, showLoading = true, timeout = 180000) => {
+  return await instance.post(
+    uri,
+    payload,
+    {
+      responseType: 'blob',
+      showLoading,
+      rawResponse: true,
+      timeout
+    }
+  )
+}
+
 const put = async (uri, data, showLoading = true) => {
   // try {
     const { data: respData} = await instance.put(
@@ -136,6 +156,10 @@ instance.interceptors.response.use(
     if ((response.config as AxiosConfigWithLoading).showLoading) {
       const loading = useLoadingStore();
       loading.hide();
+    }
+
+    if ((response.config as AxiosConfigWithLoading).rawResponse) {
+      return response;
     }
 
     return response.data;
@@ -190,6 +214,7 @@ instance.interceptors.response.use(
 export default {
   get,
   post,
+  postDownload,
   postFormData,
   put,
   del,

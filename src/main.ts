@@ -130,8 +130,8 @@ const authStore = useAuthStore();
 app.config.globalProperties.$can = (...args) => authStore.can(...args);
 
 if (authStore.token) {
-  import("@/services/firebaseMessagingService").then(({ syncWebPushIfGranted }) => {
-    syncWebPushIfGranted();
+  import("@/services/firebaseMessagingService").then(({ ensureWebPush }) => {
+    ensureWebPush();
   });
 }
 

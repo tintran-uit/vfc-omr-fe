@@ -11,7 +11,8 @@ import {
   HomeOutlined,
   CalendarOutlined,
   QuestionOutlined,
-  FolderOutlined
+  FolderOutlined,
+  LineChartOutlined
 } from "@ant-design/icons-vue";
 import churchIcon from "@/assets/images/icons/house.png";
 import peopleIcon from "@/assets/images/metrics/people.svg";
@@ -141,6 +142,100 @@ const sidebarItem: menu[] = [
         title: "mainMenu.disabledChurches",
         to: "/churches/disabled-list",
         permissions: ["church.enable"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.generateReports",
+    icon: LineChartOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "report-church",
+        title: "mainMenu.churchReport",
+        to: "/generate-reports/church",
+        permissions: ["report.church"],
+      },
+      {
+        id: "report-church-status",
+        title: "mainMenu.churchReportingStatus",
+        to: "/generate-reports/church-reporting-status",
+        permissions: ["report.church-status"],
+      },
+      {
+        id: "report-multi-church",
+        title: "mainMenu.multiChurchReports",
+        to: "/generate-reports/multi-church",
+        permissions: ["report.multi-church"],
+      },
+      {
+        id: "report-leaders-spreadsheet",
+        title: "mainMenu.leadersSpreadsheetReports",
+        to: "/generate-reports/leaders-spreadsheet",
+        permissions: ["report.leaders-spreadsheet"],
+      },
+      {
+        id: "report-leaders-graph",
+        title: "mainMenu.leadersGraphReports",
+        to: "/generate-reports/leaders-graph",
+        permissions: ["report.leaders-graph"],
+      },
+      {
+        id: "report-my-directory",
+        title: "mainMenu.myDirectory",
+        to: "/generate-reports/my-directory",
+        permissions: ["report.my-directory"],
+      },
+      {
+        id: "report-uaog-search-log",
+        title: "mainMenu.uaogPublicSearchLog",
+        to: "/generate-reports/uaog-public-search-log",
+        permissions: ["report.uaog-search-log"],
+      },
+      {
+        id: "report-overseer-goals",
+        title: "mainMenu.overseerGoalsOnly",
+        to: "/generate-reports/overseer-goals",
+        permissions: ["report.overseer-goals"],
+      },
+      {
+        id: "report-overseer-reg-goals",
+        title: "mainMenu.overseerRegGoalsOnly",
+        to: "/generate-reports/overseer-reg-goals",
+        permissions: ["report.overseer-reg-goals"],
+      },
+      {
+        id: "report-overseer-goals-actuals",
+        title: "mainMenu.overseerGoalsActuals",
+        to: "/generate-reports/overseer-goals-actuals",
+        permissions: ["report.overseer-goals-actuals"],
+      },
+      {
+        id: "report-overseer-goals-3yr",
+        title: "mainMenu.overseerGoals3Year",
+        to: "/generate-reports/overseer-goals-3-year",
+        permissions: ["report.overseer-goals-3yr"],
+      },
+      {
+        id: "report-overseer-goals-actuals-3yr",
+        title: "mainMenu.overseerGoalsActuals3Year",
+        to: "/generate-reports/overseer-goals-actuals-3-year",
+        permissions: ["report.overseer-goals-actuals-3yr"],
+      },
+      {
+        id: "report-overseer-access-rights",
+        title: "mainMenu.overseerAccessRights",
+        to: "/generate-reports/overseer-access-rights",
+        permissions: ["report.overseer-access-rights"],
+      },
+      {
+        id: "report-visit",
+        title: "mainMenu.visitReports",
+        to: "/generate-reports/visit",
+        permissions: ["report.visit"],
       },
     ],
   },

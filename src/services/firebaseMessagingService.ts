@@ -13,6 +13,7 @@ import {
   isFirebaseConfigured,
   type FirebaseWebConfig,
 } from '@/config/firebaseConfig'
+import apiClient from '@/services/apiClient'
 
 const TOKEN_STORAGE_KEY = 'fcm_web_token'
 
@@ -56,11 +57,15 @@ export function getPushPermission(): PushPermission {
   return Notification.permission
 }
 
-/**
- * Persist the device token. The API call will be wired when the endpoint is ready.
- */
-export async function savePushToken(_payload: PushTokenPayload): Promise<void> {
-  return
+export async function savePushToken(payload: PushTokenPayload): Promise<void> {
+  await apiClient.post(
+    '/notifications/tokens',
+    {
+      device_token: payload.token,
+      device_type: payload.platform,
+    },
+    false
+  )
 }
 
 export function onForegroundMessage(handler: ForegroundHandler): () => void {
@@ -90,6 +95,14 @@ export async function syncWebPushIfGranted(): Promise<PushSetupResult> {
   }
 
   return registerGrantedToken()
+}
+
+/** Ask when permission is still default. Refresh the token when it is already granted. */
+export async function ensureWebPush(): Promise<PushSetupResult> {
+  if (typeof Notification === 'undefined') return { status: 'unsupported', token: null }
+  if (Notification.permission === 'denied') return { status: 'denied', token: null }
+  if (Notification.permission === 'granted') return syncWebPushIfGranted()
+  return enableWebPush()
 }
 
 async function browserSupportsFcm(): Promise<boolean> {
