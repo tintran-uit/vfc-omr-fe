@@ -105,27 +105,52 @@ function onPrint() {
 </script>
 
 <template>
-  <v-container class="py-4 py-md-6 print-preview">
-    <div class="d-flex flex-wrap align-center justify-space-between gap-2 mb-4 print-screen-only">
-      <h1 class="text-h5 text-md-h4 font-weight-bold">
-        {{ t('churchPlantingProjection.printTitlePreview') }}
-        <span v-if="churchLabel" class="text-body-1 text-medium-emphasis d-block d-md-inline">
-          — {{ churchLabel }}
-        </span>
-      </h1>
-      <div class="d-flex flex-wrap gap-2">
-        <v-btn
-          color="primary"
-          variant="tonal"
-          :to="{ name: 'PlantingProjectionRedirect' }"
-        >
-          {{ t('backToList') }}
-        </v-btn>
-        <v-btn color="primary" prepend-icon="mdi-printer" :disabled="!hasRows" @click="onPrint">
-          {{ t('churchPlantingProjection.printButton') }}
-        </v-btn>
-      </div>
-    </div>
+  <div class="print-preview">
+    <v-row class="my-2 print-screen-only">
+      <v-col
+        cols="12"
+        md="6"
+        class="d-flex align-center"
+      >
+        <div class="text-h4 font-weight-medium">
+          {{ t('churchPlantingProjection.printTitlePreview') }}
+          <span
+            v-if="churchLabel"
+            class="text-body-1 text-medium-emphasis"
+          >
+            — {{ churchLabel }}
+          </span>
+        </div>
+      </v-col>
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <div class="d-flex flex-wrap justify-md-end ga-3">
+          <v-btn
+            color="primary"
+            variant="outlined"
+            :to="{ name: 'PlantingProjectionRedirect' }"
+          >
+            <v-icon>$arrowLeft</v-icon> {{ t('backToList') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            prepend-icon="$printer"
+            :disabled="!hasRows"
+            @click="onPrint"
+          >
+            {{ t('churchPlantingProjection.printButton') }}
+          </v-btn>
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-card
+      variant="outlined"
+      class="bg-surface print-preview__sheet"
+    >
+      <v-card-text>
 
     <v-alert v-if="loadError" type="warning" variant="tonal" class="mb-4 print-screen-only">
       {{ loadError }}
@@ -301,7 +326,9 @@ function onPrint() {
         </div>
       </section>
     </div>
-  </v-container>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -319,9 +346,17 @@ function onPrint() {
   }
 }
 
-.print-preview {
+.print-preview__sheet {
   @media print {
-    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  :deep(.v-card-text) {
+    @media print {
+      padding: 0 !important;
+    }
   }
 }
 

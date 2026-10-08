@@ -57,37 +57,74 @@ function onPrint() {
 </script>
 
 <template>
-  <v-container class="print-root py-4 py-md-6">
-    <div class="d-flex flex-wrap align-center justify-space-between gap-2 mb-4 print-hide">
-      <h1 class="text-h5 text-md-h4 font-weight-bold">
-        {{ t('churchPlantingProjection.printTitleSimple') }}
-        <span v-if="churchLabel" class="text-body-1 text-medium-emphasis d-block d-md-inline">
-          — {{ churchLabel }}
-        </span>
-      </h1>
-      <div class="d-flex flex-wrap gap-2">
-        <v-btn
-          color="primary"
+  <div class="print-root">
+    <v-row class="my-2 print-hide">
+      <v-col
+        cols="12"
+        md="6"
+        class="d-flex align-center"
+      >
+        <div class="text-h4 font-weight-medium">
+          {{ t('churchPlantingProjection.printTitleSimple') }}
+          <span
+            v-if="churchLabel"
+            class="text-body-1 text-medium-emphasis"
+          >
+            — {{ churchLabel }}
+          </span>
+        </div>
+      </v-col>
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <div class="d-flex flex-wrap justify-md-end ga-3">
+          <v-btn
+            color="primary"
+            variant="outlined"
+            :to="{ name: 'PlantingProjectionRedirect' }"
+          >
+            <v-icon>$arrowLeft</v-icon> {{ t('backToList') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            prepend-icon="$printer"
+            :disabled="!hasRows"
+            @click="onPrint"
+          >
+            {{ t('churchPlantingProjection.printButton') }}
+          </v-btn>
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-card
+      variant="outlined"
+      class="bg-surface print-root__sheet"
+    >
+      <v-card-text>
+        <v-alert
+          v-if="loadError"
+          type="warning"
           variant="tonal"
-          :to="{ name: 'PlantingProjectionRedirect' }"
+          class="mb-4 print-hide"
         >
-          {{ t('backToList') }}
-        </v-btn>
-        <v-btn color="primary" prepend-icon="mdi-printer" :disabled="!hasRows" @click="onPrint">
-          {{ t('churchPlantingProjection.printButton') }}
-        </v-btn>
-      </div>
-    </div>
+          {{ loadError }}
+        </v-alert>
 
-    <v-alert v-if="loadError" type="warning" variant="tonal" class="mb-4 print-hide">
-      {{ loadError }}
-    </v-alert>
+        <v-alert
+          v-else-if="!hasRows"
+          type="info"
+          variant="tonal"
+          class="print-hide"
+        >
+          {{ t('noData') }}
+        </v-alert>
 
-    <v-alert v-else-if="!hasRows" type="info" variant="tonal" class="print-hide">
-      {{ t('noData') }}
-    </v-alert>
-
-    <div v-else class="printable-area">
+        <div
+          v-else
+          class="printable-area"
+        >
       <table class="data-sheet" aria-label="Church planting projections">
         <thead>
           <tr>
@@ -115,14 +152,30 @@ function onPrint() {
           </tr>
         </tbody>
       </table>
-    </div>
-  </v-container>
+        </div>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .print-hide {
   @media print {
     display: none !important;
+  }
+}
+
+.print-root__sheet {
+  @media print {
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  :deep(.v-card-text) {
+    @media print {
+      padding: 0 !important;
+    }
   }
 }
 
