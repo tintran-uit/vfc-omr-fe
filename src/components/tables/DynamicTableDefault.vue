@@ -88,7 +88,7 @@ const actionsColWidth = computed(() => {
 const getColWidthPx = (key: string) => {
   if (key === 'id') return '72px'
   if (key === 'actions') return actionsColWidth.value
-  if (key === 'attributes') return '128px'
+  if (key === 'attributes') return '240px'
   if (key === 'country_name') return '104px'
   if (key === 'city') return '136px'
   if (key === 'pastor_name') return '168px'
@@ -473,8 +473,8 @@ onMounted(() => {
 
 /* compact columns — leave remaining width to name */
 .dt-col--attributes {
-  width: 128px;
-  max-width: 128px;
+  width: 240px;
+  max-width: 240px;
 }
 
 .dt-col--country_name {

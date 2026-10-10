@@ -5,6 +5,7 @@ import { createFormRules } from "@/helpers/formRulesFactory";
 import { useI18n } from "vue-i18n";
 import { getColProps } from "@/helpers/formHelper";
 import { unwrapErrorMap, normalizeFieldErrors, flattenErrorKeys, mapErrorsToFieldNames } from "@/utils/formErrors";
+import ChurchMapInput from "@/components/input/ChurchMapInput.vue";
 import PioneeringStartDateInput from "@/components/input/PioneeringStartDateInput.vue";
 import InfoHelpDialog from "@/components/shared/InfoHelpDialog.vue";
 
@@ -399,6 +400,7 @@ watch(
     class="bg-surface"
   >
     <component :is="vCardText">
+      <slot name="prepend" />
       <v-form
         ref="formRef"
         @submit.prevent="handleSubmit"
@@ -677,6 +679,17 @@ watch(
                   v-model="field.modelValue.value"
                   v-bind="fieldAttrs(field)"
                   :id="`field-${field.name}-${index}`"
+                />
+                <ChurchMapInput
+                  v-else-if="field.type === 'ChurchMapInput'"
+                  :latitude="formData.latitude"
+                  :longitude="formData.longitude"
+                  :church-id="formData.id ?? initData?.id"
+                  :persist="!!field.persistLocation"
+                  @confirm="(coords) => {
+                    formData.latitude = coords.latitude;
+                    formData.longitude = coords.longitude;
+                  }"
                 />
                 <TextInput
                   v-else

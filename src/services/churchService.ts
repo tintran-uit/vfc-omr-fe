@@ -13,6 +13,9 @@ export const churchService  = {
       const myParams = { ...params, disabled: true };
       return await apiClient.get(`/churches`, myParams);
     },
+    async getMapLocations(params = {}, showLoading = false) {
+      return await apiClient.get(`/churches/map-locations`, params, showLoading);
+    },
     async getListDaughter(parentId, params = {}, showLoading = true) {
       const myParams = { ...params, parent_id: parentId };
       return await apiClient.get(`/churches`, myParams, showLoading);

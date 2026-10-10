@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 
+import ChurchLocationDialog from "@/components/churches/ChurchLocationDialog.vue";
+import {
+  formatChurchCoordinates,
+  hasChurchMapLocation,
+  readChurchCoordinates,
+} from "@/helpers/churchCoordinates";
 import CardHeader from "../shared/CardHeader.vue";
 import CardHeaderEditLink from "../shared/CardHeaderEditLink.vue";
 import ImagePreview from "@/components/ui/ImagePreview.vue";
@@ -71,7 +77,7 @@ const attributeChips = computed(() => {
     chips.push({ key: "msc", label: "church.msc", color: "warning" });
   }
 
-  if (detail.value?.on_map) {
+  if (hasChurchMapLocation(detail.value)) {
     chips.push({ key: "onMap", label: "church.onMap", color: "primary" });
   }
 

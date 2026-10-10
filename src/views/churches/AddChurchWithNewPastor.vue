@@ -16,7 +16,9 @@ const { t } = useI18n();
 const messageStore = useMessageStore();
 const formRef = ref();
 const churchSchema = createAddChurchFormSchema();
-churchSchema.fields = churchSchema.fields.filter(f => f.name !== 'pastor_id')
+churchSchema.fields = churchSchema.fields.filter(
+  (field) => field.name !== "pastor_id" && field.type !== "ChurchMapInput",
+)
 
 const multipleSchema = {
   user: createAddUserFormSchema(),

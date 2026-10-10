@@ -240,6 +240,13 @@ const sidebarItem: menu[] = [
     ],
   },
   {
+    id: "omr-map",
+    title: "mainMenu.omrMap",
+    icon: EnvironmentOutlined,
+    to: "/omr-map",
+    permissions: ["church.read"],
+  },
+  {
     title: "mainMenu.churchPlantingProjections",
     icon: CalendarOutlined,
     to: "#",

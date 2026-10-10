@@ -123,6 +123,10 @@ export const createFormSchema = () => ({
             }
         },
         {
+            label: 'church.omrMapLocation',
+            type: 'ChurchMapInput',
+        },
+        {
             label: 'church.labelServiceAddressStreet',
             name: 'service_address_street',
             type: 'TextareaInput'

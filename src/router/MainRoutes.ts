@@ -423,6 +423,12 @@ const MainRoutes = {
       },
     },
     {
+      name: "OmrMap",
+      path: "/omr-map",
+      component: () => import("@/views/churches/OmrMap.vue"),
+      meta: { permissions: ["church.read"], title: "mainMenu.omrMap" },
+    },
+    {
       name: "VisitsAdd",
       path: "visits/add",
       component: () => import("@/views/visits/Add.vue"),

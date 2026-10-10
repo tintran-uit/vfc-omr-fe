@@ -8,6 +8,7 @@ import TableSearchBox from "@/components/tables/TableSearchBox.vue";
 import tableSchema from '@/table-schemas/churchTableSchema.ts';
 import { tableOptionsToParams } from '@/helpers/dataTableHelper.ts';
 import { useAuthStore } from '@/stores/authStore';
+import { hasChurchMapLocation } from '@/helpers/churchCoordinates';
 
 const authStore = useAuthStore();
 const router = useRouter()
@@ -105,6 +106,14 @@ const onSearch = () => {
             v-if="item?.is_mother_church"
             color="success"
             :text="$t('church.mother')"
+            class="mr-2"
+            size="small"
+            label
+          ></v-chip>
+          <v-chip
+            v-if="hasChurchMapLocation(item)"
+            color="primary"
+            :text="$t('church.onMap')"
             class="mr-2"
             size="small"
             label

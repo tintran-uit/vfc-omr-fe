@@ -10,8 +10,8 @@ export const countryService = {
     async getList(params = {}) {
       return await apiClient.get(`/countries`, params);
     },
-    async getById(id) {
-      return await apiClient.get(`/countries/${id}`);
+    async getById(id, showLoading = true) {
+      return await apiClient.get(`/countries/${id}`, {}, showLoading);
     },
     async create(data) {
       return await apiClient.post(`/countries`, data);

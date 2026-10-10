@@ -8,6 +8,7 @@ import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue'
 import tableSchema from '@/table-schemas/churchTableSchema'
 import { tableOptionsToParams } from '@/helpers/dataTableHelper'
 import { useAuthStore } from '@/stores/authStore'
+import { hasChurchMapLocation } from '@/helpers/churchCoordinates'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -139,6 +140,14 @@ watch(
             v-if="item?.is_mother_church"
             color="success"
             :text="$t('church.mother')"
+            class="mr-2"
+            size="small"
+            label
+          ></v-chip>
+          <v-chip
+            v-if="hasChurchMapLocation(item)"
+            color="primary"
+            :text="$t('church.onMap')"
             class="mr-2"
             size="small"
             label
