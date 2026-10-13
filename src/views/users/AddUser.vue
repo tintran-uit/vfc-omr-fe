@@ -3,17 +3,22 @@ import { ref, watch, computed, onMounted } from 'vue';
 import { createFormSchema } from '@/form-schemas/addUserFormSchema';
 import {userService} from '@/services/userService';
 import DynamicFormDefault from '@/components/forms/DynamicFormDefault.vue';
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n';
 import { useMessageStore } from '@/stores/messageStore';
 import { extractApiError } from '@/utils/formErrors';
+import { ROLE_OVERSEER } from '@/constants/roleConstant';
 
+const route = useRoute()
 const router = useRouter()
 const { t } = useI18n();
 const messageStore = useMessageStore();
 const options = ref({})
 const formSchema = createFormSchema();
 const formRef = ref();
+const initData = computed(() =>
+  route.query.role === 'overseer' ? { role_id: ROLE_OVERSEER } : null,
+);
 
 const loadOptions = async function () {
   options.value = await userService.getFormData();
@@ -44,6 +49,7 @@ onMounted(() => {
       ref="formRef"
       :options="options"
       :form-schema="formSchema"
+      :init-data="initData"
       @submit="handleSubmit"
       :page-title="$t('user.addTitle')"
       :back-url="{ name: 'UserList' }"

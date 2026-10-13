@@ -344,7 +344,7 @@ onMounted(() => {
               
               <v-tooltip :text="$t('dataTable.buttonDeleteTitle')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" class="dt-action-btn" icon="$delete" variant="plain" size="small" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$delete" variant="text" size="small" color="error" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
                 </template>
               </v-tooltip>
               

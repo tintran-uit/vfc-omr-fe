@@ -16,8 +16,10 @@ const dashboardData = inject<Ref<Record<string, any>>>("dashboardData");
 const avatarUrl = computed(() => props.user?.photo_url || defaultAvatar);
 
 const geographicalRegionNames = computed(() => {
-  const regions =
-    dashboardData?.value?.overseer_permissions?.allowedIds?.geographicalRegionIds;
+  const permissions =
+    dashboardData?.value?.overseer_permissions ??
+    dashboardData?.value?.admin_permissions;
+  const regions = permissions?.allowedIds?.geographicalRegionIds;
   return regions?.map((item: { name: string }) => item.name).join(", ") || "";
 });
 </script>

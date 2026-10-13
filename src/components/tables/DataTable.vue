@@ -180,7 +180,7 @@ const shouldAlwaysTooltip = (key: string) => ['name', 'full_name', 'question_hea
                 
                 <v-tooltip :text="$t('dataTable.buttonDeleteTitle')">
                   <template #activator="{ props }">
-                    <v-btn v-bind="props" icon="$delete" size="x-small" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
+                    <v-btn v-bind="props" icon="$delete" variant="text" size="x-small" color="error" @click="handleActionDelete(item)" v-if="enabledActions.includes('delete')" />
                   </template>
                 </v-tooltip>
                 

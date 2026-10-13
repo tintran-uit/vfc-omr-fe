@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTemplateRef, onMounted, computed, ref, watch, watchEffect, nextTick } from "vue";
+import { useRouter } from "vue-router";
 import { getNestedValue, setNestedValue, initFormData, resolveFieldDefault } from "@/utils/objectUtil.ts";
 import { createFormRules } from "@/helpers/formRulesFactory";
 import { useI18n } from "vue-i18n";
@@ -10,6 +11,7 @@ import PioneeringStartDateInput from "@/components/input/PioneeringStartDateInpu
 import InfoHelpDialog from "@/components/shared/InfoHelpDialog.vue";
 
 const { t } = useI18n();
+const router = useRouter();
 
 const formRef = useTemplateRef("formRef");
 const { resolveRules } = createFormRules(t);

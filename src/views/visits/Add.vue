@@ -476,7 +476,6 @@ onMounted(() => {
       :form-schema="step1Schema"
       :options="step1Options"
       :init-data="step1InitData"
-      form-only
       hide-form-header
       @submit="handleStep1Submit"
     >

@@ -100,7 +100,9 @@ onMounted(() => {
               <v-btn
                 v-bind="tip"
                 icon="$delete"
+                variant="text"
                 size="x-small"
+                color="error"
                 @click="onDelete(item)"
               />
             </template>
