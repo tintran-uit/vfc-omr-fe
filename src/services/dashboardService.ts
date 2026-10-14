@@ -139,6 +139,9 @@ export const dashboardService = {
   async getProfile() {
     return await apiClient.get(`/dashboard`);
   },
+  async getOversight() {
+    return await apiClient.get(`/dashboard/oversight`);
+  },
   async getProfileByChurchId(churchId: any) {
     return await apiClient.get(`/dashboard`, { church_id: churchId });
   },

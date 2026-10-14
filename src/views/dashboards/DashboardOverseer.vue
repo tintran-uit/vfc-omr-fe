@@ -7,8 +7,6 @@ import type {
   OverseerAssignmentItem,
   OverseerAssignmentsStreamMeta,
 } from "@/types/overseerAssignmentsStream";
-import { churchService } from "@/services/churchService";
-import { userService } from "@/services/userService";
 import OverseerProfileHeader from "@/components/dashboard/OverseerProfileHeader.vue";
 import OverseerUser from "@/components/dashboard/OverseerUser.vue";
 import OverseerNetwork from "@/components/dashboard/OverseerNetwork.vue";
@@ -39,7 +37,7 @@ const indicators = ref({});
 const overseerChurchCounts = ref({});
 const fetchDefaultProfile = async () => {
   try {
-    dashboardData.value = await dashboardService.getProfile();
+    dashboardData.value = await dashboardService.getOversight();
   } catch (error) {
     console.error("Failed to fetch default profile:", error);
   }
