@@ -477,11 +477,11 @@
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a Verification Visit",
+    "needsVisit": "<b>Needs a Visit!</b>",
     "churchPicture": "Foto da igreja",
     "seeChurchPicture": "Ver foto da igreja",
     "hideChurchPicture": "Ocultar foto da igreja",
-    "visitedBy": "Visited {date} by {name}",
+    "visitedBy": "<b>Visited {date} by {name}</b>",
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
     "late": "Late",
@@ -515,7 +515,7 @@
     "onMap": "No mapa",
     "apostolicRegion": "Região apostólica",
     "currency": "Moeda",
-    "lastReport": "Último relatório",
+    "lastReport": "<b>Último relatório: {date}</b>",
     "pastorName": "Ps. {name}"
   },
   "city": {

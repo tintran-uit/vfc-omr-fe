@@ -8,7 +8,7 @@ import { formatDate } from '@/helpers/dateTimeHelper';
 import defaultAvatar from '@/assets/images/users/avatar-default.svg';
 import CardHeader from '@/components/shared/CardHeader.vue';
 import InfoHelpDialog from '@/components/shared/InfoHelpDialog.vue';
-import peopleIcon from '@/assets/images/metrics/people.svg'
+import peopleIcon from '@/assets/images/metrics/group.png'
 import growthIcon from '@/assets/images/metrics/growth.svg'
 import accessIcon from '@/assets/images/metrics/access.png'
 import dollarBillIcon from '@/assets/images/metrics/dollar-bill.png'
@@ -32,14 +32,9 @@ import AttendanceChartWidget from '@/components/widgets/AttendanceChartWidget.vu
 import ChurchPlantingChartWidget from '@/components/widgets/ChurchPlantingChartWidget.vue';
 import { formatCompactCurrency, formatCurrency } from '@/helpers/appHelper';
 
-const props = withDefaults(
-  defineProps<{
-    // churchId: number,
-  }>(),
-  {
-    
-  }
-)
+defineProps<{
+  roleLabel?: string
+}>()
 
 const { smAndDown, mdAndUp } = useDisplay()
 const { t } = useI18n()
@@ -166,15 +161,6 @@ const metrics = shallowRef([
     icon: dollarBillIcon,
   },
   {
-    name: 'dashboard.churchPlants',
-    helpTitleKey: 'dashboard.churchPlantsHelpTitle',
-    helpKey: 'dashboard.churchPlantsHelp',
-    earnKey: 'total_church_plants',
-    percentKey: null,
-    color: 'primary',
-    icon: accessIcon,
-  },
-  {
     name: 'dashboard.givingMFP',
     helpTitleKey: 'dashboard.givingMFPHelpTitle',
     helpKey: 'dashboard.givingMFPHelp',
@@ -213,6 +199,15 @@ const metrics = shallowRef([
     color: 'primary',
     icon: angelIcon,
   },
+  {
+    name: 'dashboard.churchPlants',
+    helpTitleKey: 'dashboard.churchPlantsHelpTitle',
+    helpKey: 'dashboard.churchPlantsHelp',
+    earnKey: 'total_church_plants',
+    percentKey: null,
+    color: 'primary',
+    icon: accessIcon,
+  },
 ])
 
 const PRIMARY_METRICS_COUNT = 4
@@ -242,7 +237,27 @@ const visitDateText = computed(() =>
 const visitNameText = computed(() => dashboardInfo.value?.verified_by_user_name ?? '')
 
 const lastReportText = computed(
-  () => formatDate(dashboardInfo.value?.last_report_date, 'MMMM YYYY') || '-'
+  () => formatDate(dashboardInfo.value?.last_report_date, 'MMM YYYY') || '-'
+)
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+
+const visitByHtml = computed(() =>
+  t('church.visitedBy', {
+    date: escapeHtml(visitDateText.value),
+    name: escapeHtml(visitNameText.value),
+  })
+)
+
+const lastReportHtml = computed(() =>
+  t('church.lastReport', {
+    date: escapeHtml(lastReportText.value),
+  })
 )
 
 const pastorDisplayName = computed(() => {
@@ -326,24 +341,16 @@ const openMetricHelp = (metric: MetricItem) => {
               {{ locationText }}
             </div>
             <div v-if="isDashboardReady" class="overview-church-header__status">
-              <div class="overview-church-header__report">
-                {{ $t('church.lastReport') }}:
-                <span class="font-weight-bold">{{ lastReportText }}</span>
-              </div>
               <div v-if="hasPastoralVisit" class="overview-church-header__visit">
                 <v-icon icon="$check" size="15" class="overview-church-header__visit-icon me-1" />
-                <i18n-t keypath="church.visitedBy" tag="span">
-                  <template #date>
-                    <span class="font-weight-bold">{{ visitDateText }}</span>
-                  </template>
-                  <template #name>
-                    <span class="font-weight-bold">{{ visitNameText }}</span>
-                  </template>
-                </i18n-t>
+                <span class="overview-church-header__visit-text" v-html="visitByHtml" />
               </div>
-              <div v-else class="overview-church-header__visit overview-church-header__visit--needed">
-                {{ $t('church.needsVisit') }}
-              </div>
+              <div
+                v-else
+                class="overview-church-header__visit overview-church-header__visit--needed"
+                v-html="t('church.needsVisit')"
+              />
+              <div class="overview-church-header__report" v-html="lastReportHtml" />
             </div>
           </div>
         </div>
@@ -357,10 +364,10 @@ const openMetricHelp = (metric: MetricItem) => {
               {{ pastorDisplayName }}
             </div>
             <div
-              v-if="pastor?.role?.name || pastor?.role_name"
+              v-if="roleLabel || pastor?.role?.name || pastor?.role_name"
               class="overview-church-header__pastor-role"
             >
-              {{ pastor?.role?.name || pastor?.role_name }}
+              {{ roleLabel || pastor?.role?.name || pastor?.role_name }}
             </div>
           </div>
         </div>
@@ -624,10 +631,9 @@ const openMetricHelp = (metric: MetricItem) => {
 <style scoped lang="scss">
 // Sampled from the mobile app screenshot, not the CMS theme.
 $app-text: #1c1c1e;
-$app-secondary: #8e8e93;
-$app-blue: #2478ce;
+$app-caption: #636366;
 $app-green: #248a3d;
-$app-red: #ff3b30;
+$app-orange: #ff9500;
 
 .overview-church-header__row {
   display: flex;
@@ -680,19 +686,14 @@ $app-red: #ff3b30;
 
 .overview-church-header__location,
 .overview-church-header__pastor-role {
-  color: $app-secondary;
+  color: $app-caption;
+  font-size: 0.9375rem;
   font-weight: 400;
+  line-height: 1.35;
 }
 
 .overview-church-header__location {
   min-width: 0;
-  font-size: 0.8125rem;
-  line-height: 1.35;
-}
-
-.overview-church-header__pastor-role {
-  font-size: 0.8125rem;
-  line-height: 1.35;
 }
 
 .overview-church-header__status {
@@ -710,11 +711,11 @@ $app-red: #ff3b30;
 }
 
 .overview-church-header__visit--needed {
-  color: $app-red;
+  color: $app-orange;
 }
 
 .overview-church-header__report {
-  color: $app-blue;
+  color: rgb(var(--v-theme-primary));
 }
 
 .overview-church-header__pastor {
@@ -734,9 +735,9 @@ $app-red: #ff3b30;
 }
 
 .overview-church-header__pastor-name {
-  color: $app-blue;
+  color: rgb(var(--v-theme-primary));
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.3;
 }
 

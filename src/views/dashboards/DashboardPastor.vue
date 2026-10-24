@@ -66,7 +66,7 @@ const switchToChurch = async (churchId) => {
 </script>
 
 <template>
-  <OverviewChurch>
+  <OverviewChurch role-label="Pastor">
     <template v-slot:switch="{ title }">
       <v-menu>
         <template #activator="{ props: menuProps }">

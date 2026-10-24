@@ -471,11 +471,11 @@
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a Verification Visit",
+    "needsVisit": "<b>Needs a Visit!</b>",
     "churchPicture": "教会の写真",
     "seeChurchPicture": "教会の写真を見る",
     "hideChurchPicture": "教会の写真を隠す",
-    "visitedBy": "Visited {date} by {name}",
+    "visitedBy": "<b>Visited {date} by {name}</b>",
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
     "late": "Late",
@@ -509,7 +509,7 @@
     "onMap": "On Map",
     "apostolicRegion": "Apostolic Region",
     "currency": "Currency",
-    "lastReport": "最新レポート",
+    "lastReport": "<b>最新レポート: {date}</b>",
     "pastorName": "Ps. {name}"
   },
   "city": {

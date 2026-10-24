@@ -471,11 +471,11 @@
     "addNewChurchWithPastorBtn": "Add New Church & Pastor",
     "sensitiveNation": "Sensitive Nation?",
     "switchAnotherChurches": "Switch to another of your churches",
-    "needsVisit": "Needs a Verification Visit",
+    "needsVisit": "<b>Needs a Visit!</b>",
     "churchPicture": "Gambar gereja",
     "seeChurchPicture": "Lihat gambar gereja",
     "hideChurchPicture": "Sembunyikan gambar gereja",
-    "visitedBy": "Visited {date} by {name}",
+    "visitedBy": "<b>Visited {date} by {name}</b>",
     "dataEntryStatus": "Data Entry Status",
     "upToDateGoodWork": "Up to date, good work!",
     "late": "Late",
@@ -509,7 +509,7 @@
     "onMap": "On Map",
     "apostolicRegion": "Apostolic Region",
     "currency": "Currency",
-    "lastReport": "Laporan Terakhir",
+    "lastReport": "<b>Laporan Terakhir: {date}</b>",
     "pastorName": "Ps. {name}"
   },
   "city": {
