@@ -11,8 +11,11 @@ import {
   HomeOutlined,
   CalendarOutlined,
   QuestionOutlined,
+  AimOutlined,
+  SettingOutlined,
   FolderOutlined,
-  LineChartOutlined
+  LineChartOutlined,
+  HeartOutlined
 } from "@ant-design/icons-vue";
 import churchIcon from "@/assets/images/icons/house.png";
 import peopleIcon from "@/assets/images/metrics/people.svg";
@@ -37,6 +40,7 @@ export interface menu {
   exact?: boolean;
   pastorOnly?: boolean;
   nonPastorOnly?: boolean;
+  adminOnly?: boolean;
 }
 
 const sidebarItem: menu[] = [
@@ -142,6 +146,51 @@ const sidebarItem: menu[] = [
         title: "mainMenu.disabledChurches",
         to: "/churches/disabled-list",
         permissions: ["church.enable"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.watchList",
+    icon: HeartOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "watchlist-list",
+        title: "mainMenu.watchListList",
+        to: "/watchlists",
+      },
+      {
+        id: "watchlist-add",
+        title: "mainMenu.watchListAdd",
+        to: "/watchlists/add",
+      },
+    ],
+  },
+  {
+    title: "mainMenu.overseerGoals",
+    icon: AimOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "overseer-goal-add",
+        title: "mainMenu.overseerGoalsAdd",
+        to: "/overseer-goals/add",
+      },
+      {
+        id: "overseer-goal-list",
+        title: "mainMenu.overseerGoalsList",
+        to: "/overseer-goals",
+      },
+      {
+        id: "overseer-goal-defaults",
+        title: "mainMenu.overseerGoalsDefaults",
+        to: "/overseer-goals/defaults",
       },
     ],
   },
@@ -495,26 +544,45 @@ const sidebarItem: menu[] = [
       },
     ],
   },
-  // {
-  //   title: 'mainMenu.watchList',
-  //   icon: FileTextOutlined,
-  //   to: '#',
-  //   getURL: true,
-  //   type: 'external',
-  //   chipVariant: 'tonal',
-  //   children: [
-  //     {
-  //       id: 'watch-list-list',
-  //       title: 'mainMenu.watchListList',
-  //       permissions: ['watch-list.read']
-  //     },
-  //     {
-  //       id: 'watch-list-add',
-  //       title: 'mainMenu.watchListAdd',
-  //       permissions: ['watch-list.create']
-  //     },
-  //     {
-  //       id: 'watch-list-generate-reports',
+  {
+    title: "mainMenu.eventType",
+    icon: CalendarOutlined,
+    adminOnly: true,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "event-type-list",
+        title: "mainMenu.eventTypeList",
+        to: "/event-types",
+        permissions: ["event-types.read"],
+      },
+      {
+        id: "event-type-add",
+        title: "mainMenu.eventTypeAdd",
+        to: "/event-types/add",
+        permissions: ["event-types.create"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.settings",
+    icon: SettingOutlined,
+    adminOnly: true,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "bible-verse",
+        title: "mainMenu.bibleVerse",
+        to: "/settings/bible-verse",
+      },
+    ],
+  },
   //       title: 'mainMenu.watchListGenerateReports',
   //       permissions: ['watch-list.report']
   //     }

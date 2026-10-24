@@ -1,8 +1,8 @@
 import apiClient from '@/services/apiClient';
 
 export const userService  = {
-    async getList(params = {}) {
-      return await apiClient.get(`/users`, params);
+    async getList(params = {}, showLoading = true) {
+      return await apiClient.get(`/users`, params, showLoading);
     },
     async get(id, showLoading = true) {
         return await apiClient.get(`/users/${id}`, null, showLoading);

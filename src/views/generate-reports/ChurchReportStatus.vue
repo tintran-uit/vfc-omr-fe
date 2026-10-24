@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import SelectInput from "@/components/input/SelectInput.vue";
 import UserSelectInput from "@/components/input/UserSelectInput.vue";
-import { monthOptions, useGenerateReport, yearOptions } from "@/composables/useGenerateReport";
+import { monthOptions, reportYearOptions, useGenerateReport } from "@/composables/useGenerateReport";
 import { useAuthStore } from "@/stores/authStore";
 import { useGeographicalRegionStore } from "@/stores/geographicalRegionStore";
 
@@ -25,7 +25,7 @@ const showGeoScope = ref(false);
 const geographicalRegionId = ref<number | null>(null);
 
 const months = computed(() => monthOptions(t));
-const years = yearOptions();
+const years = reportYearOptions();
 const geographicalRegions = computed(() => geographicalRegionStore.asyncOptions);
 
 const REPORT_CODES: Record<string, string> = {

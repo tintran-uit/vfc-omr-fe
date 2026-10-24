@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, onUpdated, nextTick, watch } from 'vue'
+import { computed, ref } from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -11,8 +11,8 @@ const props = withDefaults(
 )
 
 const rootRef = ref<HTMLElement | null>(null)
-const isTruncated = ref(false)
-const domText = ref('')
+const open = ref(false)
+const domText = ref("")
 
 const tooltipText = computed(() => {
   const explicit = props.text?.trim()
@@ -20,54 +20,60 @@ const tooltipText = computed(() => {
   return domText.value
 })
 
-const checkTruncation = async () => {
-  await nextTick()
-  const el = rootRef.value
-  if (!el) {
-    isTruncated.value = false
-    return
+function overflows(el: HTMLElement) {
+  if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1) return true
+  const nodes = el.querySelectorAll<HTMLElement>("*")
+  for (const node of nodes) {
+    if (node.scrollWidth > node.clientWidth + 1 || node.scrollHeight > node.clientHeight + 1) return true
   }
-  domText.value = el.textContent?.trim() ?? ''
-  isTruncated.value = el.scrollWidth > el.clientWidth
+  return false
 }
 
-let resizeObserver: ResizeObserver | null = null
-
-onMounted(async () => {
-  await checkTruncation()
-  const el = rootRef.value
-  if (el && typeof ResizeObserver !== 'undefined') {
-    resizeObserver = new ResizeObserver(() => {
-      void checkTruncation()
-    })
-    resizeObserver.observe(el)
+function assignRef(el: unknown, activatorRef: unknown) {
+  rootRef.value = el instanceof HTMLElement ? el : null
+  if (typeof activatorRef === "function") activatorRef(el)
+  else if (activatorRef && typeof activatorRef === "object" && "value" in activatorRef) {
+    (activatorRef as { value: unknown }).value = el
   }
-})
+}
 
-onBeforeUnmount(() => {
-  resizeObserver?.disconnect()
-})
+function withoutRef(tipProps: Record<string, unknown>) {
+  const rest = { ...tipProps }
+  delete rest.ref
+  return rest
+}
 
-onUpdated(() => {
-  void checkTruncation()
-})
+function show() {
+  const el = rootRef.value
+  if (!el) return
+  domText.value = el.textContent?.trim() ?? ""
+  open.value = !!tooltipText.value && (props.always || overflows(el))
+}
 
-watch(() => props.text, () => {
-  void checkTruncation()
-})
+function hide() {
+  open.value = false
+}
 </script>
 
 <template>
   <v-tooltip
+    :model-value="open"
     :text="tooltipText"
-    :disabled="(!always && !isTruncated) || !tooltipText"
+    :open-on-hover="false"
+    :open-on-click="false"
     location="top"
+    max-width="420"
+    @update:model-value="(value) => { if (!value) hide() }"
   >
     <template #activator="{ props: tipProps }">
       <span
-        ref="rootRef"
-        v-bind="tipProps"
+        v-bind="withoutRef(tipProps)"
+        :ref="(el) => assignRef(el, tipProps.ref)"
         class="dt-ellipsis-tooltip"
+        @mouseenter="show"
+        @mouseleave="hide"
+        @focusin="show"
+        @focusout="hide"
       >
         <slot />
       </span>

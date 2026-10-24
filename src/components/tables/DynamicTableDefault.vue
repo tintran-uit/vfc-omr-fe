@@ -32,6 +32,8 @@ const props = withDefaults(
     /** Per-row visibility for an enabled action; all enabled actions show when omitted. */
     isActionVisible?: (action: string, item: unknown) => boolean,
     actionTitles?: Record<string, string>,
+    /** Actions rendered as labeled buttons instead of icons. */
+    textActions?: string[],
     emptyPlaceholder?: string,
     pageTitle?: string,
     hideTitle?: boolean,
@@ -43,6 +45,7 @@ const props = withDefaults(
     searchesConfig: () => [],
     enabledActions: () => [],
     actionTitles: () => ({
+      goals: "overseerGoal.editGoals",
       edit: "dataTable.buttonEditTitle",
       delete: "dataTable.buttonDeleteTitle",
       clone: "dataTable.buttonCloneTitle",
@@ -51,6 +54,7 @@ const props = withDefaults(
       enable: "dataTable.buttonEnableTitle",
       switchUser: "dataTable.buttonSwitchUserTitle",
     }),
+    textActions: () => [],
     emptyPlaceholder: '-',
     hideTitle: false,
     hideHeader: false
@@ -63,6 +67,7 @@ const emit = defineEmits<{
   (e: 'update:options', value: unknown): void
   (e: 'action', payload: { action: string, item: unknown }): void
   (e: 'filter-change', value: unknown): void
+  (e: 'action:goals', value: unknown): void
   (e: 'action:edit', value: unknown): void
   (e: 'action:delete', value: unknown): void
   (e: 'action:assignOverseer', value: unknown): void
@@ -72,17 +77,37 @@ const emit = defineEmits<{
   (e: 'action:switchUser', value: unknown): void
 }>()
 
+const DEFAULT_ACTION_TITLES: Record<string, string> = {
+  goals: "overseerGoal.editGoals",
+  edit: "dataTable.buttonEditTitle",
+  delete: "dataTable.buttonDeleteTitle",
+  clone: "dataTable.buttonCloneTitle",
+  assignOverseer: "dataTable.buttonAssignOverseerTitle",
+  disable: "dataTable.buttonDisableTitle",
+  enable: "dataTable.buttonEnableTitle",
+  switchUser: "dataTable.buttonSwitchUserTitle",
+}
+
 const showAction = (action: string, item: unknown) =>
   props.enabledActions.includes(action) && (props.isActionVisible?.(action, item) ?? true)
 
+const isTextAction = (action: string) => props.textActions.includes(action)
+
+const actionLabel = (action: string) =>
+  t(props.actionTitles[action] || DEFAULT_ACTION_TITLES[action] || action)
+
 const ACTION_BTN_PX = 32
+const ACTION_TEXT_PX = 220
 const ACTION_GAP_PX = 4
 const ACTION_PAD_PX = 16
 
 const actionsColWidth = computed(() => {
-  const count = props.enabledActions?.length ?? 0
-  if (count <= 0) return '16px'
-  return `${count * ACTION_BTN_PX + (count - 1) * ACTION_GAP_PX + ACTION_PAD_PX}px`
+  const actions = props.enabledActions ?? []
+  if (actions.length <= 0) return '16px'
+  const textCount = actions.filter((action) => props.textActions.includes(action)).length
+  const iconCount = actions.length - textCount
+  const width = textCount * ACTION_TEXT_PX + iconCount * ACTION_BTN_PX + Math.max(actions.length - 1, 0) * ACTION_GAP_PX + ACTION_PAD_PX
+  return `${width}px`
 })
 
 const getColWidthPx = (key: string) => {
@@ -161,6 +186,10 @@ watch(
 )
 
 // Handle actions
+const handleActionGoals = (item: unknown) => {
+  emit('action:goals', item)
+}
+
 const handleActionEdit = (item: unknown) => {
   emit('action:edit', item)
 }
@@ -336,9 +365,30 @@ onMounted(() => {
             :style="getCellStyle(String(header.key))"
           >
             <div v-if="header.key === 'actions'" class="dt-actions">
-              <v-tooltip :text="$t('dataTable.buttonEditTitle')">
+              <v-btn
+                v-if="showAction('goals', item)"
+                class="dt-action-text"
+                variant="text"
+                size="small"
+                color="primary"
+                @click="handleActionGoals(item)"
+              >
+                {{ actionLabel('goals') }}
+              </v-btn>
+
+              <v-btn
+                v-if="showAction('edit', item) && isTextAction('edit')"
+                class="dt-action-text"
+                variant="text"
+                size="small"
+                color="primary"
+                @click="handleActionEdit(item)"
+              >
+                {{ actionLabel('edit') }}
+              </v-btn>
+              <v-tooltip v-else-if="showAction('edit', item)" :text="actionLabel('edit')">
                 <template #activator="{ props }">
-                  <v-btn v-bind="props" class="dt-action-btn" icon="$edit" variant="text" size="small" color="primary" @click="handleActionEdit(item)" v-if="enabledActions.includes('edit')" />
+                  <v-btn v-bind="props" class="dt-action-btn" icon="$edit" variant="text" size="small" color="primary" @click="handleActionEdit(item)" />
                 </template>
               </v-tooltip>
               
@@ -492,6 +542,12 @@ onMounted(() => {
   max-width: 168px;
 }
 
+.dt-col--pastor_of {
+  width: auto;
+  max-width: 0;
+  overflow: hidden;
+}
+
 /* Force width constraints to be respected */
 .dt-table :deep(.v-table__wrapper > table) {
   table-layout: fixed;
@@ -519,5 +575,14 @@ onMounted(() => {
   width: 32px;
   min-width: 32px;
   height: 32px;
+}
+
+.dt-action-text {
+  width: auto;
+  min-width: 0;
+  height: 32px;
+  padding-inline: 8px;
+  letter-spacing: normal;
+  text-transform: none;
 }
 </style>

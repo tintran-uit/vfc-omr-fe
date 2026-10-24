@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { FileExcelOutlined, FilePdfOutlined } from "@ant-design/icons-vue";
 import SelectInput from "@/components/input/SelectInput.vue";
-import { useGenerateReport } from "@/composables/useGenerateReport";
+import { useGenerateReport, yearOptions } from "@/composables/useGenerateReport";
 import { useChurchRegionStore } from "@/stores/churchRegionStore";
 import { useCountryStore } from "@/stores/countryStore";
 import { useGeographicalRegionStore } from "@/stores/geographicalRegionStore";
@@ -45,12 +46,16 @@ const languageRegionIds = ref<number[]>([]);
 const countryIds = ref<number[]>([]);
 const languageRegions = ref<any[]>([]);
 const reportType = ref<string | null>(null);
-const year = ref<number | null>(new Date().getFullYear());
+const currentYear = new Date().getFullYear();
+const endYear = ref<string | null>(String(currentYear));
+const years = yearOptions(currentYear - 1500, 5);
 
 const geographicalRegions = computed(() => geographicalRegionStore.asyncOptions);
 const churchRegions = computed(() => churchRegionStore.asyncOptions);
 const countries = computed(() => countryStore.asyncOptions);
 const showsYear = computed(() => reportType.value === VISIT_REPORT_TYPE);
+const showsFileType = computed(() => reportType.value === VISIT_REPORT_TYPE);
+const fileType = ref<"pdf" | "xls">("pdf");
 
 const reportMeta = Object.fromEntries(REPORTS.map((report) => [report.id, report]));
 
@@ -84,6 +89,10 @@ watch(
   { immediate: true },
 );
 
+watch(reportType, () => {
+  fileType.value = "pdf";
+});
+
 onMounted(async () => {
   try {
     languageRegions.value = (await languageRegionService.getAll()) || [];
@@ -92,29 +101,10 @@ onMounted(async () => {
   }
 });
 
-function onYearInput(event: Event) {
-  const raw = (event.target as HTMLInputElement).value.trim();
-  if (!raw) {
-    year.value = null;
-    return;
-  }
-
-  const parsed = Number(raw);
-  year.value = Number.isFinite(parsed) ? parsed : null;
-}
-
-function stepYear(delta: number) {
-  if (year.value == null) {
-    year.value = new Date().getFullYear();
-    return;
-  }
-
-  year.value += delta;
-}
-
 const onSubmit = async () => {
   const { valid } = (await formRef.value?.validate()) ?? { valid: true };
   if (!valid || !reportType.value) return;
+  if (showsYear.value && !endYear.value) return;
 
   const payload: Record<string, unknown> = {
     geographical_region_ids: geographicalRegionIds.value,
@@ -124,12 +114,18 @@ const onSubmit = async () => {
   };
 
   if (showsYear.value) {
-    payload.end_year = Number(year.value);
+    payload.end_year = Number(endYear.value);
   } else {
     payload.country_ids = countryIds.value;
   }
 
-  await generate("multiChurch", payload, `${reportType.value}.pdf`);
+  const downloadPdf = showsFileType.value && fileType.value === "pdf";
+  await generate(
+    "multiChurch",
+    payload,
+    `${reportType.value}.${downloadPdf ? "pdf" : "xlsx"}`,
+    downloadPdf ? "pdf" : "file",
+  );
 };
 </script>
 
@@ -210,6 +206,9 @@ const onSubmit = async () => {
             item-title="name"
             item-value="id"
             multiple
+            chips
+            closable-chips
+            chip-close-icon="$close"
             :placeholder="$t('generateReport.labelGeographicalRegions')"
             :clearable="false"
             hide-details="auto"
@@ -227,6 +226,9 @@ const onSubmit = async () => {
             item-title="name"
             item-value="id"
             multiple
+            chips
+            closable-chips
+            chip-close-icon="$close"
             :placeholder="$t('generateReport.labelChurchRegions')"
             :clearable="false"
             hide-details="auto"
@@ -244,6 +246,9 @@ const onSubmit = async () => {
             item-title="name"
             item-value="id"
             multiple
+            chips
+            closable-chips
+            chip-close-icon="$close"
             :placeholder="$t('generateReport.labelLanguageRegions')"
             :clearable="false"
             hide-details="auto"
@@ -258,55 +263,26 @@ const onSubmit = async () => {
             <div class="multi-church__label">
               {{ $t("generateReport.labelReportBackFrom") }}
             </div>
-            <v-input
-              :model-value="year"
-              class="multi-church__year"
-              :rules="[required($t('generateReport.labelReportBackFrom'))]"
-              hide-details="auto"
-            >
-              <div class="year-stepper">
-                <input
-                  class="year-stepper__value"
-                  inputmode="numeric"
-                  :value="year ?? ''"
-                  :aria-label="$t('generateReport.labelReportBackFrom')"
-                  @input="onYearInput"
-                />
-                <button
-                  v-if="year != null"
-                  type="button"
-                  class="year-stepper__clear"
-                  :aria-label="$t('generateReport.labelReportBackFrom')"
-                  @click="year = null"
-                >
-                  ×
-                </button>
-                <div class="year-stepper__spin">
-                  <button
-                    type="button"
-                    :aria-label="$t('generateReport.labelReportBackFrom')"
-                    @click="stepYear(1)"
-                  >
-                    <span class="year-stepper__caret year-stepper__caret--up" />
-                  </button>
-                  <button
-                    type="button"
-                    :aria-label="$t('generateReport.labelReportBackFrom')"
-                    @click="stepYear(-1)"
-                  >
-                    <span class="year-stepper__caret year-stepper__caret--down" />
-                  </button>
-                </div>
-              </div>
-            </v-input>
+            <div class="multi-church__year">
+              <SelectInput
+                v-model="endYear"
+                :items="years"
+                item-title="name"
+                item-value="id"
+                :placeholder="$t('generateReport.placeholderYear')"
+                :clearable="false"
+                hide-details="auto"
+                :rules="[required($t('generateReport.labelReportBackFrom'))]"
+              />
+            </div>
           </div>
 
           <p
-            v-if="year"
+            v-if="endYear"
             key="visit-hint"
             class="multi-church__hint"
           >
-            {{ $t("generateReport.multiChurchYearHint", { year }) }}
+            {{ $t("generateReport.multiChurchYearHint", { year: endYear }) }}
           </p>
         </template>
 
@@ -325,6 +301,9 @@ const onSubmit = async () => {
             item-title="name"
             item-value="id"
             multiple
+            chips
+            closable-chips
+            chip-close-icon="$close"
             :placeholder="$t('mainMenu.countries')"
             :clearable="false"
             hide-details="auto"
@@ -374,6 +353,31 @@ const onSubmit = async () => {
         </div>
 
         <div class="multi-church__actions">
+          <div
+            v-if="showsFileType"
+            class="multi-church__formats"
+          >
+            <label class="file-format">
+              <input
+                v-model="fileType"
+                type="radio"
+                name="multi-church-file"
+                value="pdf"
+              />
+              <FilePdfOutlined class="file-format__icon file-format__icon--pdf" />
+              <span>PDF</span>
+            </label>
+            <label class="file-format">
+              <input
+                v-model="fileType"
+                type="radio"
+                name="multi-church-file"
+                value="xls"
+              />
+              <FileExcelOutlined class="file-format__icon file-format__icon--xls" />
+              <span>XLS</span>
+            </label>
+          </div>
           <v-btn
             color="primary"
             type="submit"
@@ -427,90 +431,31 @@ const onSubmit = async () => {
   line-height: 1.3;
 }
 
-.multi-church__select,
-.multi-church__year {
+.multi-church__select {
   :deep(.v-input__details) {
     padding-inline: 0;
   }
-}
 
-.multi-church__year {
-  :deep(.v-input__control) {
-    display: flex;
+  :deep(.v-field__input) {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  :deep(.v-chip) {
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
 }
 
-.multi-church__year.v-input--error .year-stepper {
-  border-color: rgb(var(--v-theme-error));
-}
+.multi-church__year {
+  flex: 1 1 220px;
+  width: auto;
+  min-width: 180px;
+  max-width: 320px;
 
-.year-stepper {
-  display: inline-flex;
-  align-items: stretch;
-  width: 148px;
-  height: 32px;
-  border: 1px solid #c5c5c5;
-  border-radius: 2px;
-  background: #fff;
-  overflow: hidden;
-}
-
-.year-stepper__value {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: none;
-  padding: 0 4px 0 8px;
-  background: transparent;
-  color: #222;
-  font-size: 0.875rem;
-}
-
-.year-stepper__clear {
-  border: 0;
-  background: transparent;
-  color: #8a8a8a;
-  padding: 0 4px;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-}
-
-.year-stepper__spin {
-  display: flex;
-  flex-direction: column;
-  width: 18px;
-  border-left: 1px solid #c5c5c5;
-}
-
-.year-stepper__spin button {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  background: #f3f3f3;
-  padding: 0;
-  cursor: pointer;
-}
-
-.year-stepper__spin button + button {
-  border-top: 1px solid #d0d0d0;
-}
-
-.year-stepper__caret {
-  width: 0;
-  height: 0;
-  border-left: 3.5px solid transparent;
-  border-right: 3.5px solid transparent;
-}
-
-.year-stepper__caret--up {
-  border-bottom: 4px solid #666;
-}
-
-.year-stepper__caret--down {
-  border-top: 4px solid #666;
+  :deep(.v-input__details) {
+    padding-inline: 0;
+  }
 }
 
 .multi-church__hint {
@@ -570,8 +515,46 @@ const onSubmit = async () => {
 
 .multi-church__actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 20px;
   padding: 28px 16px 16px;
+}
+
+.multi-church__formats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.file-format {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #333;
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.file-format input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #757575;
+  cursor: pointer;
+}
+
+.file-format__icon {
+  font-size: 18px;
+}
+
+.file-format__icon--pdf {
+  color: #e53935;
+}
+
+.file-format__icon--xls {
+  color: #217346;
 }
 
 .multi-church__generate {

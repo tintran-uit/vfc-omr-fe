@@ -5,6 +5,8 @@ interface ImportMetaEnv {
     readonly VITE_DEBUG: string;
     /** Idle auto-logout in minutes; empty or "null" disables it. */
     readonly VITE_IDLE_LOGOUT_MINUTES?: string;
+    /** First year in the Church Reporting Status year list. */
+    readonly VITE_REPORT_YEAR_FROM?: string;
     readonly VITE_FIREBASE_API_KEY: string;
     readonly VITE_FIREBASE_AUTH_DOMAIN: string;
     readonly VITE_FIREBASE_PROJECT_ID: string;

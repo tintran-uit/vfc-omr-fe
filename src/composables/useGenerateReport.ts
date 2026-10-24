@@ -6,7 +6,7 @@ import {
   type ReportEndpointKey,
   type ReportTypeGroups,
 } from "@/services/generateReportService";
-import { readBlobError } from "@/helpers/fileDownload";
+import { readBlobError, type ReportDownloadFormat } from "@/helpers/fileDownload";
 
 type Option = { id: string; name: string };
 
@@ -49,11 +49,12 @@ export function useGenerateReport(group: keyof ReportTypeGroups) {
     endpoint: ReportEndpointKey,
     payload: Record<string, unknown>,
     fallbackFilename: string,
+    format: ReportDownloadFormat = "file",
   ) => {
     errorMessage.value = "";
     submitting.value = true;
     try {
-      await generateReportService.generate(endpoint, payload, fallbackFilename);
+      await generateReportService.generate(endpoint, payload, fallbackFilename, format);
       return true;
     } catch (e) {
       errorMessage.value = (await readBlobError(e)) || t("generateReport.generateError");
@@ -80,6 +81,23 @@ export function yearOptions(back = 15, forward = 1): Option[] {
   const years: Option[] = [];
 
   for (let year = current + forward; year >= current - back; year--) {
+    years.push({ id: String(year), name: String(year) });
+  }
+
+  return years;
+}
+
+const DEFAULT_REPORT_YEAR_FROM = 1980;
+
+/** Church Reporting Status years: configured start year through the current year. */
+export function reportYearOptions(): Option[] {
+  const configured = Number(import.meta.env.VITE_REPORT_YEAR_FROM);
+  const start = Number.isInteger(configured) && configured > 0 ? configured : DEFAULT_REPORT_YEAR_FROM;
+  const current = new Date().getFullYear();
+  const from = Math.min(start, current);
+  const years: Option[] = [];
+
+  for (let year = current; year >= from; year--) {
     years.push({ id: String(year), name: String(year) });
   }
 

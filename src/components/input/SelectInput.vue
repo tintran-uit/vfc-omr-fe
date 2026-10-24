@@ -20,6 +20,7 @@ const props = withDefaults(
     labelOnField?: boolean
     disabled?: boolean
     clearable?: boolean
+    chipCloseIcon?: string
   }>(),
   {
     rules: () => [],
@@ -57,7 +58,17 @@ const resolvedLabel = computed(() => (props.label ? t(props.label) : undefined))
       scroll-strategy="close"
       @update:modelValue="emit('change', $event)"
       v-bind="$attrs"
-    />
+    >
+      <template
+        v-if="chipCloseIcon"
+        #chip="{ props: chipProps }"
+      >
+        <v-chip
+          v-bind="chipProps"
+          :close-icon="chipCloseIcon"
+        />
+      </template>
+    </v-autocomplete>
 </template>
 
 <style scoped lang="scss">

@@ -26,48 +26,118 @@ const { t } = useI18n();
 
 const items = ref<UserOption[]>([]);
 const loading = ref(false);
+const loadingMore = ref(false);
+const page = ref(1);
+const itemsPerPage = 25;
 const searchQuery = ref("");
+const noMoreItems = ref(false);
 let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+let isSelecting = false;
+let selectedItem: UserOption | null = null;
 
 const resolvedLabel = computed(() => (props.label ? t(props.label) : ""));
 const translatedPlaceholder = computed(() => (props.placeholder ? t(props.placeholder) : ""));
 
-const mergeItems = (incoming: UserOption[]) => {
-  const merged = new Map(items.value.map((item) => [String(item.id), item]));
-  incoming.forEach((item) => merged.set(String(item.id), item));
-  items.value = Array.from(merged.values());
-};
+const fetchItems = async (reset = false) => {
+  if (reset) {
+    page.value = 1;
+    items.value = [];
+    noMoreItems.value = false;
+  }
 
-const fetchItems = async (name = "") => {
-  loading.value = true;
+  if (noMoreItems.value) return;
+
+  loading.value = page.value === 1;
+  loadingMore.value = page.value > 1;
+
   try {
-    const params: Record<string, unknown> = { limit: 25, page: 1 };
-    if (name) params.name = name;
+    const params: { limit: number; page: number; name?: string } = {
+      limit: itemsPerPage,
+      page: page.value,
+    };
 
-    const data = await userService.getList(params);
-    mergeItems((data?.items || []).map((item: any) => ({ id: item.id, name: item.name })));
-  } catch (e) {
-    console.error("Error fetching users:", e);
+    if (searchQuery.value) {
+      params.name = searchQuery.value;
+    }
+
+    const data = await userService.getList(params, false);
+
+    noMoreItems.value = !data.has_next;
+
+    const newItems = (data.items || []).map((item: any) => ({
+      id: item.id,
+      name: item.name,
+    }));
+
+    const merged = [...items.value, ...newItems];
+    const unique = merged.filter(
+      (item, index, self) => index === self.findIndex((entry) => entry.id === item.id),
+    );
+
+    items.value = unique;
+
+    if (selectedItem && !items.value.find((item) => item.id === selectedItem!.id)) {
+      items.value.push(selectedItem);
+    }
+
+    page.value++;
+  } catch (error) {
+    console.error("Error fetching users:", error);
   } finally {
     loading.value = false;
+    loadingMore.value = false;
   }
 };
 
 const fetchItem = async (id: UserId) => {
   try {
     const data = await userService.get(id, false);
-    if (data) mergeItems([{ id: data.id, name: data.name }]);
-  } catch (e) {
-    console.error("Error fetching user by id:", e);
+    if (data) {
+      selectedItem = { id: data.id, name: data.name };
+
+      if (!items.value.find((item) => item.id === selectedItem!.id)) {
+        items.value.push(selectedItem);
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching user by id:", error);
+  }
+};
+
+const onFocus = () => {
+  if (items.value.length === 0) {
+    fetchItems();
   }
 };
 
 function onSearch(query: string) {
+  if (isSelecting) return;
+
   if (searchTimeout) clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => fetchItems((query || "").trim()), 400);
+
+  searchTimeout = setTimeout(() => {
+    fetchItems(true);
+  }, 400);
 }
 
-onMounted(() => fetchItems());
+function onUpdateModelValue(value: UserId | null) {
+  isSelecting = true;
+  selectedItem = items.value.find((item) => item.id === value) || null;
+  setTimeout(() => {
+    isSelecting = false;
+  }, 0);
+}
+
+function onIntersect(isIntersecting: boolean) {
+  if (!isIntersecting) return;
+  if (loadingMore.value || noMoreItems.value) return;
+
+  fetchItems();
+}
+
+onMounted(() => {
+  fetchItems();
+});
 
 watch(
   () => modelValue.value,
@@ -102,6 +172,21 @@ watch(
     :hide-details="hideDetails"
     :rules="rules"
     no-filter
+    @focus="onFocus"
     @update:search="onSearch"
-  />
+    @update:model-value="onUpdateModelValue"
+  >
+    <template #append-item>
+      <div
+        v-intersect="onIntersect"
+        class="text-center py-2"
+      >
+        <v-progress-circular
+          v-if="loadingMore"
+          indeterminate
+          color="primary"
+        />
+      </div>
+    </template>
+  </v-autocomplete>
 </template>

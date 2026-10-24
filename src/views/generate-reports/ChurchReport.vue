@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import ChurchSelectInput from "@/components/input/ChurchSelectInput.vue";
 import SelectInput from "@/components/input/SelectInput.vue";
 import { monthOptions, yearOptions } from "@/composables/useGenerateReport";
 import { MSC_REPORT_TYPE } from "@/constants/reportConstant";
 import { readBlobError } from "@/helpers/fileDownload";
-import { generateReportService, type ReportEndpointKey } from "@/services/generateReportService";
+import {
+  generateReportService,
+  type ReportEndpointKey,
+  type ReportTypeGroups,
+} from "@/services/generateReportService";
 
 defineOptions({ name: "GenerateReportChurch" });
 
@@ -149,33 +153,47 @@ const REPORTS: ReportDefinition[] = [
   },
 ];
 
+const ENDPOINT_GROUPS: Partial<Record<ReportEndpointKey, keyof ReportTypeGroups>> = {
+  church: "church",
+  churchGraph: "church_reports_graph_reports",
+  visitReport: "visit_report",
+};
+
 const { t } = useI18n();
 
 const formRef = ref();
 const churchId = ref<number | null>(null);
-const reportType = ref<string>(REPORTS[0].id);
+const reportType = ref("");
 const endMonth = ref<string | null>(String(new Date().getMonth() + 1));
 const currentYear = new Date().getFullYear();
 const endYear = ref<string | null>(String(currentYear));
 const months = computed(() => monthOptions(t));
 const years = yearOptions(currentYear - 1500, 5);
 const submitting = ref(false);
+const loadingOptions = ref(true);
 const errorMessage = ref("");
+const allowedIds = ref<Set<string>>(new Set());
+
+const visibleReports = computed(() =>
+  REPORTS.filter((report) => allowedIds.value.has(report.id)),
+);
 
 const selectedReport = computed(
-  () => REPORTS.find((report) => report.id === reportType.value) ?? REPORTS[0],
+  () => visibleReports.value.find((report) => report.id === reportType.value) ?? null,
 );
-const showsMonth = computed(() => !selectedReport.value.yearOnly);
+const showsMonth = computed(() => (selectedReport.value ? !selectedReport.value.yearOnly : false));
 
 const groups = computed(() =>
   GROUPS.map((group) => ({
     ...group,
-    options: REPORTS.filter((report) => report.group === group.key).map((report) => ({
-      ...report,
-      name: t(report.nameKey),
-      hint: report.hintKey ? t(report.hintKey) : "",
-    })),
-  })),
+    options: visibleReports.value
+      .filter((report) => report.group === group.key)
+      .map((report) => ({
+        ...report,
+        name: t(report.nameKey),
+        hint: report.hintKey ? t(report.hintKey) : "",
+      })),
+  })).filter((group) => group.options.length),
 );
 
 const required = (field: string) => (v: unknown) =>
@@ -214,6 +232,27 @@ const onSubmit = async () => {
     submitting.value = false;
   }
 };
+
+onMounted(async () => {
+  loadingOptions.value = true;
+  try {
+    const data = await generateReportService.getFormData();
+    const ids = new Set<string>();
+    for (const report of REPORTS) {
+      const group = ENDPOINT_GROUPS[report.endpoint];
+      const values = group ? data.report_types?.[group] ?? [] : [];
+      if (values.includes(report.id)) ids.add(report.id);
+    }
+    allowedIds.value = ids;
+    reportType.value = REPORTS.find((report) => ids.has(report.id))?.id ?? "";
+  } catch (e) {
+    console.error("Failed to load church report options:", e);
+    errorMessage.value = t("generateReport.loadError");
+    allowedIds.value = new Set();
+  } finally {
+    loadingOptions.value = false;
+  }
+});
 </script>
 
 <template>
@@ -470,6 +509,7 @@ const onSubmit = async () => {
             type="submit"
             class="church-report__generate"
             :loading="submitting"
+            :disabled="loadingOptions || !reportType"
           >
             {{ $t("generateReport.generateShort") }}
           </v-btn>

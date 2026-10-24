@@ -1,5 +1,13 @@
 import apiClient from "@/services/apiClient";
-import { downloadBlob, filenameFromResponse } from "@/helpers/fileDownload";
+import {
+  downloadBlob,
+  downloadFromUrl,
+  filenameFromResponse,
+  readBlobError,
+  reportFilesFromPayload,
+  type ReportDownloadFormat,
+} from "@/helpers/fileDownload";
+import { useMessageStore } from "@/stores/messageStore";
 
 export type ReportTypeGroups = {
   church?: string[];
@@ -35,17 +43,45 @@ const ENDPOINTS = {
 
 export type ReportEndpointKey = keyof typeof ENDPOINTS;
 
+async function filesFromDownloadBody(body: unknown, format: ReportDownloadFormat) {
+  if (!(body instanceof Blob)) return reportFilesFromPayload(body, format);
+
+  const first = await body.slice(0, 1).text();
+  if (first !== "{") return null;
+
+  const parsed = JSON.parse(await body.text()) as { success?: boolean; message?: string };
+  if (parsed?.success === false) {
+    throw parsed;
+  }
+
+  return reportFilesFromPayload(parsed, format);
+}
+
 async function generate(
   endpoint: ReportEndpointKey,
   payload: Record<string, unknown>,
   fallbackFilename: string,
+  format: ReportDownloadFormat = "file",
 ) {
-  const response = await apiClient.postDownload(ENDPOINTS[endpoint], payload);
-  const filename = filenameFromResponse(response?.headers, fallbackFilename);
+  try {
+    const response = await apiClient.postDownload(ENDPOINTS[endpoint], payload);
+    const files = await filesFromDownloadBody(response?.data, format);
 
-  downloadBlob(response.data as Blob, filename);
+    if (files?.length) {
+      for (const file of files) {
+        await downloadFromUrl(file.url, file.filename);
+      }
+      return files[0].filename;
+    }
 
-  return filename;
+    const filename = filenameFromResponse(response?.headers, fallbackFilename);
+    downloadBlob(response.data as Blob, filename);
+
+    return filename;
+  } catch (error) {
+    useMessageStore().error((await readBlobError(error)) || "Failed to generate report");
+    throw error;
+  }
 }
 
 function unwrapFormData(resp: unknown): GenerateReportFormData {

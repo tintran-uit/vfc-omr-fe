@@ -71,6 +71,54 @@ const MainRoutes = {
       meta: { title: "pageTitle.churchDetail" },
     },
     {
+      name: "WatchlistList",
+      path: "/watchlists",
+      component: () => import("@/views/watchlists/ListWatchlist.vue"),
+      meta: { title: "watchlist.listTitle" },
+    },
+    {
+      name: "WatchlistAdd",
+      path: "/watchlists/add",
+      component: () => import("@/views/watchlists/WatchlistForm.vue"),
+      meta: { title: "watchlist.addTitle" },
+    },
+    {
+      name: "WatchlistEdit",
+      path: "/watchlists/:id/edit",
+      component: () => import("@/views/watchlists/WatchlistForm.vue"),
+      meta: { title: "watchlist.editTitle" },
+    },
+    {
+      name: "OverseerGoalList",
+      path: "/overseer-goals",
+      component: () => import("@/views/overseer-goals/ListOverseerGoal.vue"),
+      meta: { title: "overseerGoal.listTitle" },
+    },
+    {
+      name: "OverseerGoalAdd",
+      path: "/overseer-goals/add",
+      component: () => import("@/views/overseer-goals/OverseerGoalForm.vue"),
+      meta: { title: "overseerGoal.addTitle" },
+    },
+    {
+      name: "OverseerGoalDefaults",
+      path: "/overseer-goals/defaults",
+      component: () => import("@/views/overseer-goals/OverseerGoalGrid.vue"),
+      meta: { title: "overseerGoal.defaultsPageTitle" },
+    },
+    {
+      name: "OverseerGoalEdit",
+      path: "/overseer-goals/:id/edit",
+      component: () => import("@/views/overseer-goals/OverseerGoalForm.vue"),
+      meta: { title: "overseerGoal.editTitle" },
+    },
+    {
+      name: "OverseerGoalGoals",
+      path: "/overseer-goals/:id/goals",
+      component: () => import("@/views/overseer-goals/OverseerGoalGrid.vue"),
+      meta: { title: "overseerGoal.goalsPageTitle" },
+    },
+    {
       name: "MonthlyDataAdd",
       path: "/churches/:id/monthly-data/add",
       component: () => import("@/views/monthly-data/Add.vue"),
@@ -105,6 +153,12 @@ const MainRoutes = {
       path: "users/overseers",
       component: () => import("@/views/users/ListOverseerUser.vue"),
       meta: { title: "user.listOverseerTitle" },
+    },
+    {
+      name: "UserOverseerAssign",
+      path: "users/overseers/:id/assignments",
+      component: () => import("@/views/users/AssignOverseer.vue"),
+      meta: { title: "user.assignTitle" },
     },
     {
       name: "WorshipServiceList",
@@ -487,6 +541,30 @@ const MainRoutes = {
       path: "faqs/:id",
       component: () => import("@/views/faqs/DetailFaq.vue"),
       meta: { permissions: ["faq.read"], title: "faq.detailTitle" },
+    },
+    {
+      name: "EventTypeList",
+      path: "event-types",
+      component: () => import("@/views/event-types/ListEventType.vue"),
+      meta: { adminOnly: true, permissions: ["event-types.read"], title: "eventType.listTitle" },
+    },
+    {
+      name: "EventTypeAdd",
+      path: "event-types/add",
+      component: () => import("@/views/event-types/AddEventType.vue"),
+      meta: { adminOnly: true, permissions: ["event-types.create"], title: "eventType.addTitle" },
+    },
+    {
+      name: "EventTypeEdit",
+      path: "event-types/:id/edit",
+      component: () => import("@/views/event-types/EditEventType.vue"),
+      meta: { adminOnly: true, permissions: ["event-types.update"], title: "eventType.editTitle" },
+    },
+    {
+      name: "BibleVerse",
+      path: "settings/bible-verse",
+      component: () => import("@/views/settings/BibleVerse.vue"),
+      meta: { adminOnly: true, title: "bibleVerse.title" },
     },
     // {
     //   name: 'MonthlyDataAdd',

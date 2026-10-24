@@ -1,35 +1,57 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from "@/constants/roleConstant";
 import { useGenerateReport } from "@/composables/useGenerateReport";
+import { useAuthStore } from "@/stores/authStore";
 
 defineOptions({ name: "GenerateReportMyDirectory" });
 
-const { t } = useI18n();
+const { t, te } = useI18n();
+const authStore = useAuthStore();
 
-const { reportTypeOptions, errorMessage, submitting, loadingFormData, generate } =
-  useGenerateReport("my_directory");
+const { errorMessage, submitting, loadingFormData, generate } = useGenerateReport("my_directory");
 
-const REPORT_CODES: Record<string, string> = {
-  name: "[# 23.1]",
-  geo: "[# 23.2]",
-};
+const DIRECTORY_OPTIONS = [
+  {
+    id: "name",
+    code: "[# 23.1]",
+    labelKey: "generateReport.types.name",
+    fallback: "All users sorted by Name",
+  },
+  {
+    id: "geo",
+    code: "[# 23.2]",
+    labelKey: "generateReport.types.geo",
+    fallback: "All users sorted by Geographical Region",
+  },
+  {
+    id: "overseers",
+    code: "[# 23.3]",
+    labelKey: "generateReport.types.overseers",
+    fallback: "All overseers sorted by Geographical Region",
+  },
+] as const;
 
 const formRef = ref();
 const sortBy = ref<string | null>(null);
 
+const allowedSorts = computed(() => {
+  const roleId = Number(authStore.user?.role?.id);
+  if (roleId === ROLE_PASTOR_LEADER) return ["name", "geo"];
+  if (roleId === ROLE_ADMIN || roleId === ROLE_OVERSEER || roleId === ROLE_SUPER_ADMIN) {
+    return ["overseers"];
+  }
+  return [];
+});
+
 const options = computed(() =>
-  reportTypeOptions.value.map((option) => ({
-    ...option,
-    code: REPORT_CODES[option.id] ?? "",
+  DIRECTORY_OPTIONS.filter((option) => allowedSorts.value.includes(option.id)).map((option) => ({
+    id: option.id,
+    code: option.code,
+    name: te(option.labelKey) ? t(option.labelKey) : option.fallback,
   })),
 );
-
-watch(options, (items) => {
-  if (sortBy.value && !items.some((option) => option.id === sortBy.value)) {
-    sortBy.value = null;
-  }
-});
 
 const required = (field: string) => (v: unknown) =>
   (v !== null && v !== undefined && v !== "") || t("validation.required", { field });
@@ -249,20 +271,25 @@ const onSubmit = async () => {
 }
 
 .directory-report__options {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: 16px max-content max-content;
+  column-gap: 10px;
+  row-gap: 6px;
+  width: max-content;
+  max-width: 100%;
+  align-items: center;
 }
 
 .directory-option {
-  display: grid;
-  grid-template-columns: 16px minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-  min-height: 24px;
+  display: contents;
   color: #333;
   font-size: 0.875rem;
   line-height: 1.3;
+  cursor: pointer;
+}
+
+.directory-option input,
+.directory-option span {
   cursor: pointer;
 }
 
@@ -271,10 +298,10 @@ const onSubmit = async () => {
   height: 16px;
   margin: 0;
   accent-color: #757575;
-  cursor: pointer;
 }
 
 .directory-option__code {
+  margin-left: 8px;
   color: #1f9d3a;
   font-size: 0.875rem;
   white-space: nowrap;

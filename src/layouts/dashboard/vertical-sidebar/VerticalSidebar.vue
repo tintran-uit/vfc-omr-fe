@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
 import sidebarItems from './sidebarItem';
 import type { menu } from './sidebarItem';
@@ -9,21 +9,23 @@ import NavItem from './NavItem/NavItem.vue';
 import NavCollapse from './NavCollapse/NavCollapse.vue';
 
 import { useAuthStore } from '@/stores/authStore';
+import { useVerseStore } from '@/stores/verseStore';
 import { usePastorChurchStore } from '@/stores/pastorChurchStore';
 import { useNavLogoStore } from '@/stores/navLogoStore';
 import defaultLogo from '@/assets/images/logo/logo.png';
 
-function filterNavigationByRole(items: menu[], isPastor: boolean): menu[] {
+function filterNavigationByRole(items: menu[], isPastor: boolean, isAdmin: boolean): menu[] {
   return items
     .filter((item) => {
       if (item.pastorOnly && !isPastor) return false;
       if (item.nonPastorOnly && isPastor) return false;
+      if (item.adminOnly && !isAdmin) return false;
       return true;
     })
     .map((item) => ({
       ...item,
       children: item.children
-        ? filterNavigationByRole(item.children, isPastor)
+        ? filterNavigationByRole(item.children, isPastor, isAdmin)
         : undefined,
     }));
 }
@@ -105,6 +107,7 @@ function resolveSidebarLinks(items: menu[], churchId: number | string | null | u
 }
 
 const authStore = useAuthStore();
+const verseStore = useVerseStore();
 const pastorChurchStore = usePastorChurchStore();
 const navLogoStore = useNavLogoStore();
 const customizer = useCustomizerStore();
@@ -119,9 +122,15 @@ const sidebarLogoAlt = computed(() =>
 const sidebarMenu = computed(() => {
   const isPastor = authStore.isRolePastorLeader;
   const churchId = isPastor ? pastorChurchStore.selectedChurchId : undefined;
-  const roleFiltered = filterNavigationByRole(sidebarItems, isPastor);
+  const roleFiltered = filterNavigationByRole(sidebarItems, isPastor, authStore.isRoleAdmin);
   const withResolvedLinks = resolveSidebarLinks(roleFiltered, churchId);
   return filterNavigationByPermissions(withResolvedLinks, (p) => authStore.can(p));
+});
+
+const verseText = computed(() => verseStore.body.replace(/\r\n/g, "\n").trim());
+
+onMounted(() => {
+  verseStore.fetch().catch(() => {});
 });
 </script>
 
@@ -169,6 +178,23 @@ const sidebarMenu = computed(() => {
           <!---End Single Item-->
         </template>
       </v-list>
+      <div
+        v-if="verseStore.heading || verseText"
+        class="sidebar-verse"
+      >
+        <div
+          v-if="verseStore.heading"
+          class="sidebar-verse__heading"
+        >
+          {{ verseStore.heading }}
+        </div>
+        <div
+          v-if="verseText"
+          class="sidebar-verse__body"
+        >
+          {{ verseText }}
+        </div>
+      </div>
     </perfect-scrollbar>
   </v-navigation-drawer>
 </template>

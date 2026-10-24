@@ -79,6 +79,13 @@ const adminPermissions = [
   'faq.update',
   'faq.delete',
 
+  'relating.request-info',
+
+  'event-types.read',
+  'event-types.create',
+  'event-types.update',
+  'event-types.delete',
+
   'report.uaog-search-log',
   'report.overseer-reg-goals',
   'report.overseer-goals-3yr',
@@ -86,9 +93,9 @@ const adminPermissions = [
   'report.overseer-access-rights',
 ];
 
-const superAdminPermissions = [
-  ...adminPermissions
-]
+const superAdminPermissions = adminPermissions.filter(
+  (permission) => !permission.startsWith('event-types.'),
+);
 
 function permissionsForRole(roleId: number | undefined | null): string[] {
   if (roleId === ROLE_PASTOR_LEADER) {
