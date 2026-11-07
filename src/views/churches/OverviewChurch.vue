@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore';
-import { computed, inject, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { useNavLogoStore } from '@/stores/navLogoStore';
+import { computed, inject, ref, shallowRef } from 'vue';
 import { useDisplay } from 'vuetify'
 import { useI18n } from 'vue-i18n'
 import { formatDate } from '@/helpers/dateTimeHelper';
@@ -34,6 +33,7 @@ import { formatCompactCurrency, formatCurrency } from '@/helpers/appHelper';
 
 defineProps<{
   roleLabel?: string
+  coverHeader?: boolean
 }>()
 
 const { smAndDown, mdAndUp } = useDisplay()
@@ -45,7 +45,6 @@ const metricHelpDialog = ref(false)
 const metricHelpTitle = ref('')
 const metricHelpContent = ref('')
 const authStore = useAuthStore();
-const navLogoStore = useNavLogoStore();
 const churchDetail = inject('churchDetail')
 const dashboardData = inject('dashboardData')
 const pastor = inject('pastor')
@@ -56,18 +55,6 @@ const regionLogoUrl = computed(
 const regionLogoAlt = computed(
   () => dashboardData.value?.dashboard_info?.church_region_name as string | undefined
 );
-
-watch(
-  [regionLogoUrl, regionLogoAlt],
-  ([url, alt]) => {
-    navLogoStore.setOverride(url, alt);
-  },
-  { immediate: true }
-);
-
-onUnmounted(() => {
-  navLogoStore.clearOverride();
-});
 
 const actions = computed(() => {
   if (!churchDetail.value?.id) return [];
@@ -323,8 +310,105 @@ const openMetricHelp = (metric: MetricItem) => {
 </script>
 
 <template>
-  <!-- Header: church block and pastor block stay separate -->
-  <v-card flat class="overview-church-header mb-4">
+  <!-- Pastor dashboard: pastor info on the left, church region logo on the right. -->
+  <v-card
+    v-if="coverHeader"
+    flat
+    class="overview-church-header overview-church-profile mb-4"
+  >
+    <div
+      v-if="churchDetail?.photo_url"
+      class="overview-church-cover"
+    >
+      <img
+        :src="churchDetail.photo_url"
+        :alt="churchDetail?.name || ''"
+        class="overview-church-cover__img"
+      />
+    </div>
+    <div class="overview-church-profile__row">
+      <div class="overview-church-profile__main">
+        <v-avatar
+          class="overview-church-profile__avatar"
+          :size="isMobile ? 72 : 96"
+        >
+          <v-img
+            :src="pastor?.photo_url || defaultAvatar"
+            cover
+          />
+        </v-avatar>
+        <div class="overview-church-profile__text">
+          <div class="overview-church-header__title-row">
+            <slot
+              name="switch"
+              :title="churchDetail?.name"
+            >
+              <h1 class="overview-church-header__title">
+                {{ churchDetail?.name }}
+              </h1>
+            </slot>
+          </div>
+          <div class="overview-church-header__meta">
+            <div
+              v-if="locationText"
+              class="overview-church-header__location"
+            >
+              {{ locationText }}
+            </div>
+            <div
+              v-if="isDashboardReady"
+              class="overview-church-header__status"
+            >
+              <div
+                class="overview-church-header__report"
+                v-html="lastReportHtml"
+              />
+              <div
+                v-if="hasPastoralVisit"
+                class="overview-church-header__visit"
+              >
+                <v-icon
+                  icon="$check"
+                  size="15"
+                  class="overview-church-header__visit-icon me-1"
+                />
+                <span
+                  class="overview-church-header__visit-text"
+                  v-html="visitByHtml"
+                />
+              </div>
+              <div
+                v-else
+                class="overview-church-header__visit overview-church-header__visit--needed"
+                v-html="t('church.needsVisit')"
+              />
+            </div>
+          </div>
+          <div
+            v-if="pastorDisplayName"
+            class="overview-church-profile__name"
+          >
+            {{ pastorDisplayName }}
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="regionLogoUrl"
+        class="overview-church-profile__region"
+      >
+        <img
+          :src="regionLogoUrl"
+          :alt="regionLogoAlt || ''"
+        />
+      </div>
+    </div>
+  </v-card>
+
+  <v-card
+    v-else
+    flat
+    class="overview-church-header mb-4"
+  >
     <v-card-text class="pa-4 pa-md-5">
       <div class="overview-church-header__row">
         <div class="overview-church-header__church">
@@ -634,6 +718,101 @@ $app-text: #1c1c1e;
 $app-caption: #636366;
 $app-green: #248a3d;
 $app-orange: #ff9500;
+
+.overview-church-profile {
+  overflow: hidden;
+}
+
+.overview-church-cover {
+  aspect-ratio: 851 / 315;
+  overflow: hidden;
+  background: #e4e6eb;
+}
+
+.overview-church-cover__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.overview-church-profile__row {
+  display: grid;
+  grid-template-columns: minmax(0, 9fr) minmax(0, 3fr);
+  align-items: center;
+  column-gap: 24px;
+  padding: 20px 24px;
+}
+
+.overview-church-profile__main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.overview-church-profile__avatar {
+  flex: 0 0 auto;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.overview-church-profile__text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.overview-church-profile__name {
+  margin-top: 8px;
+  color: rgb(var(--v-theme-primary));
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.overview-church-profile .overview-church-header__meta {
+  margin-top: 4px;
+  gap: 40px;
+}
+
+.overview-church-profile .overview-church-header__location {
+  margin-top: 0;
+  flex: 0 0 auto;
+}
+
+.overview-church-profile .overview-church-header__status {
+  margin-top: 0;
+  text-align: right;
+  min-width: 0;
+}
+
+.overview-church-profile__region {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.overview-church-profile__region img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .overview-church-profile__row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 16px;
+    padding: 16px;
+  }
+
+  .overview-church-profile__region {
+    justify-content: flex-start;
+  }
+}
 
 .overview-church-header__row {
   display: flex;

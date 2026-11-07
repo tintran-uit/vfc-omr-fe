@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { FileExcelOutlined, FilePdfOutlined } from "@ant-design/icons-vue";
+import ChurchRegionSelectInput from "@/components/input/ChurchRegionSelectInput.vue";
+import CountrySelectInput from "@/components/input/CountrySelectInput.vue";
+import GeographicalRegionSelectInput from "@/components/input/GeographicalRegionSelectInput.vue";
+import LanguageRegionSelectInput from "@/components/input/LanguageRegionSelectInput.vue";
 import SelectInput from "@/components/input/SelectInput.vue";
 import { useGenerateReport, yearOptions } from "@/composables/useGenerateReport";
-import { useChurchRegionStore } from "@/stores/churchRegionStore";
-import { useCountryStore } from "@/stores/countryStore";
-import { useGeographicalRegionStore } from "@/stores/geographicalRegionStore";
-import { languageRegionService } from "@/services/languageRegionService";
 
 defineOptions({ name: "GenerateReportMultiChurch" });
 
@@ -32,9 +32,6 @@ const REPORTS = [
 ] as const;
 
 const { t, te } = useI18n();
-const geographicalRegionStore = useGeographicalRegionStore();
-const churchRegionStore = useChurchRegionStore();
-const countryStore = useCountryStore();
 
 const { reportTypeOptions, errorMessage, submitting, loadingFormData, generate } =
   useGenerateReport("multi_church");
@@ -44,15 +41,11 @@ const geographicalRegionIds = ref<number[]>([]);
 const churchRegionIds = ref<number[]>([]);
 const languageRegionIds = ref<number[]>([]);
 const countryIds = ref<number[]>([]);
-const languageRegions = ref<any[]>([]);
 const reportType = ref<string | null>(null);
 const currentYear = new Date().getFullYear();
 const endYear = ref<string | null>(String(currentYear));
 const years = yearOptions(currentYear - 1500, 5);
 
-const geographicalRegions = computed(() => geographicalRegionStore.asyncOptions);
-const churchRegions = computed(() => churchRegionStore.asyncOptions);
-const countries = computed(() => countryStore.asyncOptions);
 const showsYear = computed(() => reportType.value === VISIT_REPORT_TYPE);
 const showsFileType = computed(() => reportType.value === VISIT_REPORT_TYPE);
 const fileType = ref<"pdf" | "xls">("pdf");
@@ -91,14 +84,6 @@ watch(
 
 watch(reportType, () => {
   fileType.value = "pdf";
-});
-
-onMounted(async () => {
-  try {
-    languageRegions.value = (await languageRegionService.getAll()) || [];
-  } catch (e) {
-    console.error("Failed to load language regions:", e);
-  }
 });
 
 const onSubmit = async () => {
@@ -199,12 +184,9 @@ const onSubmit = async () => {
           <div class="multi-church__label">
             {{ $t("generateReport.labelGeographicalRegions") }}
           </div>
-          <SelectInput
+          <GeographicalRegionSelectInput
             v-model="geographicalRegionIds"
             class="multi-church__select"
-            :items="geographicalRegions"
-            item-title="name"
-            item-value="id"
             multiple
             chips
             closable-chips
@@ -219,12 +201,9 @@ const onSubmit = async () => {
           <div class="multi-church__label">
             {{ $t("generateReport.labelChurchRegions") }}
           </div>
-          <SelectInput
+          <ChurchRegionSelectInput
             v-model="churchRegionIds"
             class="multi-church__select"
-            :items="churchRegions"
-            item-title="name"
-            item-value="id"
             multiple
             chips
             closable-chips
@@ -239,12 +218,9 @@ const onSubmit = async () => {
           <div class="multi-church__label">
             {{ $t("generateReport.labelLanguageRegions") }}
           </div>
-          <SelectInput
+          <LanguageRegionSelectInput
             v-model="languageRegionIds"
             class="multi-church__select"
-            :items="languageRegions"
-            item-title="name"
-            item-value="id"
             multiple
             chips
             closable-chips
@@ -294,12 +270,10 @@ const onSubmit = async () => {
           <div class="multi-church__label">
             {{ $t("mainMenu.countries") }}
           </div>
-          <SelectInput
+          <CountrySelectInput
             v-model="countryIds"
             class="multi-church__select"
-            :items="countries"
-            item-title="name"
-            item-value="id"
+            include-all
             multiple
             chips
             closable-chips

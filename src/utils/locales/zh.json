@@ -643,6 +643,7 @@
     "churchStatusTitle": "教会报告状态",
     "churchStatusDescription": "某位领袖所辖教会的报告状态。",
     "multiChurchTitle": "Other Reports on Churches",
+    "optionAll": "All",
     "multiChurchDescription": "按所选区域汇总的报告。",
     "multiChurchYearHint": "如果选择 {year}，OMR 将生成 {year} 年 1 月至 12 月的报告。",
     "leadersSpreadsheetTitle": "领袖电子表格报告",

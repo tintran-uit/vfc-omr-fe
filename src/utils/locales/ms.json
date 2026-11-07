@@ -643,6 +643,7 @@
     "churchStatusTitle": "Status Laporan Gereja",
     "churchStatusDescription": "Status laporan gereja di bawah seorang pemimpin.",
     "multiChurchTitle": "Other Reports on Churches",
+    "optionAll": "All",
     "multiChurchDescription": "Laporan gabungan bagi wilayah yang anda pilih.",
     "multiChurchYearHint": "Jika anda memilih {year}, OMR akan menjana laporan dari Jan {year} hingga Dis {year}.",
     "leadersSpreadsheetTitle": "Laporan Hamparan Pemimpin",

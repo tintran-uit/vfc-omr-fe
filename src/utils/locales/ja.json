@@ -643,6 +643,7 @@
     "churchStatusTitle": "教会の報告状況",
     "churchStatusDescription": "リーダーが担当する教会の報告状況。",
     "multiChurchTitle": "Other Reports on Churches",
+    "optionAll": "All",
     "multiChurchDescription": "選択した地域をまとめたレポート。",
     "multiChurchYearHint": "{year} を選ぶと、OMR は {year} 年1月から12月までのレポートを生成します。",
     "leadersSpreadsheetTitle": "リーダー表計算レポート",

@@ -33,7 +33,7 @@ const chartContainer = ref(null)
 const hiddenLines = ref(new Set())
 
 const MIN_POINT_WIDTH = 64 // px / point → chỉnh tùy thích
-const isMobile = ref(false)
+const isMobile = ref(typeof window !== 'undefined' && window.innerWidth < 768)
 
 function updateBreakpoint() {
   isMobile.value = window.innerWidth < 768
@@ -79,6 +79,7 @@ onMounted(() => {
   updateBreakpoint()
   window.addEventListener('resize', updateBreakpoint)
   window.addEventListener('resize', handleResize)
+  nextTick(drawChart)
 })
 
 onBeforeUnmount(() => {
@@ -118,6 +119,7 @@ function drawChart() {
     ? Math.max(data.length * MIN_POINT_WIDTH, wrapperWidth)
     : wrapperWidth
   const width = contentWidth - margin.left - margin.right
+  container.style.width = `${contentWidth}px`
 
   const svg = d3
     .select(container)

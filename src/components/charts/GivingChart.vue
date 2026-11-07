@@ -30,7 +30,7 @@ const hiddenLines = ref(new Set<string>())
 
 // ===== CHỈ PHỤC VỤ RESPONSIVE (MOBILE) =====
 const MIN_POINT_WIDTH = 64
-const isMobile = ref(false)
+const isMobile = ref(typeof window !== 'undefined' && window.innerWidth < 768)
 
 function updateBreakpoint() {
   isMobile.value = window.innerWidth < 768
@@ -63,6 +63,7 @@ onMounted(() => {
   updateBreakpoint()
   window.addEventListener('resize', updateBreakpoint)
   window.addEventListener('resize', handleResize)
+  nextTick(drawChart)
 })
 
 onBeforeUnmount(() => {
@@ -119,6 +120,7 @@ function drawChart() {
     : wrapperWidth
 
   const width = contentWidth - margin.left - margin.right
+  container.style.width = `${contentWidth}px`
   const height = container.clientHeight - margin.top - margin.bottom
 
   const svg = d3

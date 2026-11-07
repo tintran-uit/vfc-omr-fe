@@ -11,8 +11,6 @@ import NavCollapse from './NavCollapse/NavCollapse.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useVerseStore } from '@/stores/verseStore';
 import { usePastorChurchStore } from '@/stores/pastorChurchStore';
-import { useNavLogoStore } from '@/stores/navLogoStore';
-import defaultLogo from '@/assets/images/logo/logo.png';
 
 function filterNavigationByRole(items: menu[], isPastor: boolean, isAdmin: boolean): menu[] {
   return items
@@ -109,15 +107,8 @@ function resolveSidebarLinks(items: menu[], churchId: number | string | null | u
 const authStore = useAuthStore();
 const verseStore = useVerseStore();
 const pastorChurchStore = usePastorChurchStore();
-const navLogoStore = useNavLogoStore();
 const customizer = useCustomizerStore();
 
-const sidebarLogoSrc = computed(() =>
-  navLogoStore.hasOverride ? navLogoStore.overrideUrl! : defaultLogo
-);
-const sidebarLogoAlt = computed(() =>
-  navLogoStore.hasOverride ? (navLogoStore.overrideAlt || 'Logo') : 'Logo'
-);
 /* Re-compute when permissions change (e.g. after login or role-based sync from authStore). */
 const sidebarMenu = computed(() => {
   const isPastor = authStore.isRolePastorLeader;
@@ -151,12 +142,7 @@ onMounted(() => {
     <div class="pa-5">
       <div class="logo">
           <RouterLink :to="{name: 'Dashboard'}" aria-label="logo">
-            <img
-              :src="sidebarLogoSrc"
-              :alt="sidebarLogoAlt"
-              height="50"
-              class="sidebar-logo"
-            />
+            <img src="@/assets/images/logo/logo.png" alt="Logo" height="50" />
           </RouterLink>
         </div>
     </div>

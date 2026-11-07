@@ -649,6 +649,7 @@
     "churchStatusTitle": "Status de Relatórios das Igrejas",
     "churchStatusDescription": "Status de relatórios das igrejas sob um líder.",
     "multiChurchTitle": "Other Reports on Churches",
+    "optionAll": "All",
     "multiChurchDescription": "Relatórios combinados das regiões selecionadas.",
     "multiChurchYearHint": "Se você escolher {year}, o OMR gerará um relatório de jan {year} a dez {year}.",
     "leadersSpreadsheetTitle": "Relatórios de Planilha de Líderes",

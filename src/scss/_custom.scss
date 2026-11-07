@@ -699,15 +699,6 @@ input[type="number"] {
   }
 }
 
-/* Sidebar nav logo — default or church region override */
-.leftSidebar .logo .sidebar-logo {
-  display: block;
-  max-width: 100%;
-  height: 50px;
-  width: auto;
-  object-fit: contain;
-}
-
 /* Toàn app: input/textarea Vuetify thường ~16px — đồng bộ body-2 (0.875rem) + line-height */
 .v-application {
   .v-field__input,

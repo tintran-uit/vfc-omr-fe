@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { FileExcelOutlined, FilePdfOutlined } from "@ant-design/icons-vue";
 import ChurchSelectInput from "@/components/input/ChurchSelectInput.vue";
 import SelectInput from "@/components/input/SelectInput.vue";
 import { monthOptions, yearOptions } from "@/composables/useGenerateReport";
@@ -118,7 +119,7 @@ const REPORTS: ReportDefinition[] = [
   {
     id: "36_months_average_graph",
     code: "[# 13]",
-    hintKey: "generateReport.typeHints.monthlyAveragedData",
+    hintKey: "generateReport.typeHints.weeklyData",
     nameKey: "generateReport.churchGraph3Years",
     group: "graph",
     endpoint: "churchGraph",
@@ -153,6 +154,13 @@ const REPORTS: ReportDefinition[] = [
   },
 ];
 
+const PDF_ONLY_REPORTS = new Set([
+  "12_months_quick_look_graph",
+  "12_months_weekly_graph",
+  "12_months_average_graph",
+  "36_months_average_graph",
+]);
+
 const ENDPOINT_GROUPS: Partial<Record<ReportEndpointKey, keyof ReportTypeGroups>> = {
   church: "church",
   churchGraph: "church_reports_graph_reports",
@@ -173,6 +181,11 @@ const submitting = ref(false);
 const loadingOptions = ref(true);
 const errorMessage = ref("");
 const allowedIds = ref<Set<string>>(new Set());
+const fileType = ref<"pdf" | "xls">("pdf");
+
+watch(reportType, () => {
+  fileType.value = "pdf";
+});
 
 const visibleReports = computed(() =>
   REPORTS.filter((report) => allowedIds.value.has(report.id)),
@@ -182,6 +195,7 @@ const selectedReport = computed(
   () => visibleReports.value.find((report) => report.id === reportType.value) ?? null,
 );
 const showsMonth = computed(() => (selectedReport.value ? !selectedReport.value.yearOnly : false));
+const pdfOnly = computed(() => PDF_ONLY_REPORTS.has(reportType.value));
 
 const groups = computed(() =>
   GROUPS.map((group) => ({
@@ -220,11 +234,13 @@ const onSubmit = async () => {
 
   errorMessage.value = "";
   submitting.value = true;
+  const downloadPdf = pdfOnly.value || fileType.value === "pdf";
   try {
     await generateReportService.generate(
       selectedReport.value.endpoint,
       payload,
-      `${selectedReport.value.id}.pdf`,
+      `${selectedReport.value.id}.${downloadPdf ? "pdf" : "xlsx"}`,
+      downloadPdf ? "pdf" : "file",
     );
   } catch (e) {
     errorMessage.value = (await readBlobError(e)) || t("generateReport.generateError");
@@ -504,6 +520,31 @@ onMounted(async () => {
         </div>
 
         <div class="church-report__actions">
+          <div class="church-report__formats">
+            <label class="file-format">
+              <input
+                v-model="fileType"
+                type="radio"
+                name="church-report-file"
+                value="pdf"
+              />
+              <FilePdfOutlined class="file-format__icon file-format__icon--pdf" />
+              <span>PDF</span>
+            </label>
+            <label
+              v-if="!pdfOnly"
+              class="file-format"
+            >
+              <input
+                v-model="fileType"
+                type="radio"
+                name="church-report-file"
+                value="xls"
+              />
+              <FileExcelOutlined class="file-format__icon file-format__icon--xls" />
+              <span>XLS</span>
+            </label>
+          </div>
           <v-btn
             color="primary"
             type="submit"
@@ -662,8 +703,46 @@ onMounted(async () => {
 
 .church-report__actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: 20px;
   padding: 28px 16px 16px;
+}
+
+.church-report__formats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.file-format {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #333;
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.file-format input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #757575;
+  cursor: pointer;
+}
+
+.file-format__icon {
+  font-size: 18px;
+}
+
+.file-format__icon--pdf {
+  color: #e53935;
+}
+
+.file-format__icon--xls {
+  color: #217346;
 }
 
 .church-report__generate {
