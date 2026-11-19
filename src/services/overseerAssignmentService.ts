@@ -17,8 +17,8 @@ export type AssignmentPayload = {
 };
 
 export const overseerAssignmentService = {
-  async get(userId: number | string) {
-    return await apiClient.get(`/overseer-assignments/${userId}`);
+  async get(userId: number | string, showLoading = true, silent = false) {
+    return await apiClient.get(`/overseer-assignments/${userId}`, {}, showLoading, silent);
   },
   async add(userId: number | string, payload: AssignmentPayload) {
     return await apiClient.post(`/overseer-assignments/${userId}`, payload);

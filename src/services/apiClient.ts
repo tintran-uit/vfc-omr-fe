@@ -7,6 +7,7 @@ import { clearSessionAndGoLogin } from '@/utils/session'
 type AxiosConfigWithLoading = InternalAxiosRequestConfig & {
   showLoading?: boolean
   rawResponse?: boolean
+  silent?: boolean
 }
 
 const instance = axios.create({
@@ -18,13 +19,14 @@ const instance = axios.create({
   }
 });
 
-const get = async (uri, params = {}, showLoading = true) => {
+const get = async (uri, params = {}, showLoading = true, silent = false) => {
   // try {
     const { data: respData} = await instance.get(
       uri,
       {
         params,
-        showLoading
+        showLoading,
+        silent
       }
     );
 
@@ -198,7 +200,7 @@ instance.interceptors.response.use(
 
         // When the API returns field-level validation errors, let the caller show them
         // inline (e.g. DynamicFormDefault.setServerErrors) instead of a generic toast.
-        if (!hasFieldErrors && data?.message) {
+        if (!hasFieldErrors && data?.message && !(error.config as AxiosConfigWithLoading | undefined)?.silent) {
           useMessageStore().error(data.message);
         }
 

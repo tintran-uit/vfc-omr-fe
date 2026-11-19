@@ -524,7 +524,7 @@ const onSubmit = async () => {
 }
 
 .file-format__icon--pdf {
-  color: #e53935;
+  color: #B5282E;
 }
 
 .file-format__icon--xls {

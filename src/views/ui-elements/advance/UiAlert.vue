@@ -269,7 +269,7 @@ const link = ref({ filelink: 'https://vuetifyjs.com/en/components/alerts/' });
                 </v-alert>
                 <v-alert color="error" variant="outlined" icon="false">
                   <template v-slot:prepend>
-                    <BugTwoTone twoToneColor="#ff4d4f" :style="{ fontSize: '16px' }" />
+                    <BugTwoTone twoToneColor="#B5282E" :style="{ fontSize: '16px' }" />
                   </template>
                   Error Text
                 </v-alert>

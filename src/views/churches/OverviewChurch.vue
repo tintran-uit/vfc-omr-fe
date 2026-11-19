@@ -252,6 +252,8 @@ const pastorDisplayName = computed(() => {
   return name ? t('church.pastorName', { name }) : ''
 })
 
+const pastorTitle = computed(() => String(pastor.value?.title || '').trim())
+
 const locationText = computed(() => churchDetail.value?.country_name || '')
 
 type MetricDisplay = { primary: string; secondary: string }
@@ -389,6 +391,12 @@ const openMetricHelp = (metric: MetricItem) => {
             class="overview-church-profile__name"
           >
             {{ pastorDisplayName }}
+          </div>
+          <div
+            v-if="pastorTitle"
+            class="overview-church-profile__title"
+          >
+            {{ pastorTitle }}
           </div>
         </div>
       </div>
@@ -768,6 +776,14 @@ $app-orange: #ff9500;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.3;
+}
+
+.overview-church-profile__title {
+  margin-top: 2px;
+  color: $app-caption;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.35;
 }
 
 .overview-church-profile .overview-church-header__meta {

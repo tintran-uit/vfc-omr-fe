@@ -87,7 +87,7 @@ const onSubmit = async () => {
             y="1"
             width="3.2"
             height="14"
-            fill="#e53935"
+            fill="#B5282E"
           />
         </svg>
         <span>{{ $t("generateReport.sectionVisitReports") }}</span>

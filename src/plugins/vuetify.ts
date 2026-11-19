@@ -37,7 +37,7 @@ const light: ThemeDefinition = {
     accent: "#FFAB91",
     warning: "#F9A825", // vàng đậm hơn '#faad14',
 
-    error: "#ff4d4f",
+    error: "#B5282E",
     lightprimary: PrimaryLightColor,
     lightsecondary: "#f5f5f5",
     lightsuccess: "#EAFCD4",
@@ -97,7 +97,7 @@ const dark: ThemeDefinition = {
     success: "#49aa19",
     accent: "#fc4b6c",
     warning: "#d89614",
-    error: "#a61d24",
+    error: "#B5282E",
     lightprimary: PrimaryLightColorForDark,
     lightsecondary: "#343131",
     lightsuccess: "#162312",

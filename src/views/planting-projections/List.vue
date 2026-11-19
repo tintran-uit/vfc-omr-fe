@@ -13,6 +13,7 @@ import {
   displayStartDatePreparation,
 } from '@/helpers/churchPlantingProjectionDisplay';
 import { range } from '@/utils/arrayUtil';
+import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from '@/constants/roleConstant';
 
 const STEP_COLS = 6;
 const ROW_MATRIX = 9;
@@ -23,6 +24,12 @@ const route = useRoute();
 const router = useRouter();
 const dialogStore = useDialogStore();
 const authStore = useAuthStore();
+
+const canDeleteProjection = computed(() => {
+  const roleId = Number(authStore.user?.role?.id);
+  if (roleId === ROLE_PASTOR_LEADER) return false;
+  return roleId === ROLE_OVERSEER || roleId === ROLE_ADMIN || roleId === ROLE_SUPER_ADMIN;
+});
 
 const churchId = computed(() => route.params.churchId);
 const church = ref<any>(null);
@@ -245,6 +252,7 @@ const goEditSteps = (item: any) => {
 };
 
 const onDelete = async (item: any) => {
+  if (!canDeleteProjection.value) return;
   if (!(await dialogStore.confirm(t('areYouSureWantToDelete')))) return;
   await churchPlantingProjectionService.del(item.id);
   delete stepsById[item.id];
@@ -391,15 +399,17 @@ onBeforeUnmount(() => clearTimeout(focusTimer));
             <v-icon start size="18">$edit</v-icon>
             {{ $t('churchPlantingProjection.editProjectionBtn') }}
           </v-btn>
-          <v-btn
-            size="small"
-            color="error"
-            variant="text"
-            @click="onDelete(item)"
-          >
-            <v-icon start size="18">$delete</v-icon>
-            {{ $t('dataTable.buttonDeleteTitle') }}
-          </v-btn>
+          <template v-if="canDeleteProjection">
+            <v-btn
+              size="small"
+              color="error"
+              variant="text"
+              @click="onDelete(item)"
+            >
+              <v-icon start size="18">$delete</v-icon>
+              {{ $t('dataTable.buttonDeleteTitle') }}
+            </v-btn>
+          </template>
         </div>
 
         <div class="step-summary-wrap mt-6">

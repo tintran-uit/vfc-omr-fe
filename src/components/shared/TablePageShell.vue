@@ -62,9 +62,9 @@ const resolvedTitle = computed(() => {
 
     <component
       :is="withCard ? 'v-card' : 'div'"
-      variant="outlined"
-      elevation="0"
-      class="bg-surface overflow-hidden"
+      :variant="withCard ? 'outlined' : undefined"
+      :elevation="withCard ? 0 : undefined"
+      :class="withCard ? 'bg-surface overflow-hidden' : undefined"
     >
       <slot />
     </component>

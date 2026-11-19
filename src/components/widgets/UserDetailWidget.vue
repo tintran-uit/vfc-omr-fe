@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import Avatar from "@/components/ui/Avatar.vue";
@@ -8,7 +8,10 @@ import CardHeaderEditLink from "@/components/shared/CardHeaderEditLink.vue";
 import defaultAvatar from "@/assets/images/users/avatar-1.png";
 import { ROLE_OVERSEER, ROLE_PASTOR_LEADER } from "@/constants/roleConstant";
 import { appFormatDate } from "@/helpers/appHelper";
+import { overseerAssignmentService } from "@/services/overseerAssignmentService";
 import { userService } from "@/services/userService";
+
+const GIVING_OVERSIGHT_ROLE = "giving oversight";
 
 type RegionItem = { name: string };
 
@@ -42,6 +45,14 @@ const avatarUrl = computed(
 );
 
 const isOverseer = computed(() => roleId.value === ROLE_OVERSEER);
+
+const isGivingOversight = computed(() => {
+  const user = resolvedDetail.value;
+  const name = String(user?.role?.name || user?.role_name || "")
+    .trim()
+    .toLowerCase();
+  return name === GIVING_OVERSIGHT_ROLE;
+});
 
 const isPastorLeader = computed(() => roleId.value === ROLE_PASTOR_LEADER);
 
@@ -142,6 +153,67 @@ const oversightAssignmentText = computed(() => {
   return parts.join("\n");
 });
 
+const oversightChurchText = ref("");
+const oversightAssignmentReady = ref(false);
+const clampExpanded = ref<Record<string, boolean>>({});
+const clampOverflows = ref<Record<string, boolean>>({});
+const clampEls = new Map<string, HTMLElement>();
+let oversightRequest = 0;
+
+function setClampEl(key: string, el: Element | { $el?: Element } | null) {
+  const node = el && "$el" in el ? el.$el ?? null : el;
+  if (node instanceof HTMLElement) clampEls.set(key, node);
+  else clampEls.delete(key);
+}
+
+async function measureClamp(key: string) {
+  await nextTick();
+  const el = clampEls.get(key);
+  if (!el || clampExpanded.value[key]) return;
+  clampOverflows.value = {
+    ...clampOverflows.value,
+    [key]: el.scrollHeight > el.clientHeight + 1,
+  };
+}
+
+function toggleClamp(key: string) {
+  clampExpanded.value = {
+    ...clampExpanded.value,
+    [key]: !clampExpanded.value[key],
+  };
+}
+
+function churchNamesFromAssignments(payload: any): string {
+  const data = payload?.assignments ? payload : payload?.data ?? {};
+  const churches = data?.assignments?.allowedIds?.churchIds;
+  if (!Array.isArray(churches)) return "-";
+
+  const names = churches
+    .map((item: { name?: string }) => String(item?.name || "").trim())
+    .filter(Boolean);
+
+  return names.length ? names.join(", ") : "-";
+}
+
+async function fetchOversightAssignments(userId: number | string) {
+  const requestId = ++oversightRequest;
+  oversightAssignmentReady.value = false;
+  clampExpanded.value = { ...clampExpanded.value, oversightAssignment: false };
+  clampOverflows.value = { ...clampOverflows.value, oversightAssignment: false };
+
+  try {
+    const payload = await overseerAssignmentService.get(userId, false, true);
+    if (requestId !== oversightRequest) return;
+    oversightChurchText.value = churchNamesFromAssignments(payload);
+  } catch {
+    if (requestId !== oversightRequest) return;
+    oversightChurchText.value = "-";
+  }
+
+  oversightAssignmentReady.value = true;
+  void measureClamp("oversightAssignment");
+}
+
 const rows = computed(() => {
   const user = resolvedDetail.value;
   if (!user) return [];
@@ -153,6 +225,7 @@ const rows = computed(() => {
     cellClass?: string;
     multiline?: boolean;
     href?: string;
+    clamp?: boolean;
   }> = [];
 
   if (user.church_name) {
@@ -168,6 +241,7 @@ const rows = computed(() => {
       key: "from",
       label: "user.from",
       value: fromChurchesText.value,
+      clamp: true,
     });
   }
 
@@ -176,6 +250,15 @@ const rows = computed(() => {
       key: "nation",
       label: "user.nation",
       value: user.country_name,
+    });
+  }
+
+  const title = String(user.title || "").trim();
+  if (title) {
+    items.push({
+      key: "title",
+      label: "user.title",
+      value: title,
     });
   }
 
@@ -228,7 +311,14 @@ const rows = computed(() => {
     });
   }
 
-  if (isOverseer.value && oversightAssignmentText.value) {
+  if (isGivingOversight.value && oversightAssignmentReady.value) {
+    items.push({
+      key: "oversightAssignment",
+      label: "user.oversightAssignment",
+      value: oversightChurchText.value || "-",
+      clamp: true,
+    });
+  } else if (isOverseer.value && oversightAssignmentText.value) {
     items.push({
       key: "oversightAssignment",
       label: "user.oversightAssignment",
@@ -299,6 +389,35 @@ watch(
   },
   { immediate: true },
 );
+
+watch(
+  () => [resolvedDetail.value?.id, isGivingOversight.value] as const,
+  ([id, givingOversight]) => {
+    if (!id || !givingOversight) {
+      oversightRequest += 1;
+      oversightChurchText.value = "";
+      oversightAssignmentReady.value = false;
+      clampExpanded.value = { ...clampExpanded.value, oversightAssignment: false };
+      clampOverflows.value = { ...clampOverflows.value, oversightAssignment: false };
+      return;
+    }
+    void fetchOversightAssignments(id);
+  },
+  { immediate: true },
+);
+
+watch(oversightChurchText, () => {
+  clampExpanded.value = { ...clampExpanded.value, oversightAssignment: false };
+  clampOverflows.value = { ...clampOverflows.value, oversightAssignment: false };
+  void measureClamp("oversightAssignment");
+});
+
+watch(fromChurchesText, () => {
+  clampExpanded.value = { ...clampExpanded.value, from: false };
+  clampOverflows.value = { ...clampOverflows.value, from: false };
+  void measureClamp("from");
+}, { immediate: true });
+
 </script>
 
 <template>
@@ -358,6 +477,25 @@ watch(
               >
                 {{ row.value }}
               </a>
+              <template v-else-if="row.clamp">
+                <div
+                  :ref="(el) => setClampEl(row.key, el as Element | null)"
+                  class="user-detail-widget__clamp"
+                  :class="{ 'user-detail-widget__clamp--clamp': !clampExpanded[row.key] }"
+                >
+                  {{ row.value }}
+                </div>
+                <v-btn
+                  v-if="clampOverflows[row.key] || clampExpanded[row.key]"
+                  variant="text"
+                  color="primary"
+                  size="small"
+                  class="px-0 user-detail-widget__clamp-toggle"
+                  @click="toggleClamp(row.key)"
+                >
+                  {{ clampExpanded[row.key] ? $t("less") : $t("seeMore") }}
+                </v-btn>
+              </template>
               <template v-else>
                 {{ row.value }}
               </template>
@@ -375,3 +513,18 @@ watch(
     </div>
   </CardHeader>
 </template>
+
+<style scoped lang="scss">
+.user-detail-widget__clamp--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.user-detail-widget__clamp-toggle {
+  min-width: 0;
+  height: auto;
+  margin-top: 2px;
+}
+</style>

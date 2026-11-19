@@ -14,7 +14,7 @@ export type OmrMapChurch = {
 };
 
 export const ATTENDANCE_BANDS = [
-  { labelKey: "omrMap.range0", max: 50, color: "rgb(201, 60, 71)" },
+  { labelKey: "omrMap.range0", max: 50, color: "#B5282E" },
   { labelKey: "omrMap.range50", max: 100, color: "rgb(88, 172, 69)" },
   { labelKey: "omrMap.range100", max: 300, color: "rgb(143, 202, 240)" },
   { labelKey: "omrMap.range300", max: 500, color: "rgb(70, 135, 193)" },

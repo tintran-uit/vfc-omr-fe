@@ -218,7 +218,7 @@ const onSubmit = async () => {
 }
 
 .goals-report__required {
-  color: #e53935;
+  color: #B5282E;
 }
 
 .goals-report__overseer {
