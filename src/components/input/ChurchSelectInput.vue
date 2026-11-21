@@ -51,13 +51,13 @@ const fetchItems = async (reset = false) => {
   loadingMore.value = page.value > 1
 
   try {
-    const params: { limit: number; page: number; name?: string } = {
+    const params: { limit: number; page: number; search?: string } = {
       limit: itemsPerPage,
       page: page.value
     }
 
     if (searchQuery.value) {
-      params.name = searchQuery.value
+      params.search = searchQuery.value
     }
 
     const data = await churchService.getList(params, false)

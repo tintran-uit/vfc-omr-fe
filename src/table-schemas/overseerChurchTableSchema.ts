@@ -4,5 +4,5 @@ export default {
     { key: "name", title: "church.labelName" },
     { key: "data_entry_status", title: "church.dataEntryStatus" },
   ],
-  searches: [{ name: "name", label: "searchByName", type: "TextInput" }],
+  searches: [{ name: "search", label: "searchByName", type: "TextInput" }],
 };

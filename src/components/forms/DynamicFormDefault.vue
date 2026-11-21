@@ -212,12 +212,17 @@ function clearServerErrors() {
   serverErrors.value = {};
 }
 
+function setFieldValue(name: string, value: unknown) {
+  setNestedValue(formData.value, name, value);
+}
+
 defineExpose({
   validate,
   reset,
   resetValidation,
   setServerErrors,
   clearServerErrors,
+  setFieldValue,
 });
 
 const fullWidthTypes = [

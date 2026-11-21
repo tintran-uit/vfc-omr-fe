@@ -35,6 +35,9 @@ export const userService  = {
     async changePassword(id, data) {
         return await apiClient.post(`/users/${id}/password`, data)
     },
+    async changeEmail(data) {
+        return await apiClient.post(`/users/change-email`, data)
+    },
     async changePasswordMe(data) {
 
     },

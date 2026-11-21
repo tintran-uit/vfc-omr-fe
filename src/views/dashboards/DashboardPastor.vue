@@ -9,6 +9,8 @@ import { usePastorChurchStore } from '@/stores/pastorChurchStore';
 const pastorChurchStore = usePastorChurchStore();
 const churchDetail = ref({})
 provide('churchDetail', churchDetail)
+const churchCoverResolved = ref(false)
+provide('churchCoverResolved', churchCoverResolved)
 const dashboardData = ref({})
 provide('dashboardData', dashboardData)
 const pastor = ref({})
@@ -37,8 +39,10 @@ const fetchProfileByChurchId = async (churchId) => {
 }
 
 const fetchChurchDetail = async (churchId) => {
+  churchCoverResolved.value = false
   try {
     churchDetail.value = await churchService.get(churchId);
+    churchCoverResolved.value = true
 
     pastor.value = await userService.get(
       churchDetail.value?.pastor_id

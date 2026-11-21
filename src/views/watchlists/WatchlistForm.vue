@@ -66,7 +66,7 @@ async function loadChurches() {
       sort_desc: "false",
     };
     const query = String(churchQuery.value ?? "").trim();
-    if (query) params.name = query;
+    if (query) params.search = query;
 
     const data = await churchService.getList(params, false);
     const items = Array.isArray(data?.items) ? data.items : [];

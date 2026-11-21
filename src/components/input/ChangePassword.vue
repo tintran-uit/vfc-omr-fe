@@ -49,9 +49,15 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div>
-    <v-btn @click="dialog = true">{{ $t('user.changePassword') }}</v-btn>
-  </div>
+  <v-btn
+    color="primary"
+    variant="tonal"
+    class="text-none"
+    @click="dialog = true"
+  >
+    <v-icon start>$lock</v-icon>
+    {{ $t('user.changePassword') }}
+  </v-btn>
     
     
   <v-dialog v-model="dialog" max-width="400">

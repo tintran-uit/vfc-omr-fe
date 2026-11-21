@@ -23,6 +23,16 @@ const store = useImagePreviewStore();
         @click="store.close()"
       />
 
+      <button
+        v-if="store.onEdit"
+        type="button"
+        class="app-image-preview-dialog__edit"
+        @click.stop="store.onEdit()"
+      >
+        <v-icon icon="$camera" size="18" />
+        <span>{{ $t('church.editCover') }}</span>
+      </button>
+
       <img
         v-if="store.src"
         :src="store.src"

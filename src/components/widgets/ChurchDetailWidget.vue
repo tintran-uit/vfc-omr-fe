@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, inject, onMounted, ref, watch } from "vue";
 
 import ChurchLocationDialog from "@/components/churches/ChurchLocationDialog.vue";
+import PhotoCropperInput from "@/components/input/PhotoCropperInput.vue";
 import {
   formatChurchCoordinates,
   hasChurchMapLocation,
@@ -13,7 +14,11 @@ import ImagePreview from "@/components/ui/ImagePreview.vue";
 import { appFormatDate } from "@/helpers/appHelper";
 import { getAge } from "@/helpers/dateTimeHelper";
 import { churchService } from "@/services/churchService";
+import { useAuthStore } from "@/stores/authStore";
+import { useImagePreviewStore } from "@/stores/imagePreviewStore";
+import { useMessageStore } from "@/stores/messageStore";
 import { useServiceVenueStore } from "@/stores/serviceVenueStore";
+import { useI18n } from "vue-i18n";
 import { resolveChurchGeographicRegionDisplay } from "@/utils/churchGeographicRegion";
 import {
   formatWorshipServiceSchedule,
@@ -29,6 +34,14 @@ const props = withDefaults(
 );
 
 const serviceVenueStore = useServiceVenueStore();
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
+const previewStore = useImagePreviewStore();
+const { t } = useI18n();
+const sharedChurch = inject<any>("churchDetail", null);
+const pictureEditor = ref<InstanceType<typeof PhotoCropperInput> | null>(null);
+const pictureBusy = ref(false);
+const pictureSavePending = ref(false);
 const detail = ref<Record<string, any>>({});
 const worshipServices = ref<ChurchWorshipService[]>([]);
 const geographicRegionDisplay = ref("");
@@ -40,6 +53,45 @@ const CHURCH_COVER_ASPECT_RATIO = 820 / 312;
 const churchPhotoUrl = computed(
   () => detail.value?.photo_url || detail.value?.photo || "",
 );
+const canEditChurchPicture = computed(
+  () => authStore.can("church.update") && !!detail.value?.id,
+);
+
+function openChurchPictureEditor() {
+  pictureEditor.value?.open();
+}
+
+function onPictureBusy(active: boolean) {
+  if (!active && pictureSavePending.value) return;
+  pictureBusy.value = active;
+}
+
+async function onChurchPictureUploaded(payload: { path: string; url: string }) {
+  const churchId = detail.value?.id;
+  if (!churchId || !payload?.path) return;
+
+  pictureSavePending.value = true;
+  pictureBusy.value = true;
+  try {
+    await churchService.update(churchId, { photo: payload.path });
+    if (payload.url) {
+      detail.value.photo_url = payload.url;
+      if (previewStore.open) previewStore.src = payload.url;
+      if (
+        sharedChurch?.value &&
+        String(sharedChurch.value.id) === String(churchId)
+      ) {
+        sharedChurch.value.photo_url = payload.url;
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    messageStore.error(t("genericSaveError"));
+  } finally {
+    pictureSavePending.value = false;
+    pictureBusy.value = false;
+  }
+}
 
 function joinAddress(street?: string, postalCode?: string) {
   return [street, postalCode].filter(Boolean).join(", ");
@@ -133,7 +185,17 @@ watch(
             variant="cover"
             :aspect-ratio="CHURCH_COVER_ASPECT_RATIO"
             class="church-detail-widget__photo flex-shrink-0"
+            :on-edit="canEditChurchPicture ? openChurchPictureEditor : undefined"
           />
+          <div class="church-detail-widget__picture-editor">
+            <PhotoCropperInput
+              ref="pictureEditor"
+              mode="cover"
+              :aspect-ratio="16 / 9"
+              @busy="onPictureBusy"
+              @uploaded="onChurchPictureUploaded"
+            />
+          </div>
 
           <div class="flex-grow-1 min-w-0">
             <div class="text-h5 font-weight-bold text-primary">

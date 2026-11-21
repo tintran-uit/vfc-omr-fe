@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 import { useMessageStore } from '@/stores/messageStore';
 import { extractApiError } from '@/utils/formErrors';
 import { ROLE_OVERSEER } from '@/constants/roleConstant';
+import { normalizeCredentialPayload, withNoCredentialOption } from '@/helpers/userCredentials';
 
 const route = useRoute()
 const router = useRouter()
@@ -21,12 +22,12 @@ const initData = computed(() =>
 );
 
 const loadOptions = async function () {
-  options.value = await userService.getFormData();
+  options.value = withNoCredentialOption(await userService.getFormData());
 }
 
 const handleSubmit = async (formData) => {
   try {
-    await userService.create(formData)
+    await userService.create(normalizeCredentialPayload(formData))
 
     router.push({ name: 'UserList' });
   } catch (e) {

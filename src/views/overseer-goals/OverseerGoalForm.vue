@@ -83,7 +83,7 @@ async function searchChurches(query: string) {
   churchLoading.value = true;
   try {
     const params: Record<string, unknown> = { page: 1, limit: 25, sort_by: "name", sort_desc: false };
-    if (query) params.name = query;
+    if (query) params.search = query;
     const data = await churchService.getList(params, false);
     churchOptions.value = mergeSelected(asOptions(data), form.value.local_church_id, selectedChurchName.value);
   } catch (error) {

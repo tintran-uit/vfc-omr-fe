@@ -17,6 +17,7 @@ import {
   mdiHeartOutline,
   mdiHeartHalf,
   mdiPencil,
+  mdiCamera,
   mdiInformationOutline,
   mdiDelete,
   mdiContentCopy,
@@ -58,6 +59,8 @@ import {
   mdiAccountSwitchOutline,
   mdiAccountArrowLeftOutline,
   mdiAirplane,
+  mdiLockOutline,
+  mdiEmailOutline,
 } from "@mdi/js";
 import { mdi } from "vuetify/iconsets/mdi-svg";
 
@@ -80,6 +83,7 @@ export const icons = {
   heartOutline: mdiHeartOutline,
   heartHalf: mdiHeartHalf,
   pencil: mdiPencil,
+  camera: mdiCamera,
   informationOutline: mdiInformationOutline,
   delete: mdiDelete,
   copy: mdiContentCopy,
@@ -130,4 +134,6 @@ export const icons = {
   accountSwitch: mdiAccountSwitchOutline,
   accountArrowLeft: mdiAccountArrowLeftOutline,
   airplane: mdiAirplane,
+  lock: mdiLockOutline,
+  email: mdiEmailOutline,
 };

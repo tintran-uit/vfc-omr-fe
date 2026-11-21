@@ -9,6 +9,6 @@ export default {
     { key: 'actions', title: '' },
   ],
   searches: [
-    { name: 'name', label: 'searchByName', type: 'TextInput' },
+    { name: 'search', label: 'searchByName', type: 'TextInput' },
   ]
 }

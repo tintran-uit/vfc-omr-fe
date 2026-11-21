@@ -11,6 +11,11 @@ import { useI18n } from 'vue-i18n'
 ===================== */
 const modelValue = defineModel<string | null>()
 
+const emit = defineEmits<{
+  (e: 'busy', value: boolean): void
+  (e: 'uploaded', value: { path: string; url: string }): void
+}>()
+
 /* =====================
    Props
 ===================== */
@@ -56,6 +61,8 @@ function triggerFileInput() {
   fileInput.value?.click()
 }
 
+defineExpose({ open: triggerFileInput })
+
 function onFileChange(e: Event) {
   const target = e.target as HTMLInputElement
   const file = target.files?.[0]
@@ -73,10 +80,22 @@ async function confirmCrop() {
 
   loading.value = true
   cropDialog.value = false
+  emit('busy', true)
 
-  cropperRef.value.getCroppedCanvas().toBlob(
+  const canvas = cropperRef.value.getCroppedCanvas()
+  if (!canvas) {
+    loading.value = false
+    emit('busy', false)
+    return
+  }
+
+  canvas.toBlob(
     async (blob: Blob | null) => {
-      if (!blob) return
+      if (!blob) {
+        loading.value = false
+        emit('busy', false)
+        return
+      }
 
       try {
         const compressed = await compressImage(
@@ -98,11 +117,13 @@ async function confirmCrop() {
         if (data) {
           modelValue.value = data.path
           uploadedImageUrl.value = data.url
+          emit('uploaded', { path: data.path, url: data.url })
         }
       } catch (err) {
         console.error('Upload error:', err)
       } finally {
         loading.value = false
+        emit('busy', false)
       }
     },
     'image/jpeg',

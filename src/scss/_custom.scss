@@ -80,6 +80,29 @@ a:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
+.app-image-preview-dialog__edit {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+  color: #1c1c1e;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
 .avatar {
   position: relative;
   display: inline-flex;
@@ -567,23 +590,12 @@ input[type="number"] {
   mask-position: center;
 }
 
-.overview-church-picture-panel__actions {
-  display: flex;
-  justify-content: center;
-}
-
-.overview-church-picture__img {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  border-radius: 4px;
-  background-color: rgb(var(--v-theme-surface-variant));
-}
-
 .church-detail-widget__photo {
   width: 168px;
+}
+
+.church-detail-widget__picture-editor {
+  display: none;
 }
 
 .card-header-edit-link {

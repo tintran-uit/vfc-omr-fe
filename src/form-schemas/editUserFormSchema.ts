@@ -1,9 +1,14 @@
 import { ROLE_PASTOR_LEADER } from '@/constants/roleConstant';
+import { holdsMinisterialCredential, NO_MINISTERIAL_CREDENTIAL } from '@/helpers/userCredentials';
+
+const showCredentialDetails = (form: Record<string, unknown>) =>
+    holdsMinisterialCredential(form?.credentials);
 
 export const createFormSchema = () => ({
     initData: () => ({
         role_id: ROLE_PASTOR_LEADER,
         sensitive_nation: false,
+        credentials: NO_MINISTERIAL_CREDENTIAL,
     }),
     fields: [
         {
@@ -12,11 +17,6 @@ export const createFormSchema = () => ({
             description: 'user.infoUsername',
             rules: ['required'],
             type: 'TextInput'
-        },
-        {
-            label: 'user.labelPassword',
-            type: 'ChangePassword',
-            component: true,
         },
         {
             label: 'user.labelPrefix',
@@ -55,18 +55,6 @@ export const createFormSchema = () => ({
             }
         },
         {
-            label: 'user.labelChurch',
-            name: 'church_id',
-            description: 'user.infoChurch',
-            rules: ['required'],
-            type: 'ChurchSelectInput',
-            optionName: 'churches',
-            attrs: {
-                itemTitle: 'name',
-                itemValue: 'id',
-            }
-        },
-        {
             label: 'user.labelUserPhoto',
             name: 'user_photo',
             description: 'user.infoUserPhoto',
@@ -77,12 +65,6 @@ export const createFormSchema = () => ({
                 aspectRatio: '1',
                 mode: 'avatar'
             }
-        },
-        {
-            label: 'user.labelCountry',
-            name: 'country_id',
-            rules: ['required'],
-            type: 'CountrySelectInput',
         },
         {
             label: 'user.labelSensiveNation',
@@ -99,41 +81,57 @@ export const createFormSchema = () => ({
             type: 'LanguageSelectInput',
         },
         {
-            label: 'user.labelMobilePhone',
-            name: 'mobile_phone',
+            label: 'user.labelChurch',
+            name: 'church_id',
+            description: 'user.infoChurch',
+            rules: ['required'],
+            type: 'ChurchSelectInput',
+            optionName: 'churches',
+            attrs: {
+                itemTitle: 'name',
+                itemValue: 'id',
+            }
+        },
+        {
+            label: 'user.labelCountry',
+            name: 'country_id',
+            rules: ['required'],
+            type: 'CountrySelectInput',
         },
         {
             label: 'user.labelEmailAddress',
             name: 'email_address',
+            type: 'TextInput',
+            readonly: true,
+        },
+        {
+            label: 'user.labelMobilePhone',
+            name: 'mobile_phone',
         },
         {
             label: 'user.labelCredentials',
             name: 'credentials',
             type: 'SelectInput',
             optionName: 'credentials',
-            attrs: {
-                
-            }
+            default: NO_MINISTERIAL_CREDENTIAL,
         },
         {
             label: 'user.labelCredentialsNumber',
             name: 'credentials_number',
-            type: 'TextInput'
+            type: 'TextInput',
+            showWhen: showCredentialDetails,
         },
         {
             label: 'user.labelCredentialsFrom',
             name: 'credentials_from',
-            type: 'TextInput'
+            type: 'TextInput',
+            showWhen: showCredentialDetails,
         },
         {
             label: 'user.labelCredentialsExpiryDate',
             name: 'credentials_expiry_date',
             type: 'YearMonthDayInput',
-        },
-        {
-            label: 'user.labelProfileComments',
-            name: 'profile_comments',
-            type: 'TextareaInput',
+            showWhen: showCredentialDetails,
         },
     ]
 });

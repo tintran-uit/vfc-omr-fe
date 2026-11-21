@@ -47,8 +47,12 @@ const handleSearch = () => {
   if (searchTimeout) clearTimeout(searchTimeout);
 
   searchTimeout = setTimeout(() => {
-    searches.value = searchPayload.value;
-    emit("search", searches.value);
+    // Read the payload before writing the model. defineModel still returns the
+    // previous prop until the parent re-renders, so emitting searches.value
+    // would send the stale value and wipe the criteria just applied.
+    const payload = searchPayload.value;
+    searches.value = payload;
+    emit("search", payload);
   }, props.debounceMs);
 };
 </script>

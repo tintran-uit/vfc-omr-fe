@@ -5,27 +5,44 @@ import { worshipServiceService } from '@/services/worshipServiceService';
 import { churchService } from '@/services/churchService';
 import tableSchema from '@/table-schemas/worshipServiceTableSchema';
 import { useI18n } from 'vue-i18n';
-import DataTable from '@/components/tables/DataTable.vue';
+import DynamicTableDefault from '@/components/tables/DynamicTableDefault.vue';
 import TablePageShell from "@/components/shared/TablePageShell.vue";
 
 const router = useRouter()
 const route = useRoute()
-const {t} = useI18n();
-const items = ref([])
-const church = ref(null)
+const { t } = useI18n();
+const items = ref<Array<Record<string, unknown>>>([])
+const church = ref<{ name?: string } | null>(null)
 const page = ref(1)
 const itemsPerPage = ref(25)
 const sortBy = ref([{ key: 'id', order: 'desc' }])
 const churchId = computed(() => route.params.churchId)
-const fetchData = async function (churchId) {
-  const data = await worshipServiceService.getListByChurch(
-    churchId
-  )
-  items.value = data;
+
+const sortedItems = computed(() => {
+  const list = [...items.value]
+  const sort = sortBy.value?.[0]
+  if (!sort?.key) return list
+
+  const direction = sort.order === 'desc' ? -1 : 1
+  return list.sort((a, b) => {
+    const left = a?.[sort.key] ?? ''
+    const right = b?.[sort.key] ?? ''
+    return String(left).localeCompare(String(right), undefined, { numeric: true }) * direction
+  })
+})
+
+const pagedItems = computed(() => {
+  const start = (page.value - 1) * itemsPerPage.value
+  return sortedItems.value.slice(start, start + itemsPerPage.value)
+})
+
+const fetchData = async function (id) {
+  const data = await worshipServiceService.getListByChurch(id)
+  items.value = Array.isArray(data) ? data : []
 }
 
-const fetchChurchDetail = async (churchId) => {
-  church.value = await churchService.getById(churchId)
+const fetchChurchDetail = async (id) => {
+  church.value = await churchService.getById(id)
 }
 
 const onEdit = (item: unknown) => {
@@ -33,17 +50,18 @@ const onEdit = (item: unknown) => {
   router.push({ name: 'WorshipServiceEdit', params: { churchId: churchId.value, id: it.id } })
 }
 
-const onDelete = async (item: unknown) => {
-  const it = item as { id: number | string }
-  await worshipServiceService.del(it.id)
-
-  fetchData(churchId.value)
+function formatServiceTime(time: unknown) {
+  const value = String(time ?? '')
+  const match = value.match(/^(\d{1,2}):(\d{2})/)
+  if (!match) return value
+  return `${match[1].padStart(2, '0')}:${match[2]}`
 }
 
 watch(
   () => churchId.value,
   async (id) => {
     if (!id) return
+    page.value = 1
     fetchChurchDetail(id)
     fetchData(id)
   },
@@ -54,32 +72,24 @@ watch(
 <template>
   <TablePageShell
     :title="t('worshipService.listTitle', { churchName: church?.name })"
-    :title-md="10"
-    :header-right-md="2"
+    :title-md="12"
+    :header-right-md="0"
   >
-    <template #header-right>
-      <v-btn 
-        color="primary" 
-        variant="outlined" 
-        @click="router.push({ name: 'WorshipServiceAdd', params: { churchId: churchId } })"
-      >
-        <v-icon>$plus</v-icon> {{ $t('addNew') }}
-      </v-btn>
-    </template>
-
-    <DataTable
+    <DynamicTableDefault
       v-model:page="page"
       v-model:items-per-page="itemsPerPage"
       v-model:sort-by="sortBy"
+      :hide-title="true"
+      :hide-header="true"
+      :total-items="items.length"
       :headers="tableSchema.headers"
-      :items="items"
-      :enabled-actions="['edit', 'delete']"
-      @action:delete="onDelete"
+      :items="pagedItems"
+      :enabled-actions="['edit']"
       @action:edit="onEdit"
-    />
+    >
+      <template #item.time="{ item }">
+        {{ formatServiceTime(item.time) }}
+      </template>
+    </DynamicTableDefault>
   </TablePageShell>
 </template>
-
-<style scoped lang="scss">
-
-</style>

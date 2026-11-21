@@ -11,6 +11,7 @@ const props = withDefaults(
     size?: number
     aspectRatio?: number
     preview?: boolean
+    onEdit?: () => void
   }>(),
   {
     variant: 'square',
@@ -24,7 +25,7 @@ const cover = computed(() => props.variant !== 'avatar')
 
 function handleClick() {
   if (!props.preview) return
-  store.show(props.src)
+  store.show(props.src, props.onEdit)
 }
 </script>
 

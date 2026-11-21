@@ -5,7 +5,10 @@ import { useDisplay } from 'vuetify'
 import { useI18n } from 'vue-i18n'
 import { formatDate } from '@/helpers/dateTimeHelper';
 import defaultAvatar from '@/assets/images/users/avatar-default.svg';
-import CardHeader from '@/components/shared/CardHeader.vue';
+import churchCoverPlaceholder from '@/assets/images/church/cover-placeholder.jpg';
+import PhotoCropperInput from '@/components/input/PhotoCropperInput.vue';
+import { churchService } from '@/services/churchService';
+import { useMessageStore } from '@/stores/messageStore';
 import InfoHelpDialog from '@/components/shared/InfoHelpDialog.vue';
 import peopleIcon from '@/assets/images/metrics/group.png'
 import growthIcon from '@/assets/images/metrics/growth.svg'
@@ -31,21 +34,25 @@ import AttendanceChartWidget from '@/components/widgets/AttendanceChartWidget.vu
 import ChurchPlantingChartWidget from '@/components/widgets/ChurchPlantingChartWidget.vue';
 import { formatCompactCurrency, formatCurrency } from '@/helpers/appHelper';
 
-defineProps<{
+const props = defineProps<{
   roleLabel?: string
   coverHeader?: boolean
 }>()
 
 const { smAndDown, mdAndUp } = useDisplay()
 const { t } = useI18n()
+const messageStore = useMessageStore()
+const coverEditor = ref<InstanceType<typeof PhotoCropperInput> | null>(null)
+const coverBusy = ref(false)
+const coverSavePending = ref(false)
 const isMobile = computed(() => smAndDown.value)
 const metricsExpanded = ref(false)
-const churchPictureVisible = ref(false)
 const metricHelpDialog = ref(false)
 const metricHelpTitle = ref('')
 const metricHelpContent = ref('')
 const authStore = useAuthStore();
 const churchDetail = inject('churchDetail')
+const churchCoverResolved = inject('churchCoverResolved', ref(false))
 const dashboardData = inject('dashboardData')
 const pastor = inject('pastor')
 const currencyCodeLocal = computed(() => churchDetail.value?.currency_name)
@@ -300,7 +307,38 @@ const getMetricDisplay = (metric: (typeof metrics.value)[number]): MetricDisplay
   return { primary: '0', secondary: '' }
 }
 
-const hasChurchPhoto = computed(() => !!churchDetail.value?.photo_url)
+const coverSrc = computed(() => {
+  if (!churchCoverResolved.value) return ''
+  return churchDetail.value?.photo_url || churchCoverPlaceholder
+})
+const canEditCover = computed(() =>
+  !!props.coverHeader && authStore.can('church.update') && !!churchDetail.value?.id
+)
+
+function onCoverBusy(active: boolean) {
+  if (!active && coverSavePending.value) return
+  coverBusy.value = active
+}
+
+async function onCoverUploaded(payload: { path: string; url: string }) {
+  const churchId = churchDetail.value?.id
+  if (!churchId || !payload?.path) return
+
+  coverSavePending.value = true
+  coverBusy.value = true
+  try {
+    await churchService.update(churchId, { photo: payload.path })
+    if (churchDetail.value && payload.url) {
+      churchDetail.value.photo_url = payload.url
+    }
+  } catch (error) {
+    console.error(error)
+    messageStore.error(t('genericSaveError'))
+  } finally {
+    coverSavePending.value = false
+    coverBusy.value = false
+  }
+}
 
 type MetricItem = (typeof metrics.value)[number]
 
@@ -318,17 +356,47 @@ const openMetricHelp = (metric: MetricItem) => {
     flat
     class="overview-church-header overview-church-profile mb-4"
   >
-    <div
-      v-if="churchDetail?.photo_url"
-      class="overview-church-cover"
-    >
+    <div class="overview-church-cover">
       <img
-        :src="churchDetail.photo_url"
+        v-if="coverSrc"
+        :src="coverSrc"
         :alt="churchDetail?.name || ''"
         class="overview-church-cover__img"
       />
+      <button
+        v-if="canEditCover"
+        type="button"
+        class="overview-church-cover__edit"
+        :disabled="coverBusy"
+        @click="coverEditor?.open()"
+      >
+        <v-icon icon="$camera" size="18" />
+        <span>{{ $t('church.editCover') }}</span>
+      </button>
+      <div
+        v-if="coverBusy"
+        class="overview-church-cover__busy"
+      >
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="28"
+        />
+      </div>
+      <div class="overview-church-cover__editor">
+        <PhotoCropperInput
+          ref="coverEditor"
+          mode="cover"
+          :aspect-ratio="16 / 9"
+          @busy="onCoverBusy"
+          @uploaded="onCoverUploaded"
+        />
+      </div>
     </div>
-    <div class="overview-church-profile__row">
+    <div
+      class="overview-church-profile__row"
+      :class="{ 'overview-church-profile__row--compact': isMobile }"
+    >
       <div class="overview-church-profile__main">
         <v-avatar
           class="overview-church-profile__avatar"
@@ -682,38 +750,6 @@ const openMetricHelp = (metric: MetricItem) => {
     </v-col>
   </v-row>
 
-  <!-- Church picture (below attachments) -->
-  <v-row v-if="hasChurchPhoto">
-    <v-col cols="12">
-      <CardHeader :title="$t('church.churchPicture')">
-        <div class="pa-4 overview-church-picture-panel">
-          <div class="overview-church-picture-panel__actions">
-            <v-btn
-              variant="outlined"
-              color="primary"
-              @click="churchPictureVisible = !churchPictureVisible"
-            >
-            {{ churchPictureVisible ? $t('church.hideChurchPicture') : $t('church.seeChurchPicture') }}
-            <v-icon
-              :icon="churchPictureVisible ? '$chevronUp' : '$chevronDown'"
-              end
-            />
-          </v-btn>
-          </div>
-          <v-expand-transition>
-            <div v-show="churchPictureVisible" class="overview-church-picture mt-4">
-              <img
-                :src="churchDetail?.photo_url"
-                :alt="churchDetail?.name"
-                class="overview-church-picture__img"
-              />
-            </div>
-          </v-expand-transition>
-        </div>
-      </CardHeader>
-    </v-col>
-  </v-row>
-
   <InfoHelpDialog
     v-model="metricHelpDialog"
     :title="metricHelpTitle"
@@ -732,9 +768,52 @@ $app-orange: #ff9500;
 }
 
 .overview-church-cover {
+  position: relative;
   aspect-ratio: 851 / 315;
   overflow: hidden;
   background: #e4e6eb;
+}
+
+.overview-church-cover__edit {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+  color: #1c1c1e;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.overview-church-cover__edit:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.overview-church-cover__busy {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.overview-church-cover__editor {
+  display: none;
 }
 
 .overview-church-cover__img {
@@ -746,22 +825,29 @@ $app-orange: #ff9500;
 }
 
 .overview-church-profile__row {
+  --profile-mark-size: 96px;
   display: grid;
   grid-template-columns: minmax(0, 9fr) minmax(0, 3fr);
-  align-items: center;
+  align-items: start;
   column-gap: 24px;
-  padding: 20px 24px;
+  padding: 18px 24px 10px;
+}
+
+.overview-church-profile__row--compact {
+  --profile-mark-size: 72px;
 }
 
 .overview-church-profile__main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   min-width: 0;
 }
 
 .overview-church-profile__avatar {
   flex: 0 0 auto;
+  width: var(--profile-mark-size) !important;
+  height: var(--profile-mark-size) !important;
   border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
 }
 
@@ -771,7 +857,7 @@ $app-orange: #ff9500;
 }
 
 .overview-church-profile__name {
-  margin-top: 8px;
+  margin-top: 4px;
   color: rgb(var(--v-theme-primary));
   font-size: 1rem;
   font-weight: 700;
@@ -804,25 +890,23 @@ $app-orange: #ff9500;
 
 .overview-church-profile__region {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-end;
   min-width: 0;
 }
 
 .overview-church-profile__region img {
   display: block;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 120px;
+  width: var(--profile-mark-size);
+  height: var(--profile-mark-size);
   object-fit: contain;
 }
 
 @media (max-width: 600px) {
   .overview-church-profile__row {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 16px;
-    padding: 16px;
+    row-gap: 12px;
+    padding: 18px 16px 10px;
   }
 
   .overview-church-profile__region {

@@ -23,6 +23,7 @@ const fullName = (item: Record<string, any>) => {
 const roleName = (item: Record<string, any>) => item.role_name || item.role?.name || ''
 
 const metaOf = (item: Record<string, any>) => [
+  { key: 'title', label: t('user.title'), value: item.title || '' },
   { key: 'role', label: t('user.omrRole'), value: roleName(item) },
   { key: 'omr', label: t('user.ormId'), value: item.id ?? '' },
   { key: 'username', label: t('user.username'), value: item.username || '' },
@@ -93,14 +94,18 @@ watch(
             />
 
             <div class="related-user-item__body">
-              <div class="related-user-item__name">
-                {{ fullName(item) || '—' }}
-              </div>
-              <div
-                v-if="item.title"
-                class="related-user-item__title"
+              <router-link
+                v-if="item.id"
+                class="related-user-item__name"
+                :to="{ name: 'UserDetail', params: { id: item.id } }"
               >
-                {{ item.title }}
+                {{ fullName(item) || '—' }}
+              </router-link>
+              <div
+                v-else
+                class="related-user-item__name"
+              >
+                {{ fullName(item) || '—' }}
               </div>
 
               <div class="related-user-item__meta">
@@ -142,16 +147,17 @@ watch(
 }
 
 .related-user-item__name {
+  display: inline-block;
+  max-width: 100%;
+  color: rgb(var(--v-theme-primary));
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.3;
+  text-decoration: none;
 }
 
-.related-user-item__title {
-  margin-top: 2px;
-  font-size: 0.8125rem;
-  line-height: 1.35;
-  color: rgba(var(--v-theme-on-surface), 0.62);
+.related-user-item__name:hover {
+  text-decoration: underline;
 }
 
 .related-user-item__meta {
@@ -177,5 +183,7 @@ watch(
 
 .related-user-item__value {
   min-width: 0;
+  color: rgba(var(--v-theme-on-surface), 0.8);
+  font-weight: 600;
 }
 </style>
