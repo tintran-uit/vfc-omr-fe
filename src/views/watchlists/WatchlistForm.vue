@@ -276,7 +276,7 @@ onMounted(() => {
               <tr>
                 <th class="watchlist-form__id">{{ $t("id") }}</th>
                 <th>{{ $t("watchlist.churchName") }}</th>
-                <th class="text-end watchlist-form__remove">{{ $t("user.assignRemove") }}</th>
+                <th class="text-end watchlist-form__remove" />
               </tr>
             </thead>
             <tbody>

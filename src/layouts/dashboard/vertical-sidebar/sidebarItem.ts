@@ -38,9 +38,6 @@ export interface menu {
   subCaption?: string;
   permissions?: string[];
   exact?: boolean;
-  pastorOnly?: boolean;
-  nonPastorOnly?: boolean;
-  adminOnly?: boolean;
 }
 
 const sidebarItem: menu[] = [
@@ -52,18 +49,19 @@ const sidebarItem: menu[] = [
     getURL: true,
     type: "external",
     chipVariant: "tonal",
-    pastorOnly: true,
     children: [
       {
         id: "my-church-dashboard",
         title: "mainMenu.myDashboard",
         to: "/",
         exact: true,
+        permissions: ["dashboard.my-church"],
       },
       {
         id: "my-church-worship-services",
         title: "mainMenu.worshipServices",
         to: "#",
+        permissions: ["dashboard.my-church"],
       },
     ],
   },
@@ -73,7 +71,7 @@ const sidebarItem: menu[] = [
     icon: DashboardOutlined,
     to: "/",
     exact: true,
-    nonPastorOnly: true,
+    permissions: ["dashboard.home"],
   },
   // {
   //   id: 'my-church-profile',
@@ -161,11 +159,13 @@ const sidebarItem: menu[] = [
         id: "watchlist-list",
         title: "mainMenu.watchListList",
         to: "/watchlists",
+        permissions: ["watch-list.read"],
       },
       {
         id: "watchlist-add",
         title: "mainMenu.watchListAdd",
         to: "/watchlists/add",
+        permissions: ["watch-list.create"],
       },
     ],
   },
@@ -181,16 +181,19 @@ const sidebarItem: menu[] = [
         id: "overseer-goal-add",
         title: "mainMenu.overseerGoalsAdd",
         to: "/overseer-goals/add",
+        permissions: ["overseer-goal.read"],
       },
       {
         id: "overseer-goal-list",
         title: "mainMenu.overseerGoalsList",
         to: "/overseer-goals",
+        permissions: ["overseer-goal.read"],
       },
       {
         id: "overseer-goal-defaults",
         title: "mainMenu.overseerGoalsDefaults",
         to: "/overseer-goals/defaults",
+        permissions: ["overseer-goal.read"],
       },
     ],
   },
@@ -547,7 +550,6 @@ const sidebarItem: menu[] = [
   {
     title: "mainMenu.eventType",
     icon: CalendarOutlined,
-    adminOnly: true,
     to: "#",
     getURL: true,
     type: "external",
@@ -570,7 +572,6 @@ const sidebarItem: menu[] = [
   {
     title: "mainMenu.settings",
     icon: SettingOutlined,
-    adminOnly: true,
     to: "#",
     getURL: true,
     type: "external",
@@ -580,6 +581,7 @@ const sidebarItem: menu[] = [
         id: "bible-verse",
         title: "mainMenu.bibleVerse",
         to: "/settings/bible-verse",
+        permissions: ["settings.bible-verse"],
       },
     ],
   },

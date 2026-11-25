@@ -12,7 +12,7 @@ const authStore = useAuthStore();
 const dialog = ref(false)
 const messageStore = useMessageStore()
 const formSchema = computed(() => {
-  if (authStore.isRoleAdmin || authStore.isRoleSuperAdmin) {
+  if (authStore.can('user.password-reset')) {
     return createWithNoOldPasswordSchema();
   }
 
@@ -60,13 +60,15 @@ const { t } = useI18n()
   </v-btn>
     
     
-  <v-dialog v-model="dialog" max-width="400">
+  <v-dialog
+    v-model="dialog"
+    max-width="480"
+  >
     <v-card>
       <v-card-title class="d-flex align-center justify-space-between">
         <span class="text-h3">
           {{ $t('user.changePassword') }}
         </span>
-
         <v-btn
           icon
           variant="text"
@@ -78,12 +80,14 @@ const { t } = useI18n()
 
       <v-card-text>
         <DynamicFormDefault
-            :form-schema="formSchema"
-            @submit="handleSubmit"
-            @cancel="handleCancel"
-            :break-line="true"
-            :showCancel="true"
-          />
+          v-if="dialog"
+          hide-form-header
+          form-only
+          show-cancel
+          :form-schema="formSchema"
+          @submit="handleSubmit"
+          @cancel="handleCancel"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>

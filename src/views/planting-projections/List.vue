@@ -13,7 +13,6 @@ import {
   displayStartDatePreparation,
 } from '@/helpers/churchPlantingProjectionDisplay';
 import { range } from '@/utils/arrayUtil';
-import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from '@/constants/roleConstant';
 
 const STEP_COLS = 6;
 const ROW_MATRIX = 9;
@@ -25,11 +24,7 @@ const router = useRouter();
 const dialogStore = useDialogStore();
 const authStore = useAuthStore();
 
-const canDeleteProjection = computed(() => {
-  const roleId = Number(authStore.user?.role?.id);
-  if (roleId === ROLE_PASTOR_LEADER) return false;
-  return roleId === ROLE_OVERSEER || roleId === ROLE_ADMIN || roleId === ROLE_SUPER_ADMIN;
-});
+const canDeleteProjection = computed(() => authStore.can('church-planting.delete'));
 
 const churchId = computed(() => route.params.churchId);
 const church = ref<any>(null);

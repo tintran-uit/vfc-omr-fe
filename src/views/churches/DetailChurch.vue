@@ -27,6 +27,8 @@ const selectedChurch = ref({})
 const selectedChurchId = ref(null)
 const churchDetail = ref({})
 provide('churchDetail', churchDetail)
+const churchCoverResolved = ref(false)
+provide('churchCoverResolved', churchCoverResolved)
 const dashboardData = ref({})
 provide('dashboardData', dashboardData)
 const pastor = ref({})
@@ -36,8 +38,10 @@ const assignedChurches = computed(() => {
 })
 
 const fetchData = async (churchId) => {
+  churchCoverResolved.value = false
   try {
     churchDetail.value = await churchService.get(churchId);
+    churchCoverResolved.value = true
 
     pastor.value = await userService.get(
       churchDetail.value?.pastor_id
@@ -70,7 +74,7 @@ watch(
 </script>
 
 <template>
-  <OverviewChurch />
+  <OverviewChurch cover-header />
 </template>
 <style scoped lang="scss">
 

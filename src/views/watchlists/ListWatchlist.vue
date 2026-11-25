@@ -27,9 +27,6 @@ async function onDelete(id: number) {
 }
 
 async function onRemoveChurch(watchlistId: number, church: WatchlistChurch) {
-  const confirmed = await dialogStore.confirm(t("areYouSureWantToDelete"));
-  if (!confirmed) return;
-
   await watchlistService.removeChurch(watchlistId, church.id);
   const watchlist = watchlists.value.find((item) => item.id === watchlistId);
   if (!watchlist) return;

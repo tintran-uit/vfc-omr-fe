@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { ROLE_ADMIN, ROLE_OVERSEER, ROLE_PASTOR_LEADER, ROLE_SUPER_ADMIN } from "@/constants/roleConstant";
 import { useGenerateReport } from "@/composables/useGenerateReport";
 import { useAuthStore } from "@/stores/authStore";
 
@@ -37,12 +36,10 @@ const formRef = ref();
 const sortBy = ref<string | null>(null);
 
 const allowedSorts = computed(() => {
-  const roleId = Number(authStore.user?.role?.id);
-  if (roleId === ROLE_PASTOR_LEADER) return ["name", "geo"];
-  if (roleId === ROLE_ADMIN || roleId === ROLE_OVERSEER || roleId === ROLE_SUPER_ADMIN) {
-    return ["overseers"];
-  }
-  return [];
+  const sorts: string[] = [];
+  if (authStore.can("report.my-directory.users")) sorts.push("name", "geo");
+  if (authStore.can("report.my-directory.overseers")) sorts.push("overseers");
+  return sorts;
 });
 
 const options = computed(() =>

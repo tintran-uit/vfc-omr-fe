@@ -15,7 +15,6 @@ const pastorLeaderPermissions = [
   'report.church',
   'report.church-status',
   'report.my-directory',
-  'report.visit',
   'resource.read',
   'relating.update',
   'relating.request-info',
@@ -24,6 +23,8 @@ const pastorLeaderPermissions = [
   'church-planting.create',
   'church-planting.print',
   'church-planting.print-preview',
+  'dashboard.my-church',
+  'report.my-directory.users',
 ];
 
 const overseerPermissions = [
@@ -48,10 +49,21 @@ const overseerPermissions = [
   'watch-list.read',
   'watch-list.create',
   'watch-list.report',
+  'overseer-goal.read',
+  'dashboard.home',
+  'dashboard.overseer',
+  'church-planting.delete',
+  'user.oversight.read',
+  'report.my-directory.overseers',
 ]
 
 const adminPermissions = [
-  ...overseerPermissions.filter((permission) => permission !== 'report.overseer-goals'),
+  ...overseerPermissions.filter(
+    (permission) =>
+      permission !== 'report.overseer-goals' &&
+      permission !== 'dashboard.overseer' &&
+      permission !== 'report.visit',
+  ),
   'user.delete',
   'user.switch',
   'church.clone',
@@ -91,6 +103,10 @@ const adminPermissions = [
   'report.overseer-goals-3yr',
   'report.overseer-goals-actuals-3yr',
   'report.overseer-access-rights',
+  'dashboard.admin',
+  'attachment.delete',
+  'user.password-reset',
+  'settings.bible-verse',
 ];
 
 const superAdminPermissions = adminPermissions.filter(

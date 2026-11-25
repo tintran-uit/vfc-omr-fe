@@ -12,22 +12,6 @@ import { useAuthStore } from '@/stores/authStore';
 import { useVerseStore } from '@/stores/verseStore';
 import { usePastorChurchStore } from '@/stores/pastorChurchStore';
 
-function filterNavigationByRole(items: menu[], isPastor: boolean, isAdmin: boolean): menu[] {
-  return items
-    .filter((item) => {
-      if (item.pastorOnly && !isPastor) return false;
-      if (item.nonPastorOnly && isPastor) return false;
-      if (item.adminOnly && !isAdmin) return false;
-      return true;
-    })
-    .map((item) => ({
-      ...item,
-      children: item.children
-        ? filterNavigationByRole(item.children, isPastor, isAdmin)
-        : undefined,
-    }));
-}
-
 function filterNavigationByPermissions(items, canFn) {
   return items
     .map(item => {
@@ -111,10 +95,10 @@ const customizer = useCustomizerStore();
 
 /* Re-compute when permissions change (e.g. after login or role-based sync from authStore). */
 const sidebarMenu = computed(() => {
-  const isPastor = authStore.isRolePastorLeader;
-  const churchId = isPastor ? pastorChurchStore.selectedChurchId : undefined;
-  const roleFiltered = filterNavigationByRole(sidebarItems, isPastor, authStore.isRoleAdmin);
-  const withResolvedLinks = resolveSidebarLinks(roleFiltered, churchId);
+  const churchId = authStore.can("dashboard.my-church")
+    ? pastorChurchStore.selectedChurchId
+    : undefined;
+  const withResolvedLinks = resolveSidebarLinks(sidebarItems, churchId);
   return filterNavigationByPermissions(withResolvedLinks, (p) => authStore.can(p));
 });
 

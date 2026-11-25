@@ -2,8 +2,6 @@
 import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import type { RouteLocationRaw } from "vue-router";
-import { storeToRefs } from "pinia";
-
 import Avatar from "@/components/ui/Avatar.vue";
 import CardHeader from "@/components/shared/CardHeader.vue";
 import CardHeaderEditLink from "@/components/shared/CardHeaderEditLink.vue";
@@ -42,7 +40,6 @@ const props = withDefaults(
 
 const { t } = useI18n();
 const authStore = useAuthStore();
-const { isRolePastorLeader } = storeToRefs(authStore);
 const detail = ref<Record<string, any>>({});
 const headingClass = "text-left";
 
@@ -165,7 +162,7 @@ const oversightAssignmentText = computed(() => {
 const showOversightAssignment = computed(
   () =>
     isOverseer.value &&
-    !isRolePastorLeader.value &&
+    authStore.can("user.oversight.read") &&
     Boolean(oversightAssignmentText.value),
 );
 

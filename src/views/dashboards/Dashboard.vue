@@ -8,13 +8,13 @@ import DashboardPastor from '@/views/dashboards/DashboardPastor.vue'
 const authStore = useAuthStore()
 
 const dashboard = computed(() => {
-  if (authStore.isRoleAdmin || authStore.isRoleSuperAdmin) {
+  if (authStore.can('dashboard.admin')) {
     return DashboardAdmin
-  } else if (authStore.isRoleOverseer) {
-    return DashboardOverseer
-  } else {
-    return DashboardPastor
   }
+  if (authStore.can('dashboard.overseer')) {
+    return DashboardOverseer
+  }
+  return DashboardPastor
 })
 </script>
 

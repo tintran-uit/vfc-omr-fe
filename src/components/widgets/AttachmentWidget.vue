@@ -34,7 +34,7 @@ const formKey = ref(0);
 
 const actions = computed(() => {
   const next: string[] = [];
-  if (authStore.isRoleAdmin || authStore.isRoleSuperAdmin) {
+  if (authStore.can("attachment.delete")) {
     next.push("delete");
   }
   return next;

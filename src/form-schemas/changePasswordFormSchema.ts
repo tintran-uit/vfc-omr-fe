@@ -9,7 +9,8 @@ export const createFormSchema = () => ({
                 'required',
                 'min:6'
             ],
-            type: 'PasswordInput'
+            type: 'PasswordInput',
+            cols: 12,
         },
         {
             label: 'user.labelRepeatNewPassword',
@@ -19,7 +20,8 @@ export const createFormSchema = () => ({
                 'min:6',
                 'repeatPassword:new_password'
             ],
-            type: 'PasswordInput'
+            type: 'PasswordInput',
+            cols: 12,
         },
     ]
 })

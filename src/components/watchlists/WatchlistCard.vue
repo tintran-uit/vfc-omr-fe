@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import WatchlistPager from "@/components/watchlists/WatchlistPager.vue";
+import DynamicTableDefault from "@/components/tables/DynamicTableDefault.vue";
+import tableSchema from "@/table-schemas/watchlistChurchTableSchema";
 import type { Watchlist, WatchlistChurch } from "@/services/watchlistService";
 
 const props = defineProps<{
@@ -16,7 +17,8 @@ const emit = defineEmits<{
 const router = useRouter();
 const search = ref("");
 const page = ref(1);
-const perPage = 10;
+const itemsPerPage = ref(25);
+const sortBy = ref([{ key: "id", order: "desc" }]);
 
 const filtered = computed(() => {
   const query = String(search.value ?? "").trim().toLowerCase();
@@ -30,9 +32,37 @@ const filtered = computed(() => {
   });
 });
 
+const sorted = computed(() => {
+  const list = [...filtered.value];
+  const sort = sortBy.value?.[0];
+  if (!sort?.key) return list;
+
+  const field: Record<string, keyof WatchlistChurch> = {
+    id: "id",
+    name: "name",
+    country_name: "country",
+    city: "city",
+    pastor_name: "pastor",
+  };
+  const key = field[sort.key] ?? "id";
+  const direction = sort.order === "desc" ? -1 : 1;
+
+  return list.sort((a, b) => {
+    return String(a[key] ?? "").localeCompare(String(b[key] ?? ""), undefined, { numeric: true }) * direction;
+  });
+});
+
 const rows = computed(() => {
-  const start = (page.value - 1) * perPage;
-  return filtered.value.slice(start, start + perPage);
+  const start = (page.value - 1) * itemsPerPage.value;
+  return sorted.value.slice(start, start + itemsPerPage.value).map((church) => ({
+    id: church.id,
+    name: church.name,
+    country_name: church.country,
+    city: church.city,
+    pastor_name: church.pastor,
+    isMsc: church.isMsc,
+    isMother: church.isMother,
+  }));
 });
 
 watch(search, () => {
@@ -40,12 +70,18 @@ watch(search, () => {
 });
 
 watch(filtered, (items) => {
-  const lastPage = Math.max(1, Math.ceil(items.length / perPage));
+  const lastPage = Math.max(1, Math.ceil(items.length / itemsPerPage.value));
   if (page.value > lastPage) page.value = lastPage;
 });
 
 function edit() {
   router.push({ name: "WatchlistEdit", params: { id: props.watchlist.id } });
+}
+
+function onRemoveChurch(item: { id: number }) {
+  const church = props.watchlist.churches.find((entry) => entry.id === item.id);
+  if (!church) return;
+  emit("removeChurch", props.watchlist.id, church);
 }
 </script>
 
@@ -89,79 +125,43 @@ function edit() {
     </v-card-item>
     <v-divider />
 
-    <v-table
-      density="compact"
-      class="bordered-table"
-    >
-      <thead>
-        <tr>
-          <th class="watchlist-card__id">{{ $t("id") }}</th>
-          <th>{{ $t("watchlist.churchName") }}</th>
-          <th>{{ $t("watchlist.country") }}</th>
-          <th>{{ $t("watchlist.city") }}</th>
-          <th>{{ $t("watchlist.pastor") }}</th>
-          <th class="text-end watchlist-card__remove">{{ $t("user.assignRemove") }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="church in rows"
-          :key="church.id"
-        >
-          <td>{{ church.id }}</td>
-          <td>
-            <router-link
-              class="text-primary"
-              :to="{ name: 'ChurchDetail', params: { id: church.id } }"
-            >
-              {{ church.name }}
-            </router-link>
-            <v-chip
-              v-if="church.isMsc"
-              color="warning"
-              :text="$t('church.msc')"
-              class="ms-2"
-              size="small"
-              label
-            />
-            <v-chip
-              v-if="church.isMother"
-              color="success"
-              :text="$t('church.mother')"
-              class="ms-2"
-              size="small"
-              label
-            />
-          </td>
-          <td>{{ church.country || "—" }}</td>
-          <td>{{ church.city || "—" }}</td>
-          <td>{{ church.pastor || "—" }}</td>
-          <td class="text-end">
-            <v-btn
-              icon="$delete"
-              variant="text"
-              size="small"
-              color="error"
-              @click="emit('removeChurch', watchlist.id, church)"
-            />
-          </td>
-        </tr>
-        <tr v-if="!rows.length">
-          <td
-            colspan="6"
-            class="text-medium-emphasis"
-          >
-            {{ $t("watchlist.emptyChurches") }}
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
-
-    <WatchlistPager
+    <DynamicTableDefault
       v-model:page="page"
-      :total="filtered.length"
-      :per-page="perPage"
-    />
+      v-model:items-per-page="itemsPerPage"
+      v-model:sort-by="sortBy"
+      hide-title
+      hide-header
+      :total-items="filtered.length"
+      :headers="tableSchema.headers"
+      :items="rows"
+      :enabled-actions="['delete']"
+      @action:delete="onRemoveChurch"
+    >
+      <template #item.name="{ item }">
+        <div class="watchlist-church-name">
+          <router-link
+            class="dt-cell-link"
+            :to="{ name: 'ChurchDetail', params: { id: item.id } }"
+          >
+            {{ item.name }}
+          </router-link>
+          <v-chip
+            v-if="item.isMsc"
+            color="warning"
+            :text="$t('church.msc')"
+            size="small"
+            label
+          />
+          <v-chip
+            v-if="item.isMother"
+            color="success"
+            :text="$t('church.mother')"
+            size="small"
+            label
+          />
+        </div>
+      </template>
+    </DynamicTableDefault>
   </v-card>
 </template>
 
@@ -171,11 +171,17 @@ function edit() {
   max-width: 100%;
 }
 
-.watchlist-card__id {
-  width: 72px;
+.watchlist-church-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
 }
 
-.watchlist-card__remove {
-  width: 96px;
+.watchlist-church-name :deep(.dt-cell-link) {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
 }
 </style>

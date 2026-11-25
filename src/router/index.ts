@@ -65,11 +65,6 @@ router.beforeEach((to, from, next) => {
     return next({ name: 'Dashboard' });
   }
 
-  const adminOnly = to.matched.some((record) => (record.meta as { adminOnly?: boolean }).adminOnly);
-  if (adminOnly && authStore.user && !authStore.isRoleAdmin) {
-    return next({ name: 'Dashboard' });
-  }
-
   const withRoutePermissions = to.matched
     .slice()
     .reverse()
