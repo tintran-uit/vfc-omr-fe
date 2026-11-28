@@ -7,7 +7,6 @@ import type {
   OverseerAssignmentItem,
   OverseerAssignmentsStreamMeta,
 } from "@/types/overseerAssignmentsStream";
-import OverseerProfileHeader from "@/components/dashboard/OverseerProfileHeader.vue";
 import OverseerMyOverseerItem from "@/components/dashboard/OverseerMyOverseerItem.vue";
 
 import carIcon from "@/assets/images/icons/car.png";
@@ -137,11 +136,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <OverseerProfileHeader
-    v-if="headerUser"
-    :user="headerUser"
-  />
-
   <v-card
     v-if="isMobile"
     class="mt-4 mb-4"

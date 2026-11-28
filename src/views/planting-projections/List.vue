@@ -300,14 +300,6 @@ onBeforeUnmount(() => clearTimeout(focusTimer));
           <v-col cols="12" md="4" class="d-flex flex-wrap justify-md-end ga-2 mt-4 mt-md-0">
             <v-btn
               color="primary"
-              variant="outlined"
-              :to="{ name: 'ChurchDetail', params: { id: churchId } }"
-            >
-              <v-icon start>$arrowLeft</v-icon>
-              {{ $t('backToList') }}
-            </v-btn>
-            <v-btn
-              color="primary"
               variant="elevated"
               :to="{ name: 'PlantingProjectionAdd', params: { churchId } }"
             >

@@ -165,8 +165,9 @@
   },
   "mainMenu": {
     "myDashboard": "Papan Pemuka Saya",
-    "users": "Pengguna",
-    "userList": "Semua",
+    "myProfile": "Profil Saya",
+    "users": "Pastor / Pemimpin",
+    "userList": "Senarai Pastor / Pemimpin",
     "userAdd": "Tambah Pastor Baharu",
     "churches": "Gereja",
     "churchList": "Senarai Gereja",

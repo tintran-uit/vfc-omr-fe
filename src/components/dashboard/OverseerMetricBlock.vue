@@ -4,6 +4,7 @@ import { useDisplay } from "vuetify";
 import { useI18n } from "vue-i18n";
 
 import InfoHelpDialog from "@/components/shared/InfoHelpDialog.vue";
+import OverseerMetricGoalMark from "@/components/dashboard/OverseerMetricGoalMark.vue";
 import houseIcon from "@/assets/images/metrics/house.png";
 import earthIcon from "@/assets/images/metrics/earth.png";
 import peopleIcon from "@/assets/images/metrics/group.png";
@@ -19,9 +20,6 @@ import { formatNumber } from "@/helpers/appHelper";
 
 const METRICS_COLLAPSED_DESKTOP = 4;
 const METRICS_COLLAPSED_MOBILE = 6;
-/** Goals use md="4" (3 per row) — collapse to one row on desktop */
-const GOALS_COLLAPSED_DESKTOP = 3;
-const GOALS_COLLAPSED_MOBILE = 4;
 
 const props = defineProps<{
   indicators: any;
@@ -30,7 +28,6 @@ const props = defineProps<{
 const { t } = useI18n();
 const { mdAndUp } = useDisplay();
 const metricsExpanded = ref(false);
-const goalsExpanded = ref(false);
 const metricHelpDialog = ref(false);
 const metricHelpTitle = ref("");
 const metricHelpContent = ref("");
@@ -41,6 +38,7 @@ type MetricItem = {
   helpKey: string;
   earnKey: string | null;
   percentKey: string | null;
+  goalKey: string | null;
   color: string;
   icon: string;
 };
@@ -52,6 +50,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesHelp",
     earnKey: "total_churches",
     percentKey: null,
+    goalKey: null,
     color: "primary",
     icon: houseIcon,
   },
@@ -61,6 +60,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.peopleHelp",
     earnKey: "avg_people_3_months",
     percentKey: null,
+    goalKey: null,
     color: "primary",
     icon: peopleIcon,
   },
@@ -70,6 +70,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesGrowingHelp",
     earnKey: null,
     percentKey: "percent_churches_growing",
+    goalKey: "percent_of_churches_growing",
     color: "primary",
     icon: growthIcon,
   },
@@ -79,6 +80,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesReportingHelp",
     earnKey: null,
     percentKey: "percent_churches_reporting",
+    goalKey: "percent_of_churches_reporting_on_omr",
     color: "primary",
     icon: reportingIcon,
   },
@@ -88,6 +90,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.nationsHelp",
     earnKey: "countries_count",
     percentKey: null,
+    goalKey: null,
     color: "primary",
     icon: earthIcon,
   },
@@ -97,6 +100,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesPlantingHelp",
     earnKey: null,
     percentKey: "percent_churches_planted",
+    goalKey: "percent_of_churches_doing_church_planting",
     color: "primary",
     icon: plantIcon,
   },
@@ -106,6 +110,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesWithCgsHelp",
     earnKey: null,
     percentKey: "percent_churches_with_cg",
+    goalKey: "percent_of_churches_cell_groups",
     color: "primary",
     icon: cellGroupIcon,
   },
@@ -115,6 +120,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesWithGtLiwHelp",
     earnKey: null,
     percentKey: "percent_churches_with_gt_liw",
+    goalKey: "percent_of_churches_liw_classes",
     color: "primary",
     icon: educationIcon,
   },
@@ -124,6 +130,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesWithTithesOfferingsHelp",
     earnKey: null,
     percentKey: "percent_churches_with_giving",
+    goalKey: null,
     color: "primary",
     icon: worldwideCurrencyIcon,
   },
@@ -133,6 +140,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesWithMfpHelp",
     earnKey: null,
     percentKey: "percent_churches_with_mfp",
+    goalKey: "percent_of_churches_mfp",
     color: "primary",
     icon: worldwideCurrencyIcon,
   },
@@ -142,6 +150,7 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.moreChurchesHelp",
     earnKey: null,
     percentKey: "percent_growth_churches_number",
+    goalKey: null,
     color: "primary",
     icon: moreIcon,
   },
@@ -151,65 +160,9 @@ const metrics = shallowRef<MetricItem[]>([
     helpKey: "overseerMetric.churchesVisitedHelp",
     earnKey: null,
     percentKey: "percent_churches_visited_2_years",
+    goalKey: null,
     color: "primary",
     icon: worldWideIcon,
-  },
-]);
-
-const goalActualMetrics = shallowRef<MetricItem[]>([
-  {
-    name: "overseerMetric.goalGrowing",
-    helpTitleKey: "overseerMetric.churchesGrowingHelpTitle",
-    helpKey: "overseerMetric.churchesGrowingHelp",
-    earnKey: null,
-    percentKey: "percent_of_churches_growing",
-    color: "primary",
-    icon: growthIcon,
-  },
-  {
-    name: "overseerMetric.churchesWithCgs",
-    helpTitleKey: "overseerMetric.churchesWithCgsHelpTitle",
-    helpKey: "overseerMetric.churchesWithCgsHelp",
-    earnKey: null,
-    percentKey: "percent_of_churches_cell_groups",
-    color: "primary",
-    icon: cellGroupIcon,
-  },
-  {
-    name: "overseerMetric.churchesWithGtLiw",
-    helpTitleKey: "overseerMetric.churchesWithGtLiwHelpTitle",
-    helpKey: "overseerMetric.churchesWithGtLiwHelp",
-    earnKey: null,
-    percentKey: "percent_of_churches_liw_classes",
-    color: "primary",
-    icon: educationIcon,
-  },
-  {
-    name: "overseerMetric.churchesWithMfp",
-    helpTitleKey: "overseerMetric.churchesWithMfpHelpTitle",
-    helpKey: "overseerMetric.churchesWithMfpHelp",
-    earnKey: null,
-    percentKey: "percent_of_churches_mfp",
-    color: "primary",
-    icon: worldwideCurrencyIcon,
-  },
-  {
-    name: "overseerMetric.churchesReporting",
-    helpTitleKey: "overseerMetric.churchesReportingHelpTitle",
-    helpKey: "overseerMetric.churchesReportingHelp",
-    earnKey: null,
-    percentKey: "percent_of_churches_reporting_on_omr",
-    color: "primary",
-    icon: reportingIcon,
-  },
-  {
-    name: "overseerMetric.churchesPlanting",
-    helpTitleKey: "overseerMetric.churchesPlantingHelpTitle",
-    helpKey: "overseerMetric.churchesPlantingHelp",
-    earnKey: null,
-    percentKey: "percent_of_churches_doing_church_planting",
-    color: "primary",
-    icon: plantIcon,
   },
 ]);
 
@@ -222,40 +175,6 @@ const metricsPreview = computed(() => metrics.value.slice(0, metricsCollapsedLim
 const metricsExtra = computed(() => metrics.value.slice(metricsCollapsedLimit.value));
 
 const canToggleMetrics = computed(() => metricsExtra.value.length > 0);
-
-const goalsCollapsedLimit = computed(() =>
-  mdAndUp.value ? GOALS_COLLAPSED_DESKTOP : GOALS_COLLAPSED_MOBILE,
-);
-
-const goalsPreview = computed(() =>
-  goalActualMetrics.value.slice(0, goalsCollapsedLimit.value),
-);
-
-const goalsExtra = computed(() =>
-  goalActualMetrics.value.slice(goalsCollapsedLimit.value),
-);
-
-const canToggleGoals = computed(() => goalsExtra.value.length > 0);
-
-function getGoalActualEntry(percentKey: string | null) {
-  if (!percentKey) return null;
-  return props.indicators?.goals_actuals?.[percentKey] ?? null;
-}
-
-function getGoalValue(percentKey: string | null) {
-  return Number(getGoalActualEntry(percentKey)?.goal ?? 0);
-}
-
-function getActualValue(percentKey: string | null) {
-  return Number(getGoalActualEntry(percentKey)?.actual ?? 0);
-}
-
-function getActualChipColor(percentKey: string | null) {
-  const actual = getActualValue(percentKey);
-  const goal = getGoalValue(percentKey);
-
-  return actual >= goal ? "success" : "error";
-}
 
 function getEarnValue(earnKey: string) {
   const value = Number(props.indicators?.[earnKey] ?? 0);
@@ -272,6 +191,17 @@ function openMetricHelp(metric: MetricItem) {
   metricHelpTitle.value = t(metric.helpTitleKey);
   metricHelpContent.value = t(metric.helpKey);
   metricHelpDialog.value = true;
+}
+
+function getGoalActualEntry(metric: MetricItem) {
+  if (!metric.goalKey) return null;
+  const entry = props.indicators?.goals_actuals?.[metric.goalKey];
+  if (entry == null || typeof entry !== "object") return null;
+  return entry as { goal?: number | string | null; actual?: number | string | null };
+}
+
+function getGoalNumber(metric: MetricItem) {
+  return Number(getGoalActualEntry(metric)?.goal ?? 0);
 }
 </script>
 
@@ -293,7 +223,11 @@ function openMetricHelp(metric: MetricItem) {
             variant="outlined"
             class="h-100"
           >
-            <v-card-text class="h-100">
+            <v-card-text class="h-100 metric-card">
+              <OverseerMetricGoalMark
+                v-if="getGoalActualEntry(metric)"
+                :goal="getGoalNumber(metric)"
+              />
               <div class="metric-card-body overview-church-metric">
                 <div class="metric-card-body__icon overview-church-metric__icon">
                   <v-img
@@ -349,7 +283,11 @@ function openMetricHelp(metric: MetricItem) {
                 variant="outlined"
                 class="h-100"
               >
-                <v-card-text class="h-100">
+                <v-card-text class="h-100 metric-card">
+                  <OverseerMetricGoalMark
+                    v-if="getGoalActualEntry(metric)"
+                    :goal="getGoalNumber(metric)"
+                  />
                   <div class="metric-card-body overview-church-metric">
                     <div class="metric-card-body__icon overview-church-metric__icon">
                       <v-img
@@ -406,205 +344,6 @@ function openMetricHelp(metric: MetricItem) {
       </v-btn>
     </div>
 
-    <div class="text-h3 mt-4">
-      {{ $t("overseerMetric.goalsActualTitle", { period: props.indicators?.goals_actuals?.period }) }}
-    </div>
-
-    <v-row class="my-0">
-      <v-col
-        v-for="(metric, i) in goalsPreview"
-        :key="`goal-${i}`"
-        cols="6"
-        sm="6"
-        md="4"
-      >
-        <v-card
-          elevation="0"
-          class="h-100"
-        >
-          <v-card
-            variant="outlined"
-            class="h-100"
-          >
-            <v-card-text class="h-100">
-              <div class="metric-card-body overview-church-metric">
-                <div class="metric-card-body__icon overview-church-metric__icon">
-                  <v-img
-                    :src="metric.icon"
-                    :alt="$t('overseerMetric.iconAlt')"
-                    width="36"
-                    height="36"
-                  />
-                </div>
-                <div class="metric-card-body__content">
-                  <h4 class="text-h4 d-flex align-center mb-0 indicator-value">
-                    <v-tooltip
-                      :text="
-                        $t('goalValue', {
-                          value: `${getGoalValue(metric.percentKey)}%`,
-                        })
-                      "
-                    >
-                      <template #activator="{ props: tipProps }">
-                        <span
-                          v-bind="tipProps"
-                          class="cursor-default"
-                        >
-                          {{ getGoalValue(metric.percentKey) }}%
-                        </span>
-                      </template>
-                    </v-tooltip>
-                    <v-tooltip
-                      :text="
-                        $t('actualValue', {
-                          value: `${getActualValue(metric.percentKey)}%`,
-                        })
-                      "
-                    >
-                      <template #activator="{ props: tipProps }">
-                        <v-chip
-                          v-bind="tipProps"
-                          size="small"
-                          :color="getActualChipColor(metric.percentKey)"
-                          class="ml-2"
-                        >
-                          {{ getActualValue(metric.percentKey) }}%
-                        </v-chip>
-                      </template>
-                    </v-tooltip>
-                  </h4>
-                  <div class="overview-church-metric__label-row">
-                    <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
-                      {{ $t(metric.name) }}
-                    </span>
-                    <button
-                      type="button"
-                      class="overview-church-metric__info-btn"
-                      :aria-label="$t('dashboard.metricInfo')"
-                      @click.stop="openMetricHelp(metric)"
-                    >
-                      <v-icon
-                        icon="$informationOutline"
-                        size="16"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-expand-transition>
-      <div v-show="goalsExpanded">
-        <v-row class="my-0">
-          <v-col
-            v-for="(metric, i) in goalsExtra"
-            :key="`goal-extra-${i}`"
-            cols="6"
-            sm="6"
-            md="4"
-          >
-            <v-card
-              elevation="0"
-              class="h-100"
-            >
-              <v-card
-                variant="outlined"
-                class="h-100"
-              >
-                <v-card-text class="h-100">
-                  <div class="metric-card-body overview-church-metric">
-                    <div class="metric-card-body__icon overview-church-metric__icon">
-                      <v-img
-                        :src="metric.icon"
-                        :alt="$t('overseerMetric.iconAlt')"
-                        width="36"
-                        height="36"
-                      />
-                    </div>
-                    <div class="metric-card-body__content">
-                      <h4 class="text-h4 d-flex align-center mb-0 indicator-value">
-                        <v-tooltip
-                          :text="
-                            $t('goalValue', {
-                              value: `${getGoalValue(metric.percentKey)}%`,
-                            })
-                          "
-                        >
-                          <template #activator="{ props: tipProps }">
-                            <span
-                              v-bind="tipProps"
-                              class="cursor-default"
-                            >
-                              {{ getGoalValue(metric.percentKey) }}%
-                            </span>
-                          </template>
-                        </v-tooltip>
-                        <v-tooltip
-                          :text="
-                            $t('actualValue', {
-                              value: `${getActualValue(metric.percentKey)}%`,
-                            })
-                          "
-                        >
-                          <template #activator="{ props: tipProps }">
-                            <v-chip
-                              v-bind="tipProps"
-                              size="small"
-                              :color="getActualChipColor(metric.percentKey)"
-                              class="ml-2"
-                            >
-                              {{ getActualValue(metric.percentKey) }}%
-                            </v-chip>
-                          </template>
-                        </v-tooltip>
-                      </h4>
-                      <div class="overview-church-metric__label-row">
-                        <span class="overview-church-metric__name text-body-1 font-weight-medium text-medium-emphasis">
-                          {{ $t(metric.name) }}
-                        </span>
-                        <button
-                          type="button"
-                          class="overview-church-metric__info-btn"
-                          :aria-label="$t('dashboard.metricInfo')"
-                          @click.stop="openMetricHelp(metric)"
-                        >
-                          <v-icon
-                            icon="$informationOutline"
-                            size="16"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-card>
-          </v-col>
-        </v-row>
-      </div>
-    </v-expand-transition>
-
-    <div
-      v-if="canToggleGoals"
-      class="d-flex justify-center mt-2"
-    >
-      <v-btn
-        variant="text"
-        color="primary"
-        @click="goalsExpanded = !goalsExpanded"
-      >
-        {{ goalsExpanded ? $t("less") : $t("more") }}
-        <v-icon
-          :icon="goalsExpanded ? '$chevronUp' : '$chevronDown'"
-          end
-        />
-      </v-btn>
-    </div>
-
     <InfoHelpDialog
       v-model="metricHelpDialog"
       :title="metricHelpTitle"
@@ -614,6 +353,18 @@ function openMetricHelp(metric: MetricItem) {
 </template>
 
 <style scoped lang="scss">
+.metric-card {
+  position: relative;
+}
+
+.metric-card :deep(.metric-goal-mark) {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  margin-left: 0;
+  z-index: 1;
+}
+
 .overview-church-metric__icon {
   flex: 0 0 36px;
 }

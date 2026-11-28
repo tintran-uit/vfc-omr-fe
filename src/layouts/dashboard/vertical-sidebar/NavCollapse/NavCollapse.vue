@@ -15,7 +15,7 @@ const props = defineProps({ item: Object, level: Number });
     <template v-slot:activator="{ props }">
       <v-list-item v-bind="props" :value="item.title" rounded class="mb-1" color="primary">
         <!---Icon  -->
-        <template v-slot:prepend>
+        <template v-if="item.icon" v-slot:prepend>
           <img v-if="item?.iconType === 'image'"
             :src="item.icon"
             :width="16"

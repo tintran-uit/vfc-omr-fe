@@ -174,8 +174,9 @@
   },
   "mainMenu": {
     "myDashboard": "Mon tableau de bord",
-    "users": "Utilisateurs",
-    "userList": "Tous",
+    "myProfile": "Mon profil",
+    "users": "Pasteurs / Leaders",
+    "userList": "Liste des Pasteurs / Leaders",
     "userAdd": "Ajouter un nouveau pasteur",
     "churches": "Églises",
     "churchList": "Liste des églises",

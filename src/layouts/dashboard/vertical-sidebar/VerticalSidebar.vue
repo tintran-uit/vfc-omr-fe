@@ -60,19 +60,31 @@ function filterNavigationByPermissions(items, canFn) {
     .filter(Boolean);
 }
 
-function resolveSidebarLinks(items: menu[], churchId: number | string | null | undefined): menu[] {
+function resolveSidebarLinks(
+  items: menu[],
+  churchId: number | string | null | undefined,
+  userId: number | string | null | undefined,
+): menu[] {
   return items
     .map((item) => {
       const resolvedChildren = item.children
-        ? resolveSidebarLinks(item.children, churchId)
+        ? resolveSidebarLinks(item.children, churchId, userId)
         : undefined;
 
-      if (item.id === 'my-church-worship-services') {
+      if (item.id === 'my-profile') {
+        if (userId === undefined || userId === null || userId === '') return null;
+        return {
+          ...item,
+          to: `/users/${userId}`,
+          children: resolvedChildren,
+        };
+      }
+
+      if (item.id === 'my-church-profile') {
         if (!churchId) return null;
         return {
           ...item,
-          to: `/churches/${churchId}/services`,
-          children: resolvedChildren,
+          to: `/churches/${churchId}`,
         };
       }
 
@@ -98,7 +110,7 @@ const sidebarMenu = computed(() => {
   const churchId = authStore.can("dashboard.my-church")
     ? pastorChurchStore.selectedChurchId
     : undefined;
-  const withResolvedLinks = resolveSidebarLinks(sidebarItems, churchId);
+  const withResolvedLinks = resolveSidebarLinks(sidebarItems, churchId, authStore.user?.id);
   return filterNavigationByPermissions(withResolvedLinks, (p) => authStore.can(p));
 });
 

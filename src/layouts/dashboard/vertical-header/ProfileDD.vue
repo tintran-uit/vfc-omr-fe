@@ -4,7 +4,6 @@ import type { RouteLocationRaw } from "vue-router";
 import {
   UserOutlined,
   EditOutlined,
-  LogoutOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons-vue";
 import { useAuthStore } from "@/stores/authStore";
@@ -66,9 +65,9 @@ const userEditTo = computed((): RouteLocationRaw | undefined => {
           <v-list-item-title class="text-h6">{{ $t("omrSupport") }}</v-list-item-title>
         </v-list-item>
 
-        <v-list-item @click="authStore.logout()" color="secondary" rounded="0">
-              <template v-slot:prepend>
-                <LogoutOutlined :style="{ fontSize: '14px' }" class="me-4" />
+        <v-list-item class="profile-logout" @click="authStore.logout()" color="secondary" rounded="0">
+              <template #prepend>
+                <v-icon icon="$logout" size="14" class="me-4" />
               </template>
 
               <v-list-item-title class="text-h6"> {{ $t('logout') }}</v-list-item-title>
@@ -76,3 +75,9 @@ const userEditTo = computed((): RouteLocationRaw | undefined => {
       </v-list>
   </div>
 </template>
+
+<style scoped>
+.profile-logout :deep(.v-list-item__spacer) {
+  width: 0;
+}
+</style>

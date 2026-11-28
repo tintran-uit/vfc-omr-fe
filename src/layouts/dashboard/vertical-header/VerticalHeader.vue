@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+import { dashboardService } from '@/services/dashboardService';
 import { useCustomizerStore } from '../../../stores/customizer';
 // icons
 // import { MenuFoldOutlined, WindowsOutlined, TranslationOutlined, SettingOutlined, SearchOutlined, MenuOutlined } from '@ant-design/icons-vue';
@@ -28,6 +29,55 @@ const authStore = useAuthStore();
 const avatarUrl = computed(() => {
   return authStore.user?.photo_url || defaultAvatar
 })
+
+const profileMeta = ref('');
+
+function namesOf(items?: { name?: string }[]) {
+  return items?.map((item) => item?.name).filter(Boolean).join(', ') ?? '';
+}
+
+function joinMeta(parts: Array<string | undefined | null>) {
+  return parts.map((part) => String(part ?? '').trim()).filter(Boolean).join(' · ');
+}
+
+async function loadProfileMeta() {
+  const user = authStore.user as Record<string, any> | null;
+  const roleName = String(user?.role?.name || user?.role_name || '').trim();
+  if (!user) {
+    profileMeta.value = '';
+    return;
+  }
+
+  try {
+    if (authStore.can('dashboard.overseer')) {
+      const data = await dashboardService.getOversight(false);
+      profileMeta.value = joinMeta([
+        data?.overseer_profile?.role_name || roleName,
+        namesOf(data?.overseer_permissions?.allowedIds?.geographicalRegionIds),
+      ]);
+      return;
+    }
+    if (authStore.can('dashboard.admin')) {
+      const data = await dashboardService.getProfile(false);
+      const profile = data?.admin_profile ?? data?.overseer_profile ?? data?.user_profile ?? data?.user;
+      const permissions = data?.admin_permissions ?? data?.overseer_permissions;
+      profileMeta.value = joinMeta([
+        profile?.role_name || profile?.role?.name || roleName,
+        namesOf(permissions?.allowedIds?.geographicalRegionIds),
+      ]);
+      return;
+    }
+  } catch {
+    profileMeta.value = roleName;
+    return;
+  }
+
+  profileMeta.value = roleName;
+}
+
+watch(() => authStore.user?.id, () => {
+  loadProfileMeta();
+}, { immediate: true });
 
 const switchingBack = ref(false);
 const onSwitchBack = async () => {
@@ -199,10 +249,13 @@ const onSwitchBack = async () => {
       <template v-slot:activator="{ props }">
         <v-btn class="profileBtn" variant="text" rounded="sm" v-bind="props">
           <div class="d-flex align-center">
-            <v-avatar class="me-sm-2 me-0 py-2">
+            <v-avatar class="me-sm-2 me-0">
               <img :src="avatarUrl" :alt="authStore.fullName" />
             </v-avatar>
-            <h6 class="text-subtitle-1 mb-0 d-sm-block d-none">{{ authStore.fullName }}</h6>
+            <span class="profile-identity d-none d-sm-flex">
+              <span class="profile-identity__name">{{ authStore.fullName }}</span>
+              <span v-if="profileMeta" class="profile-identity__meta">{{ profileMeta }}</span>
+            </span>
           </div>
           <v-icon class="ms-2 flex-shrink-0 d-sm-block">$menuDown</v-icon>
         </v-btn>
@@ -226,3 +279,36 @@ const onSwitchBack = async () => {
      <!-- #Logout -->
   </v-app-bar>
 </template>
+
+<style scoped>
+.profile-identity {
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  max-width: 240px;
+  line-height: 1.2;
+}
+
+.profile-identity__name {
+  max-width: 100%;
+  overflow: hidden;
+  color: rgb(var(--v-theme-on-surface));
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-identity__meta {
+  max-width: 100%;
+  margin-top: 2px;
+  overflow: hidden;
+  color: #8e8e93;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

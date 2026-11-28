@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, defineAsyncComponent } from 'vue'
+import { ref, watch, computed, nextTick } from 'vue'
 import CardHeader from '../shared/CardHeader.vue';
 import { graphService } from '@/services/graphService';
 import AttendanceChart from '@/components/charts/AttendanceChart.vue'
@@ -151,18 +151,26 @@ watch(
   { immediate: true }
 )
 
-watch(listChartDataByChurch, (newVal) => {
-  if (newVal.length > 0 && !tab.value) {
-    tab.value = `chart-${newVal[0].church_id}`
+watch(listChartDataByChurch, async (charts) => {
+  const ids = charts.map((church) => `chart-${church.church_id}`)
+  if (!ids.length) {
+    tab.value = null
+    return
   }
-},
-  { immediate: true })
+  if (ids.includes(tab.value)) return
+  await nextTick()
+  tab.value = ids[0]
+  await nextTick()
+  if (!ids.includes(tab.value)) {
+    tab.value = ids[0]
+  }
+}, { immediate: true })
 
 </script>
 
 <template>
   <CardHeader :title="$t('chart.attendanceGraph')">
-    <div class="d-flex align-center justify-end" style="min-width: 180px;">
+    <div class="d-flex align-center justify-start">
       <SelectInput
        v-model="periodModel"
        :items="periodOptions"
@@ -170,12 +178,13 @@ watch(listChartDataByChurch, (newVal) => {
        density="compact"
         hide-details
         :clearable="false"
-        class="select-fit my-5 ml-4"
+        class="period-select my-5 ml-4"
       />
     </div>
 
     <!-- Tabs -->
     <v-tabs
+      v-if="tab"
       v-model="tab"
       class="attendant-tab"
       bg-color="transparent"
@@ -187,7 +196,7 @@ watch(listChartDataByChurch, (newVal) => {
       </template>
     </v-tabs>
 
-    <v-window v-model="tab" :touch="false">
+    <v-window v-if="tab" v-model="tab" :touch="false">
       <template v-for="chartDataByChurch in listChartDataByChurch" :key="chartDataByChurch.church_id">
         <v-window-item :value="`chart-${chartDataByChurch.church_id}`" class="chart-wrapper">
           <template #default>
@@ -208,5 +217,24 @@ watch(listChartDataByChurch, (newVal) => {
   touch-action: pan-y;
 }
 
+:deep(.period-select) {
+  flex: 0 0 auto;
+  width: auto;
+}
 
+:deep(.period-select .v-input__control),
+:deep(.period-select .v-field) {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+:deep(.period-select .v-autocomplete__selection) {
+  flex: 0 0 auto;
+  max-width: none;
+}
+
+:deep(.period-select .v-autocomplete__selection-text) {
+  overflow: visible;
+  text-overflow: unset;
+}
 </style>

@@ -11,6 +11,7 @@ import {
   HomeOutlined,
   CalendarOutlined,
   QuestionOutlined,
+  InfoCircleOutlined,
   AimOutlined,
   SettingOutlined,
   FolderOutlined,
@@ -42,28 +43,12 @@ export interface menu {
 
 const sidebarItem: menu[] = [
   {
-    id: "my-church-profile",
-    title: "mainMenu.myChurchProfile",
-    icon: HomeOutlined,
-    to: "#",
-    getURL: true,
-    type: "external",
-    chipVariant: "tonal",
-    children: [
-      {
-        id: "my-church-dashboard",
-        title: "mainMenu.myDashboard",
-        to: "/",
-        exact: true,
-        permissions: ["dashboard.my-church"],
-      },
-      {
-        id: "my-church-worship-services",
-        title: "mainMenu.worshipServices",
-        to: "#",
-        permissions: ["dashboard.my-church"],
-      },
-    ],
+    id: "my-church-dashboard",
+    title: "mainMenu.myDashboard",
+    icon: DashboardOutlined,
+    to: "/",
+    exact: true,
+    permissions: ["dashboard.my-church"],
   },
   {
     id: "dashboard",
@@ -73,46 +58,6 @@ const sidebarItem: menu[] = [
     exact: true,
     permissions: ["dashboard.home"],
   },
-  // {
-  //   id: 'my-church-profile',
-  //   title: 'Enter Report',
-  //   icon: MessageOutlined,
-  //   to: '/test/report-form'
-  // },
-  {
-    title: "mainMenu.users",
-    icon: UserOutlined,
-    to: "#",
-    getURL: true,
-    type: "external",
-    chipVariant: "tonal",
-    children: [
-      {
-        id: "users-list",
-        title: "mainMenu.userList",
-        to: "/users",
-        permissions: ["user.read"],
-      },
-      {
-        id: "users-overseer-list",
-        title: "mainMenu.overseers",
-        to: "/users/overseers",
-        permissions: ["user.read-overseer"],
-      },
-      {
-        id: "users-add",
-        title: "mainMenu.userAdd",
-        to: "/users/add",
-        permissions: ["user.create"],
-      },
-      {
-        id: "users-churches-add",
-        title: "mainMenu.churchAddWithPastor",
-        to: "/churches/add-with-new-pastor",
-        permissions: ["user.create", "church.create"],
-      },
-    ],
-  },
   {
     title: "mainMenu.churches",
     icon: HomeOutlined,
@@ -121,6 +66,12 @@ const sidebarItem: menu[] = [
     type: "external",
     chipVariant: "tonal",
     children: [
+      {
+        id: "my-church-profile",
+        title: "mainMenu.myChurchProfile",
+        to: "#",
+        permissions: ["dashboard.my-church"],
+      },
       {
         id: "church-list",
         title: "mainMenu.churchList",
@@ -144,6 +95,51 @@ const sidebarItem: menu[] = [
         title: "mainMenu.disabledChurches",
         to: "/churches/disabled-list",
         permissions: ["church.enable"],
+      },
+    ],
+  },
+  // {
+  //   id: 'my-church-profile',
+  //   title: 'Enter Report',
+  //   icon: MessageOutlined,
+  //   to: '/test/report-form'
+  // },
+  {
+    title: "mainMenu.users",
+    icon: UserOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "my-profile",
+        title: "mainMenu.myProfile",
+        to: "#",
+      },
+      {
+        id: "users-list",
+        title: "mainMenu.userList",
+        to: "/users",
+        permissions: ["user.read"],
+      },
+      {
+        id: "users-overseer-list",
+        title: "mainMenu.overseers",
+        to: "/users/overseers",
+        permissions: ["user.read-overseer"],
+      },
+      {
+        id: "users-add",
+        title: "mainMenu.userAdd",
+        to: "/users/add",
+        permissions: ["user.create"],
+      },
+      {
+        id: "users-churches-add",
+        title: "mainMenu.churchAddWithPastor",
+        to: "/churches/add-with-new-pastor",
+        permissions: ["user.create", "church.create"],
       },
     ],
   },
@@ -488,22 +484,6 @@ const sidebarItem: menu[] = [
     ],
   },
   {
-    title: "mainMenu.relating",
-    icon: CompassOutlined,
-    to: "#",
-    getURL: true,
-    type: "external",
-    chipVariant: "tonal",
-    children: [
-      {
-        id: "relating-search",
-        title: "mainMenu.relatingSearch",
-        to: "/relating/search",
-        permissions: ["relating.request-info"],
-      },
-    ],
-  },
-  {
     title: "mainMenu.resources",
     icon: FolderOutlined,
     to: "#",
@@ -516,6 +496,22 @@ const sidebarItem: menu[] = [
         title: "mainMenu.resourcesBrowse",
         to: "/resources",
         permissions: ["resource.read"],
+      },
+    ],
+  },
+  {
+    title: "mainMenu.relating",
+    icon: CompassOutlined,
+    to: "#",
+    getURL: true,
+    type: "external",
+    chipVariant: "tonal",
+    children: [
+      {
+        id: "relating-search",
+        title: "mainMenu.relatingSearch",
+        to: "/relating/search",
+        permissions: ["relating.request-info"],
       },
     ],
   },
@@ -546,6 +542,12 @@ const sidebarItem: menu[] = [
         permissions: ["faq.create"],
       },
     ],
+  },
+  {
+    id: "omr-support",
+    title: "omrSupport",
+    icon: InfoCircleOutlined,
+    to: "/support",
   },
   {
     title: "mainMenu.eventType",

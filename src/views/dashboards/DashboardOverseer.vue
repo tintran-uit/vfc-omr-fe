@@ -7,7 +7,6 @@ import type {
   OverseerAssignmentItem,
   OverseerAssignmentsStreamMeta,
 } from "@/types/overseerAssignmentsStream";
-import OverseerProfileHeader from "@/components/dashboard/OverseerProfileHeader.vue";
 import OverseerUser from "@/components/dashboard/OverseerUser.vue";
 import OverseerNetwork from "@/components/dashboard/OverseerNetwork.vue";
 import OverseerChurchApostolicRegions from "@/components/dashboard/OverseerChurchApostolicRegions.vue";
@@ -149,11 +148,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <OverseerProfileHeader
-    v-if="dashboardData?.overseer_profile"
-    :user="dashboardData.overseer_profile"
-  />
-
   <v-card
     v-if="isMobile"
     class="mt-4 mb-4"

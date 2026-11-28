@@ -165,8 +165,9 @@
   },
   "mainMenu": {
     "myDashboard": "マイダッシュボード",
-    "users": "ユーザー",
-    "userList": "すべて",
+    "myProfile": "マイプロフィール",
+    "users": "牧師 / リーダー",
+    "userList": "牧師 / リーダー一覧",
     "userAdd": "新しい牧師を追加",
     "churches": "教会",
     "churchList": "教会一覧",

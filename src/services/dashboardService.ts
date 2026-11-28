@@ -136,11 +136,11 @@ async function fetchOverseerAssignmentsNdjsonStream(
 }
 
 export const dashboardService = {
-  async getProfile() {
-    return await apiClient.get(`/dashboard`);
+  async getProfile(showLoading = true) {
+    return await apiClient.get(`/dashboard`, {}, showLoading, !showLoading);
   },
-  async getOversight() {
-    return await apiClient.get(`/dashboard/oversight`);
+  async getOversight(showLoading = true) {
+    return await apiClient.get(`/dashboard/oversight`, {}, showLoading, !showLoading);
   },
   async getProfileByChurchId(churchId: any) {
     return await apiClient.get(`/dashboard`, { church_id: churchId });

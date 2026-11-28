@@ -174,8 +174,9 @@
   },
   "mainMenu": {
     "myDashboard": "Mi panel",
-    "users": "Usuarios",
-    "userList": "Todos",
+    "myProfile": "Mi perfil",
+    "users": "Pastores / Líderes",
+    "userList": "Lista de Pastores / Líderes",
     "userAdd": "Agregar nuevo pastor",
     "churches": "Iglesias",
     "churchList": "Lista de iglesias",
